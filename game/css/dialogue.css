@@ -1,0 +1,175 @@
+/* ── 대화창 ── */
+#dialogue-box {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 160px;
+  background: var(--bg-panel);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: stretch;
+  z-index: 10;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* 초상화 영역 */
+#portrait-wrap {
+  width: 130px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 8px 0 12px;
+  border-right: 1px solid var(--border);
+  position: relative;
+}
+#portrait-img {
+  width: 110px;
+  height: 140px;
+  object-fit: cover;
+  object-position: top;
+  opacity: 0.9;
+  filter: brightness(0.85) sepia(0.1);
+}
+/* 이미지 없을 때: CSS 이니셜 아바타 */
+#portrait-img[src=""],
+#portrait-img:not([src]) {
+  display: none;
+}
+#portrait-wrap .portrait-placeholder {
+  width: 80px; height: 100px;
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, #1a1208 0%, #0d0a04 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  color: var(--gold);
+  font-family: var(--font-main);
+  letter-spacing: 0;
+  margin-bottom: 4px;
+  opacity: 0.7;
+}
+
+/* 텍스트 영역 */
+#dialogue-content {
+  flex: 1;
+  padding: 16px 20px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+}
+
+#speaker-name {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  letter-spacing: 3px;
+  color: var(--gold);
+  min-height: 18px;
+}
+#speaker-name:empty { display: none; }
+
+#dialogue-text {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--text-main);
+  flex: 1;
+}
+
+/* 내레이션 스타일 */
+#dialogue-box.narration #dialogue-text {
+  color: var(--text-narr);
+  font-style: italic;
+}
+#dialogue-box.narration #portrait-wrap { opacity: 0; pointer-events: none; }
+
+/* 진행 힌트 삼각형 */
+#click-hint {
+  position: absolute;
+  bottom: 10px; right: 16px;
+  color: var(--gold);
+  font-size: 12px;
+  animation: blink-hint 1.2s ease-in-out infinite;
+}
+@keyframes blink-hint {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.2; }
+}
+#click-hint.hidden-hint { visibility: hidden; }
+
+/* ── 대화 스타일 변형 ── */
+
+/* thought: 유웅룡 내면 독백 */
+#dialogue-box.thought #dialogue-text {
+  color: var(--text-narr);
+  font-style: italic;
+}
+#dialogue-box.thought #speaker-name {
+  color: rgba(200, 168, 75, 0.6);
+  letter-spacing: 4px;
+}
+
+/* crazy: 이판규 광기 대사 */
+#dialogue-box.crazy #dialogue-text {
+  color: #c87070;
+  letter-spacing: 0.06em;
+}
+#dialogue-box.crazy #speaker-name {
+  color: #c87070;
+}
+
+/* scared: 겁에 질린 대사 */
+#dialogue-box.scared #dialogue-text {
+  color: #b8a898;
+  font-style: italic;
+}
+#dialogue-box.scared #speaker-name {
+  color: rgba(200, 168, 75, 0.6);
+}
+
+/* magic: 세뇌·감응 상태 */
+#dialogue-box.magic #dialogue-text {
+  color: #7aadcc;
+  font-style: italic;
+  letter-spacing: 0.1em;
+}
+#dialogue-box.magic #speaker-name {
+  color: #7aadcc;
+}
+
+/* ── 선택지 박스 ── */
+#choice-box {
+  position: absolute;
+  bottom: 170px; left: 50%;
+  transform: translateX(-50%);
+  width: 560px;
+  max-width: 90%;
+  z-index: 15;
+}
+#choice-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.choice-btn {
+  width: 100%;
+  background: rgba(8, 5, 3, 0.92);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  font-family: var(--font-main);
+  font-size: 14px;
+  padding: 12px 20px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  line-height: 1.5;
+}
+.choice-btn:hover {
+  background: rgba(30, 20, 10, 0.95);
+  border-color: var(--gold);
+  color: var(--gold-light);
+}
+.choice-btn::before {
+  content: '▸ ';
+  color: var(--gold);
+  margin-right: 4px;
+}

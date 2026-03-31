@@ -1,0 +1,97 @@
+/* ── 공포 연출 이펙트 ── */
+
+/* 씬 전환 페이드 */
+#game-container.fade-out #bg-layer,
+#game-container.fade-out #dialogue-box,
+#game-container.fade-out #choice-box {
+  opacity: 0 !important;
+  transition: opacity 0.5s ease;
+}
+#game-container.fade-in #bg-layer,
+#game-container.fade-in #dialogue-box {
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}
+
+/* 조명 깜빡임 (감응 씬) */
+@keyframes flicker {
+  0%   { opacity: 1; }
+  5%   { opacity: 0.6; }
+  10%  { opacity: 1; }
+  15%  { opacity: 0.7; }
+  20%  { opacity: 1; }
+  80%  { opacity: 1; }
+  85%  { opacity: 0.4; }
+  90%  { opacity: 1; }
+  95%  { opacity: 0.8; }
+  100% { opacity: 1; }
+}
+.effect-flicker #bg-layer {
+  animation: flicker 3s ease-in-out;
+}
+
+/* 청색 감응 오버레이 */
+.effect-resonance #effect-overlay {
+  background: radial-gradient(ellipse at center,
+    rgba(30, 60, 140, 0.35) 0%,
+    rgba(10, 20, 60, 0.6) 100%);
+  opacity: 1;
+}
+
+/* 화면 흔들림 (공포) */
+@keyframes shake {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(-3px, 1px); }
+  40% { transform: translate(3px, -2px); }
+  60% { transform: translate(-2px, 2px); }
+  80% { transform: translate(2px, -1px); }
+}
+.effect-shake #game-container {
+  animation: shake 0.4s ease-in-out;
+}
+
+/* 혈적 붉은 오버레이 (이해심 등장) */
+.effect-blood #effect-overlay {
+  background: radial-gradient(ellipse at center,
+    transparent 40%,
+    rgba(100, 10, 10, 0.45) 100%);
+  opacity: 1;
+}
+
+/* 챕터 카드 페이드인 */
+@keyframes card-in {
+  from { opacity: 0; letter-spacing: 12px; }
+  to   { opacity: 1; letter-spacing: 4px; }
+}
+#chapter-card:not(.hidden) #chapter-title {
+  animation: card-in 1s ease forwards;
+}
+@keyframes card-num-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+#chapter-card:not(.hidden) #chapter-number {
+  animation: card-num-in 0.6s ease 0.3s forwards;
+  opacity: 0;
+}
+
+/* 타이핑 커서 */
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+.typing-cursor::after {
+  content: '|';
+  color: var(--gold);
+  animation: cursor-blink 0.8s step-end infinite;
+  margin-left: 2px;
+}
+
+/* 단서 토스트 애니메이션 */
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+#evidence-toast.show {
+  animation: toast-in 0.3s ease forwards;
+}

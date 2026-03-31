@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>경성뎐 : 여급 실종사건</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/dialogue.css">
+  <link rel="stylesheet" href="css/effects.css">
+</head>
+<body>
+
+<!-- ── 게임 컨테이너 ── -->
+<div id="game-container">
+
+  <!-- 배경 이미지 -->
+  <div id="bg-layer"></div>
+  <!-- 어두운 오버레이 (분위기) -->
+  <div id="vignette"></div>
+  <!-- 공포 이펙트 오버레이 -->
+  <div id="effect-overlay"></div>
+
+  <div id="title-screen">
+    <div id="title-backdrop"></div>
+    <div id="title-overlay"></div>
+    <div id="title-content">
+      <div id="title-kicker">1932 경성 미스터리</div>
+      <h1 id="title-logo">경성뎐</h1>
+      <div id="title-subtitle">여급 실종사건</div>
+      <p id="title-copy">
+        묻힌 판결에서 시작된 실종 사건이 경성의 어둠과 맞닿는다.
+        기록할 것인가, 파고들 것인가.
+      </p>
+      <div id="title-actions">
+        <button id="new-game-btn" class="title-btn">새 게임</button>
+        <button id="continue-btn" class="title-btn">이어하기</button>
+      </div>
+      <div id="title-hint">스페이스 또는 엔터로 시작</div>
+    </div>
+  </div>
+
+  <!-- 챕터 타이틀 카드 -->
+  <div id="chapter-card" class="hidden">
+    <div id="chapter-number"></div>
+    <div id="chapter-title"></div>
+  </div>
+
+  <!-- ── 대화창 ── -->
+  <div id="dialogue-box">
+    <div id="portrait-wrap">
+      <img id="portrait-img" src="" alt="">
+    </div>
+    <div id="dialogue-content">
+      <div id="speaker-name"></div>
+      <div id="dialogue-text"></div>
+      <div id="click-hint">▼</div>
+    </div>
+  </div>
+
+  <!-- ── 선택지 ── -->
+  <div id="choice-box" class="hidden">
+    <div id="choice-list"></div>
+  </div>
+
+  <!-- ── 메모장 (단서) 버튼 ── -->
+  <button id="memo-btn" title="단서 메모장">📋</button>
+
+  <!-- ── 메모장 패널 ── -->
+  <div id="memo-panel" class="hidden">
+    <div id="memo-header">
+      <span>단서 메모장</span>
+      <button id="memo-close">✕</button>
+    </div>
+    <div id="memo-list"></div>
+  </div>
+
+  <!-- ── 단서 획득 알림 ── -->
+  <div id="evidence-toast" class="hidden"></div>
+
+  <!-- ── 상단 메뉴 ── -->
+  <div id="top-menu">
+    <button id="save-btn">저장</button>
+    <button id="load-btn">불러오기</button>
+  </div>
+
+  <!-- ── 저장/불러오기 알림 ── -->
+  <div id="system-toast" class="hidden"></div>
+
+</div>
+
+<!-- 데이터 (export_to_json.py 로 생성) -->
+<script src="data/game_data.js"></script>
+
+<!-- 엔진 모듈 -->
+<script src="js/engine/state.js"></script>
+<script src="js/engine/save.js"></script>
+<script src="js/engine/effects.js"></script>
+<script src="js/engine/audio.js"></script>
+<script src="js/engine/evidence.js"></script>
+<script src="js/engine/dialogue.js"></script>
+<script src="js/engine/choice.js"></script>
+<script src="js/engine/scene.js"></script>
+<script src="js/main.js"></script>
+
+</body>
+</html>
