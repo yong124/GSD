@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ADV Editor</title>
+  <link rel="stylesheet" href="editor.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand-block">
+        <div class="eyebrow">Scenario Workspace</div>
+        <h1>ADV Editor</h1>
+      </div>
+      <div class="toolbar">
+        <button id="new-project-btn" type="button">New</button>
+        <button id="load-default-btn" type="button">Load Game Data</button>
+        <button id="save-json-btn" type="button">Save JSON</button>
+        <button id="open-json-btn" type="button">Open JSON</button>
+        <button id="export-btn" type="button" class="primary">Export game_data.js</button>
+        <input id="open-json-input" type="file" accept=".json,.js" hidden>
+      </div>
+      <div class="statusbar">
+        <div id="project-name">Project: current game data</div>
+        <div id="dirty-indicator">Saved</div>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <aside class="panel panel-scenes">
+        <div class="panel-header">
+          <h2>Scenes</h2>
+          <button id="add-scene-btn" type="button">+ Scene</button>
+        </div>
+        <input id="scene-search" type="search" placeholder="Search scene id or title">
+        <div id="scene-list" class="scene-list"></div>
+        <div class="scene-actions">
+          <button id="duplicate-scene-btn" type="button">Duplicate</button>
+          <button id="delete-scene-btn" type="button" class="danger">Delete</button>
+        </div>
+      </aside>
+
+      <section class="panel panel-editor">
+        <div id="empty-state" class="empty-state">
+          <h2>No Scene Selected</h2>
+          <p>Create a scene or pick one from the left list to start editing.</p>
+        </div>
+
+        <div id="editor-content" hidden>
+          <section class="editor-section">
+            <div class="section-header">
+              <h2>Scene Meta</h2>
+            </div>
+            <div class="form-grid">
+              <label>
+                <span>Scene ID</span>
+                <input id="scene-id" type="text">
+              </label>
+              <label>
+                <span>Chapter</span>
+                <input id="scene-chapter" type="number" min="0" step="1">
+              </label>
+              <label>
+                <span>Title</span>
+                <input id="scene-title" type="text">
+              </label>
+              <label>
+                <span>Effect</span>
+                <input id="scene-effect" type="text" list="effect-options">
+              </label>
+              <label>
+                <span>Background</span>
+                <input id="scene-background" type="text" list="background-options">
+                <img id="background-thumb" class="asset-thumb" src="" alt="" hidden>
+              </label>
+              <label>
+                <span>Music</span>
+                <input id="scene-music" type="text" list="music-options">
+              </label>
+              <label class="wide">
+                <span>Next Scene</span>
+                <input id="scene-next" type="text" list="scene-options">
+              </label>
+            </div>
+          </section>
+
+          <section class="editor-section">
+            <div class="section-header">
+              <h2>Dialogues</h2>
+              <button id="add-dialogue-btn" type="button">+ Dialogue</button>
+            </div>
+            <div id="dialogue-list" class="card-list"></div>
+          </section>
+
+          <section class="editor-section split">
+            <div class="subsection">
+              <div class="section-header">
+                <h2>Choices</h2>
+                <button id="add-choice-btn" type="button">+ Choice</button>
+              </div>
+              <div id="choice-list" class="card-list compact"></div>
+            </div>
+            <div class="subsection">
+              <div class="section-header">
+                <h2>Evidence</h2>
+                <button id="add-evidence-btn" type="button">+ Evidence</button>
+              </div>
+              <div id="evidence-list" class="card-list compact"></div>
+            </div>
+          </section>
+
+          <section class="editor-section">
+            <div class="section-header">
+              <h2>Branches</h2>
+              <button id="add-branch-btn" type="button">+ Branch</button>
+            </div>
+            <p class="section-hint">플래그 조건에 따라 Next Scene을 덮어씁니다. 위에서부터 순서대로 평가됩니다.</p>
+            <div id="branch-list" class="card-list"></div>
+          </section>
+        </div>
+      </section>
+
+      <aside class="panel panel-preview">
+        <section class="preview-block">
+          <div class="panel-header">
+            <h2>Preview</h2>
+            <div class="preview-nav">
+              <button id="preview-prev-btn" type="button" disabled>◀</button>
+              <span id="preview-nav-label">— / —</span>
+              <button id="preview-next-btn" type="button" disabled>▶</button>
+            </div>
+          </div>
+          <div id="preview-surface" class="preview-surface">
+            <div id="preview-background" class="preview-background"></div>
+            <div class="preview-overlay"></div>
+            <div class="preview-dialogue">
+              <div id="preview-speaker" class="preview-speaker"></div>
+              <div id="preview-text" class="preview-text"></div>
+              <div id="preview-choices" class="preview-choices"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="preview-block">
+          <div class="panel-header">
+            <h2>Validation</h2>
+            <span id="validation-count" class="pill">0</span>
+          </div>
+          <div id="validation-list" class="validation-list"></div>
+        </section>
+
+        <section class="preview-block">
+          <div class="panel-header">
+            <h2>Flags</h2>
+          </div>
+          <div id="flag-panel"></div>
+        </section>
+
+        <section class="preview-block">
+          <div class="panel-header">
+            <h2>Quick Picks</h2>
+          </div>
+          <div id="quick-picks" class="quick-picks"></div>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <datalist id="scene-options"></datalist>
+  <datalist id="background-options"></datalist>
+  <datalist id="music-options"></datalist>
+  <datalist id="portrait-options"></datalist>
+  <datalist id="evidence-image-options"></datalist>
+  <datalist id="effect-options">
+    <option value=""></option>
+    <option value="flicker"></option>
+    <option value="resonance"></option>
+    <option value="shake"></option>
+    <option value="blood"></option>
+  </datalist>
+
+  <script src="../game/data/game_data.js"></script>
+  <script src="editor.js"></script>
+</body>
+</html>

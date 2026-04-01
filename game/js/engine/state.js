@@ -1,13 +1,12 @@
 /**
- * state.js — 전역 게임 상태 관리
- * 모든 엔진 모듈이 이 객체를 통해 상태를 읽고 씁니다.
+ * Global game state store.
  */
 const State = (() => {
   let _state = {
     currentSceneId: null,
     dialogueIndex: 0,
-    flags: {},        // { flag_key: flag_value }
-    evidence: [],     // 획득한 단서 ID 목록
+    flags: {},
+    evidence: [],
     chapter: 1,
   };
 
@@ -24,9 +23,11 @@ const State = (() => {
     setFlag(key, value) {
       _state.flags[key] = value;
     },
+
     getFlag(key) {
       return _state.flags[key] ?? null;
     },
+
     hasFlag(key) {
       return key in _state.flags;
     },
@@ -34,26 +35,34 @@ const State = (() => {
     addEvidence(id) {
       if (!_state.evidence.includes(id)) {
         _state.evidence.push(id);
-        return true; // 새로 획득
+        return true;
       }
       return false;
     },
+
     getEvidence() {
       return [..._state.evidence];
     },
 
-    /** 저장용 직렬화 (dialogueIndex는 씬 단위 복원이므로 제외) */
     serialize() {
-      const { dialogueIndex, ..._save } = _state;
-      return JSON.stringify(_save);
+      const { dialogueIndex, ...saveState } = _state;
+      return JSON.stringify(saveState);
     },
 
-    /** 불러오기용 복원 */
     deserialize(json) {
       try {
-        _state = JSON.parse(json);
-      } catch(e) {
-        console.error('State.deserialize 실패:', e);
+        const parsed = JSON.parse(json);
+        _state = {
+          currentSceneId: parsed.currentSceneId ?? null,
+          dialogueIndex: parsed.dialogueIndex ?? 0,
+          flags: parsed.flags && typeof parsed.flags === 'object' ? parsed.flags : {},
+          evidence: Array.isArray(parsed.evidence) ? parsed.evidence : [],
+          chapter: Number.isFinite(parsed.chapter) ? parsed.chapter : 1,
+        };
+        return true;
+      } catch (e) {
+        console.error('State.deserialize failed:', e);
+        return false;
       }
     },
 
@@ -67,7 +76,6 @@ const State = (() => {
       };
     },
 
-    /** 개발용 디버그 출력 */
     dump() {
       return { ..._state };
     }

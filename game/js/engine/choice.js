@@ -1,16 +1,11 @@
 /**
- * choice.js — 선택지 렌더링 & 플래그 기록
+ * Choice UI renderer and flag writer.
  */
 const Choice = (() => {
   const elBox  = () => document.getElementById('choice-box');
   const elList = () => document.getElementById('choice-list');
 
   return {
-    /**
-     * 선택지 표시
-     * @param {Array}    choices   — choices 배열 [{text, flag_key, flag_value, next_scene}]
-     * @param {Function} onChoose  — (choice) => void
-     */
     show(choices, onChoose) {
       const box  = elBox();
       const list = elList();
@@ -21,7 +16,6 @@ const Choice = (() => {
         btn.className = 'choice-btn';
         btn.textContent = choice.text;
         btn.addEventListener('click', () => {
-          // 플래그 기록
           if (choice.flag_key) {
             State.setFlag(choice.flag_key, choice.flag_value ?? true);
           }
@@ -36,6 +30,10 @@ const Choice = (() => {
 
     hide() {
       elBox().classList.add('hidden');
+    },
+
+    isVisible() {
+      return !elBox().classList.contains('hidden');
     }
   };
 })();

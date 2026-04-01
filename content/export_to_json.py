@@ -11,8 +11,9 @@ Excel → game_data.js 변환 스크립트
 
 Excel 컬럼 규칙 (PascalCase):
   SceneTable / Scenes        : SceneID, Chapter, Title, Background, Music, NextScene, Effect
-  DialogTable / Dialogues    : SceneID, Order, Speaker, Text, Style, Portrait
+  DialogTable / Dialogues    : SceneID, Order, Speaker, Text, Style, Portrait, ConditionKey, ConditionValue
   ChoiceTable / Choices      : SceneID, Order, Text, FlagKey, FlagValue, NextScene
+  BranchTable / Branches     : SceneID, FlagKey, FlagValue, NextScene
   EvidenceTable / Evidence   : EvidenceID, SceneId, Trigger, Name, Description, Image
 
 무시 규칙:
@@ -82,6 +83,7 @@ def build_game_data(wb):
     scenes_raw = read_sheet(resolve_sheet(wb, "SceneTable", "Scenes"))
     dialogues_raw = read_sheet(resolve_sheet(wb, "DialogTable", "Dialogues"))
     choices_raw = read_sheet(resolve_sheet(wb, "ChoiceTable", "Choices"))
+    branches_raw = read_sheet(resolve_sheet(wb, "BranchTable", "Branches")) if "BranchTable" in wb.sheetnames or "Branches" in wb.sheetnames else []
     evidence_raw = read_sheet(resolve_sheet(wb, "EvidenceTable", "Evidence"))
 
     # SceneID 기준으로 씬 딕셔너리 구성

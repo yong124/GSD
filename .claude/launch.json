@@ -6,7 +6,7 @@
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "3900"],
       "port": 3900,
-      "cwd": "G:/GSD/game"
+      "cwd": "game"
     }
   ]
 }

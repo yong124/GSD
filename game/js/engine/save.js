@@ -1,5 +1,5 @@
 /**
- * save.js — localStorage 저장/불러오기
+ * localStorage save/load helpers.
  */
 const Save = (() => {
   const SAVE_KEY = 'gyeongseong_save';
@@ -20,9 +20,9 @@ const Save = (() => {
     save() {
       try {
         localStorage.setItem(SAVE_KEY, State.serialize());
-        showToast('저장됐습니다.');
-      } catch(e) {
-        showToast('저장 실패.');
+        showToast('??λ릱?듬땲??');
+      } catch (e) {
+        showToast('????ㅽ뙣.');
         console.error(e);
       }
     },
@@ -30,11 +30,16 @@ const Save = (() => {
     load() {
       const data = localStorage.getItem(SAVE_KEY);
       if (!data) {
-        showToast('저장 데이터가 없습니다.');
+        showToast('????곗씠?곌? ?놁뒿?덈떎.');
         return false;
       }
-      State.deserialize(data);
-      showToast('불러오기 완료.');
+
+      if (!State.deserialize(data)) {
+        showToast('????곗씠???遺덈윭?ㅼ??놁뒿?덈떎.');
+        return false;
+      }
+
+      showToast('遺덈윭?ㅺ린 ?꾨즺.');
       return true;
     },
 
