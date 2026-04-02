@@ -353,6 +353,8 @@
     const cards = makeCard(
       '대사', scene.dialogues,
       (d) => `
+        <label><span>레이블 (점프 대상)</span>
+          <input data-field="label" value="${escapeAttr(d.label || '')}" placeholder="예: after_choice_a"></label>
         <label><span>화자</span>
           <input data-field="speaker" value="${escapeAttr(d.speaker || '')}"></label>
         <label><span>스타일</span>
@@ -417,8 +419,10 @@
       (c) => `
         <label><span>텍스트</span>
           <input data-field="text" value="${escapeAttr(c.text || '')}"></label>
-        <label><span>다음 씬</span>
+        <label><span>다음 씬 (없으면 현재 씬 유지)</span>
           <input data-field="next_scene" value="${escapeAttr(c.next_scene || '')}"></label>
+        <label><span>다음 대사 레이블 (선택)</span>
+          <input data-field="next_dialogue" value="${escapeAttr(c.next_dialogue || '')}" placeholder="예: after_choice_a"></label>
         <label><span>플래그 키</span>
           <input data-field="flag_key" value="${escapeAttr(c.flag_key || '')}"></label>
         <label><span>플래그 값</span>
@@ -470,7 +474,7 @@
     return { order: 0, speaker: '', text: '', portrait: null, style: 'normal', condition: null };
   }
   function newChoice() {
-    return { order: 0, text: '', next_scene: '', flag_key: '', flag_value: '' };
+    return { order: 0, text: '', next_scene: '', next_dialogue: '', flag_key: '', flag_value: '' };
   }
   function newBranch() {
     return { flag_key: '', flag_value: '', next_scene: '' };

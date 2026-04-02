@@ -98,7 +98,7 @@ const Dialogue = (() => {
   }
 
   return {
-    start(lines, onDone) {
+    start(lines, onDone, fromLabel) {
       _lines = (lines || []).filter(line => {
         if (!line.condition) return true;
         const actual = State.getFlag(line.condition.flag_key);
@@ -107,10 +107,17 @@ const Dialogue = (() => {
           : [line.condition.flag_value];
         return values.includes(actual);
       });
-      _index = 0;
+
+      if (fromLabel) {
+        const idx = _lines.findIndex(l => l.label === fromLabel);
+        _index = idx >= 0 ? idx : 0;
+      } else {
+        _index = 0;
+      }
+
       _onDone = onDone;
 
-      if (_lines.length === 0) {
+      if (_lines.length === 0 || _index >= _lines.length) {
         if (_onDone) _onDone();
         return;
       }

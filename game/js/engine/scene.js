@@ -59,7 +59,7 @@ const Scene = (() => {
     return scene.next_scene;
   }
 
-  function runScene(scene) {
+  function runScene(scene, fromLabel) {
     State.currentSceneId = scene.id;
     State.dialogueIndex = 0;
 
@@ -76,15 +76,24 @@ const Scene = (() => {
       const choices = scene.choices || [];
       if (choices.length > 0) {
         Choice.show(choices, chosen => {
-          const next = chosen.next_scene || scene.next_scene;
-          if (next) Scene.load(next);
+          const nextScene    = chosen.next_scene || null;
+          const nextDialogue = chosen.next_dialogue || null;
+          if (nextScene) {
+            Scene.load(nextScene, nextDialogue);
+          } else if (nextDialogue) {
+            // 같은 씬 내 특정 대사로 점프
+            Dialogue.start(scene.dialogues || [], afterDialogue, nextDialogue);
+          } else {
+            Scene.load(resolveNextScene(scene));
+          }
         });
-      } else if (scene.next_scene) {
-        Scene.load(resolveNextScene(scene));
+      } else {
+        const next = resolveNextScene(scene);
+        if (next) Scene.load(next);
       }
     }
 
-    Dialogue.start(scene.dialogues || [], afterDialogue);
+    Dialogue.start(scene.dialogues || [], afterDialogue, fromLabel);
   }
 
   return {
@@ -92,7 +101,7 @@ const Scene = (() => {
       _data = gameData.scenes;
     },
 
-    load(sceneId) {
+    load(sceneId, fromLabel) {
       const scene = _data[sceneId];
       if (!scene) {
         console.warn(`Missing scene: [${sceneId}] Falling back to first scene.`);
@@ -112,14 +121,14 @@ const Scene = (() => {
         container.style.opacity = '0';
         setTimeout(() => {
           container.style.opacity = '1';
-          showChapterCard(scene.chapter, scene.title, () => runScene(scene));
+          showChapterCard(scene.chapter, scene.title, () => runScene(scene, fromLabel));
         }, 500);
       } else {
         container.style.transition = 'opacity 0.35s';
         container.style.opacity = '0';
         setTimeout(() => {
           container.style.opacity = '1';
-          runScene(scene);
+          runScene(scene, fromLabel);
         }, 350);
       }
     }
