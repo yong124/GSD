@@ -255,6 +255,33 @@ textarea { resize: vertical; min-height: 56px; }
   pointer-events: none;
 }
 
+.preview-scene-banner {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 10px;
+  border: 1px solid rgba(200, 168, 75, 0.18);
+  border-radius: 6px;
+  background: rgba(12, 12, 18, 0.6);
+  backdrop-filter: blur(3px);
+}
+
+.preview-chapter {
+  font-size: 10px;
+  color: var(--accent);
+  letter-spacing: 0.16em;
+}
+
+.preview-scene-title {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.35;
+}
+
 .preview-dialogue-box {
   position: absolute;
   left: 10px;
@@ -317,6 +344,32 @@ textarea { resize: vertical; min-height: 56px; }
   align-items: center;
   justify-content: center;
   gap: 8px;
+  color: var(--text-dim);
+  font-size: 11px;
+}
+
+.preview-choice-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.preview-choice-item {
+  padding: 8px 10px;
+  border: 1px solid rgba(200, 168, 75, 0.14);
+  border-radius: 6px;
+  background: rgba(24, 24, 34, 0.86);
+  color: var(--text);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.preview-choice-item::before {
+  content: '▸ ';
+  color: var(--accent);
+}
+
+.preview-choice-empty {
   color: var(--text-dim);
   font-size: 11px;
 }

@@ -47,6 +47,23 @@ const Scene = (() => {
     }, 2800);
   }
 
+  function showSceneBanner(scene) {
+    const el = document.getElementById('scene-banner');
+    const kicker = document.getElementById('scene-banner-kicker');
+    const title = document.getElementById('scene-banner-title');
+
+    kicker.textContent = scene.chapter ? `CHAPTER ${scene.chapter}` : 'SCENE';
+    title.textContent = scene.title || scene.id || '';
+    el.classList.remove('hidden');
+    el.classList.add('show');
+
+    clearTimeout(el._timer);
+    el._timer = setTimeout(() => {
+      el.classList.remove('show');
+      el.classList.add('hidden');
+    }, 2200);
+  }
+
   function resolveNextScene(scene) {
     const branches = scene.branches || [];
     for (const branch of branches) {
@@ -67,8 +84,9 @@ const Scene = (() => {
     AudioManager.playBgm(scene.music || '');
     Effects.apply(scene.effect || '');
     Evidence.collectAuto(scene);
+    showSceneBanner(scene);
 
-    Save.save();
+    Save.save(true);
 
     function afterDialogue() {
       Evidence.collectOnClick(scene);

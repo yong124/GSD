@@ -3,13 +3,15 @@
   position: absolute;
   bottom: 0; left: 0; right: 0;
   height: 160px;
-  background: var(--bg-panel);
+  background:
+    linear-gradient(180deg, rgba(9, 7, 5, 0.82) 0%, rgba(8, 5, 3, 0.94) 100%);
   border-top: 1px solid var(--border);
   display: flex;
   align-items: stretch;
   z-index: 10;
   cursor: pointer;
   user-select: none;
+  box-shadow: 0 -10px 32px rgba(0, 0, 0, 0.28);
 }
 
 /* 초상화 영역 */
@@ -73,6 +75,7 @@
   line-height: 1.8;
   color: var(--text-main);
   flex: 1;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.24);
 }
 
 /* 내레이션 스타일 */
@@ -160,16 +163,24 @@
   padding: 12px 20px;
   text-align: left;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.15s;
   line-height: 1.5;
 }
 .choice-btn:hover {
   background: rgba(30, 20, 10, 0.95);
   border-color: var(--gold);
   color: var(--gold-light);
+  transform: translateY(-1px);
 }
 .choice-btn::before {
   content: '▸ ';
   color: var(--gold);
   margin-right: 4px;
+}
+
+.choice-btn.choice-picked {
+  border-color: var(--gold);
+  color: var(--gold-light);
+  background: rgba(36, 24, 11, 0.98);
+  transform: scale(0.992);
 }

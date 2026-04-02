@@ -66,12 +66,15 @@
     els.fieldBatchTextNew = $('field-batch-text-new');
     els.btnApplyBatchText = $('btn-apply-batch-text');
     els.btnSortScenes = $('btn-sort-scenes');
-    els.previewBackground = $('preview-background');
-    els.previewSpeaker = $('preview-speaker');
-    els.previewText = $('preview-text');
-    els.previewIndexLabel = $('preview-index-label');
-    els.btnPreviewPrev = $('btn-preview-prev');
-    els.btnPreviewNext = $('btn-preview-next');
+      els.previewBackground = $('preview-background');
+      els.previewChapter = $('preview-chapter');
+      els.previewSceneTitle = $('preview-scene-title');
+      els.previewSpeaker = $('preview-speaker');
+      els.previewText = $('preview-text');
+      els.previewIndexLabel = $('preview-index-label');
+      els.previewChoiceList = $('preview-choice-list');
+      els.btnPreviewPrev = $('btn-preview-prev');
+      els.btnPreviewNext = $('btn-preview-next');
     els.minimapCanvas = $('minimap-canvas');
     els.dialogueList = $('dialogue-list');
     els.choiceList   = $('choice-list');
@@ -676,24 +679,30 @@
     renderValidationPanel();
   }
 
-  function renderDialoguePreview(scene) {
-    const dialogues = scene?.dialogues || [];
-    const total = dialogues.length;
-    state.previewDialogueIndex = Math.max(0, Math.min(state.previewDialogueIndex, Math.max(total - 1, 0)));
+    function renderDialoguePreview(scene) {
+      const dialogues = scene?.dialogues || [];
+      const choices = scene?.choices || [];
+      const total = dialogues.length;
+      state.previewDialogueIndex = Math.max(0, Math.min(state.previewDialogueIndex, Math.max(total - 1, 0)));
 
-    const line = total > 0 ? dialogues[state.previewDialogueIndex] : null;
-    const previewBox = els.previewText.closest('.preview-dialogue-box');
+      const line = total > 0 ? dialogues[state.previewDialogueIndex] : null;
+      const previewBox = els.previewText.closest('.preview-dialogue-box');
 
-    els.previewBackground.style.backgroundImage = scene?.background
-      ? `linear-gradient(180deg, rgba(10, 10, 15, 0.25), rgba(10, 10, 15, 0.9)), url('../game/${scene.background}')`
-      : '';
-    els.previewSpeaker.textContent = line?.speaker || '';
-    els.previewText.textContent = line?.text || '대사를 선택하거나 입력하면 여기서 바로 확인할 수 있습니다.';
-    els.previewIndexLabel.textContent = total > 0 ? `${state.previewDialogueIndex + 1} / ${total}` : '0 / 0';
-    els.btnPreviewPrev.disabled = total <= 1 || state.previewDialogueIndex === 0;
-    els.btnPreviewNext.disabled = total <= 1 || state.previewDialogueIndex >= total - 1;
-    previewBox.dataset.style = line?.style || (line?.speaker ? 'normal' : 'narration');
-  }
+      els.previewBackground.style.backgroundImage = scene?.background
+        ? `linear-gradient(180deg, rgba(10, 10, 15, 0.25), rgba(10, 10, 15, 0.9)), url('../game/${scene.background}')`
+        : '';
+      els.previewChapter.textContent = scene?.chapter ? `CHAPTER ${scene.chapter}` : 'SCENE';
+      els.previewSceneTitle.textContent = scene?.title || scene?.id || '씬 정보 없음';
+      els.previewSpeaker.textContent = line?.speaker || '';
+      els.previewText.textContent = line?.text || '대사를 선택하거나 입력하면 여기서 바로 확인할 수 있습니다.';
+      els.previewIndexLabel.textContent = total > 0 ? `${state.previewDialogueIndex + 1} / ${total}` : '0 / 0';
+      els.btnPreviewPrev.disabled = total <= 1 || state.previewDialogueIndex === 0;
+      els.btnPreviewNext.disabled = total <= 1 || state.previewDialogueIndex >= total - 1;
+      previewBox.dataset.style = line?.style || (line?.speaker ? 'normal' : 'narration');
+      els.previewChoiceList.innerHTML = choices.length
+        ? choices.map(choice => `<div class="preview-choice-item">${escapeHtml(choice.text || '(빈 선택지)')}</div>`).join('')
+        : '<div class="preview-choice-empty">이 씬에는 선택지가 없습니다.</div>';
+    }
 
   // ── 씬 ID 변경 ───────────────────────────────────────
   function renameScene(oldId, newId) {

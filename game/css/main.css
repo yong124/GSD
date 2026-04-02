@@ -202,6 +202,46 @@ body { display: flex; align-items: center; justify-content: center; }
   letter-spacing: 4px;
 }
 
+#scene-banner {
+  position: absolute;
+  top: 68px;
+  left: 20px;
+  z-index: 24;
+  min-width: 220px;
+  max-width: min(420px, calc(100% - 40px));
+  padding: 12px 16px 14px;
+  border: 1px solid rgba(200, 168, 75, 0.2);
+  background:
+    linear-gradient(135deg, rgba(9, 12, 18, 0.8) 0%, rgba(16, 10, 8, 0.82) 100%);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(4px);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+#scene-banner.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#scene-banner-kicker {
+  color: var(--gold);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+#scene-banner-title {
+  margin-top: 6px;
+  color: var(--text-main);
+  font-size: 20px;
+  letter-spacing: 0.08em;
+  line-height: 1.35;
+}
+
 /* ── 상단 메뉴 ── */
 #top-menu {
   position: absolute; top: 16px; right: 16px;
@@ -313,15 +353,30 @@ body { display: flex; align-items: center; justify-content: center; }
   position: absolute; top: 60px; right: 16px;
   background: var(--bg-panel);
   border: 1px solid var(--border);
-  color: var(--text-dim);
+  color: var(--text-main);
   font-family: var(--font-ui);
   font-size: 12px;
-  padding: 6px 14px;
+  padding: 8px 14px;
   z-index: 40;
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: opacity 0.3s, transform 0.3s;
+  transform: translateY(-6px);
 }
-#system-toast.show { opacity: 1; }
+#system-toast.show { opacity: 1; transform: translateY(0); }
+
+#system-toast.toast-choice {
+  border-color: rgba(200, 168, 75, 0.45);
+  color: var(--gold-light);
+}
+
+#system-toast.toast-save {
+  border-color: rgba(122, 164, 120, 0.45);
+}
+
+#system-toast.toast-error {
+  border-color: rgba(160, 70, 70, 0.45);
+  color: #d9a5a5;
+}
 
 /* ── 유틸 ── */
 .hidden { display: none !important; }
@@ -338,5 +393,12 @@ body { display: flex; align-items: center; justify-content: center; }
 
   .title-btn {
     width: 100%;
+  }
+
+  #scene-banner {
+    top: 58px;
+    left: 14px;
+    right: 14px;
+    max-width: none;
   }
 }

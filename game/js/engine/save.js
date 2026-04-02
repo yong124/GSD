@@ -4,8 +4,10 @@
 const Save = (() => {
   const SAVE_KEY = 'gyeongseong_save';
 
-  function showToast(msg) {
+  function showToast(msg, variant = '') {
     const el = document.getElementById('system-toast');
+    el.classList.remove('toast-save', 'toast-error', 'toast-choice');
+    if (variant) el.classList.add(variant);
     el.textContent = msg;
     el.classList.remove('hidden');
     el.classList.add('show');
@@ -17,12 +19,16 @@ const Save = (() => {
   }
 
   return {
-    save() {
+    toast: showToast,
+
+    save(silent = false) {
       try {
         localStorage.setItem(SAVE_KEY, State.serialize());
-        showToast('??λ릱?듬땲??');
+        if (!silent) {
+          showToast('저장했습니다.', 'toast-save');
+        }
       } catch (e) {
-        showToast('????ㅽ뙣.');
+        showToast('저장에 실패했습니다.', 'toast-error');
         console.error(e);
       }
     },
@@ -30,16 +36,16 @@ const Save = (() => {
     load() {
       const data = localStorage.getItem(SAVE_KEY);
       if (!data) {
-        showToast('????곗씠?곌? ?놁뒿?덈떎.');
+        showToast('저장 데이터가 없습니다.', 'toast-error');
         return false;
       }
 
       if (!State.deserialize(data)) {
-        showToast('????곗씠???遺덈윭?ㅼ??놁뒿?덈떎.');
+        showToast('저장 데이터를 불러올 수 없습니다.', 'toast-error');
         return false;
       }
 
-      showToast('遺덈윭?ㅺ린 ?꾨즺.');
+      showToast('불러오기를 완료했습니다.', 'toast-save');
       return true;
     },
 
@@ -52,7 +58,7 @@ const Save = (() => {
     },
 
     init() {
-      document.getElementById('save-btn').addEventListener('click', () => Save.save());
+      document.getElementById('save-btn').addEventListener('click', () => Save.save(false));
       document.getElementById('load-btn').addEventListener('click', () => {
         if (Save.load()) {
           Scene.load(State.currentSceneId);
