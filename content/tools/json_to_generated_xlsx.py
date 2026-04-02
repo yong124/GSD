@@ -10,6 +10,7 @@ import csv
 import json
 import os
 import re
+import shutil
 import sys
 from datetime import datetime
 
@@ -232,6 +233,7 @@ def build_workbook(data, selected_sheets, input_path):
 
 def write_delimited_files(output_path, selected_sheets, sheet_rows):
     base_dir = os.path.splitext(output_path)[0] + "_delimited"
+    shutil.rmtree(base_dir, ignore_errors=True)
     os.makedirs(base_dir, exist_ok=True)
 
     for sheet_name in selected_sheets:

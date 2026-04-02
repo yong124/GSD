@@ -130,6 +130,99 @@ café lighting, dark circles under eyes from insomnia,
 warm amber tones with cold blue shadow, painterly style
 ```
 
+### songgeum.png — 송금 (실종된 여급, 송순의 언니)
+```
+Portrait of a Korean woman in her mid-20s, 1930s colonial Korea,
+wearing a deep blue ceremonial hanbok inspired by café performance costume,
+haunted but gentle expression, as if her mind is far away,
+pale skin, long dark hair neatly arranged, faint melancholy in the eyes,
+subtle eerie calm rather than overt horror, painterly portrait style,
+deep blue, muted ivory, and cold shadow tones, ritual atmosphere
+```
+
+### judge.png — 재판관
+```
+Portrait of an older East Asian male judge in his late 50s to 60s,
+1930s Japanese colonial-era courtroom official, stern and emotionally detached expression,
+wearing formal black judicial robes, severe posture, cold bureaucratic authority,
+dim courtroom background blurred, cold steel blue and muted sepia palette,
+painterly noir realism, oppressive and unsympathetic mood
+```
+
+### prosecutor.png — 검사
+```
+Portrait of an East Asian male prosecutor in his late 30s to 40s,
+1930s colonial-era courtroom, formal suit with legal official presence,
+serious and rigid expression, ambitious but restrained demeanor,
+holding papers or a case file, dim courtroom background,
+cool neutral lighting, muted brown and blue-grey tones,
+painterly realism, period drama style
+```
+
+### lawyer.png — 변호인
+```
+Portrait of an East Asian male defense lawyer in his 40s,
+1930s colonial-era courtroom, dark tailored suit, composed and calculating expression,
+thin-rimmed glasses, polished hair, careful posture suggesting rhetorical skill,
+blurred courtroom background, subdued sepia and charcoal palette,
+painterly noir portrait, morally ambiguous atmosphere
+```
+
+### policeman.png — 경찰
+```
+Portrait of an East Asian male police officer in his 30s to 40s,
+1930s colonial Korea police uniform, tired face hardened by routine,
+standing in a dim industrial crime scene atmosphere,
+practical and wary expression, muted blue-grey and dirty khaki tones,
+painterly realism, grounded period crime drama look
+```
+
+### manager.png — 점장
+```
+Portrait of a Korean male café manager in his late 30s to 40s,
+1930s colonial Seoul café attire with vest and white shirt,
+polite but evasive expression, the look of someone hiding what he knows,
+warm café lighting mixed with uneasy blue shadow,
+painterly style, amber, burgundy, and dark brown tones
+```
+
+### waitress_generic.png — 여급
+```
+Portrait of a young Korean café waitress in her early 20s,
+1930s colonial Seoul, simple café uniform, anxious and withdrawn expression,
+looks like someone who has seen too much and wants to stay unnoticed,
+soft warm café light with cold shadow across one side of the face,
+painterly realism, muted red-brown and blue-grey palette
+```
+
+### elder_slum.png — 빈민가 노인
+```
+Portrait of an elderly Korean man in his 70s,
+1930s colonial Korea slum environment, deeply lined face, worn traditional clothing,
+eyes filled with fear, exhaustion, and bitter memory,
+dirty alley background softly blurred, damp air and coal dust mood,
+painterly realism, desaturated brown, grey, and cold blue tones
+```
+
+---
+
+## 현재 우선 제작 권장 초상화
+
+아래 초상화는 `game_data.js` 기준으로 실제 등장하지만 독립 초상화가 없거나,
+기존 초상화를 다른 인물과 공유하고 있어 우선 제작 가치가 높다.
+
+### 필수 우선순위
+- `songgeum.png` — 송금
+- `judge.png` — 재판관
+- `prosecutor.png` — 검사
+- `lawyer.png` — 변호인
+
+### 보조 우선순위
+- `policeman.png` — 경찰
+- `manager.png` — 점장
+- `waitress_generic.png` — 여급
+- `elder_slum.png` — 빈민가 노인
+
 ---
 
 ## 단서 이미지 (assets/ev/)

@@ -99,15 +99,29 @@
   }
 
   // ── Undo 히스토리 ─────────────────────────────────────
+  function snapshotState() {
+    return JSON.stringify({
+      data: state.data,
+      layout: state.layout,
+    });
+  }
+
+  function restoreSnapshot(snapshot) {
+    const parsed = JSON.parse(snapshot);
+    state.data = parsed.data || { first_scene: '', scenes: {} };
+    state.layout = parsed.layout || {};
+  }
+
   function pushHistory() {
-    state.history.push(JSON.stringify(state.data));
+    state.history.push(snapshotState());
     if (state.history.length > 30) state.history.shift();
     state.future = [];
   }
   function undo() {
     if (state.history.length === 0) { setStatus('더 이상 되돌릴 수 없습니다', true); return; }
-    state.future.push(JSON.stringify(state.data));
-    state.data = JSON.parse(state.history.pop());
+    state.future.push(snapshotState());
+    restoreSnapshot(state.history.pop());
+    saveLayout();
     markDirty();
     render();
     // 선택된 씬이 사라졌으면 해제
@@ -119,8 +133,9 @@
   }
   function redo() {
     if (state.future.length === 0) { setStatus('더 이상 다시 실행할 수 없습니다', true); return; }
-    state.history.push(JSON.stringify(state.data));
-    state.data = JSON.parse(state.future.pop());
+    state.history.push(snapshotState());
+    restoreSnapshot(state.future.pop());
+    saveLayout();
     markDirty();
     render();
     if (state.selectedId && !state.data.scenes[state.selectedId]) {
@@ -270,7 +285,13 @@
   // ── 레이아웃 저장/불러오기 ───────────────────────────
   function saveLayout() {
     try {
-      localStorage.setItem('gyeongseong_node_layout', JSON.stringify(state.layout));
+      const persisted = {};
+      Object.entries(state.layout || {}).forEach(([sceneId, pos]) => {
+        if (!state.data.scenes?.[sceneId]) return;
+        if (!pos || !Number.isFinite(pos.x) || !Number.isFinite(pos.y)) return;
+        persisted[sceneId] = { x: pos.x, y: pos.y };
+      });
+      localStorage.setItem('gyeongseong_node_layout', JSON.stringify(persisted));
     } catch(_) {}
   }
   function loadLayout() {
@@ -479,6 +500,8 @@
             startMouseY: e.clientY,
             startNodeX: pos.x,
             startNodeY: pos.y,
+            historyCaptured: false,
+            moved: false,
           };
         }
       });
@@ -491,6 +514,15 @@
     renderSearchFilterOptions();
     renderNodes();
     renderWires();
+    renderMinimap();
+  }
+
+  function refreshMetaViews({ rerenderWires = false, rerenderValidation = false } = {}) {
+    renderSearchFilterOptions();
+    renderNodes();
+    if (rerenderWires) renderWires();
+    if (rerenderValidation) renderValidationPanel();
+    renderAnalysisPanel();
     renderMinimap();
   }
 
@@ -612,6 +644,7 @@
     state.selectedId = id;
     renderNodes();
     renderPanel();
+    renderMinimap();
   }
 
   // ── 오른쪽 패널 ───────────────────────────────────────
@@ -688,6 +721,7 @@
       (scene.choices  || []).forEach(c => { if (c.next_scene === oldId) c.next_scene = newId; });
     });
     state.selectedId = newId;
+    saveLayout();
     markDirty();
     render();
     renderPanel();
@@ -1162,22 +1196,20 @@
       });
 
       (scene.dialogues || []).forEach(dialogue => {
-        ['speaker', 'text', 'portrait', 'label'].forEach(field => {
+        ['speaker', 'text', 'portrait'].forEach(field => {
           const result = replaceStringValue(dialogue[field], oldText, newText);
           dialogue[field] = result.value;
           changed += result.changed;
         });
-        if (dialogue.condition) {
-          ['flag_key', 'flag_value'].forEach(field => {
-            const result = replaceStringValue(dialogue.condition[field], oldText, newText);
-            dialogue.condition[field] = result.value;
-            changed += result.changed;
-          });
+        if (dialogue.condition?.flag_value != null) {
+          const result = replaceStringValue(dialogue.condition.flag_value, oldText, newText);
+          dialogue.condition.flag_value = result.value;
+          changed += result.changed;
         }
       });
 
       (scene.choices || []).forEach(choice => {
-        ['text', 'flag_key', 'flag_value', 'next_scene', 'next_dialogue'].forEach(field => {
+        ['text', 'flag_value'].forEach(field => {
           const result = replaceStringValue(choice[field], oldText, newText);
           choice[field] = result.value;
           changed += result.changed;
@@ -1185,7 +1217,7 @@
       });
 
       (scene.branches || []).forEach(branch => {
-        ['flag_key', 'flag_value', 'next_scene'].forEach(field => {
+        ['flag_value'].forEach(field => {
           const result = replaceStringValue(branch[field], oldText, newText);
           branch[field] = result.value;
           changed += result.changed;
@@ -1193,7 +1225,7 @@
       });
 
       (scene.evidence || []).forEach(evidence => {
-        ['evidence_id', 'name', 'description', 'image'].forEach(field => {
+        ['name', 'description', 'image'].forEach(field => {
           const result = replaceStringValue(evidence[field], oldText, newText);
           evidence[field] = result.value;
           changed += result.changed;
@@ -1237,6 +1269,7 @@
     state.data.scenes = Object.fromEntries(sceneEntries);
     state.layout = {};
     autoLayout();
+    saveLayout();
     markDirty();
     render();
     renderPanel();
@@ -1263,6 +1296,7 @@
     const pos = state.layout[id] || { x: 40, y: 40 };
     state.layout[nextId] = { x: pos.x + 48, y: pos.y + 48 };
     state.selectedId = nextId;
+    saveLayout();
     markDirty();
     render();
     renderPanel();
@@ -1549,6 +1583,7 @@
     } else if (pinType === 'choice') {
       if (scene.choices?.[idx] !== undefined) scene.choices[idx].next_scene = toId;
     }
+    saveLayout();
     markDirty();
     render();
     if (state.selectedId === fromId) renderPanel();
@@ -1613,6 +1648,7 @@
     const vr = els.viewport.getBoundingClientRect();
     const center = toCanvas(vr.left + vr.width / 2, vr.top + vr.height / 2);
     state.layout[id] = { x: center.x - NODE_W / 2, y: center.y - 40 };
+    saveLayout();
     selectScene(id);
     markDirty();
     render();
@@ -1634,6 +1670,7 @@
       state.selectedId = null;
       renderPanel();
     }
+    saveLayout();
     markDirty();
     render();
   }
@@ -1707,7 +1744,8 @@
       const scene = state.data.scenes[state.selectedId];
       if (!scene) return;
       scene.title = els.fieldTitle.value;
-      markDirty(); renderNodes(); renderValidationPanel();
+      markDirty();
+      refreshMetaViews({ rerenderValidation: true });
     });
     els.fieldBg.addEventListener('input', () => {
       const scene = state.data.scenes[state.selectedId];
@@ -1715,24 +1753,28 @@
       scene.background = els.fieldBg.value;
       markDirty();
       renderDialoguePreview(scene);
+      refreshMetaViews();
     });
     els.fieldChapter.addEventListener('input', () => {
       const scene = state.data.scenes[state.selectedId];
       if (!scene) return;
       scene.chapter = els.fieldChapter.value === '' ? null : Number.parseInt(els.fieldChapter.value, 10);
       markDirty();
+      refreshMetaViews({ rerenderValidation: true });
     });
     els.fieldMusic.addEventListener('input', () => {
       const scene = state.data.scenes[state.selectedId];
       if (!scene) return;
       scene.music = els.fieldMusic.value || null;
       markDirty();
+      refreshMetaViews();
     });
     els.fieldEffect.addEventListener('input', () => {
       const scene = state.data.scenes[state.selectedId];
       if (!scene) return;
       scene.effect = els.fieldEffect.value || null;
       markDirty();
+      refreshMetaViews();
     });
     els.fieldTitle.addEventListener('focus', pushHistory);
     els.fieldBg.addEventListener('focus', pushHistory);
@@ -1799,7 +1841,12 @@
         const { nodeId, startMouseX, startMouseY, startNodeX, startNodeY } = state.dragging;
         const dx = (e.clientX - startMouseX) / state.camera.scale;
         const dy = (e.clientY - startMouseY) / state.camera.scale;
+        if (!state.dragging.historyCaptured && (Math.abs(dx) > 0 || Math.abs(dy) > 0)) {
+          pushHistory();
+          state.dragging.historyCaptured = true;
+        }
         state.layout[nodeId] = { x: startNodeX + dx, y: startNodeY + dy };
+        state.dragging.moved = true;
         const el = els.nodeLayer.querySelector(`[data-id="${nodeId}"]`);
         if (el) {
           el.style.left = state.layout[nodeId].x + 'px';
@@ -1810,7 +1857,7 @@
     });
 
     document.addEventListener('mouseup', () => {
-      if (state.dragging) saveLayout();
+      if (state.dragging?.moved) saveLayout();
       state.panning  = null;
       state.dragging = null;
     });
@@ -1862,6 +1909,7 @@
         renderNodes();
         els.panelEmpty.classList.remove('hidden');
         els.panelContent.classList.add('hidden');
+        renderMinimap();
       }
     });
 
@@ -1879,6 +1927,7 @@
         renderNodes();
         els.panelEmpty.classList.remove('hidden');
         els.panelContent.classList.add('hidden');
+        renderMinimap();
       }
     });
   }
