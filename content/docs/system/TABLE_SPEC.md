@@ -1,6 +1,6 @@
 # 경성뎐 : 여급 실종사건 — 데이터 테이블 명세
 
-> `script.xlsx` 기준. `export_to_json.py` 가 이 명세대로 읽어 `game_data.js` 를 생성한다.
+> `content/data/script.xlsx` 기준. `content/tools/export_to_json.py` 가 이 명세대로 읽어 `game_data.js` 를 생성한다.
 > 컬럼명이 `$` 로 시작하면 export 제외. 시트명이 `$` 로 시작하면 시트 전체 제외.
 
 ---

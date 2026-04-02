@@ -1,0 +1,140 @@
+﻿SceneID	Order	Speaker	Text	Style	Portrait	ConditionKey	ConditionValue	Label
+ch1_court	1		[1932년 경성지방법원. 방청석은 텅 비어 있다. 아무도 이 판결을 보러 오지 않았다.]	narration				
+ch1_court	2	판사	이판규. 무죄.	normal				
+ch1_court	3		[망치가 내려친다. 법정은 조용하다. 마치 처음부터 아무 일도 없었다는 듯.]	narration				
+ch1_court	4	유웅룡	[수첩에 받아 적는다] 조선인 유아는 인격체가 아니다. 법이 그렇게 말한다.	normal	assets/portraits/yuu.jpeg			
+ch1_court	5		[무죄. 그 두 글자가 법정 천장에 걸린다.]	narration				
+ch1_editor	1	편집장	유웅룡. 방금 법정에서 나왔지?	normal	assets/portraits/editor.jpeg			
+ch1_editor	2	유웅룡	[수첩을 책상에 던진다]	normal	assets/portraits/yuu.jpeg			
+ch1_editor	3	편집장	이판규 사건. 무죄 판결. 어떻게 된 일이야?	normal	assets/portraits/editor.jpeg			
+ch1_editor	4	유웅룡	법대로 됐겠지요.	normal	assets/portraits/yuu.jpeg			
+ch1_editor	5	편집장	기묘하게 써와. 팔릴 기사로.	normal	assets/portraits/editor.jpeg			
+ch2_cafe	1		[경성 도심 카페 낙원. 따뜻한 조명. 재즈가 흐른다. 평범한 저녁이다.]	narration				
+ch2_cafe	2	송순	어서오세요.	normal	assets/portraits/songsoon.jpeg			
+ch2_cafe	3	유웅룡	커피 한 잔.	normal	assets/portraits/yuu.jpeg			
+ch2_cafe	4		[이름표: 김송순. 나이 22세. 단단한 눈빛.]	narration				
+ch2_cafe	5	송순	혹시… 신문사 분이세요?	normal	assets/portraits/songsoon.jpeg			
+ch2_cafe	6	유웅룡	[놀라며] 왜요?	normal	assets/portraits/yuu.jpeg			
+ch2_cafe	7	송순	[목소리를 낮춘다] 이판규 기사 쓰신 분이시죠.	normal	assets/portraits/songsoon.jpeg			
+ch2_cafe	8	유웅룡	그렇게 보여요?	normal	assets/portraits/yuu.jpeg			
+ch2_cafe	9	송순	[주변을 살피며] 제 언니가… 김송금이에요. 요즘 안 나왔어요.	normal	assets/portraits/songsoon.jpeg			
+ch2_cafe	10	송순	혹시 아세요? 어디 있는지…	normal	assets/portraits/songsoon.jpeg			
+ch2_factory	1		[경성 외곽 폐공장. 아무 소리도 없다. 바람조차 없다.]	narration				
+ch2_factory	2		[손전등을 켠다. 먼지, 녹슨 기계. 발 아래가 축축하다.]	narration				
+ch2_factory	3		[청색 점액. 발가락 없는 발자국들이 흙 위에 찍혀 있다.]	narration				
+ch2_factory	4	유웅룡	[발자국을 따라 천천히 걷는다]	normal	assets/portraits/yuu.jpeg			
+ch2_factory	5		[구석에 사람이 쓰러져 있다. 눈구멍이 텅 비어 있다. 이판규다.]	narration				
+ch2_factory	6	유웅룡	[한 걸음 물러선다. 손이 떨린다.]	normal	assets/portraits/yuu.jpeg			
+ch2_factory	7		[주머니를 뒤진다. 붉은 잉크로 쓴 쪽지. 거칠게 찢긴 종이.]	narration				
+ch2_factory	8		"[""토요일, 낙원. 그녀가 노래하면, 문은 열린다.""]"	narration				
+ch2_hospital	1		[경성 외곽 정신병원 접견실. 철창. 낡은 테이블. 빛이 탁하다.]	narration				
+ch2_hospital	2	이판규	[초점 없는 눈으로 허공을 본다. 입술이 달싹인다.]	normal	assets/portraits/ipangyu.jpeg			
+ch2_hospital	3	유웅룡	이판규. 나야. 기자. 기억해?	normal	assets/portraits/yuu.jpeg			
+ch2_hospital	4	이판규	…기자.	normal	assets/portraits/ipangyu.jpeg			
+ch2_hospital	5	유웅룡	무죄 판결이 났어. 이제 나와도 됐는데.	normal	assets/portraits/yuu.jpeg			
+ch2_hospital	6	이판규	판결이 뭐하나. 청의의 감응이 오지 않았다. 문이… 열리지 않았다.	normal	assets/portraits/ipangyu.jpeg			
+ch2_hospital	7	유웅룡	청의? 그게 뭔데?	normal	assets/portraits/yuu.jpeg			
+ch2_hospital	8	이판규	[철창을 붙잡으며] 제발… 나를 꺼내줘… 아직 늦지 않았어…	normal	assets/portraits/ipangyu.jpeg			
+ch3_cafe	1		[카페 낙원. 한 주일 뒤. 유웅룡이 문을 나서려 한다.]	narration				
+ch3_cafe	2	송순	유웅룡 씨.	normal	assets/portraits/songsoon.jpeg			
+ch3_cafe	3	유웅룡	[멈춘다. 돌아보지 않는다.]	normal	assets/portraits/yuu.jpeg			
+ch3_cafe	4	송순	언니 어디 있어요.	normal	assets/portraits/songsoon.jpeg			
+ch3_cafe	5	유웅룡	[침묵. 거짓말을 할 수 없다.]	normal	assets/portraits/yuu.jpeg			
+ch3_cafe	6	송순	[표정이 굳는다] 살아 있어요?	normal	assets/portraits/songsoon.jpeg			
+ch3_cafe	7	유웅룡	모르겠어요. 그래서 찾아야 해요.	normal	assets/portraits/yuu.jpeg			
+ch3_cafe	8	송순	[눈빛이 변한다] 같이 가요.	normal	assets/portraits/songsoon.jpeg			
+ch3_room4	1		[밤. 낙원 기숙사 4번방. 송금의 방. 시간이 멈춘 것 같다.]	narration				
+ch3_room4	2	송순	[벽에 손을 얹는다. 차갑다.]	normal	assets/portraits/songsoon.jpeg			
+ch3_room4	3		[조명이 깜빡인다. 한 번. 두 번. 세 번.]	narration				
+ch3_room4	4	???	[여린 목소리] 돌아와… 돌아와…	normal				
+ch3_room4	5	송순	[공포에 떨며] 언니…?	normal	assets/portraits/songsoon.jpeg			
+ch3_room4	6	유웅룡	[송순의 팔을 잡는다] 나가자. 지금 당장.	normal	assets/portraits/yuu.jpeg			
+ch3_room4	7		[방의 벽에서 파란 안개가 피어난다. 목소리는 계속 들린다.]	narration				
+ch3_storage	1		[낙원 무대 뒤 창고. 먼지. 방치된 악기들. 오래된 냄새.]	narration				
+ch3_storage	2	유웅룡	언니가 여기 자주 왔어요?	normal	assets/portraits/yuu.jpeg			
+ch3_storage	3	송순	[고개를 젓는다] 무대 뒤는 아무나 못 들어와요. 그런데 언니는…	normal	assets/portraits/songsoon.jpeg			
+ch3_storage	4		[책장 뒤에 상자 하나. 먼지가 두텁다.]	narration				
+ch3_storage	5	유웅룡	[상자를 꺼낸다]	normal	assets/portraits/yuu.jpeg			
+ch3_storage	6		[청색 비단 한복. 오징어 형태 가면. 눈 구멍이 넷. 그 아래 일기장.]	narration				
+ch3_storage	7	송순	[목이 메인다] 언니 옷이야…	normal	assets/portraits/songsoon.jpeg			
+ch3_storage	8	유웅룡	일기장이 있어요.	normal	assets/portraits/yuu.jpeg			
+ch3_storage	9		"[첫 줄: ""청의의 무녀. 노래가 곧 감응. 나는 준비됐다.""]"	narration				
+ch4a_library	1		[난향일보 자료실. 오래된 신문들. 사람 하나 없다.]	narration				
+ch4a_library	2	유웅룡	[1924년 신문을 넘긴다]	normal	assets/portraits/yuu.jpeg			
+ch4a_library	3		"[헤드라인: ""여급 연쇄 실종. 경찰, 자살 추정으로 결론.""]"	narration				
+ch4a_library	4	유웅룡	[기자명을 찾는다] …편집장.	normal	assets/portraits/yuu.jpeg			
+ch4a_library	5		[1923년. 1925년. 1928년. 같은 패턴. 모두 편집장이 썼다.]	narration				
+ch4a_library	6	유웅룡	[담배를 꺼낸다. 불을 붙이지 않는다] 그 남자가 알고 있었어.	normal	assets/portraits/yuu.jpeg			
+ch4a_slum	1		[경성 외곽 빈민가. 좁고 습한 골목. 오후가 저물고 있다.]	narration				
+ch4a_slum	2	여인 A	청의교? [목소리가 떨린다] 그걸 묻지 마세요.	normal				
+ch4a_slum	3	유웅룡	누가 이끄는 거예요?	normal	assets/portraits/yuu.jpeg			
+ch4a_slum	4	여인 A	우리 같은 것들을 구원해 준다고 했어요. 근데…	normal				
+ch4a_slum	5	여인 A	[두려워한다] 거기 들어간 사람 중에 나온 사람을 본 적이 없어요.	normal				
+ch4a_slum	6		[유웅룡은 여인의 눈빛을 본다. 두려움과 체념이 뒤섞인 눈빛.]	narration				
+ch4b_cafe	1		[카페 낙원. 문을 닫은 시간. 송순이 혼자 안에 있다.]	narration				
+ch4b_cafe	2		[옥련이 구석에 앉아 있다. 몸을 사리고 있다.]	narration				
+ch4b_cafe	3	송순	옥련 씨. 언니가 어디 있어?	normal	assets/portraits/songsoon.jpeg			
+ch4b_cafe	4	옥련	[한참 침묵하다가] 음악실. 지하 음악실.	normal	assets/portraits/okryeon.jpeg			
+ch4b_cafe	5	옥련	언니가… 선택받았대요. 이해심이 직접.	normal	assets/portraits/okryeon.jpeg			
+ch4b_cafe	6	송순	선택받다니. 뭘 위해서?	normal	assets/portraits/songsoon.jpeg			
+ch4b_cafe	7	옥련	[눈물이 흐른다] 청의의 무녀. 노래하는 그릇.	normal	assets/portraits/okryeon.jpeg			
+ch4b_okryeon	1	옥련	나도 거기 들었었어요. 의식에. 하지만…	normal	assets/portraits/okryeon.jpeg			
+ch4b_okryeon	2	옥련	[손이 떨린다] 도망쳤어요. 죽을 것 같았어요.	normal	assets/portraits/okryeon.jpeg			
+ch4b_okryeon	3	옥련	그곳은 사람의 장소가 아니에요. 문이 있어요. 뭔가 들어오려 해요.	normal	assets/portraits/okryeon.jpeg			
+ch4b_okryeon	4	송순	[눈이 흔들린다] 지금도 거기 있어?	normal	assets/portraits/songsoon.jpeg			
+ch4b_okryeon	5	옥련	[깊게 숨을 들이쉰다] 지하야. 카페 밑 지하. 거기 있어.	normal	assets/portraits/okryeon.jpeg			
+ch5_ritual_path	1		[유웅룡과 송순. 카페 낙원 뒤쪽. 지하로 향하는 문.]	narration				
+ch5_ritual_path	2	유웅룡	뭘 알아냈어요?	normal	assets/portraits/yuu.jpeg			
+ch5_ritual_path	3	송순	언니가 선택받았어요. 청의의 무녀로. 지하에 있어요.	normal	assets/portraits/songsoon.jpeg			
+ch5_ritual_path	4	유웅룡	[오래된 신문 뭉치를 꺼낸다] 이게 처음이 아니에요. 1923년부터야.	normal	assets/portraits/yuu.jpeg			
+ch5_ritual_path	5	송순	[눈빛이 변한다] 그 전에도…?	normal	assets/portraits/songsoon.jpeg			
+ch5_ritual_path	6	유웅룡	[문을 연다] 내려가요.	normal	assets/portraits/yuu.jpeg			
+ch5_ritual_path	7		[계단을 내려간다. 공기가 점점 차가워진다.]	narration				
+ch5_ritual_path	8		[발가락 없는 발자국이 땅에 찍혀 있다. 청색 점액.]	narration				
+ch5_ritual_path	9	송순	[공포에 떨며] 저건…	normal	assets/portraits/songsoon.jpeg			
+ch5_ritual_path	10	???	[울부짖는 소리. 비명인지 신음인지 모를 소리.]	normal				
+ch5_ritual_path	11	유웅룡	묵표자야. 뛰어.	normal	assets/portraits/yuu.jpeg			
+ch5_ritual_room	1		[지하 의례실. 제단. 파란 천. 양초가 줄지어 타고 있다.]	narration				
+ch5_ritual_room	2	천용해	[목소리가 울려 퍼진다] 오셨군요. 늦었지만. 보셔도 됩니다.	normal	assets/portraits/cheon.jpeg			
+ch5_ritual_room	3		[무릎을 꿇은 신도들. 가운데 청색 한복을 입은 여인. 노래하고 있다.]	narration				
+ch5_ritual_room	4	송순	[숨이 멎는다] 언니…	normal	assets/portraits/songsoon.jpeg			
+ch5_ritual_room	5	천용해	그릇은 셋이었소. 둘은 쓰였고. 셋째가 마지막이오.	normal	assets/portraits/cheon.jpeg			
+ch5_ritual_room	6	천용해	동방은 불로, 서방은 얼음으로. 그리고 우리만 남는다.	normal	assets/portraits/cheon.jpeg			
+ch5_ritual_room	7	이해심	[그림자에서 나타난다]	normal	assets/portraits/haesim.jpeg			
+ch5_ritual_room	8	이해심	막아도 소용없어. 문은 이미 열리고 있어.	normal	assets/portraits/haesim.jpeg			
+ch5_ritual_room	9	유웅룡	[앞으로 나간다] 그 여자를 돌려줘.	normal	assets/portraits/yuu.jpeg			
+ch5_ritual_room	10	이해심	[눈에서 피가 흐른다] 늦었다.	normal	assets/portraits/haesim.jpeg			
+ch6_ending	1	송순	[노래를 부른다. 언니의 목소리가 뒤섞인다.]	normal	assets/portraits/songsoon.jpeg			
+ch6_ending	2		[무언가가 울린다. 벽이 떨린다. 제단이 흔들린다.]	narration				
+ch6_ending	3		[제단 뒤의 벽이 갈라진다. 틈에서 빛도 어둠도 아닌 것이 스며든다.]	narration				
+ch6_ending	4	이해심	[비명처럼 외친다] 아니다! 아직 아니야—	normal	assets/portraits/haesim.jpeg			
+ch6_ending	5	유웅룡	[선택을 해야 한다.]	normal	assets/portraits/yuu.jpeg			
+ch6_ending_a	1		[송순의 노래가 이해심의 감응을 흔든다.]	narration				
+ch6_ending_a	2	이해심	[무릎을 꿇는다. 쓰러진다.]	normal	assets/portraits/haesim.jpeg			
+ch6_ending_a	3		[문이 반쯤 열린 채 닫힌다. 문 너머에서 손이 나온다.]	narration				
+ch6_ending_a	4	송금	[낮고 공허한 목소리] 송순…?	normal	assets/portraits/songeum.jpeg			
+ch6_ending_a	5	송순	[달려가 손을 잡는다]	normal	assets/portraits/songsoon.jpeg			
+ch6_ending_a	6		[송금이 나온다. 살아있다. 그러나 눈이 텅 비어 있다. 돌아오지 않았다.]	narration				
+ch6_ending_a	7	유웅룡	[수첩을 꺼낸다. 쓴다. 손이 떨린다.]	normal	assets/portraits/yuu.jpeg			
+ch6_ending_b	1	유웅룡	[이해심 앞을 막아선다]	normal	assets/portraits/yuu.jpeg			
+ch6_ending_b	2	이해심	[비틀린다. 피가 더 흐른다.]	normal	assets/portraits/haesim.jpeg			
+ch6_ending_b	3		[문이 닫힌다. 떨리는 소리와 함께.]	narration				
+ch6_ending_b	4		[신도들이 흩어진다. 어둠과 혼란만 남는다.]	narration				
+ch6_ending_b	5	송순	[송금의 이름을 부르며 운다. 대답이 없다.]	normal	assets/portraits/songsoon.jpeg			
+ch6_ending_b	6	유웅룡	[수첩에 모든 것을 기록한다. 알고 있는 모든 것을.]	normal	assets/portraits/yuu.jpeg			
+ch6_ending_c	1		[아무도 막지 않는다.]	narration				
+ch6_ending_c	2		[문이 완전히 열린다.]	narration				
+ch6_ending_c	3		[무엇이 나왔는지 보이지 않는다.]	narration				
+ch6_ending_c	4		[공간이 정지한다. 시간이 끊긴다.]	narration				
+ch6_ending_c	5		[다시 현실로 돌아왔을 때 — 이해심도, 송금도, 천용해도 없다.]	narration				
+ch6_ending_c	6	유웅룡	[송순을 바라본다]	normal	assets/portraits/yuu.jpeg			
+ch6_ending_c	7	송순	[침묵. 눈빛만이 말한다.]	normal	assets/portraits/songsoon.jpeg			
+ch6_ending_c	8		[문은 열렸다. 무엇이 나왔는지는 아무도 모른다. 그리고 아무도 묻지 않는다.]	narration				
+ch6_epilogue	1		[며칠 뒤. 경성. 난향일보.]	narration				
+ch6_epilogue	2		"[짧은 기사 하나: ""낙원 화재로 인한 건물 일부 소실. 인명 피해 없음.""]"	narration				
+ch6_epilogue	3		[기사에 유웅룡의 이름은 없다.]	narration				
+ch6_epilogue	4	편집장	[유웅룡의 수첩을 한참 들여다본다.]	normal	assets/portraits/editor.jpeg			
+ch6_epilogue	5	편집장	[서랍에 넣는다.]	normal	assets/portraits/editor.jpeg			
+ch6_epilogue	6	유웅룡	[담배를 피운다. 창밖을 본다.]	normal	assets/portraits/yuu.jpeg			
+ch6_epilogue	7		[진실은 묻혔다. 어떤 형태로든.]	narration				
+ch6_epilogue	8		[문은 어디론가 열려 있다. 아무도 묻지 않는다.]	narration				

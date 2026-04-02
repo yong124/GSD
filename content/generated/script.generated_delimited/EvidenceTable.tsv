@@ -1,0 +1,13 @@
+﻿EvidenceID	SceneId	Trigger	Name	Description	Image
+ev_sungsun	ch2_cafe	click	김송순의 증언	송순: 언니 김송금이 요즘 안 나왔다.	
+ev_corpse	ch2_factory	auto	시신	발가락 없는 발자국, 청색 점액, 텅 빈 눈구멍. 이판규로 확인됨.	
+ev_note	ch2_factory	auto	붉은 쪽지	토요일, 낙원. 그녀가 노래하면, 문은 열린다.	
+ev_diary	ch3_storage	auto	송금의 일기장	청의의 무녀. 노래가 곧 감응. 준비되었다.	
+ev_hanbok	ch3_storage	auto	청색 비단 한복	무녀의 복장. 송금이 입었을 것.	
+ev_mask	ch3_storage	auto	오징어 가면	눈 구멍 4개. 청의동자의 눈. 의식 도구.	
+ev_oldarticles	ch4a_library	auto	1920년대 신문 뭉치	연쇄 실종 사건들. 모두 편집장이 작성. 1923, 1925, 1928년.	
+ev_okryeon_statement	ch4b_okryeon	click	옥련의 증언	청의 의식에 참여했다가 도망쳤다. 지하에 있다고 말함.	
+ev_haesim	ch5_ritual_room	auto	이해심 첫 대면	안대, 푸른 한복, 피를 흘리는 눈, 냉정한 광기	
+ev_ritual_paper	ch5_ritual_room	auto	의례실 종이	그릇은 셋. 둘은 쓰였고 하나가 남았다.	
+ev_ritualroom	ch5_ritual_room	auto	의례실	제단, 파란 천, 양초, 신도들, 청의동자의 흔적	
+ev_songeum_state	ch6_ending_a	auto	송금의 돌아옴	텅 빈 눈구멍. 살아있지만 돌아오지 않았다.	

@@ -6,7 +6,7 @@ Excel → game_data.js 변환 스크립트
   python export_to_json.py
 
 결과:
-  ../game/data/game_data.js  (window.GAME_DATA = {...} 형태)
+  ../../game/data/game_data.js  (window.GAME_DATA = {...} 형태)
   서버 없이 index.html을 파일로 열어도 동작함
 
 Excel 컬럼 규칙 (PascalCase):
@@ -31,8 +31,8 @@ except ImportError:
     print("openpyxl 설치 필요: pip install openpyxl")
     sys.exit(1)
 
-EXCEL_PATH  = os.path.join(os.path.dirname(__file__), "script.xlsx")
-OUTPUT_PATH = os.path.join(os.path.dirname(__file__), "../game/data/game_data.js")
+EXCEL_PATH  = os.path.join(os.path.dirname(__file__), "../data/script.xlsx")
+OUTPUT_PATH = os.path.join(os.path.dirname(__file__), "../../game/data/game_data.js")
 
 
 def is_ignored_name(value):

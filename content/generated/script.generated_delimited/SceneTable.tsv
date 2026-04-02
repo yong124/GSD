@@ -1,0 +1,20 @@
+﻿SceneID	Chapter	Title	Background	Music	NextScene	Effect
+ch1_court	1	묻힌 판결	assets/bg/court.jpeg	assets/sfx/tense.mp3	ch1_editor	
+ch1_editor	1	편집부	assets/bg/newsroom.jpeg	assets/sfx/newsroom.mp3		
+ch2_cafe	2	카페 낙원	assets/bg/cafe.jpeg	assets/sfx/jazz.mp3		
+ch2_factory	2	폐공장	assets/bg/factory.jpeg	assets/sfx/creepy.mp3	ch2_cafe	flicker
+ch2_hospital	2	낙원의 문	assets/bg/hospital.jpeg	assets/sfx/gloomy.mp3	ch2_factory	
+ch3_cafe	3	언니의 방	assets/bg/cafe.jpeg	assets/sfx/jazz_dark.mp3	ch3_storage	
+ch3_room4	3	기숙사 4번방	assets/bg/storage.jpeg	assets/sfx/creepy_2.mp3		resonance
+ch3_storage	3	창고	assets/bg/storage.jpeg	assets/sfx/mystery.mp3	ch3_room4	
+ch4a_library	4	자료실	assets/bg/newsroom.jpeg	assets/sfx/mystery.mp3	ch4a_slum	
+ch4a_slum	4	빈민가	assets/bg/warehouse.jpg	assets/sfx/ambient.mp3		
+ch4b_cafe	4	낙원 재방문	assets/bg/cafe.jpeg	assets/sfx/jazz_dark.mp3	ch4b_okryeon	
+ch4b_okryeon	4	옥련과의 대화	assets/bg/cafe.jpeg	assets/sfx/sad.mp3		
+ch5_ritual_path	5	지하의 문	assets/bg/ritual_room.jpg	assets/sfx/ritual.mp3	ch5_ritual_room	
+ch5_ritual_room	5	의례실	assets/bg/ritual_room.jpg	assets/sfx/ritual_climax.mp3	ch6_ending	blood
+ch6_ending	6	결말	assets/bg/ritual_room.jpg	assets/sfx/ritual_climax.mp3		blood
+ch6_ending_a	6	돌아오지 않은 언니	assets/bg/cafe.jpeg	assets/sfx/ending.mp3	ch6_epilogue	
+ch6_ending_b	6	기록된 것들	assets/bg/newsroom.jpeg	assets/sfx/ending.mp3	ch6_epilogue	
+ch6_ending_c	6	문 너머	assets/bg/ritual_room.jpg	assets/sfx/sad.mp3	ch6_epilogue	
+ch6_epilogue	6	에필로그	assets/bg/newsroom.jpeg	assets/sfx/newsroom.mp3		

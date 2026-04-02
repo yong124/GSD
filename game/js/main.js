@@ -71,7 +71,7 @@
         ">
           <div style="font-size:18px">⚠ game_data.js 파일이 없습니다.</div>
           <div style="font-size:13px; color:#7a6e5a;">
-            content/ 폴더에서 아래 명령을 실행하세요:<br><br>
+            content/tools/ 폴더에서 아래 명령을 실행하세요:<br><br>
             <code style="color:#e8d08a;">python export_to_json.py</code>
           </div>
         </div>`;

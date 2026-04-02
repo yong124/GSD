@@ -125,8 +125,8 @@ python -m http.server 3900
 ```
 C:\Users\USER\Desktop\GSD\
 ├── content/
-│   ├── script.xlsx          ← 모든 스토리 데이터 (수정 원하면 여기)
-│   └── export_to_json.py    ← 변환 스크립트
+│   ├── data/script.xlsx          ← 모든 스토리 데이터 (수정 원하면 여기)
+│   └── tools/export_to_json.py   ← 변환 스크립트
 │
 └── game/
     ├── index.html           ← 진입점

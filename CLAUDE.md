@@ -30,15 +30,18 @@ G:/GSD/
 │   ├── editor.js            # IIFE + state{} + render() 패턴
 │   └── editor.css
 └── content/
-    ├── script.xlsx          # 원본 시나리오 데이터
-    ├── export_to_json.py    # xlsx → game_data.js 변환
-    └── TABLE_SPEC.md        # 테이블 스키마 문서
+    ├── data/
+    │   └── script.xlsx      # 원본 시나리오 데이터
+    ├── tools/
+    │   └── export_to_json.py # xlsx → game_data.js 변환
+    └── docs/system/
+        └── TABLE_SPEC.md    # 테이블 스키마 문서
 ```
 
 ## 데이터 흐름
 
 ```
-script.xlsx → python export_to_json.py → game/data/game_data.js
+content/data/script.xlsx → python content/tools/export_to_json.py → game/data/game_data.js
 ```
 
 game_data.js 수정 필요 시 반드시 xlsx에서 수정 후 재export. 직접 편집은 덮어쓰임.
@@ -114,6 +117,6 @@ markDirty() → render() → renderSceneList() + renderEditor() + renderPreview(
 
 - `main.css`: `@import` 반드시 첫 번째 줄 (CSS 규칙)
 - Portrait 에셋: 실제 파일은 `.jpeg` (일부 `.png`). game_data.js 경로와 일치 확인
-- `game_data.js` 직접 편집 시 export_to_json.py 재실행하면 덮어써짐
+- `game_data.js` 직접 편집 시 `content/tools/export_to_json.py` 재실행하면 덮어써짐
 - `State.serialize()`는 `dialogueIndex` 제외하고 저장 (재시작 시 씬 처음부터)
 - branches `flag_value`: 엔진은 배열도 지원하나 에디터는 단일값만 입력

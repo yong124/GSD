@@ -39,7 +39,7 @@ Node Editor
 
 ### 3-2. 출력
 
-- `content/script.generated.xlsx`
+- `content/generated/script.generated.xlsx`
 
 기존 `script.xlsx`를 바로 덮어쓰기보다는, 기본적으로는 별도 파일로 생성하는 방식을 권장한다.
 
