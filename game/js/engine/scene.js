@@ -89,7 +89,14 @@ const Scene = (() => {
         });
       } else {
         const next = resolveNextScene(scene);
-        if (next) Scene.load(next);
+        if (next) {
+          Scene.load(next);
+        } else {
+          // 엔딩: 저장 초기화 후 타이틀 복귀
+          setTimeout(() => {
+            document.dispatchEvent(new Event('game:ending'));
+          }, 1500);
+        }
       }
     }
 

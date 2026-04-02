@@ -88,6 +88,13 @@
     Evidence.init();
     Save.init();
     initTitleScreen(data);
+
+    // 엔딩 이벤트 수신
+    document.addEventListener('game:ending', () => {
+      Save.clear();
+      State.reset();
+      showTitleScreen();
+    });
   }
 
   // DOM 준비 후 실행

@@ -21,6 +21,7 @@
     panning: null,    // { startX, startY, camX, camY }
     dragging: null,   // { nodeId, startMouseX, startMouseY, startNodeX, startNodeY }
     dirty: false,
+    history: [],      // undo 스택 (최대 30)
   };
 
   // ── DOM 참조 ──────────────────────────────────────────
@@ -28,19 +29,20 @@
   const els = {};
 
   function bindElements() {
-    els.viewport    = $('viewport');
-    els.canvas      = $('canvas');
-    els.wireLayer   = $('wire-layer');
-    els.nodeLayer   = $('node-layer');
-    els.panel       = $('panel');
-    els.panelEmpty  = $('panel-empty');
-    els.panelContent= $('panel-content');
-    els.fieldTitle  = $('field-title');
-    els.fieldBg     = $('field-background');
-    els.dialogueList= $('dialogue-list');
-    els.choiceList  = $('choice-list');
-    els.branchList  = $('branch-list');
-    els.status      = $('status');
+    els.viewport     = $('viewport');
+    els.canvas       = $('canvas');
+    els.wireLayer    = $('wire-layer');
+    els.nodeLayer    = $('node-layer');
+    els.panel        = $('panel');
+    els.panelEmpty   = $('panel-empty');
+    els.panelContent = $('panel-content');
+    els.fieldTitle   = $('field-title');
+    els.fieldBg      = $('field-background');
+    els.fieldSceneId = $('field-scene-id');
+    els.dialogueList = $('dialogue-list');
+    els.choiceList   = $('choice-list');
+    els.branchList   = $('branch-list');
+    els.status       = $('status');
   }
 
   // ── 유틸 ──────────────────────────────────────────────
@@ -60,6 +62,29 @@
   function markDirty() {
     state.dirty = true;
     setStatus('● 미저장 변경사항');
+  }
+
+  // ── Undo 히스토리 ─────────────────────────────────────
+  function pushHistory() {
+    state.history.push(JSON.stringify(state.data));
+    if (state.history.length > 30) state.history.shift();
+  }
+  function undo() {
+    if (state.history.length === 0) { setStatus('더 이상 되돌릴 수 없습니다', true); return; }
+    state.data = JSON.parse(state.history.pop());
+    markDirty();
+    render();
+    // 선택된 씬이 사라졌으면 해제
+    if (state.selectedId && !state.data.scenes[state.selectedId]) {
+      state.selectedId = null;
+    }
+    renderPanel();
+    setStatus('↩ 실행 취소');
+  }
+
+  function isTyping() {
+    const tag = document.activeElement?.tagName;
+    return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT';
   }
 
   // ── 카메라 ────────────────────────────────────────────
@@ -129,15 +154,16 @@
   // ── 노드 높이 계산 ────────────────────────────────────
   function nodeHeight(scene) {
     const branches = (scene.branches || []).length;
-    return NODE_HEADER_H + NODE_BODY_PAD * 2 + 16 + branches * 24;
+    const choices  = (scene.choices  || []).length;
+    return NODE_HEADER_H + NODE_BODY_PAD * 2 + 16 + (branches + choices) * 24;
   }
 
   // ── 핀 위치 (canvas 좌표) ─────────────────────────────
-  function pinPos(sceneId, pinType, branchIdx) {
+  function pinPos(sceneId, pinType, idx) {
     const pos = state.layout[sceneId];
     if (!pos) return null;
     const scene = state.data.scenes[sceneId];
-    const h = nodeHeight(scene);
+    const branchCount = (scene.branches || []).length;
     if (pinType === 'in') {
       return { x: pos.x, y: pos.y + NODE_HEADER_H / 2 };
     }
@@ -145,10 +171,27 @@
       return { x: pos.x + NODE_W, y: pos.y + NODE_HEADER_H / 2 };
     }
     if (pinType === 'branch') {
-      const baseY = pos.y + NODE_HEADER_H + NODE_BODY_PAD + 16 + branchIdx * 24 + 12;
+      const baseY = pos.y + NODE_HEADER_H + NODE_BODY_PAD + 16 + idx * 24 + 12;
+      return { x: pos.x + NODE_W, y: baseY };
+    }
+    if (pinType === 'choice') {
+      const baseY = pos.y + NODE_HEADER_H + NODE_BODY_PAD + 16 + (branchCount + idx) * 24 + 12;
       return { x: pos.x + NODE_W, y: baseY };
     }
     return null;
+  }
+
+  // ── 레이아웃 저장/불러오기 ───────────────────────────
+  function saveLayout() {
+    try {
+      localStorage.setItem('gyeongseong_node_layout', JSON.stringify(state.layout));
+    } catch(_) {}
+  }
+  function loadLayout() {
+    try {
+      const saved = JSON.parse(localStorage.getItem('gyeongseong_node_layout') || '{}');
+      Object.assign(state.layout, saved);
+    } catch(_) {}
   }
 
   // ── 베지어 경로 문자열 ────────────────────────────────
@@ -197,6 +240,15 @@
           addWire(bfrom.x, bfrom.y, bto.x, bto.y, 'wire-branch', label);
         }
       });
+      (scene.choices || []).forEach((choice, i) => {
+        if (!choice.next_scene || !scenes[choice.next_scene]) return;
+        const cfrom = pinPos(id, 'choice', i);
+        const cto   = pinPos(choice.next_scene, 'in');
+        if (cfrom && cto) {
+          const label = choice.text ? choice.text.slice(0, 12) : null;
+          addWire(cfrom.x, cfrom.y, cto.x, cto.y, 'wire-choice', label);
+        }
+      });
     });
   }
 
@@ -211,6 +263,7 @@
       const isSelected = id === state.selectedId;
       const preview = scene.dialogues?.[0]?.text || '(대사 없음)';
       const branches = scene.branches || [];
+      const choices  = scene.choices  || [];
 
       const node = document.createElement('div');
       node.className = `node${isSelected ? ' selected' : ''}${isFirst ? ' first-scene' : ''}`;
@@ -220,12 +273,19 @@
 
       // branch pin rows HTML
       const branchPins = branches.map((b, i) => {
-        const topY = NODE_HEADER_H + NODE_BODY_PAD + 16 + i * 24;
         const label = b.flag_key ? `${b.flag_key}` : `branch ${i+1}`;
-        return `<div class="branch-row" style="position:relative;height:24px;line-height:24px;font-size:9px;color:var(--text-dim);padding-right:14px;text-align:right;">
-          ${escapeHtml(label)}
-          <div class="pin-branch" data-id="${escapeAttr(id)}" data-branch="${i}"
-               style="top:${topY}px;"></div>
+        return `<div class="pin-row" style="color:var(--text-dim);">
+          <span>${escapeHtml(label)}</span>
+          <div class="pin-branch" data-id="${escapeAttr(id)}" data-branch="${i}"></div>
+        </div>`;
+      }).join('');
+
+      // choice pin rows HTML
+      const choicePins = choices.map((c, i) => {
+        const label = c.text ? c.text.slice(0, 12) : `choice ${i+1}`;
+        return `<div class="pin-row" style="color:#88cc88;">
+          <span>${escapeHtml(label)}</span>
+          <div class="pin-choice" data-id="${escapeAttr(id)}" data-choice="${i}"></div>
         </div>`;
       }).join('');
 
@@ -238,6 +298,7 @@
         <div class="node-body">
           <div class="node-preview">${escapeHtml(preview)}</div>
           ${branchPins}
+          ${choicePins}
         </div>
         <div class="pin-out" data-id="${escapeAttr(id)}"></div>
       `;
@@ -246,7 +307,8 @@
       node.addEventListener('mousedown', e => {
         if (e.target.classList.contains('pin-in') ||
             e.target.classList.contains('pin-out') ||
-            e.target.classList.contains('pin-branch')) return;
+            e.target.classList.contains('pin-branch') ||
+            e.target.classList.contains('pin-choice')) return;
         e.stopPropagation();
         selectScene(id);
 
@@ -291,13 +353,44 @@
 
     const scene = state.data.scenes[id];
 
-    // 제목 / 배경
     els.fieldTitle.value = scene.title || '';
     els.fieldBg.value = scene.background || '';
+    els.fieldSceneId.value = id;
 
     renderDialogueList(scene);
     renderChoiceList(scene);
     renderBranchList(scene);
+  }
+
+  // ── 씬 ID 변경 ───────────────────────────────────────
+  function renameScene(oldId, newId) {
+    newId = newId.trim();
+    if (!newId || newId === oldId) return;
+    pushHistory();
+    if (state.data.scenes[newId]) {
+      setStatus('오류: 이미 존재하는 ID', true);
+      els.fieldSceneId.value = oldId;
+      return;
+    }
+    // 씬 이동
+    state.data.scenes[newId] = state.data.scenes[oldId];
+    state.data.scenes[newId].id = newId;
+    delete state.data.scenes[oldId];
+    // 레이아웃 이동
+    state.layout[newId] = state.layout[oldId];
+    delete state.layout[oldId];
+    // first_scene 갱신
+    if (state.data.first_scene === oldId) state.data.first_scene = newId;
+    // 참조 전체 갱신
+    Object.values(state.data.scenes).forEach(scene => {
+      if (scene.next_scene === oldId) scene.next_scene = newId;
+      (scene.branches || []).forEach(b => { if (b.next_scene === oldId) b.next_scene = newId; });
+      (scene.choices  || []).forEach(c => { if (c.next_scene === oldId) c.next_scene = newId; });
+    });
+    state.selectedId = newId;
+    markDirty();
+    render();
+    renderPanel();
   }
 
   function makeCard(labelText, items, template, onAdd, onDelete, onUp, onDown, onChange) {
@@ -321,9 +414,9 @@
         ${template(item, i)}
       `;
 
-      card.querySelector('[data-action="up"]').addEventListener('click', () => onUp(i));
-      card.querySelector('[data-action="down"]').addEventListener('click', () => onDown(i));
-      card.querySelector('[data-action="delete"]').addEventListener('click', () => onDelete(i));
+      card.querySelector('[data-action="up"]').addEventListener('click', () => { pushHistory(); onUp(i); });
+      card.querySelector('[data-action="down"]').addEventListener('click', () => { pushHistory(); onDown(i); });
+      card.querySelector('[data-action="delete"]').addEventListener('click', () => { pushHistory(); onDelete(i); });
 
       // 모든 input/textarea/select 변경 감지
       card.querySelectorAll('input,textarea,select').forEach(el => {
@@ -525,16 +618,17 @@
     document.addEventListener('mouseup', onUp);
   }
 
-  function connect(fromId, pinType, branchIdx, toId) {
+  function connect(fromId, pinType, idx, toId) {
     if (fromId === toId) return;
     const scene = state.data.scenes[fromId];
+    pushHistory();
     if (!scene) return;
     if (pinType === 'out') {
       scene.next_scene = toId;
     } else if (pinType === 'branch') {
-      if (scene.branches && scene.branches[branchIdx] !== undefined) {
-        scene.branches[branchIdx].next_scene = toId;
-      }
+      if (scene.branches?.[idx] !== undefined) scene.branches[idx].next_scene = toId;
+    } else if (pinType === 'choice') {
+      if (scene.choices?.[idx] !== undefined) scene.choices[idx].next_scene = toId;
     }
     markDirty();
     render();
@@ -559,6 +653,7 @@
       state.data = window.GAME_DATA;
       state.layout = {};
       autoLayout();
+      loadLayout();
       state.selectedId = null;
       render();
       renderPanel();
@@ -584,6 +679,7 @@
 
   // ── 씬 추가 ───────────────────────────────────────────
   function addScene() {
+    pushHistory();
     const id = uid();
     state.data.scenes[id] = newScene(id);
     const vr = els.viewport.getBoundingClientRect();
@@ -597,6 +693,7 @@
   // ── 씬 삭제 ───────────────────────────────────────────
   function deleteScene(id) {
     if (!state.data.scenes[id]) return;
+    pushHistory();
     delete state.data.scenes[id];
     delete state.layout[id];
     // 참조 정리
@@ -658,6 +755,13 @@
       markDirty();
     });
 
+    els.fieldSceneId.addEventListener('blur', () => {
+      if (state.selectedId) renameScene(state.selectedId, els.fieldSceneId.value);
+    });
+    els.fieldSceneId.addEventListener('keydown', e => {
+      if (e.key === 'Enter') els.fieldSceneId.blur();
+    });
+
     // 캔버스 줌 (마우스 휠)
     els.viewport.addEventListener('wheel', e => {
       e.preventDefault();
@@ -705,23 +809,46 @@
     });
 
     document.addEventListener('mouseup', () => {
+      if (state.dragging) saveLayout();
       state.panning  = null;
       state.dragging = null;
     });
 
     // 핀 클릭 → 와이어 드래그
     els.nodeLayer.addEventListener('mousedown', e => {
-      const pin = e.target.closest('.pin-out, .pin-branch');
+      const pin = e.target.closest('.pin-out, .pin-branch, .pin-choice');
       if (!pin) return;
       e.stopPropagation();
       e.preventDefault();
       const fromId = pin.dataset.id;
       if (pin.classList.contains('pin-out')) {
         startWireDrag(fromId, 'out', null, e.clientX, e.clientY);
-      } else {
-        const branchIdx = parseInt(pin.dataset.branch, 10);
-        startWireDrag(fromId, 'branch', branchIdx, e.clientX, e.clientY);
+      } else if (pin.classList.contains('pin-branch')) {
+        startWireDrag(fromId, 'branch', parseInt(pin.dataset.branch, 10), e.clientX, e.clientY);
+      } else if (pin.classList.contains('pin-choice')) {
+        startWireDrag(fromId, 'choice', parseInt(pin.dataset.choice, 10), e.clientX, e.clientY);
       }
+    });
+
+    // 핀 우클릭 → 와이어 삭제
+    els.nodeLayer.addEventListener('contextmenu', e => {
+      e.preventDefault();
+      const pin = e.target.closest('.pin-out, .pin-branch, .pin-choice');
+      if (!pin) return;
+      const id = pin.dataset.id;
+      const scene = state.data.scenes[id];
+      if (!scene) return;
+      if (pin.classList.contains('pin-out')) {
+        scene.next_scene = null;
+      } else if (pin.classList.contains('pin-branch')) {
+        const b = scene.branches?.[+pin.dataset.branch];
+        if (b) b.next_scene = '';
+      } else if (pin.classList.contains('pin-choice')) {
+        const c = scene.choices?.[+pin.dataset.choice];
+        if (c) c.next_scene = '';
+      }
+      markDirty(); render();
+      if (state.selectedId === id) renderPanel();
     });
 
     // viewport 클릭 시 선택 해제
@@ -734,9 +861,20 @@
       }
     });
 
-    // Ctrl+S 저장
+    // 단축키
     document.addEventListener('keydown', e => {
-      if (e.ctrlKey && e.key === 's') { e.preventDefault(); exportData(); }
+      if (e.ctrlKey && e.key === 's') { e.preventDefault(); exportData(); return; }
+      if (e.ctrlKey && e.key === 'z') { e.preventDefault(); undo(); return; }
+      if (e.key === 'Delete' && !isTyping() && state.selectedId) {
+        deleteScene(state.selectedId);
+        return;
+      }
+      if (e.key === 'Escape') {
+        state.selectedId = null;
+        renderNodes();
+        els.panelEmpty.classList.remove('hidden');
+        els.panelContent.classList.add('hidden');
+      }
     });
   }
 

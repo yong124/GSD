@@ -11,9 +11,9 @@ Excel → game_data.js 변환 스크립트
 
 Excel 컬럼 규칙 (PascalCase):
   SceneTable / Scenes        : SceneID, Chapter, Title, Background, Music, NextScene, Effect
-  DialogTable / Dialogues    : SceneID, Order, Speaker, Text, Style, Portrait, ConditionKey, ConditionValue
-  ChoiceTable / Choices      : SceneID, Order, Text, FlagKey, FlagValue, NextScene
-  BranchTable / Branches     : SceneID, FlagKey, FlagValue, NextScene
+  DialogTable / Dialogues    : SceneID, Order, Label, Speaker, Text, Style, Portrait, ConditionKey, ConditionValue
+  ChoiceTable / Choices      : SceneID, Order, Text, FlagKey, FlagValue, NextScene, NextDialogue
+  BranchTable / Branches     : SceneID, Order, FlagKey, FlagValue, NextScene
   EvidenceTable / Evidence   : EvidenceID, SceneId, Trigger, Name, Description, Image
 
 무시 규칙:
@@ -98,6 +98,7 @@ def build_game_data(wb):
             "music":      s.get("Music"),
             "next_scene": s.get("NextScene"),
             "effect":     s.get("Effect"),
+            "branches":   [],
             "dialogues":  [],
             "choices":    [],
             "evidence":   [],
@@ -107,13 +108,21 @@ def build_game_data(wb):
     for d in dialogues_raw:
         sid = d.get("SceneID")
         if sid and sid in scenes:
-            scenes[sid]["dialogues"].append({
+            entry = {
                 "order":    d.get("Order") or 0,
                 "speaker":  d.get("Speaker") or "",
                 "text":     d.get("Text") or "",
                 "style":    d.get("Style") or "normal",
                 "portrait": d.get("Portrait"),
-            })
+                "condition": None,
+            }
+            if d.get("Label"):
+                entry["label"] = d["Label"]
+            cond_key = d.get("ConditionKey")
+            cond_val = d.get("ConditionValue")
+            if cond_key:
+                entry["condition"] = {"flag_key": cond_key, "flag_value": cond_val}
+            scenes[sid]["dialogues"].append(entry)
     for sid in scenes:
         scenes[sid]["dialogues"].sort(key=lambda x: x["order"])
 
@@ -121,15 +130,31 @@ def build_game_data(wb):
     for c in choices_raw:
         sid = c.get("SceneID")
         if sid and sid in scenes:
-            scenes[sid]["choices"].append({
+            entry = {
                 "order":      c.get("Order") or 0,
                 "text":       c.get("Text") or "",
                 "flag_key":   c.get("FlagKey"),
                 "flag_value": c.get("FlagValue"),
                 "next_scene": c.get("NextScene"),
-            })
+            }
+            if c.get("NextDialogue"):
+                entry["next_dialogue"] = c["NextDialogue"]
+            scenes[sid]["choices"].append(entry)
     for sid in scenes:
         scenes[sid]["choices"].sort(key=lambda x: x["order"])
+
+    # Branches 삽입 후 Order 정렬
+    for b in branches_raw:
+        sid = b.get("SceneID")
+        if sid and sid in scenes:
+            scenes[sid]["branches"].append({
+                "order":      b.get("Order") or 0,
+                "flag_key":   b.get("FlagKey") or "",
+                "flag_value": b.get("FlagValue"),
+                "next_scene": b.get("NextScene") or "",
+            })
+    for sid in scenes:
+        scenes[sid]["branches"].sort(key=lambda x: x["order"])
 
     # Evidence 삽입
     for e in evidence_raw:

@@ -90,6 +90,7 @@ button.small { padding: 1px 7px; font-size: 11px; }
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* ── Pins ── */
+/* pin-in / pin-out — 헤더에 고정 */
 .pin-in, .pin-out {
   position: absolute;
   width: var(--pin-size); height: var(--pin-size);
@@ -104,21 +105,37 @@ button.small { padding: 1px 7px; font-size: 11px; }
 .pin-out { right: calc(-1 * var(--pin-size) / 2 - 1px); }
 .pin-out:hover, .pin-out.active { background: var(--wire-next); }
 
-.pin-branch {
+/* pin-row — branch/choice 행 컨테이너 */
+.pin-row {
+  position: relative;
+  height: 24px; line-height: 24px;
+  font-size: 9px;
+  padding-right: 14px;
+  text-align: right;
+  overflow: visible;
+}
+.pin-row span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* branch / choice 핀 — pin-row 안에서 수직 중앙 */
+.pin-branch, .pin-choice {
   position: absolute;
   width: var(--pin-size); height: var(--pin-size);
   border-radius: 50%;
-  border: 2px solid var(--wire-branch);
   background: var(--bg-node);
   cursor: crosshair;
   right: calc(-1 * var(--pin-size) / 2 - 1px);
+  top: calc(50% - var(--pin-size) / 2);
   transition: background .1s;
 }
-.pin-branch:hover, .pin-branch.active { background: var(--wire-branch); }
+.pin-branch { border: 2px solid var(--wire-branch); }
+.pin-choice { border: 2px solid #88cc88; }
+.pin-branch:hover { background: var(--wire-branch); }
+.pin-choice:hover { background: #88cc88; }
 
 /* ── Wires ── */
 .wire-next   { fill: none; stroke: var(--wire-next);   stroke-width: 2; opacity: .8; }
 .wire-branch { fill: none; stroke: var(--wire-branch); stroke-width: 2; opacity: .8; stroke-dasharray: 6 3; }
+.wire-choice { fill: none; stroke: #88cc88; stroke-width: 1.5; opacity: .7; stroke-dasharray: 3 3; }
 .wire-temp   { fill: none; stroke: #ffffff44; stroke-width: 2; stroke-dasharray: 4 4; }
 .wire-label  { fill: var(--wire-branch); font-size: 9px; font-family: monospace; }
 
@@ -172,6 +189,8 @@ textarea { resize: vertical; min-height: 56px; }
 
 /* ── Portrait thumb ── */
 .portrait-thumb {
-  max-height: 60px; border-radius: 4px; object-fit: cover;
-  border: 1px solid var(--border); margin-top: 2px;
+  width: 100%; max-height: 200px; border-radius: 4px;
+  object-fit: contain; object-position: center;
+  border: 1px solid var(--border); margin-top: 4px;
+  background: #0d0d12;
 }
