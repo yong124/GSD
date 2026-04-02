@@ -334,15 +334,16 @@
 
       // portrait 썸네일 실시간 업데이트
       const portraitInput = card.querySelector('[data-field="portrait"]');
-      const thumb = card.querySelector('.asset-thumb');
       if (portraitInput) {
         portraitInput.addEventListener('input', () => {
+          let thumb = card.querySelector('.asset-thumb');
           if (thumb) {
             thumb.src = portraitInput.value ? `../game/${portraitInput.value}` : '';
             thumb.hidden = !portraitInput.value;
           } else if (portraitInput.value) {
             const newThumb = document.createElement('img');
             newThumb.className = 'asset-thumb';
+            newThumb.alt = '';
             newThumb.src = `../game/${portraitInput.value}`;
             portraitInput.parentElement.appendChild(newThumb);
           }

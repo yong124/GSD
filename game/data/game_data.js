@@ -36,7 +36,7 @@ window.GAME_DATA = {
           "speaker": "유웅룡",
           "text": "[수첩에 받아 적는다] 조선인 유아는 인격체가 아니다. 법이 그렇게 말한다.",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.png"
+          "portrait": "assets/portraits/yuu.jpeg"
         },
         {
           "order": 5,
@@ -63,35 +63,35 @@ window.GAME_DATA = {
           "speaker": "편집장",
           "text": "유웅룡. 방금 법정에서 나왔지?",
           "style": "normal",
-          "portrait": "assets/portraits/editor.png"
+          "portrait": "assets/portraits/editor.jpeg"
         },
         {
           "order": 2,
           "speaker": "유웅룡",
           "text": "[수첩을 책상에 던진다]",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.png"
+          "portrait": "assets/portraits/yuu.jpeg"
         },
         {
           "order": 3,
           "speaker": "편집장",
           "text": "이판규 사건. 무죄 판결. 어떻게 된 일이야?",
           "style": "normal",
-          "portrait": "assets/portraits/editor.png"
+          "portrait": "assets/portraits/editor.jpeg"
         },
         {
           "order": 4,
           "speaker": "유웅룡",
           "text": "법대로 됐겠지요.",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.png"
+          "portrait": "assets/portraits/yuu.jpeg"
         },
         {
           "order": 5,
           "speaker": "편집장",
           "text": "기묘하게 써와. 팔릴 기사로.",
           "style": "normal",
-          "portrait": "assets/portraits/editor.png"
+          "portrait": "assets/portraits/editor.jpeg"
         }
       ],
       "choices": [
@@ -133,49 +133,49 @@ window.GAME_DATA = {
           "speaker": "이판규",
           "text": "[초점 없는 눈으로 허공을 본다. 입술이 달싹인다.]",
           "style": "normal",
-          "portrait": "assets/portraits/ipangyu.png"
+          "portrait": "assets/portraits/ipangyu.jpeg"
         },
         {
           "order": 3,
           "speaker": "유웅룡",
           "text": "이판규. 나야. 기자. 기억해?",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.png"
+          "portrait": "assets/portraits/yuu.jpeg"
         },
         {
           "order": 4,
           "speaker": "이판규",
           "text": "…기자.",
           "style": "normal",
-          "portrait": "assets/portraits/ipangyu.png"
+          "portrait": "assets/portraits/ipangyu.jpeg"
         },
         {
           "order": 5,
           "speaker": "유웅룡",
           "text": "무죄 판결이 났어. 이제 나와도 됐는데.",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.png"
+          "portrait": "assets/portraits/yuu.jpeg"
         },
         {
           "order": 6,
           "speaker": "이판규",
           "text": "판결이 뭐하나. 청의의 감응이 오지 않았다. 문이… 열리지 않았다.",
           "style": "normal",
-          "portrait": "assets/portraits/ipangyu.png"
+          "portrait": "assets/portraits/ipangyu.jpeg"
         },
         {
           "order": 7,
           "speaker": "유웅룡",
           "text": "청의? 그게 뭔데?",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.png"
+          "portrait": "assets/portraits/yuu.jpeg"
         },
         {
           "order": 8,
           "speaker": "이판규",
           "text": "[철창을 붙잡으며] 제발… 나를 꺼내줘… 아직 늦지 않았어…",
           "style": "normal",
-          "portrait": "assets/portraits/ipangyu.png"
+          "portrait": "assets/portraits/ipangyu.jpeg"
         }
       ],
       "choices": [
@@ -231,7 +231,7 @@ window.GAME_DATA = {
           "speaker": "유웅룡",
           "text": "[발자국을 따라 천천히 걷는다]",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.png"
+          "portrait": "assets/portraits/yuu.jpeg"
         },
         {
           "order": 5,
@@ -245,7 +245,7 @@ window.GAME_DATA = {
           "speaker": "유웅룡",
           "text": "[한 걸음 물러선다. 손이 떨린다.]",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.png"
+          "portrait": "assets/portraits/yuu.jpeg"
         },
         {
           "order": 7,
@@ -301,14 +301,14 @@ window.GAME_DATA = {
           "speaker": "송순",
           "text": "어서오세요.",
           "style": "normal",
-          "portrait": "assets/portraits/sungsun.png"
+          "portrait": "assets/portraits/songsoon.jpeg"
         },
         {
           "order": 3,
           "speaker": "유웅룡",
           "text": "커피 한 잔.",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.png"
+          "portrait": "assets/portraits/yuu.jpeg"
         },
         {
           "order": 4,
@@ -322,42 +322,42 @@ window.GAME_DATA = {
           "speaker": "송순",
           "text": "혹시… 신문사 분이세요?",
           "style": "normal",
-          "portrait": "assets/portraits/sungsun.png"
+          "portrait": "assets/portraits/songsoon.jpeg"
         },
         {
           "order": 6,
           "speaker": "유웅룡",
           "text": "[놀라며] 왜요?",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.png"
+          "portrait": "assets/portraits/yuu.jpeg"
         },
         {
           "order": 7,
           "speaker": "송순",
           "text": "[목소리를 낮춘다] 이판규 기사 쓰신 분이시죠.",
           "style": "normal",
-          "portrait": "assets/portraits/sungsun.png"
+          "portrait": "assets/portraits/songsoon.jpeg"
         },
         {
           "order": 8,
           "speaker": "유웅룡",
           "text": "그렇게 보여요?",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.png"
+          "portrait": "assets/portraits/yuu.jpeg"
         },
         {
           "order": 9,
           "speaker": "송순",
           "text": "[주변을 살피며] 제 언니가… 김송금이에요. 요즘 안 나왔어요.",
           "style": "normal",
-          "portrait": "assets/portraits/sungsun.png"
+          "portrait": "assets/portraits/songsoon.jpeg"
         },
         {
           "order": 10,
           "speaker": "송순",
           "text": "혹시 아세요? 어디 있는지…",
           "style": "normal",
-          "portrait": "assets/portraits/sungsun.png"
+          "portrait": "assets/portraits/songsoon.jpeg"
         }
       ],
       "choices": [
@@ -407,49 +407,49 @@ window.GAME_DATA = {
           "speaker": "송순",
           "text": "유웅룡 씨.",
           "style": "normal",
-          "portrait": "assets/portraits/sungsun.png"
+          "portrait": "assets/portraits/songsoon.jpeg"
         },
         {
           "order": 3,
           "speaker": "유웅룡",
           "text": "[멈춘다. 돌아보지 않는다.]",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.png"
+          "portrait": "assets/portraits/yuu.jpeg"
         },
         {
           "order": 4,
           "speaker": "송순",
           "text": "언니 어디 있어요.",
           "style": "normal",
-          "portrait": "assets/portraits/sungsun.png"
+          "portrait": "assets/portraits/songsoon.jpeg"
         },
         {
           "order": 5,
           "speaker": "유웅룡",
           "text": "[침묵. 거짓말을 할 수 없다.]",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.png"
+          "portrait": "assets/portraits/yuu.jpeg"
         },
         {
           "order": 6,
           "speaker": "송순",
           "text": "[표정이 굳는다] 살아 있어요?",
           "style": "normal",
-          "portrait": "assets/portraits/sungsun.png"
+          "portrait": "assets/portraits/songsoon.jpeg"
         },
         {
           "order": 7,
           "speaker": "유웅룡",
           "text": "모르겠어요. 그래서 찾아야 해요.",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.png"
+          "portrait": "assets/portraits/yuu.jpeg"
         },
         {
           "order": 8,
           "speaker": "송순",
           "text": "[눈빛이 변한다] 같이 가요.",
           "style": "normal",
-          "portrait": "assets/portraits/sungsun.png"
+          "portrait": "assets/portraits/songsoon.jpeg"
         }
       ],
       "choices": [
@@ -491,14 +491,14 @@ window.GAME_DATA = {
           "speaker": "유웅룡",
           "text": "언니가 여기 자주 왔어요?",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.png"
+          "portrait": "assets/portraits/yuu.jpeg"
         },
         {
           "order": 3,
           "speaker": "송순",
           "text": "[고개를 젓는다] 무대 뒤는 아무나 못 들어와요. 그런데 언니는…",
           "style": "normal",
-          "portrait": "assets/portraits/sungsun.png"
+          "portrait": "assets/portraits/songsoon.jpeg"
         },
         {
           "order": 4,
@@ -512,7 +512,7 @@ window.GAME_DATA = {
           "speaker": "유웅룡",
           "text": "[상자를 꺼낸다]",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.png"
+          "portrait": "assets/portraits/yuu.jpeg"
         },
         {
           "order": 6,
@@ -526,14 +526,14 @@ window.GAME_DATA = {
           "speaker": "송순",
           "text": "[목이 메인다] 언니 옷이야…",
           "style": "normal",
-          "portrait": "assets/portraits/sungsun.png"
+          "portrait": "assets/portraits/songsoon.jpeg"
         },
         {
           "order": 8,
           "speaker": "유웅룡",
           "text": "일기장이 있어요.",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.png"
+          "portrait": "assets/portraits/yuu.jpeg"
         },
         {
           "order": 9,
@@ -589,7 +589,7 @@ window.GAME_DATA = {
           "speaker": "송순",
           "text": "[벽에 손을 얹는다. 차갑다.]",
           "style": "normal",
-          "portrait": "assets/portraits/sungsun.png"
+          "portrait": "assets/portraits/songsoon.jpeg"
         },
         {
           "order": 3,
@@ -610,14 +610,14 @@ window.GAME_DATA = {
           "speaker": "송순",
           "text": "[공포에 떨며] 언니…?",
           "style": "normal",
-          "portrait": "assets/portraits/sungsun.png"
+          "portrait": "assets/portraits/songsoon.jpeg"
         },
         {
           "order": 6,
           "speaker": "유웅룡",
           "text": "[송순의 팔을 잡는다] 나가자. 지금 당장.",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.png"
+          "portrait": "assets/portraits/yuu.jpeg"
         },
         {
           "order": 7,
@@ -666,7 +666,7 @@ window.GAME_DATA = {
           "speaker": "유웅룡",
           "text": "[1924년 신문을 넘긴다]",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.png"
+          "portrait": "assets/portraits/yuu.jpeg"
         },
         {
           "order": 3,
@@ -680,7 +680,7 @@ window.GAME_DATA = {
           "speaker": "유웅룡",
           "text": "[기자명을 찾는다] …편집장.",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.png"
+          "portrait": "assets/portraits/yuu.jpeg"
         },
         {
           "order": 5,
@@ -694,7 +694,7 @@ window.GAME_DATA = {
           "speaker": "유웅룡",
           "text": "[담배를 꺼낸다. 불을 붙이지 않는다] 그 남자가 알고 있었어.",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.png"
+          "portrait": "assets/portraits/yuu.jpeg"
         }
       ],
       "choices": [],
@@ -736,7 +736,7 @@ window.GAME_DATA = {
           "speaker": "유웅룡",
           "text": "누가 이끄는 거예요?",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.png"
+          "portrait": "assets/portraits/yuu.jpeg"
         },
         {
           "order": 4,
@@ -806,35 +806,35 @@ window.GAME_DATA = {
           "speaker": "송순",
           "text": "옥련 씨. 언니가 어디 있어?",
           "style": "normal",
-          "portrait": "assets/portraits/sungsun.png"
+          "portrait": "assets/portraits/songsoon.jpeg"
         },
         {
           "order": 4,
           "speaker": "옥련",
           "text": "[한참 침묵하다가] 음악실. 지하 음악실.",
           "style": "normal",
-          "portrait": "assets/portraits/okryeon.png"
+          "portrait": "assets/portraits/okryeon.jpeg"
         },
         {
           "order": 5,
           "speaker": "옥련",
           "text": "언니가… 선택받았대요. 이해심이 직접.",
           "style": "normal",
-          "portrait": "assets/portraits/okryeon.png"
+          "portrait": "assets/portraits/okryeon.jpeg"
         },
         {
           "order": 6,
           "speaker": "송순",
           "text": "선택받다니. 뭘 위해서?",
           "style": "normal",
-          "portrait": "assets/portraits/sungsun.png"
+          "portrait": "assets/portraits/songsoon.jpeg"
         },
         {
           "order": 7,
           "speaker": "옥련",
           "text": "[눈물이 흐른다] 청의의 무녀. 노래하는 그릇.",
           "style": "normal",
-          "portrait": "assets/portraits/okryeon.png"
+          "portrait": "assets/portraits/okryeon.jpeg"
         }
       ],
       "choices": [],
@@ -854,35 +854,35 @@ window.GAME_DATA = {
           "speaker": "옥련",
           "text": "나도 거기 들었었어요. 의식에. 하지만…",
           "style": "normal",
-          "portrait": "assets/portraits/okryeon.png"
+          "portrait": "assets/portraits/okryeon.jpeg"
         },
         {
           "order": 2,
           "speaker": "옥련",
           "text": "[손이 떨린다] 도망쳤어요. 죽을 것 같았어요.",
           "style": "normal",
-          "portrait": "assets/portraits/okryeon.png"
+          "portrait": "assets/portraits/okryeon.jpeg"
         },
         {
           "order": 3,
           "speaker": "옥련",
           "text": "그곳은 사람의 장소가 아니에요. 문이 있어요. 뭔가 들어오려 해요.",
           "style": "normal",
-          "portrait": "assets/portraits/okryeon.png"
+          "portrait": "assets/portraits/okryeon.jpeg"
         },
         {
           "order": 4,
           "speaker": "송순",
           "text": "[눈이 흔들린다] 지금도 거기 있어?",
           "style": "normal",
-          "portrait": "assets/portraits/sungsun.png"
+          "portrait": "assets/portraits/songsoon.jpeg"
         },
         {
           "order": 5,
           "speaker": "옥련",
           "text": "[깊게 숨을 들이쉰다] 지하야. 카페 밑 지하. 거기 있어.",
           "style": "normal",
-          "portrait": "assets/portraits/okryeon.png"
+          "portrait": "assets/portraits/okryeon.jpeg"
         }
       ],
       "choices": [
@@ -932,35 +932,35 @@ window.GAME_DATA = {
           "speaker": "유웅룡",
           "text": "뭘 알아냈어요?",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.png"
+          "portrait": "assets/portraits/yuu.jpeg"
         },
         {
           "order": 3,
           "speaker": "송순",
           "text": "언니가 선택받았어요. 청의의 무녀로. 지하에 있어요.",
           "style": "normal",
-          "portrait": "assets/portraits/sungsun.png"
+          "portrait": "assets/portraits/songsoon.jpeg"
         },
         {
           "order": 4,
           "speaker": "유웅룡",
           "text": "[오래된 신문 뭉치를 꺼낸다] 이게 처음이 아니에요. 1923년부터야.",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.png"
+          "portrait": "assets/portraits/yuu.jpeg"
         },
         {
           "order": 5,
           "speaker": "송순",
           "text": "[눈빛이 변한다] 그 전에도…?",
           "style": "normal",
-          "portrait": "assets/portraits/sungsun.png"
+          "portrait": "assets/portraits/songsoon.jpeg"
         },
         {
           "order": 6,
           "speaker": "유웅룡",
           "text": "[문을 연다] 내려가요.",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.png"
+          "portrait": "assets/portraits/yuu.jpeg"
         },
         {
           "order": 7,
@@ -981,7 +981,7 @@ window.GAME_DATA = {
           "speaker": "송순",
           "text": "[공포에 떨며] 저건…",
           "style": "normal",
-          "portrait": "assets/portraits/sungsun.png"
+          "portrait": "assets/portraits/songsoon.jpeg"
         },
         {
           "order": 10,
@@ -995,7 +995,7 @@ window.GAME_DATA = {
           "speaker": "유웅룡",
           "text": "묵표자야. 뛰어.",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.png"
+          "portrait": "assets/portraits/yuu.jpeg"
         }
       ],
       "choices": [],
@@ -1022,7 +1022,7 @@ window.GAME_DATA = {
           "speaker": "천용해",
           "text": "[목소리가 울려 퍼진다] 오셨군요. 늦었지만. 보셔도 됩니다.",
           "style": "normal",
-          "portrait": "assets/portraits/cheon.png"
+          "portrait": "assets/portraits/cheon.jpeg"
         },
         {
           "order": 3,
@@ -1036,49 +1036,49 @@ window.GAME_DATA = {
           "speaker": "송순",
           "text": "[숨이 멎는다] 언니…",
           "style": "normal",
-          "portrait": "assets/portraits/sungsun.png"
+          "portrait": "assets/portraits/songsoon.jpeg"
         },
         {
           "order": 5,
           "speaker": "천용해",
           "text": "그릇은 셋이었소. 둘은 쓰였고. 셋째가 마지막이오.",
           "style": "normal",
-          "portrait": "assets/portraits/cheon.png"
+          "portrait": "assets/portraits/cheon.jpeg"
         },
         {
           "order": 6,
           "speaker": "천용해",
           "text": "동방은 불로, 서방은 얼음으로. 그리고 우리만 남는다.",
           "style": "normal",
-          "portrait": "assets/portraits/cheon.png"
+          "portrait": "assets/portraits/cheon.jpeg"
         },
         {
           "order": 7,
           "speaker": "이해심",
           "text": "[그림자에서 나타난다]",
           "style": "normal",
-          "portrait": "assets/portraits/haesim.png"
+          "portrait": "assets/portraits/haesim.jpeg"
         },
         {
           "order": 8,
           "speaker": "이해심",
           "text": "막아도 소용없어. 문은 이미 열리고 있어.",
           "style": "normal",
-          "portrait": "assets/portraits/haesim.png"
+          "portrait": "assets/portraits/haesim.jpeg"
         },
         {
           "order": 9,
           "speaker": "유웅룡",
           "text": "[앞으로 나간다] 그 여자를 돌려줘.",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.png"
+          "portrait": "assets/portraits/yuu.jpeg"
         },
         {
           "order": 10,
           "speaker": "이해심",
           "text": "[눈에서 피가 흐른다] 늦었다.",
           "style": "normal",
-          "portrait": "assets/portraits/haesim.png"
+          "portrait": "assets/portraits/haesim.jpeg"
         }
       ],
       "choices": [
@@ -1135,7 +1135,7 @@ window.GAME_DATA = {
           "speaker": "송순",
           "text": "[노래를 부른다. 언니의 목소리가 뒤섞인다.]",
           "style": "normal",
-          "portrait": "assets/portraits/sungsun.png"
+          "portrait": "assets/portraits/songsoon.jpeg"
         },
         {
           "order": 2,
@@ -1156,14 +1156,14 @@ window.GAME_DATA = {
           "speaker": "이해심",
           "text": "[비명처럼 외친다] 아니다! 아직 아니야—",
           "style": "normal",
-          "portrait": "assets/portraits/haesim.png"
+          "portrait": "assets/portraits/haesim.jpeg"
         },
         {
           "order": 5,
           "speaker": "유웅룡",
           "text": "[선택을 해야 한다.]",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.png"
+          "portrait": "assets/portraits/yuu.jpeg"
         }
       ],
       "choices": [
@@ -1212,7 +1212,7 @@ window.GAME_DATA = {
           "speaker": "이해심",
           "text": "[무릎을 꿇는다. 쓰러진다.]",
           "style": "normal",
-          "portrait": "assets/portraits/haesim.png"
+          "portrait": "assets/portraits/haesim.jpeg"
         },
         {
           "order": 3,
@@ -1226,14 +1226,14 @@ window.GAME_DATA = {
           "speaker": "송금",
           "text": "[낮고 공허한 목소리] 송순…?",
           "style": "normal",
-          "portrait": "assets/portraits/songeum.png"
+          "portrait": "assets/portraits/songeum.jpeg"
         },
         {
           "order": 5,
           "speaker": "송순",
           "text": "[달려가 손을 잡는다]",
           "style": "normal",
-          "portrait": "assets/portraits/sungsun.png"
+          "portrait": "assets/portraits/songsoon.jpeg"
         },
         {
           "order": 6,
@@ -1247,7 +1247,7 @@ window.GAME_DATA = {
           "speaker": "유웅룡",
           "text": "[수첩을 꺼낸다. 쓴다. 손이 떨린다.]",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.png"
+          "portrait": "assets/portraits/yuu.jpeg"
         }
       ],
       "choices": [],
@@ -1275,14 +1275,14 @@ window.GAME_DATA = {
           "speaker": "유웅룡",
           "text": "[이해심 앞을 막아선다]",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.png"
+          "portrait": "assets/portraits/yuu.jpeg"
         },
         {
           "order": 2,
           "speaker": "이해심",
           "text": "[비틀린다. 피가 더 흐른다.]",
           "style": "normal",
-          "portrait": "assets/portraits/haesim.png"
+          "portrait": "assets/portraits/haesim.jpeg"
         },
         {
           "order": 3,
@@ -1303,14 +1303,14 @@ window.GAME_DATA = {
           "speaker": "송순",
           "text": "[송금의 이름을 부르며 운다. 대답이 없다.]",
           "style": "normal",
-          "portrait": "assets/portraits/sungsun.png"
+          "portrait": "assets/portraits/songsoon.jpeg"
         },
         {
           "order": 6,
           "speaker": "유웅룡",
           "text": "[수첩에 모든 것을 기록한다. 알고 있는 모든 것을.]",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.png"
+          "portrait": "assets/portraits/yuu.jpeg"
         }
       ],
       "choices": [],
@@ -1365,14 +1365,14 @@ window.GAME_DATA = {
           "speaker": "유웅룡",
           "text": "[송순을 바라본다]",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.png"
+          "portrait": "assets/portraits/yuu.jpeg"
         },
         {
           "order": 7,
           "speaker": "송순",
           "text": "[침묵. 눈빛만이 말한다.]",
           "style": "normal",
-          "portrait": "assets/portraits/sungsun.png"
+          "portrait": "assets/portraits/songsoon.jpeg"
         },
         {
           "order": 8,
@@ -1420,21 +1420,21 @@ window.GAME_DATA = {
           "speaker": "편집장",
           "text": "[유웅룡의 수첩을 한참 들여다본다.]",
           "style": "normal",
-          "portrait": "assets/portraits/editor.png"
+          "portrait": "assets/portraits/editor.jpeg"
         },
         {
           "order": 5,
           "speaker": "편집장",
           "text": "[서랍에 넣는다.]",
           "style": "normal",
-          "portrait": "assets/portraits/editor.png"
+          "portrait": "assets/portraits/editor.jpeg"
         },
         {
           "order": 6,
           "speaker": "유웅룡",
           "text": "[담배를 피운다. 창밖을 본다.]",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.png"
+          "portrait": "assets/portraits/yuu.jpeg"
         },
         {
           "order": 7,

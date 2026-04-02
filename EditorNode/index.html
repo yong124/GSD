@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>경성뎐 — Node Editor</title>
+  <link rel="stylesheet" href="editor.css">
+</head>
+<body>
+  <div id="toolbar">
+    <span class="logo">경성뎐 Node Editor</span>
+    <button id="btn-add-node">+ 씬 추가</button>
+    <button id="btn-load">불러오기</button>
+    <button id="btn-export">내보내기</button>
+    <span id="status"></span>
+  </div>
+
+  <div id="workspace">
+    <div id="viewport">
+      <div id="canvas">
+        <svg id="wire-layer" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div id="node-layer"></div>
+      </div>
+    </div>
+
+    <div id="panel">
+      <div id="panel-empty">씬을 선택하세요</div>
+      <div id="panel-content" class="hidden">
+        <div id="panel-header">
+          <input id="field-title" type="text" placeholder="씬 제목">
+          <button id="btn-delete-scene" class="danger">씬 삭제</button>
+        </div>
+
+        <div class="panel-section">
+          <div class="section-label">배경</div>
+          <input id="field-background" type="text" placeholder="assets/backgrounds/...">
+        </div>
+
+        <div class="panel-section">
+          <div class="section-label">대사
+            <button id="btn-add-dialogue" class="small">+</button>
+          </div>
+          <div id="dialogue-list"></div>
+        </div>
+
+        <div class="panel-section">
+          <div class="section-label">선택지
+            <button id="btn-add-choice" class="small">+</button>
+          </div>
+          <div id="choice-list"></div>
+        </div>
+
+        <div class="panel-section">
+          <div class="section-label">분기
+            <button id="btn-add-branch" class="small">+</button>
+          </div>
+          <div id="branch-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="editor.js"></script>
+</body>
+</html>
