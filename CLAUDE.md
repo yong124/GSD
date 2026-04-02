@@ -25,9 +25,9 @@ G:/GSD/
 │       ├── portraits/       # *.jpeg (예외: kum_fixed.png, pan_crazy.png)
 │       ├── backgrounds/     # *.jpg
 │       └── items/           # *.png
-├── editor/                  # ADV 에디터 (port 3901)
+├── EditorNode/              # 메인 노드형 에디터 (port 3901)
 │   ├── index.html
-│   ├── editor.js            # IIFE + state{} + render() 패턴
+│   ├── editor.js
 │   └── editor.css
 └── content/
     ├── data/
@@ -35,7 +35,7 @@ G:/GSD/
     ├── tools/
     │   └── export_to_json.py # xlsx → game_data.js 변환
     └── docs/system/
-        └── TABLE_SPEC.md    # 테이블 스키마 문서
+        └── core/TABLE_SPEC.md # 테이블 스키마 문서
 ```
 
 ## 데이터 흐름
@@ -52,11 +52,11 @@ game_data.js 수정 필요 시 반드시 xlsx에서 수정 후 재export. 직접
 # 게임 (game/ 폴더 기준)
 python -m http.server 3900   # http://localhost:3900/index.html
 
-# 에디터 (GSD/ 루트 기준)
-python -m http.server 3901   # http://localhost:3901/editor/index.html
+# 노드형 에디터 (GSD/ 루트 기준)
+python -m http.server 3901   # http://localhost:3901/EditorNode/index.html
 ```
 
-launch.json에 두 설정 모두 있음 (`경성뎐`, `adv-editor`).
+launch.json에 게임/에디터 실행 설정이 있다.
 
 ## game_data.js 스키마 요약
 
@@ -102,21 +102,15 @@ window.GAME_DATA = {
 
 ## 에디터 패턴
 
-```js
-// 카드 액션 바인딩 (Up/Down/Copy/Delete)
-bindCardActions(card, action => { ... });
-
-// 필드 변경 바인딩 (input, textarea, select 모두)
-bindFieldUpdates(card, (field, value) => { ... });
-
-// 렌더 사이클
-markDirty() → render() → renderSceneList() + renderEditor() + renderPreview() + renderFlagPanel()
-```
+- 메인 편집 도구는 `EditorNode/`
+- 씬 구조, 대사, 선택지, 분기, 단서를 노드 기반으로 편집한다
+- 검색 / 필터 / 검수 / 프리뷰 / generated xlsx 흐름을 함께 운용한다
 
 ## 알려진 주의사항
 
 - `main.css`: `@import` 반드시 첫 번째 줄 (CSS 규칙)
 - Portrait 에셋: 실제 파일은 `.jpeg` (일부 `.png`). game_data.js 경로와 일치 확인
 - `game_data.js` 직접 편집 시 `content/tools/export_to_json.py` 재실행하면 덮어써짐
+- 예전 `editor/` 카드형 에디터는 더 이상 기준 도구가 아니다
 - `State.serialize()`는 `dialogueIndex` 제외하고 저장 (재시작 시 씬 처음부터)
 - branches `flag_value`: 엔진은 배열도 지원하나 에디터는 단일값만 입력

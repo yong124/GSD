@@ -109,7 +109,7 @@ Node Editor
 
 1. 노드형 에디터에서 데이터 수정
 2. `game_data.js` 갱신
-3. `json_to_xlsx.py` 실행
+3. `json_to_generated_xlsx.py` 실행
 4. 생성된 xlsx를 검수 / 공유 / 백업용으로 사용
 
 ---

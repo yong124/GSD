@@ -42,7 +42,7 @@ py G:\GSD\content\tools\json_to_generated_xlsx.py --sheets DialogTable,ChoiceTab
 ### 4-1. xlsx
 
 - `content/generated/script.generated.xlsx`
-- 선택 시 `content/generated/script.dialog_only.xlsx` 같은 별도 파일도 생성 가능
+- 필요 시 별도 출력 파일명을 지정해 생성할 수 있다
 
 ### 4-2. 보조 파일
 

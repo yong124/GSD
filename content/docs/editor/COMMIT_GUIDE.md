@@ -39,10 +39,8 @@ feat: expand Node Editor into main narrative workflow tool
 - `content/data/*`
 - `content/generated/*`
 - `content/tools/*`
-- `content/tools/legacy/*`
 - `content/docs/**/*`
 - `CLAUDE.md`
-- `NEXT_STEPS.md`
 - `game/js/main.js`
 
 내용:
@@ -80,7 +78,7 @@ chore: regenerate runtime narrative data
 
 - `game_data.js`는 생성 파일이므로, 가능하면 별도 커밋으로 분리하는 편이 diff 확인에 좋다.
 - generated 산출물은 필요할 때만 포함한다.
-- `tools/legacy`는 보관 목적이므로 삭제 커밋과 섞지 않는 편이 보기 쉽다.
+- generated 산출물 샘플이나 구형 도구 삭제는 구조 정리 커밋과 함께 묶는 편이 보기 쉽다.
 
 ---
 
