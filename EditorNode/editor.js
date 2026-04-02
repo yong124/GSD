@@ -16,12 +16,15 @@
     data: { first_scene: '', scenes: {} },
     layout: {},       // { sceneId: { x, y } }
     selectedId: null,
+    selectedIds: new Set(),
     previewDialogueIndex: 0,
     filters: { query: '', chapter: '' },
     camera: { x: 100, y: 100, scale: 1 },
     wire: null,       // { fromId, pinType:'out'|'branch', branchIdx, x1, y1 }
     panning: null,    // { startX, startY, camX, camY }
     dragging: null,   // { nodeId, startMouseX, startMouseY, startNodeX, startNodeY }
+    marquee: null,    // { startX, startY, currentX, currentY, additive }
+    suppressViewportClick: false,
     dirty: false,
     history: [],      // undo 스택 (최대 30)
     future: [],       // redo 스택
@@ -36,6 +39,7 @@
     els.canvas       = $('canvas');
     els.wireLayer    = $('wire-layer');
     els.nodeLayer    = $('node-layer');
+    els.marquee      = $('marquee-selection');
     els.panel        = $('panel');
     els.panelEmpty   = $('panel-empty');
     els.panelContent = $('panel-content');
@@ -101,6 +105,108 @@
     setStatus('● 미저장 변경사항');
   }
 
+  function ensurePrimarySelection() {
+    if (state.selectedId && state.data.scenes[state.selectedId]) {
+      state.selectedIds.add(state.selectedId);
+      return;
+    }
+    const next = [...state.selectedIds].find(id => state.data.scenes[id]);
+    state.selectedId = next || null;
+    if (state.selectedId) state.selectedIds.add(state.selectedId);
+  }
+
+  function isSceneSelected(id) {
+    return state.selectedIds.has(id);
+  }
+
+  function clearSelection() {
+    state.selectedId = null;
+    state.selectedIds = new Set();
+    state.previewDialogueIndex = 0;
+  }
+
+  function getSelectedSceneIds() {
+    ensurePrimarySelection();
+    return [...state.selectedIds].filter(id => state.data.scenes[id]);
+  }
+
+  function selectScene(id, options = {}) {
+    const { additive = false, toggle = false, preservePreview = false } = options;
+    if (!state.data.scenes[id]) return;
+
+    if (toggle) {
+      if (state.selectedIds.has(id)) {
+        state.selectedIds.delete(id);
+        if (state.selectedId === id) {
+          state.selectedId = [...state.selectedIds][0] || null;
+        }
+      } else {
+        state.selectedIds.add(id);
+        state.selectedId = id;
+      }
+    } else if (additive) {
+      state.selectedIds.add(id);
+      state.selectedId = id;
+    } else {
+      state.selectedId = id;
+      state.selectedIds = new Set([id]);
+    }
+
+    ensurePrimarySelection();
+    if (!preservePreview) state.previewDialogueIndex = 0;
+    renderNodes();
+    renderPanel();
+    renderMinimap();
+  }
+
+  function updateMarqueeVisual() {
+    if (!els.marquee) return;
+    if (!state.marquee) {
+      els.marquee.classList.add('hidden');
+      return;
+    }
+    const { startX, startY, currentX, currentY } = state.marquee;
+    const left = Math.min(startX, currentX);
+    const top = Math.min(startY, currentY);
+    const width = Math.abs(currentX - startX);
+    const height = Math.abs(currentY - startY);
+    els.marquee.classList.remove('hidden');
+    els.marquee.style.left = `${left}px`;
+    els.marquee.style.top = `${top}px`;
+    els.marquee.style.width = `${width}px`;
+    els.marquee.style.height = `${height}px`;
+  }
+
+  function selectScenesInRect(rect, additive = false) {
+    const visibleIds = getFilteredSceneIds();
+    const nextSelected = additive ? new Set(state.selectedIds) : new Set();
+
+    Object.entries(state.data.scenes || {}).forEach(([id, scene]) => {
+      if (!visibleIds.has(id)) return;
+      const pos = state.layout[id];
+      if (!pos) return;
+      const sceneRect = {
+        left: pos.x,
+        top: pos.y,
+        right: pos.x + NODE_W,
+        bottom: pos.y + nodeHeight(scene),
+      };
+      const intersects =
+        sceneRect.left <= rect.right &&
+        sceneRect.right >= rect.left &&
+        sceneRect.top <= rect.bottom &&
+        sceneRect.bottom >= rect.top;
+      if (intersects) nextSelected.add(id);
+    });
+
+    state.selectedIds = nextSelected;
+    state.selectedId = [...nextSelected].pop() || null;
+    ensurePrimarySelection();
+    renderNodes();
+    renderPanel();
+    renderMinimap();
+  }
+
   // ── Undo 히스토리 ─────────────────────────────────────
   function snapshotState() {
     return JSON.stringify({
@@ -127,10 +233,8 @@
     saveLayout();
     markDirty();
     render();
-    // 선택된 씬이 사라졌으면 해제
-    if (state.selectedId && !state.data.scenes[state.selectedId]) {
-      state.selectedId = null;
-    }
+    state.selectedIds = new Set([...state.selectedIds].filter(id => state.data.scenes[id]));
+    ensurePrimarySelection();
     renderPanel();
     setStatus('↩ 실행 취소');
   }
@@ -141,9 +245,8 @@
     saveLayout();
     markDirty();
     render();
-    if (state.selectedId && !state.data.scenes[state.selectedId]) {
-      state.selectedId = null;
-    }
+    state.selectedIds = new Set([...state.selectedIds].filter(id => state.data.scenes[id]));
+    ensurePrimarySelection();
     renderPanel();
     setStatus('↪ 다시 실행');
   }
@@ -442,7 +545,7 @@
       if (!visibleIds.has(id)) return;
       const pos = state.layout[id] || { x: 40, y: 40 };
       const isFirst = id === state.data.first_scene;
-      const isSelected = id === state.selectedId;
+      const isSelected = isSceneSelected(id);
       const preview = scene.dialogues?.[0]?.text || '(대사 없음)';
       const branches = scene.branches || [];
       const choices  = scene.choices  || [];
@@ -488,25 +591,33 @@
 
       // 노드 선택
       node.addEventListener('mousedown', e => {
+        if (e.button !== 0) return;
         if (e.target.classList.contains('pin-in') ||
             e.target.classList.contains('pin-out') ||
             e.target.classList.contains('pin-branch') ||
             e.target.classList.contains('pin-choice')) return;
         e.stopPropagation();
-        selectScene(id);
+        e.preventDefault();
+        const additive = e.ctrlKey || e.metaKey;
+        const alreadySelected = isSceneSelected(id);
+        if (!alreadySelected || additive) {
+          selectScene(id, { additive, toggle: additive, preservePreview: alreadySelected });
+        }
 
         // 노드 드래그 (헤더에서만)
-        if (e.target.closest('.node-header')) {
-          state.dragging = {
-            nodeId: id,
-            startMouseX: e.clientX,
-            startMouseY: e.clientY,
-            startNodeX: pos.x,
-            startNodeY: pos.y,
-            historyCaptured: false,
-            moved: false,
-          };
-        }
+        const dragIds = alreadySelected && !additive ? getSelectedSceneIds() : [id];
+        state.dragging = {
+          nodeId: id,
+          startMouseX: e.clientX,
+          startMouseY: e.clientY,
+          startPositions: dragIds.reduce((acc, sceneId) => {
+            const scenePos = state.layout[sceneId] || { x: 40, y: 40 };
+            acc[sceneId] = { x: scenePos.x, y: scenePos.y };
+            return acc;
+          }, {}),
+          historyCaptured: false,
+          moved: false,
+        };
       });
 
       els.nodeLayer.appendChild(node);
@@ -598,7 +709,7 @@
 
       ctx.fillStyle = fill;
       ctx.fillRect(x, y, w, h);
-      if (sceneId === state.selectedId) {
+      if (state.selectedIds.has(sceneId)) {
         ctx.strokeStyle = '#f1d37b';
         ctx.lineWidth = 2;
         ctx.strokeRect(x - 1, y - 1, w + 2, h + 2);
@@ -642,16 +753,9 @@
     setStatus('✓ 자동 정렬 적용 완료');
   }
 
-  // ── 씬 선택 → 패널 ───────────────────────────────────
-  function selectScene(id) {
-    state.selectedId = id;
-    renderNodes();
-    renderPanel();
-    renderMinimap();
-  }
-
   // ── 오른쪽 패널 ───────────────────────────────────────
   function renderPanel() {
+    ensurePrimarySelection();
     const id = state.selectedId;
     if (!id || !state.data.scenes[id]) {
       els.panelEmpty.classList.remove('hidden');
@@ -729,6 +833,8 @@
       (scene.branches || []).forEach(b => { if (b.next_scene === oldId) b.next_scene = newId; });
       (scene.choices  || []).forEach(c => { if (c.next_scene === oldId) c.next_scene = newId; });
     });
+    state.selectedIds.delete(oldId);
+    state.selectedIds.add(newId);
     state.selectedId = newId;
     saveLayout();
     markDirty();
@@ -1305,6 +1411,8 @@
     const pos = state.layout[id] || { x: 40, y: 40 };
     state.layout[nextId] = { x: pos.x + 48, y: pos.y + 48 };
     state.selectedId = nextId;
+    state.selectedIds = new Set([nextId]);
+    state.previewDialogueIndex = 0;
     saveLayout();
     markDirty();
     render();
@@ -1618,6 +1726,7 @@
       state.history = [];
       state.future = [];
       state.dirty = false;
+      state.selectedIds = new Set();
       state.filters = { query: '', chapter: '' };
       els.fieldSearch.value = '';
       autoLayout();
@@ -1675,13 +1784,34 @@
       (scene.branches || []).forEach(b => { if (b.next_scene === id) b.next_scene = ''; });
       (scene.choices  || []).forEach(c => { if (c.next_scene === id) c.next_scene = ''; });
     });
-    if (state.selectedId === id) {
-      state.selectedId = null;
-      renderPanel();
-    }
+    state.selectedIds.delete(id);
+    ensurePrimarySelection();
     saveLayout();
     markDirty();
     render();
+    renderPanel();
+  }
+
+  function deleteSelectedScenes() {
+    const selected = getSelectedSceneIds();
+    if (selected.length === 0) return;
+    pushHistory();
+    selected.forEach(id => {
+      if (!state.data.scenes[id]) return;
+      delete state.data.scenes[id];
+      delete state.layout[id];
+    });
+    Object.values(state.data.scenes).forEach(scene => {
+      if (selected.includes(scene.next_scene)) scene.next_scene = null;
+      (scene.branches || []).forEach(b => { if (selected.includes(b.next_scene)) b.next_scene = ''; });
+      (scene.choices || []).forEach(c => { if (selected.includes(c.next_scene)) c.next_scene = ''; });
+    });
+    clearSelection();
+    saveLayout();
+    markDirty();
+    render();
+    renderPanel();
+    setStatus(`✓ 씬 ${selected.length}개 삭제`);
   }
 
   // ── 이벤트 바인딩 ─────────────────────────────────────
@@ -1712,7 +1842,9 @@
       if (state.selectedId) duplicateScene(state.selectedId);
     });
     $('btn-delete-scene').addEventListener('click', () => {
-      if (state.selectedId) deleteScene(state.selectedId);
+      const selected = getSelectedSceneIds();
+      if (selected.length > 1) deleteSelectedScenes();
+      else if (state.selectedId) deleteScene(state.selectedId);
     });
     $('btn-add-dialogue').addEventListener('click', () => {
       const scene = state.data.scenes[state.selectedId];
@@ -1829,14 +1961,31 @@
       applyCamera();
     }, { passive: false });
 
-    // 패닝 (빈 공간 드래그)
+    // 빈 공간 드래그: 기본은 다중 선택, Alt+드래그는 패닝
     els.viewport.addEventListener('mousedown', e => {
-      if (e.target !== els.viewport && e.target !== els.canvas &&
-          e.target !== els.nodeLayer && e.target !== els.wireLayer &&
-          !e.target.closest('svg')) return;
+      if (e.button !== 0 && e.button !== 2) return;
+      const clickedPin = e.target.closest('.pin-in, .pin-out, .pin-branch, .pin-choice');
+      const clickedNode = e.target.closest('.node');
+      const clickedWorkspace = e.target === els.viewport || e.target === els.canvas ||
+        e.target === els.nodeLayer || e.target === els.wireLayer || !!e.target.closest('svg');
+      if (e.button === 2 && clickedPin) return;
+      if (e.button === 0 && !clickedWorkspace) return;
+      if (e.button === 2 && !clickedWorkspace && !clickedNode) return;
       e.preventDefault();
-      state.panning = { startX: e.clientX, startY: e.clientY,
-                        camX: state.camera.x, camY: state.camera.y };
+      if (e.button === 2) {
+        state.panning = { startX: e.clientX, startY: e.clientY,
+                          camX: state.camera.x, camY: state.camera.y };
+        return;
+      }
+      const start = toCanvas(e.clientX, e.clientY);
+      state.marquee = {
+        startX: start.x,
+        startY: start.y,
+        currentX: start.x,
+        currentY: start.y,
+        additive: e.ctrlKey || e.metaKey,
+      };
+      updateMarqueeVisual();
     });
 
     // 노드 드래그 / 와이어 드래그 / 패닝 mousemove
@@ -1847,28 +1996,52 @@
         applyCamera();
       }
       if (state.dragging) {
-        const { nodeId, startMouseX, startMouseY, startNodeX, startNodeY } = state.dragging;
+        const { startMouseX, startMouseY, startPositions } = state.dragging;
         const dx = (e.clientX - startMouseX) / state.camera.scale;
         const dy = (e.clientY - startMouseY) / state.camera.scale;
         if (!state.dragging.historyCaptured && (Math.abs(dx) > 0 || Math.abs(dy) > 0)) {
           pushHistory();
           state.dragging.historyCaptured = true;
         }
-        state.layout[nodeId] = { x: startNodeX + dx, y: startNodeY + dy };
+        Object.entries(startPositions).forEach(([sceneId, startPos]) => {
+          state.layout[sceneId] = { x: startPos.x + dx, y: startPos.y + dy };
+          const el = els.nodeLayer.querySelector(`[data-id="${sceneId}"]`);
+          if (el) {
+            el.style.left = state.layout[sceneId].x + 'px';
+            el.style.top  = state.layout[sceneId].y + 'px';
+          }
+        });
         state.dragging.moved = true;
-        const el = els.nodeLayer.querySelector(`[data-id="${nodeId}"]`);
-        if (el) {
-          el.style.left = state.layout[nodeId].x + 'px';
-          el.style.top  = state.layout[nodeId].y + 'px';
-        }
         renderWires();
+      }
+      if (state.marquee) {
+        const current = toCanvas(e.clientX, e.clientY);
+        state.marquee.currentX = current.x;
+        state.marquee.currentY = current.y;
+        updateMarqueeVisual();
       }
     });
 
     document.addEventListener('mouseup', () => {
       if (state.dragging?.moved) saveLayout();
+      if (state.marquee) {
+        const rect = {
+          left: Math.min(state.marquee.startX, state.marquee.currentX),
+          top: Math.min(state.marquee.startY, state.marquee.currentY),
+          right: Math.max(state.marquee.startX, state.marquee.currentX),
+          bottom: Math.max(state.marquee.startY, state.marquee.currentY),
+        };
+        const width = rect.right - rect.left;
+        const height = rect.bottom - rect.top;
+        if (width > 4 || height > 4) {
+          selectScenesInRect(rect, state.marquee.additive);
+          state.suppressViewportClick = true;
+        }
+      }
       state.panning  = null;
       state.dragging = null;
+      state.marquee = null;
+      updateMarqueeVisual();
     });
 
     // 핀 클릭 → 와이어 드래그
@@ -1912,12 +2085,21 @@
     });
 
     // viewport 클릭 시 선택 해제
+    els.viewport.addEventListener('contextmenu', e => {
+      if (!e.target.closest('.pin-in, .pin-out, .pin-branch, .pin-choice')) {
+        e.preventDefault();
+      }
+    });
+
     els.viewport.addEventListener('click', e => {
+      if (state.suppressViewportClick) {
+        state.suppressViewportClick = false;
+        return;
+      }
       if (e.target === els.viewport || e.target === els.canvas || e.target === els.nodeLayer) {
-        state.selectedId = null;
+        clearSelection();
         renderNodes();
-        els.panelEmpty.classList.remove('hidden');
-        els.panelContent.classList.add('hidden');
+        renderPanel();
         renderMinimap();
       }
     });
@@ -1927,15 +2109,16 @@
       if (e.ctrlKey && e.key === 's') { e.preventDefault(); exportData(); return; }
       if (e.ctrlKey && e.key === 'z') { e.preventDefault(); undo(); return; }
       if (e.ctrlKey && (e.key === 'y' || (e.shiftKey && e.key === 'Z'))) { e.preventDefault(); redo(); return; }
-      if (e.key === 'Delete' && !isTyping() && state.selectedId) {
-        deleteScene(state.selectedId);
+      const selected = getSelectedSceneIds();
+      if (e.key === 'Delete' && !isTyping() && selected.length) {
+        if (selected.length > 1) deleteSelectedScenes();
+        else deleteScene(state.selectedId);
         return;
       }
       if (e.key === 'Escape') {
-        state.selectedId = null;
+        clearSelection();
         renderNodes();
-        els.panelEmpty.classList.remove('hidden');
-        els.panelContent.classList.add('hidden');
+        renderPanel();
         renderMinimap();
       }
     });

@@ -24,7 +24,7 @@ window.GAME_DATA = {
           "speaker": "재판관",
           "text": "경성지방법원 제5호 법정. 피고 이판규, 아동 실종 및 살해 혐의… 심리를 개시한다.",
           "style": "normal",
-          "portrait": "assets/portraits/judge.png",
+          "portrait": "assets/portraits/judge.jpeg",
           "condition": null
         },
         {
@@ -32,7 +32,7 @@ window.GAME_DATA = {
           "speaker": "검사",
           "text": "피고 이판규는 한 달 간격으로 아홉 살, 열한 살 조선인 남자아이 두 명을 살해한 혐의입니다. 피해 아동의 입 안에서 파란 천 조각이 깊숙이 말려든 채 발견되었습니다. 이는 단순 사고가 아니라 의식의 흔적으로 보입니다.",
           "style": "normal",
-          "portrait": "assets/portraits/prosecutor.png",
+          "portrait": "assets/portraits/prosecutor.jpeg",
           "condition": null
         },
         {
@@ -40,7 +40,7 @@ window.GAME_DATA = {
           "speaker": "재판관",
           "text": "피해자 신원은 확인되었나?",
           "style": "normal",
-          "portrait": "assets/portraits/judge.png",
+          "portrait": "assets/portraits/judge.jpeg",
           "condition": null
         },
         {
@@ -48,7 +48,7 @@ window.GAME_DATA = {
           "speaker": "검사",
           "text": "아니오. 빈민가 출신 조선인 유아로 추정됩니다.",
           "style": "normal",
-          "portrait": "assets/portraits/prosecutor.png",
+          "portrait": "assets/portraits/prosecutor.jpeg",
           "condition": null
         },
         {
@@ -56,7 +56,7 @@ window.GAME_DATA = {
           "speaker": "재판관",
           "text": "유아라… 어린아이는 완전한 인격체로 보기 어렵지. 사망이라고 단정하기에도 증거가 빈약하군.",
           "style": "normal",
-          "portrait": "assets/portraits/judge.png",
+          "portrait": "assets/portraits/judge.jpeg",
           "condition": null
         },
         {
@@ -64,7 +64,7 @@ window.GAME_DATA = {
           "speaker": "변호인",
           "text": "피고인은 오래전부터 정신 질환을 앓아왔으며, 사건 당시 피해망상 증상이 관찰됐습니다. 또한 사체가 발견되지 않았고, 사고 실종 가능성도 배제할 수 없습니다.",
           "style": "normal",
-          "portrait": "assets/portraits/lawyer.png",
+          "portrait": "assets/portraits/lawyer.jpeg",
           "condition": null
         },
         {
@@ -72,7 +72,7 @@ window.GAME_DATA = {
           "speaker": "재판관",
           "text": "피해자는 불분명하고, 정신 이상 가능성은 높으며, 피고인도 피해자도 조선인 유아라는 말이지. 이 사건을 더 이상 확대해석하지 말게.",
           "style": "normal",
-          "portrait": "assets/portraits/judge.png",
+          "portrait": "assets/portraits/judge.jpeg",
           "condition": null
         },
         {
@@ -80,7 +80,7 @@ window.GAME_DATA = {
           "speaker": "재판관",
           "text": "증거 불충분 및 정신질환 의심을 이유로— 피고 이판규에게 무죄를 선고한다.",
           "style": "normal",
-          "portrait": "assets/portraits/judge.png",
+          "portrait": "assets/portraits/judge.jpeg",
           "condition": null
         },
         {
@@ -617,7 +617,7 @@ window.GAME_DATA = {
           "speaker": "경찰",
           "text": "기자 양반, 이리 와보쇼. 여깁니다.",
           "style": "normal",
-          "portrait": "assets/portraits/policeman.png",
+          "portrait": "assets/portraits/policeman.jpeg",
           "condition": null
         },
         {
@@ -726,7 +726,7 @@ window.GAME_DATA = {
           "speaker": "점장",
           "text": "어서 오십시오. 커피로 하시겠습니까?",
           "style": "normal",
-          "portrait": "assets/portraits/manager.png",
+          "portrait": "assets/portraits/manager.jpeg",
           "condition": null
         },
         {
@@ -742,7 +742,7 @@ window.GAME_DATA = {
           "speaker": "점장",
           "text": "아… 그런 이가 있긴 했지요. 요새는 무대에 세우지 않습니다. 집 안 공기가 좀 달라졌거든요. 밤늦게 남는 손님들은 노래보다 다른 걸 기다리는 눈치라.",
           "style": "normal",
-          "portrait": "assets/portraits/manager.png",
+          "portrait": "assets/portraits/manager.jpeg",
           "condition": null
         },
         {
@@ -750,7 +750,7 @@ window.GAME_DATA = {
           "speaker": "여급",
           "text": "그런 건 이제 안 해요. 이름을 입에 올렸다가 되돌아오는 것도 있으니까…. 손님은 못 들은 셈 치세요.",
           "style": "normal",
-          "portrait": "assets/portraits/waitress_generic.png",
+          "portrait": "assets/portraits/waitress_generic.jpeg",
           "condition": null
         },
         {
@@ -1760,7 +1760,7 @@ window.GAME_DATA = {
           "speaker": "노인",
           "text": "…청의교? 그거 함부로 입에 올리면 안 돼. 수년 전에도 그랬어. 여자들이 하나둘 사라지고, 아무도 찾지 않았어.",
           "style": "normal",
-          "portrait": "assets/portraits/elder_slum.png",
+          "portrait": "assets/portraits/elder_slum.jpeg",
           "condition": null
         },
         {
@@ -1768,7 +1768,7 @@ window.GAME_DATA = {
           "speaker": "노인",
           "text": "배고픈 사람들한텐 구원이란 말이 독보다 세지. 밥 한 그릇보다, 내일이 달라질 거라는 말이 더 위험하거든.",
           "style": "normal",
-          "portrait": "assets/portraits/elder_slum.png",
+          "portrait": "assets/portraits/elder_slum.jpeg",
           "condition": null
         },
           {
@@ -1784,7 +1784,7 @@ window.GAME_DATA = {
           "speaker": "노인",
           "text": "…이해심이라는 여자. 창백한 얼굴, 푸른 옷, 두 눈을 가린 안대. 양반집 규수처럼 단정한데, 입을 열면 장례식 염이라도 읽는 것 같아. 한 번 본 사람은 잊을 수가 없어.",
           "style": "normal",
-          "portrait": "assets/portraits/elder_slum.png",
+          "portrait": "assets/portraits/elder_slum.jpeg",
           "condition": null
         },
         {
@@ -1792,7 +1792,7 @@ window.GAME_DATA = {
           "speaker": "노인",
             "text": "그 여잔 천국을 약속하지 않았어. 대신 조선을 구하려면 한 번 몽땅 썩은 살을 도려내야 한다고 했지. 기묘하지? 세상이 지나치게 기울어져 있으면, 구원보다 파멸이 더 공평해 보일 때가 있거든.",
           "style": "normal",
-          "portrait": "assets/portraits/elder_slum.png",
+          "portrait": "assets/portraits/elder_slum.jpeg",
           "condition": null
         },
         {
@@ -1800,7 +1800,7 @@ window.GAME_DATA = {
           "speaker": "노인",
           "text": "허나 앞에 선 건 늘 그 여자였어도, 뒤엔 흰 천으로 얼굴을 가린 사내가 있었다더군. 이름이… 천용해였나. 사람들은 그놈 얼굴도 모르고 무릎부터 꿇었다지.",
           "style": "normal",
-          "portrait": "assets/portraits/elder_slum.png",
+          "portrait": "assets/portraits/elder_slum.jpeg",
           "condition": null
         },
           {
@@ -2974,7 +2974,7 @@ window.GAME_DATA = {
               "speaker": "송금",
               "text": "(표정 없이, 노래를 흥얼거린다) …푸른… 옷을… 입고… 문 앞에… 서서…",
               "style": "normal",
-              "portrait": "assets/portraits/songgeum.png",
+          "portrait": "assets/portraits/songgeum.jpeg",
               "condition": null
             },
             {
