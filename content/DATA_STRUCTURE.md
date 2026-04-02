@@ -1,268 +1,371 @@
-# 경성뎐 데이터 구조
+# 경성뎐 데이터 시스템 기획서
 
-현재 프로젝트의 데이터 구조를 실제 코드 기준으로 정리한 문서다.
+## 1. 문서 목적
 
-- 원본 입력: `content/script.xlsx`
-- 변환 스크립트: `content/export_to_json.py`
-- 결과물: `game/data/game_data.js`
+본 문서는 `경성뎐` 프로젝트의 내러티브 데이터 운영 구조를 정의하는 시스템 기획 문서다.
 
-`game_data.js`는 직접 수정하지 않고, `script.xlsx`를 수정한 뒤 `export_to_json.py`로 다시 생성하는 것을 기준으로 한다.
+본 문서에서 다루는 범위는 다음과 같다.
 
-## 전체 구조
+- 데이터 원본 관리 단위
+- 테이블 구조 정의
+- 노드형 에디터 기준 편집 구조
+- `xlsx <-> game_data` 양방향 변환 구조
 
-```js
-window.GAME_DATA = {
-  first_scene: "scene_id",
-  scenes: {
-    "scene_id": {
-      id: "scene_id",
-      chapter: 1,
-      title: "씬 제목",
-      background: "assets/bg/...",
-      music: "assets/sfx/...",
-      next_scene: "next_scene_id",
-      effect: "flicker",
-      branches: [],
-      dialogues: [],
-      choices: [],
-      evidence: []
-    }
-  }
-};
+본 문서는 JS 객체 설명보다, **기획 데이터 테이블과 편집 툴을 어떻게 운용할 것인지**를 설명하는 데 목적이 있다.
+
+---
+
+## 2. 데이터 운영 방향
+
+### 2-1. 현재 운영 기준
+
+현재 프로젝트의 메인 작업 툴은 `EditorNode` 노드형 에디터다.
+
+운영 방향은 다음과 같다.
+
+- 메인 편집: `EditorNode`
+- 테이블 백업 / 정리 / 검수: `script.xlsx`
+- 게임 반영 데이터: `game_data.js`
+
+즉, 과거에는 `xlsx -> game_data` 중심의 단방향 구조였다면, 앞으로는 **노드형 에디터를 메인 작성 툴로 사용하고, 필요 시 xlsx와 상호 변환 가능한 양방향 구조**를 목표로 한다.
+
+### 2-2. 데이터 흐름
+
+```text
+Node Editor
+↔ game_data
+↔ xlsx
+→ 게임 런타임
 ```
 
-## 최상위 필드
+### 2-3. 운용 원칙
 
-| 필드 | 타입 | 설명 |
-| --- | --- | --- |
-| `first_scene` | `string \| null` | 게임 시작 시 첫 진입 씬 ID |
-| `scenes` | `Record<string, Scene>` | 씬 ID를 키로 가지는 씬 맵 |
+- 실제 수정 작업은 노드형 에디터를 우선한다.
+- `game_data.js`는 런타임 반영 파일이므로 직접 수정하지 않는다.
+- `script.xlsx`는 원본 문서이면서, 동시에 검수 / 공유 / 백업용 테이블 산출물로 사용한다.
+- 따라서 `xlsx -> game_data`뿐 아니라 `game_data -> xlsx`도 지원해야 한다.
 
-## Scene
+---
 
-각 씬은 하나의 장면 단위이며, 대사/선택지/분기/단서를 모두 포함한다.
+## 3. 데이터 단위
 
-```js
-{
-  id: "ch1_court",
-  chapter: 1,
-  title: "법정",
-  background: "assets/bg/court.jpeg",
-  music: "assets/sfx/tense.mp3",
-  next_scene: "ch1_editor",
-  effect: null,
-  branches: [Branch],
-  dialogues: [Dialogue],
-  choices: [Choice],
-  evidence: [Evidence]
-}
-```
+현재 시스템에서 관리하는 데이터 단위는 다음과 같다.
 
-| 필드 | 타입 | 설명 |
-| --- | --- | --- |
-| `id` | `string` | 씬 고유 ID |
-| `chapter` | `number \| null` | 챕터 번호 |
-| `title` | `string \| null` | 씬 제목 |
-| `background` | `string \| null` | 배경 이미지 경로 |
-| `music` | `string \| null` | BGM 경로 |
-| `next_scene` | `string \| null` | 기본 다음 씬 |
-| `effect` | `string \| number \| null` | 씬 진입 시 효과 |
-| `branches` | `Branch[]` | 플래그 기반 분기 목록 |
-| `dialogues` | `Dialogue[]` | 대사 목록 |
-| `choices` | `Choice[]` | 선택지 목록 |
-| `evidence` | `Evidence[]` | 단서 목록 |
-
-## Dialogue
-
-대사 라인은 `order` 순으로 정렬된다. 조건부 대사는 `condition`이 있을 때만 노출된다.
-
-```js
-{
-  order: 1,
-  label: "intro_a",
-  speaker: "유우",
-  text: "대사 내용",
-  style: "normal",
-  portrait: "assets/portraits/yuu.jpeg",
-  condition: {
-    flag_key: "editor_rel",
-    flag_value: 1
-  }
-}
-```
-
-| 필드 | 타입 | 설명 |
-| --- | --- | --- |
-| `order` | `number` | 씬 내 대사 순서 |
-| `label` | `string` | 특정 대사 지점 점프용 라벨. 없으면 생략 |
-| `speaker` | `string` | 화자 이름. 비어 있으면 내레이션처럼 처리됨 |
-| `text` | `string` | 대사 본문 |
-| `style` | `string` | `normal`, `narration`, `thought`, `crazy`, `scared`, `magic` |
-| `portrait` | `string \| null` | 초상화 경로 |
-| `condition` | `Condition \| null` | 조건부 표시용 플래그 조건 |
-
-### Condition
-
-```js
-{
-  flag_key: "editor_rel",
-  flag_value: 1
-}
-```
-
-| 필드 | 타입 | 설명 |
-| --- | --- | --- |
-| `flag_key` | `string` | 읽을 플래그 키 |
-| `flag_value` | `string \| number \| boolean \| Array` | 일치 조건 값 |
-
-런타임에서는 `State.getFlag(flag_key)` 값이 `flag_value`와 일치할 때만 해당 대사가 표시된다.
-
-## Choice
-
-선택지는 플레이어가 누르는 버튼이며, 플래그를 기록하고 씬 이동 또는 같은 씬 내 대사 점프를 유도한다.
-
-```js
-{
-  order: 1,
-  text: "편집장의 말을 따른다",
-  flag_key: "flag_editor_response",
-  flag_value: "A",
-  next_scene: "ch2_hospital",
-  next_dialogue: "editor_followup"
-}
-```
-
-| 필드 | 타입 | 설명 |
-| --- | --- | --- |
-| `order` | `number` | 선택지 순서 |
-| `text` | `string` | 버튼 텍스트 |
-| `flag_key` | `string \| null` | 선택 시 기록할 플래그 키 |
-| `flag_value` | `string \| number \| boolean \| null` | 기록할 값. 없으면 런타임에서 `true` 사용 |
-| `next_scene` | `string \| null` | 선택 후 이동할 다음 씬 |
-| `next_dialogue` | `string` | 같은 씬 안에서 점프할 대사 라벨. 없으면 생략 |
-
-런타임 동작 우선순위는 다음과 같다.
-
-1. `flag_key`가 있으면 `State.setFlag(flag_key, flag_value ?? true)` 실행
-2. `next_scene`가 있으면 해당 씬으로 이동
-3. `next_dialogue`가 있으면 같은 씬의 해당 라벨 대사부터 재시작
-4. 둘 다 없으면 씬의 `resolveNextScene(scene)` 결과 사용
-
-## Branch
-
-브랜치는 대화 종료 후 다음 씬을 정할 때 사용되는 조건 목록이다.
-
-```js
-{
-  order: 1,
-  flag_key: "ending_a_score",
-  flag_value: 2,
-  next_scene: "ch6_epilogue_truth"
-}
-```
-
-| 필드 | 타입 | 설명 |
-| --- | --- | --- |
-| `order` | `number` | 평가 순서 |
-| `flag_key` | `string` | 검사할 플래그 키 |
-| `flag_value` | `string \| number \| boolean \| Array \| null` | 비교 값 |
-| `next_scene` | `string` | 조건 일치 시 이동할 씬 |
-
-런타임에서는 `branches`를 순서대로 검사하고, 첫 번째로 일치한 `next_scene`을 반환한다. 일치하는 항목이 없으면 씬의 `next_scene`을 사용한다.
-
-## Evidence
-
-단서는 씬 단위로 연결되며, 자동 수집 또는 대화 종료 시 수집된다.
-
-```js
-{
-  evidence_id: "ev_note",
-  trigger: "auto",
-  name: "붉은 쪽지",
-  description: "토요일, 낙원. 그녀가 노래하면, 문은 열린다.",
-  image: "assets/items/note.png"
-}
-```
-
-| 필드 | 타입 | 설명 |
-| --- | --- | --- |
-| `evidence_id` | `string` | 단서 고유 ID |
-| `trigger` | `string \| number` | `auto` 또는 `1`, `click` 또는 `2` |
-| `name` | `string` | 단서 이름 |
-| `description` | `string` | 단서 설명 |
-| `image` | `string \| null` | 단서 이미지 경로 |
-
-런타임 규칙:
-
-- `auto` 또는 `1`: 씬 진입 시 자동 획득
-- `click` 또는 `2`: 대화 종료 후 획득
-
-## Excel 입력 시트 기준
-
-`export_to_json.py`는 아래 시트 구조를 읽어 현재 JSON 구조로 변환한다.
-
-### SceneTable / Scenes
-
-| 컬럼 | 설명 |
+| 단위 | 역할 |
 | --- | --- |
-| `SceneID` | 씬 ID |
-| `Chapter` | 챕터 번호 |
-| `Title` | 씬 제목 |
-| `Background` | 배경 경로 |
-| `Music` | BGM 경로 |
-| `NextScene` | 기본 다음 씬 |
-| `Effect` | 진입 효과 |
+| Scene | 씬 메타 정보 및 기본 흐름 정의 |
+| Dialogue | 씬 내부 대사 라인 정의 |
+| Choice | 플레이어 선택지 정의 |
+| Branch | 상태값 기반 분기 정의 |
+| Evidence | 단서 / 수집 정보 정의 |
 
-### DialogTable / Dialogues
+모든 구조는 결국 `Scene`을 중심으로 연결되며, 나머지 데이터는 씬에 종속된 하위 데이터다.
 
-| 컬럼 | 설명 |
+---
+
+## 4. 테이블 관계 구조
+
+```text
+SceneTable
+ ├─ 1:N → DialogTable
+ ├─ 1:N → ChoiceTable
+ ├─ 1:N → BranchTable
+ └─ 1:N → EvidenceTable
+```
+
+### 4-1. 관계 설명
+
+- 하나의 씬은 여러 대사를 가진다.
+- 하나의 씬은 여러 선택지를 가질 수 있다.
+- 하나의 씬은 여러 분기 조건을 가질 수 있다.
+- 하나의 씬은 여러 단서를 가질 수 있다.
+
+즉, `SceneTable`이 상위 구조를 정의하고, 나머지 테이블은 모두 `SceneID`를 기준으로 연결된다.
+
+---
+
+## 5. SceneTable
+
+### 5-1. 역할
+
+씬의 기본 메타 정보와 기본 이동 흐름을 정의하는 기준 테이블이다.
+
+### 5-2. 컬럼 정의
+
+| 컬럼명 | 타입 | 필수 | 설명 |
+| --- | --- | --- | --- |
+| `SceneID` | string | O | 씬 고유 ID |
+| `Chapter` | int |  | 챕터 번호 |
+| `Title` | string |  | 씬 제목 |
+| `Background` | string |  | 배경 경로 |
+| `Music` | string |  | BGM 경로 |
+| `NextScene` | string |  | 기본 다음 씬 |
+| `Effect` | string / int |  | 씬 진입 효과 |
+
+### 5-3. 작성 규칙
+
+- `SceneID`는 중복 없이 관리한다.
+- 가능하면 영문 소문자 + 언더스코어 기준으로 통일한다.
+- `NextScene`은 기본 흐름용이며, 조건 분기가 존재하는 경우 BranchTable이 우선 적용될 수 있다.
+
+---
+
+## 6. DialogTable
+
+### 6-1. 역할
+
+씬 내부에서 출력되는 대사 라인을 관리한다.
+
+### 6-2. 컬럼 정의
+
+| 컬럼명 | 타입 | 필수 | 설명 |
+| --- | --- | --- | --- |
+| `SceneID` | string | O | 소속 씬 ID |
+| `Order` | int | O | 씬 내 출력 순서 |
+| `Label` | string |  | 특정 대사 지점 식별용 라벨 |
+| `Speaker` | string |  | 화자명 |
+| `Text` | string | O | 대사 본문 |
+| `Style` | string |  | 대사 스타일 |
+| `Portrait` | string |  | 초상화 경로 |
+| `ConditionKey` | string |  | 조건부 출력용 플래그 키 |
+| `ConditionValue` | string |  | 조건부 출력용 플래그 값 |
+
+### 6-3. 작성 규칙
+
+- `Order` 오름차순 기준으로 출력된다.
+- `ConditionKey / ConditionValue`가 없으면 항상 출력된다.
+- `Label`은 같은 씬 내 점프 또는 후속 제어용 라벨로 사용한다.
+
+### 6-4. 스타일 값
+
+| 값 | 의미 |
 | --- | --- |
-| `SceneID` | 소속 씬 |
-| `Order` | 순서 |
-| `Label` | 대사 라벨 |
-| `Speaker` | 화자 |
-| `Text` | 대사 |
-| `Style` | 스타일 |
-| `Portrait` | 초상화 경로 |
-| `ConditionKey` | 조건 플래그 키 |
-| `ConditionValue` | 조건 플래그 값 |
+| `normal` | 기본 대사 |
+| `narration` | 내레이션 / 지문 |
+| `thought` | 내면 독백 |
+| `crazy` | 광기 / 불안정 상태 |
+| `scared` | 공포 / 위축 상태 |
+| `magic` | 세뇌 / 감응 / 비현실 연출 |
 
-### ChoiceTable / Choices
+---
 
-| 컬럼 | 설명 |
+## 7. ChoiceTable
+
+### 7-1. 역할
+
+플레이어 선택지를 정의하고, 상태값 기록과 후속 흐름 제어를 담당한다.
+
+### 7-2. 컬럼 정의
+
+| 컬럼명 | 타입 | 필수 | 설명 |
+| --- | --- | --- | --- |
+| `SceneID` | string | O | 소속 씬 ID |
+| `Order` | int | O | 선택지 노출 순서 |
+| `Text` | string | O | 선택지 문구 |
+| `FlagKey` | string |  | 선택 시 기록할 플래그 키 |
+| `FlagValue` | string |  | 선택 시 기록할 플래그 값 |
+| `NextScene` | string |  | 선택 후 이동할 씬 |
+| `NextDialogue` | string |  | 같은 씬 내 이동할 대사 라벨 |
+
+### 7-3. 작성 규칙
+
+- `Text`는 반드시 작성한다.
+- `FlagKey`만 있고 `FlagValue`가 비어 있으면 기본값 처리 여부를 기획에서 명확히 한다.
+- `NextScene`과 `NextDialogue`는 목적이 다르므로 동시에 사용할 때 우선순위를 명확히 검수한다.
+
+---
+
+## 8. BranchTable
+
+### 8-1. 역할
+
+누적된 상태값을 기준으로 대화 종료 후 후속 씬을 결정하는 분기 테이블이다.
+
+### 8-2. 컬럼 정의
+
+| 컬럼명 | 타입 | 필수 | 설명 |
+| --- | --- | --- | --- |
+| `SceneID` | string | O | 소속 씬 ID |
+| `Order` | int | O | 분기 평가 순서 |
+| `FlagKey` | string | O | 검사할 플래그 키 |
+| `FlagValue` | string | O | 비교할 값 |
+| `NextScene` | string | O | 조건 일치 시 이동할 씬 |
+
+### 8-3. 작성 규칙
+
+- `Order`가 낮을수록 먼저 평가한다.
+- 먼저 일치한 분기가 우선 적용된다.
+- 조건 충돌이 있는지 반드시 검수한다.
+
+---
+
+## 9. EvidenceTable
+
+### 9-1. 역할
+
+씬에서 획득 가능한 단서 정보를 정의한다.
+
+### 9-2. 컬럼 정의
+
+| 컬럼명 | 타입 | 필수 | 설명 |
+| --- | --- | --- | --- |
+| `EvidenceID` | string | O | 단서 고유 ID |
+| `SceneId` | string | O | 소속 씬 ID |
+| `Trigger` | string / int | O | 획득 시점 |
+| `Name` | string | O | 단서 이름 |
+| `Description` | string |  | 단서 설명 |
+| `Image` | string |  | 단서 이미지 경로 |
+
+### 9-3. 트리거 값
+
+| 값 | 의미 |
 | --- | --- |
-| `SceneID` | 소속 씬 |
-| `Order` | 순서 |
-| `Text` | 선택지 문구 |
-| `FlagKey` | 선택 시 기록할 플래그 키 |
-| `FlagValue` | 선택 시 기록할 플래그 값 |
-| `NextScene` | 다음 씬 |
-| `NextDialogue` | 같은 씬 내 점프할 대사 라벨 |
+| `auto` 또는 `1` | 씬 진입 시 자동 획득 |
+| `click` 또는 `2` | 대화 종료 시 획득 |
 
-### BranchTable / Branches
+---
 
-| 컬럼 | 설명 |
+## 10. 공통 작성 규칙
+
+### 10-1. 무시 규칙
+
+- 시트명이 `$`로 시작하면 export 대상에서 제외한다.
+- 컬럼명이 `$`로 시작하면 해당 컬럼은 무시한다.
+
+### 10-2. ID 규칙
+
+- `SceneID`, `EvidenceID`, `Label`, `FlagKey`는 가능한 한 중복 없이 관리한다.
+- 기본 네이밍은 영문 소문자 + 언더스코어 기준으로 통일한다.
+
+### 10-3. 경로 규칙
+
+- 배경: `assets/bg/...`
+- 초상화: `assets/portraits/...`
+- 단서 이미지: `assets/items/...`
+- BGM: `assets/sfx/...`
+
+### 10-4. 검수 포인트
+
+- 존재하지 않는 씬 ID를 참조하지 않는지 확인
+- `Order` 값이 의도한 흐름 순서와 일치하는지 확인
+- 분기 조건이 서로 충돌하지 않는지 확인
+- 선택지 / 분기 / 대사 조건이 동일 플래그 체계를 기준으로 정리되어 있는지 확인
+
+---
+
+## 11. 노드형 에디터 구조
+
+### 11-1. 운영 위치
+
+- 메인 편집 도구: `EditorNode/`
+
+### 11-2. 역할
+
+노드형 에디터는 현재 프로젝트의 **주 작업 툴**이다.
+
+역할은 다음과 같다.
+
+- 씬 생성 / 삭제 / 이름 변경
+- 씬 간 연결 구조 편집
+- 선택지 연결 편집
+- 분기 연결 편집
+- 대사 / 선택지 / 분기 / 배경 정보 수정
+- 전체 흐름 시각 검토
+
+### 11-3. 기획상 의미
+
+노드형 에디터는 단순 시각화 도구가 아니라, 현재 프로젝트에서 실제 기획 데이터를 다루는 중심 인터페이스다.
+
+즉, 기획자는 노드형 에디터를 통해 다음 두 가지를 동시에 수행한다.
+
+- 데이터 수정
+- 구조 검토
+
+### 11-4. 강점
+
+| 항목 | 설명 |
 | --- | --- |
-| `SceneID` | 소속 씬 |
-| `Order` | 분기 평가 순서 |
-| `FlagKey` | 검사할 플래그 키 |
-| `FlagValue` | 검사할 값 |
-| `NextScene` | 조건 일치 시 이동할 씬 |
+| 흐름 파악 | 씬 간 연결 구조를 한눈에 볼 수 있음 |
+| 분기 검토 | 선택지와 분기 연결을 시각적으로 추적 가능 |
+| 수정 효율 | 연결 변경 시 표보다 빠르게 수정 가능 |
+| 설계 검수 | 서사 구조의 비정상 흐름을 빠르게 발견 가능 |
 
-### EvidenceTable / Evidence
+---
 
-| 컬럼 | 설명 |
+## 12. 카드형 에디터 구조
+
+### 12-1. 운영 위치
+
+- 보조 편집 도구: `editor/`
+
+### 12-2. 현재 위치
+
+카드형 에디터는 초기 데이터 편집 실험용 도구로 사용되었으나, 실제 작업 흐름에서는 노드형 에디터보다 효율이 떨어져 현재는 메인 툴로 사용하지 않는다.
+
+### 12-3. 운영 방침
+
+- 메인 편집 도구로 가정하지 않는다.
+- 필요 시 참고용 또는 일부 세부 편집용으로만 활용한다.
+- 문서 / 구조 설계 기준은 노드형 에디터 중심으로 정리한다.
+
+---
+
+## 13. xlsx의 현재 역할
+
+`script.xlsx`는 이제 단순한 "절대 원본"이라기보다 다음 역할을 가진다.
+
+| 역할 | 설명 |
 | --- | --- |
-| `EvidenceID` | 단서 ID |
-| `SceneId` | 소속 씬 |
-| `Trigger` | 수집 시점 |
-| `Name` | 단서 이름 |
-| `Description` | 단서 설명 |
-| `Image` | 이미지 경로 |
+| 백업 | 구조화된 테이블 백업본 |
+| 검수 | 표 기반 검토 문서 |
+| 공유 | 외부 공유 / 전달용 포맷 |
+| 정리 | 대량 데이터 정리 및 비교 용도 |
 
-## 주의사항
+즉, 메인 작업은 노드형 에디터에서 진행하더라도, `xlsx`는 여전히 프로젝트 운영상 필요한 산출물이다.
 
-- 시트명이 `$`로 시작하면 export 대상에서 제외된다.
-- 컬럼명이 `$`로 시작하면 해당 컬럼은 무시된다.
-- `game_data.js`는 생성 결과물이므로 직접 수정하지 않는다.
-- `Dialogue.condition.flag_value`와 `Branch.flag_value`는 런타임에서 배열도 비교 가능하도록 작성되어 있다.
+---
+
+## 14. 양방향 변환 구조
+
+### 14-1. 필요성
+
+기존 구조는 `xlsx -> game_data` 중심이었다.
+
+하지만 현재는 노드형 에디터가 메인 작업 툴이므로, 에디터에서 수정된 데이터를 다시 테이블 형태로 내보내는 기능이 필요하다.
+
+즉, 앞으로의 기준은 다음과 같다.
+
+```text
+xlsx -> game_data
+game_data -> xlsx
+```
+
+또는 실질적으로는 아래와 같이 이해할 수 있다.
+
+```text
+Node Editor -> game_data -> xlsx
+```
+
+### 14-2. 목적
+
+- 노드형 에디터에서 편집한 결과를 테이블 문서로 복원
+- 검수 / 공유 / 백업이 가능한 문서 형태 유지
+- 메인 편집 툴과 문서 포맷 사이의 단절 해소
+
+### 14-3. 운영 원칙
+
+- 편집의 중심은 노드형 에디터
+- 결과 정리와 검수는 xlsx
+- 양쪽 포맷은 상호 변환 가능해야 함
+
+---
+
+## 15. 최종 정리
+
+현재 `경성뎐`의 데이터 시스템은 다음 방향으로 이해하면 된다.
+
+- 데이터 단위는 Scene / Dialogue / Choice / Branch / Evidence 테이블로 분리한다.
+- 실제 메인 편집은 `EditorNode` 노드형 에디터에서 진행한다.
+- `xlsx`는 백업 / 검수 / 공유용 테이블 산출물로 유지한다.
+- `game_data.js`는 최종 런타임 반영 파일이다.
+- 따라서 시스템은 `노드형 에디터 중심 + xlsx 양방향 동기화` 구조를 기준으로 발전한다.
