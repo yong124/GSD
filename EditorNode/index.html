@@ -9,6 +9,16 @@
   <div id="toolbar">
     <span class="logo">경성뎐 Node Editor</span>
     <button id="btn-add-node">+ 씬 추가</button>
+    <button id="btn-undo">실행 취소</button>
+    <button id="btn-redo">다시 실행</button>
+    <input id="field-search" type="text" placeholder="씬 / 라벨 / 플래그 / 단서 검색">
+    <select id="field-filter-chapter">
+      <option value="">전체 챕터</option>
+    </select>
+    <button id="btn-auto-layout">자동 정렬</button>
+    <button id="btn-zoom-out">-</button>
+    <span id="zoom-label">100%</span>
+    <button id="btn-zoom-in">+</button>
     <button id="btn-load">불러오기</button>
     <button id="btn-export">내보내기</button>
     <span id="status"></span>
@@ -27,6 +37,7 @@
       <div id="panel-content" class="hidden">
         <div id="panel-header">
           <input id="field-title" type="text" placeholder="씬 제목">
+          <button id="btn-duplicate-scene">씬 복제</button>
           <button id="btn-delete-scene" class="danger">씬 삭제</button>
         </div>
         <div class="panel-section">
@@ -37,6 +48,39 @@
         <div class="panel-section">
           <div class="section-label">배경</div>
           <input id="field-background" type="text" placeholder="assets/backgrounds/...">
+        </div>
+
+        <div class="panel-section">
+          <div class="section-label">챕터</div>
+          <input id="field-chapter" type="number" min="1" step="1" placeholder="예: 3">
+        </div>
+
+        <div class="panel-section">
+          <div class="section-label">음악</div>
+          <input id="field-music" type="text" placeholder="assets/sfx/...">
+        </div>
+
+        <div class="panel-section">
+          <div class="section-label">이펙트</div>
+          <input id="field-effect" type="text" placeholder="예: flicker, resonance, shake, blood">
+        </div>
+
+        <div class="panel-section">
+          <div class="section-label">대사 프리뷰</div>
+          <div id="dialogue-preview" class="dialogue-preview">
+            <div id="preview-background" class="preview-background">
+              <div class="preview-overlay"></div>
+              <div class="preview-dialogue-box">
+                <div id="preview-speaker" class="preview-speaker"></div>
+                <div id="preview-text" class="preview-text">대사를 선택하거나 입력하면 여기서 바로 확인할 수 있습니다.</div>
+              </div>
+            </div>
+            <div class="preview-toolbar">
+              <button id="btn-preview-prev" type="button" class="small">이전</button>
+              <span id="preview-index-label">0 / 0</span>
+              <button id="btn-preview-next" type="button" class="small">다음</button>
+            </div>
+          </div>
         </div>
 
         <div class="panel-section">
@@ -59,7 +103,54 @@
           </div>
           <div id="branch-list"></div>
         </div>
+
+        <div class="panel-section">
+          <div class="section-label">단서
+            <button id="btn-add-evidence" class="small">+</button>
+          </div>
+          <div id="evidence-list"></div>
+        </div>
+
+        <div class="panel-section">
+          <div class="section-label">구조 검수</div>
+          <div id="analysis-summary" class="validation-summary"></div>
+          <div id="validation-summary" class="validation-summary"></div>
+          <div id="validation-list" class="validation-list"></div>
+        </div>
+
+        <div class="panel-section">
+          <div class="section-label">준대량 편집</div>
+          <label><span>필터된 씬 배경 일괄 변경</span>
+            <input id="field-batch-background" type="text" placeholder="assets/bg/..."></label>
+          <button id="btn-apply-batch-background" type="button">현재 필터된 씬에 적용</button>
+          <label><span>필터된 씬 대사 스타일 일괄 변경</span>
+            <select id="field-batch-style">
+              <option value="">스타일 선택</option>
+              <option value="normal">normal</option>
+              <option value="narration">narration</option>
+              <option value="thought">thought</option>
+              <option value="crazy">crazy</option>
+              <option value="scared">scared</option>
+              <option value="magic">magic</option>
+            </select></label>
+          <button id="btn-apply-batch-style" type="button">필터된 씬 대사에 적용</button>
+          <label><span>플래그 키 일괄 치환 - 기존</span>
+            <input id="field-batch-flag-old" type="text" placeholder="예: old_flag"></label>
+          <label><span>플래그 키 일괄 치환 - 신규</span>
+            <input id="field-batch-flag-new" type="text" placeholder="예: new_flag"></label>
+          <button id="btn-apply-batch-flag" type="button">프로젝트 전체 치환</button>
+          <label><span>문자열 일괄 치환 - 기존</span>
+            <input id="field-batch-text-old" type="text" placeholder="예: 청의교"></label>
+          <label><span>문자열 일괄 치환 - 신규</span>
+            <input id="field-batch-text-new" type="text" placeholder="예: 청의단"></label>
+          <button id="btn-apply-batch-text" type="button">텍스트/제목/단서 일괄 치환</button>
+          <button id="btn-sort-scenes" type="button">챕터 기준 정렬 보조 적용</button>
+        </div>
       </div>
+    </div>
+
+    <div id="minimap">
+      <canvas id="minimap-canvas" width="220" height="140"></canvas>
     </div>
   </div>
 

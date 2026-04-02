@@ -16,12 +16,15 @@
     data: { first_scene: '', scenes: {} },
     layout: {},       // { sceneId: { x, y } }
     selectedId: null,
+    previewDialogueIndex: 0,
+    filters: { query: '', chapter: '' },
     camera: { x: 100, y: 100, scale: 1 },
     wire: null,       // { fromId, pinType:'out'|'branch', branchIdx, x1, y1 }
     panning: null,    // { startX, startY, camX, camY }
     dragging: null,   // { nodeId, startMouseX, startMouseY, startNodeX, startNodeY }
     dirty: false,
     history: [],      // undo 스택 (최대 30)
+    future: [],       // redo 스택
   };
 
   // ── DOM 참조 ──────────────────────────────────────────
@@ -38,7 +41,38 @@
     els.panelContent = $('panel-content');
     els.fieldTitle   = $('field-title');
     els.fieldBg      = $('field-background');
+    els.fieldSearch  = $('field-search');
+    els.fieldFilterChapter = $('field-filter-chapter');
+    els.btnAutoLayout = $('btn-auto-layout');
+    els.btnZoomOut = $('btn-zoom-out');
+    els.btnZoomIn = $('btn-zoom-in');
+    els.zoomLabel = $('zoom-label');
+    els.fieldChapter = $('field-chapter');
+    els.fieldMusic   = $('field-music');
+    els.fieldEffect  = $('field-effect');
     els.fieldSceneId = $('field-scene-id');
+    els.evidenceList = $('evidence-list');
+    els.analysisSummary = $('analysis-summary');
+    els.validationSummary = $('validation-summary');
+    els.validationList = $('validation-list');
+    els.fieldBatchBackground = $('field-batch-background');
+    els.btnApplyBatchBackground = $('btn-apply-batch-background');
+    els.fieldBatchStyle = $('field-batch-style');
+    els.btnApplyBatchStyle = $('btn-apply-batch-style');
+    els.fieldBatchFlagOld = $('field-batch-flag-old');
+    els.fieldBatchFlagNew = $('field-batch-flag-new');
+    els.btnApplyBatchFlag = $('btn-apply-batch-flag');
+    els.fieldBatchTextOld = $('field-batch-text-old');
+    els.fieldBatchTextNew = $('field-batch-text-new');
+    els.btnApplyBatchText = $('btn-apply-batch-text');
+    els.btnSortScenes = $('btn-sort-scenes');
+    els.previewBackground = $('preview-background');
+    els.previewSpeaker = $('preview-speaker');
+    els.previewText = $('preview-text');
+    els.previewIndexLabel = $('preview-index-label');
+    els.btnPreviewPrev = $('btn-preview-prev');
+    els.btnPreviewNext = $('btn-preview-next');
+    els.minimapCanvas = $('minimap-canvas');
     els.dialogueList = $('dialogue-list');
     els.choiceList   = $('choice-list');
     els.branchList   = $('branch-list');
@@ -68,9 +102,11 @@
   function pushHistory() {
     state.history.push(JSON.stringify(state.data));
     if (state.history.length > 30) state.history.shift();
+    state.future = [];
   }
   function undo() {
     if (state.history.length === 0) { setStatus('더 이상 되돌릴 수 없습니다', true); return; }
+    state.future.push(JSON.stringify(state.data));
     state.data = JSON.parse(state.history.pop());
     markDirty();
     render();
@@ -80,6 +116,18 @@
     }
     renderPanel();
     setStatus('↩ 실행 취소');
+  }
+  function redo() {
+    if (state.future.length === 0) { setStatus('더 이상 다시 실행할 수 없습니다', true); return; }
+    state.history.push(JSON.stringify(state.data));
+    state.data = JSON.parse(state.future.pop());
+    markDirty();
+    render();
+    if (state.selectedId && !state.data.scenes[state.selectedId]) {
+      state.selectedId = null;
+    }
+    renderPanel();
+    setStatus('↪ 다시 실행');
   }
 
   function isTyping() {
@@ -91,6 +139,10 @@
   function applyCamera() {
     const { x, y, scale } = state.camera;
     els.canvas.style.transform = `translate(${x}px,${y}px) scale(${scale})`;
+    if (els.zoomLabel) {
+      els.zoomLabel.textContent = `${Math.round(scale * 100)}%`;
+    }
+    renderMinimap();
   }
 
   // viewport → canvas 좌표 변환
@@ -151,6 +203,40 @@
     });
   }
 
+  function collectReachableScenes() {
+    const scenes = state.data.scenes || {};
+    const firstScene = state.data.first_scene;
+    const reachable = new Set();
+    const stack = [];
+
+    if (firstScene && scenes[firstScene]) {
+      stack.push(firstScene);
+    }
+
+    while (stack.length) {
+      const id = stack.pop();
+      if (reachable.has(id) || !scenes[id]) continue;
+      reachable.add(id);
+      const scene = scenes[id];
+      if (scene.next_scene && scenes[scene.next_scene]) stack.push(scene.next_scene);
+      (scene.branches || []).forEach(branch => {
+        if (branch.next_scene && scenes[branch.next_scene]) stack.push(branch.next_scene);
+      });
+      (scene.choices || []).forEach(choice => {
+        if (choice.next_scene && scenes[choice.next_scene]) stack.push(choice.next_scene);
+      });
+    }
+
+    return reachable;
+  }
+
+  function isEndingScene(scene) {
+    const hasDefaultNext = Boolean(scene.next_scene);
+    const hasBranchNext = (scene.branches || []).some(branch => branch.next_scene);
+    const hasChoiceNext = (scene.choices || []).some(choice => choice.next_scene);
+    return !hasDefaultNext && !hasBranchNext && !hasChoiceNext;
+  }
+
   // ── 노드 높이 계산 ────────────────────────────────────
   function nodeHeight(scene) {
     const branches = (scene.branches || []).length;
@@ -200,12 +286,80 @@
     return `M${x1},${y1} C${x1+dx},${y1} ${x2-dx},${y2} ${x2},${y2}`;
   }
 
+  function collectSceneSearchTokens(sceneId, scene) {
+    const tokens = [
+      sceneId,
+      scene.title,
+      String(scene.chapter ?? ''),
+      scene.background,
+      scene.music,
+      scene.effect,
+      scene.next_scene,
+    ];
+
+    (scene.dialogues || []).forEach(dialogue => {
+      tokens.push(dialogue.label, dialogue.speaker, dialogue.text, dialogue.condition?.flag_key, dialogue.condition?.flag_value);
+    });
+    (scene.choices || []).forEach(choice => {
+      tokens.push(choice.text, choice.flag_key, choice.flag_value, choice.next_scene, choice.next_dialogue);
+    });
+    (scene.branches || []).forEach(branch => {
+      tokens.push(branch.flag_key, branch.flag_value, branch.next_scene);
+    });
+    (scene.evidence || []).forEach(evidence => {
+      tokens.push(evidence.evidence_id || evidence.id, evidence.name, evidence.description);
+    });
+
+    return tokens
+      .filter(value => value != null && value !== '')
+      .map(value => String(value).toLowerCase());
+  }
+
+  function getFilteredSceneIds() {
+    const query = (state.filters.query || '').trim().toLowerCase();
+    const chapter = state.filters.chapter;
+    const filtered = new Set();
+
+    Object.entries(state.data.scenes || {}).forEach(([sceneId, scene]) => {
+      if (chapter !== '' && String(scene.chapter ?? '') !== chapter) return;
+      if (!query) {
+        filtered.add(sceneId);
+        return;
+      }
+
+      const tokens = collectSceneSearchTokens(sceneId, scene);
+      if (tokens.some(token => token.includes(query))) {
+        filtered.add(sceneId);
+      }
+    });
+
+    return filtered;
+  }
+
+  function renderSearchFilterOptions() {
+    const chapters = [...new Set(
+      Object.values(state.data.scenes || {})
+        .map(scene => scene.chapter)
+        .filter(value => value != null && value !== '')
+        .map(value => String(value))
+    )].sort((a, b) => Number(a) - Number(b));
+
+    const current = state.filters.chapter;
+    els.fieldFilterChapter.innerHTML = [
+      '<option value="">전체 챕터</option>',
+      ...chapters.map(chapter =>
+        `<option value="${escapeAttr(chapter)}"${chapter === current ? ' selected' : ''}>챕터 ${escapeHtml(chapter)}</option>`
+      ),
+    ].join('');
+  }
+
   // ── 와이어 렌더링 ─────────────────────────────────────
   function renderWires() {
     // 기존 wire path들 제거 (temp wire 제외)
     els.wireLayer.querySelectorAll('.wire-path,.wire-label').forEach(el => el.remove());
 
     const scenes = state.data.scenes;
+    const visibleIds = getFilteredSceneIds();
 
     function addWire(x1, y1, x2, y2, cls, label) {
       if (!x1 && x1 !== 0) return;
@@ -226,13 +380,14 @@
     }
 
     Object.entries(scenes).forEach(([id, scene]) => {
+      if (!visibleIds.has(id)) return;
       const from = pinPos(id, 'out');
-      if (from && scene.next_scene && scenes[scene.next_scene]) {
+      if (from && scene.next_scene && scenes[scene.next_scene] && visibleIds.has(scene.next_scene)) {
         const to = pinPos(scene.next_scene, 'in');
         if (to) addWire(from.x, from.y, to.x, to.y, 'wire-next');
       }
       (scene.branches || []).forEach((branch, i) => {
-        if (!branch.next_scene || !scenes[branch.next_scene]) return;
+        if (!branch.next_scene || !scenes[branch.next_scene] || !visibleIds.has(branch.next_scene)) return;
         const bfrom = pinPos(id, 'branch', i);
         const bto   = pinPos(branch.next_scene, 'in');
         if (bfrom && bto) {
@@ -241,7 +396,7 @@
         }
       });
       (scene.choices || []).forEach((choice, i) => {
-        if (!choice.next_scene || !scenes[choice.next_scene]) return;
+        if (!choice.next_scene || !scenes[choice.next_scene] || !visibleIds.has(choice.next_scene)) return;
         const cfrom = pinPos(id, 'choice', i);
         const cto   = pinPos(choice.next_scene, 'in');
         if (cfrom && cto) {
@@ -256,8 +411,11 @@
   function renderNodes() {
     els.nodeLayer.innerHTML = '';
     const scenes = state.data.scenes;
+    const visibleIds = getFilteredSceneIds();
+    const reachable = collectReachableScenes();
 
     Object.entries(scenes).forEach(([id, scene]) => {
+      if (!visibleIds.has(id)) return;
       const pos = state.layout[id] || { x: 40, y: 40 };
       const isFirst = id === state.data.first_scene;
       const isSelected = id === state.selectedId;
@@ -266,7 +424,8 @@
       const choices  = scene.choices  || [];
 
       const node = document.createElement('div');
-      node.className = `node${isSelected ? ' selected' : ''}${isFirst ? ' first-scene' : ''}`;
+      node.className = `node${isSelected ? ' selected' : ''}${isFirst ? ' first-scene' : ''}${isEndingScene(scene) ? ' ending-scene' : ''}${!reachable.has(id) && id !== state.data.first_scene ? ' unreachable-scene' : ''}`;
+      node.dataset.chapter = scene.chapter != null ? String(scene.chapter) : '';
       node.dataset.id = id;
       node.style.left = pos.x + 'px';
       node.style.top  = pos.y + 'px';
@@ -329,8 +488,123 @@
   }
 
   function render() {
+    renderSearchFilterOptions();
     renderNodes();
     renderWires();
+    renderMinimap();
+  }
+
+  function getSceneBounds() {
+    const entries = Object.entries(state.layout || {});
+    if (entries.length === 0) {
+      return { minX: 0, minY: 0, maxX: 1000, maxY: 800 };
+    }
+
+    let minX = Infinity;
+    let minY = Infinity;
+    let maxX = -Infinity;
+    let maxY = -Infinity;
+
+    entries.forEach(([sceneId, pos]) => {
+      const scene = state.data.scenes?.[sceneId];
+      if (!scene) return;
+      minX = Math.min(minX, pos.x);
+      minY = Math.min(minY, pos.y);
+      maxX = Math.max(maxX, pos.x + NODE_W);
+      maxY = Math.max(maxY, pos.y + nodeHeight(scene));
+    });
+
+    return {
+      minX: Number.isFinite(minX) ? minX : 0,
+      minY: Number.isFinite(minY) ? minY : 0,
+      maxX: Number.isFinite(maxX) ? maxX : 1000,
+      maxY: Number.isFinite(maxY) ? maxY : 800,
+    };
+  }
+
+  function renderMinimap() {
+    const canvas = els.minimapCanvas;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    const width = canvas.width;
+    const height = canvas.height;
+    ctx.clearRect(0, 0, width, height);
+    ctx.fillStyle = '#111118';
+    ctx.fillRect(0, 0, width, height);
+
+    const bounds = getSceneBounds();
+    const padding = 12;
+    const worldW = Math.max(bounds.maxX - bounds.minX, 1);
+    const worldH = Math.max(bounds.maxY - bounds.minY, 1);
+    const scale = Math.min((width - padding * 2) / worldW, (height - padding * 2) / worldH);
+    const offsetX = (width - worldW * scale) / 2;
+    const offsetY = (height - worldH * scale) / 2;
+    const visibleIds = getFilteredSceneIds();
+    const reachable = collectReachableScenes();
+
+    Object.entries(state.layout || {}).forEach(([sceneId, pos]) => {
+      const scene = state.data.scenes?.[sceneId];
+      if (!scene || !visibleIds.has(sceneId)) return;
+      const x = offsetX + (pos.x - bounds.minX) * scale;
+      const y = offsetY + (pos.y - bounds.minY) * scale;
+      const w = Math.max(10, NODE_W * scale);
+      const h = Math.max(8, nodeHeight(scene) * scale);
+
+      let fill = '#7a6430';
+      if (isEndingScene(scene)) fill = '#b06b45';
+      else if (!reachable.has(sceneId) && sceneId !== state.data.first_scene) fill = '#55556a';
+      else if (scene.chapter === 1) fill = '#6d8b72';
+      else if (scene.chapter === 2) fill = '#9b8550';
+      else if (scene.chapter === 3) fill = '#7a78af';
+      else if (scene.chapter === 4) fill = '#9c6f8b';
+      else if (scene.chapter === 5) fill = '#5f94a3';
+      else if (scene.chapter === 6) fill = '#b36a5b';
+
+      ctx.fillStyle = fill;
+      ctx.fillRect(x, y, w, h);
+      if (sceneId === state.selectedId) {
+        ctx.strokeStyle = '#f1d37b';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x - 1, y - 1, w + 2, h + 2);
+      }
+    });
+
+    const viewportRect = els.viewport.getBoundingClientRect();
+    const visibleWorldX = -state.camera.x / state.camera.scale;
+    const visibleWorldY = -state.camera.y / state.camera.scale;
+    const visibleWorldW = viewportRect.width / state.camera.scale;
+    const visibleWorldH = viewportRect.height / state.camera.scale;
+
+    const vx = offsetX + (visibleWorldX - bounds.minX) * scale;
+    const vy = offsetY + (visibleWorldY - bounds.minY) * scale;
+    const vw = visibleWorldW * scale;
+    const vh = visibleWorldH * scale;
+    ctx.strokeStyle = '#d4d0c8';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(vx, vy, vw, vh);
+  }
+
+  function setZoom(nextScale) {
+    const scale = Math.max(0.2, Math.min(2.5, nextScale));
+    const vr = els.viewport.getBoundingClientRect();
+    const mx = vr.width / 2;
+    const my = vr.height / 2;
+    const prev = state.camera.scale;
+    state.camera.x = mx - (mx - state.camera.x) * (scale / prev);
+    state.camera.y = my - (my - state.camera.y) * (scale / prev);
+    state.camera.scale = scale;
+    applyCamera();
+  }
+
+  function resetAutoLayout() {
+    pushHistory();
+    state.layout = {};
+    autoLayout();
+    saveLayout();
+    markDirty();
+    render();
+    setStatus('✓ 자동 정렬 적용 완료');
   }
 
   // ── 씬 선택 → 패널 ───────────────────────────────────
@@ -355,11 +629,37 @@
 
     els.fieldTitle.value = scene.title || '';
     els.fieldBg.value = scene.background || '';
+    els.fieldChapter.value = scene.chapter ?? '';
+    els.fieldMusic.value = scene.music || '';
+    els.fieldEffect.value = scene.effect || '';
     els.fieldSceneId.value = id;
 
+    renderDialoguePreview(scene);
     renderDialogueList(scene);
     renderChoiceList(scene);
     renderBranchList(scene);
+    renderEvidenceList(scene);
+    renderAnalysisPanel();
+    renderValidationPanel();
+  }
+
+  function renderDialoguePreview(scene) {
+    const dialogues = scene?.dialogues || [];
+    const total = dialogues.length;
+    state.previewDialogueIndex = Math.max(0, Math.min(state.previewDialogueIndex, Math.max(total - 1, 0)));
+
+    const line = total > 0 ? dialogues[state.previewDialogueIndex] : null;
+    const previewBox = els.previewText.closest('.preview-dialogue-box');
+
+    els.previewBackground.style.backgroundImage = scene?.background
+      ? `linear-gradient(180deg, rgba(10, 10, 15, 0.25), rgba(10, 10, 15, 0.9)), url('../game/${scene.background}')`
+      : '';
+    els.previewSpeaker.textContent = line?.speaker || '';
+    els.previewText.textContent = line?.text || '대사를 선택하거나 입력하면 여기서 바로 확인할 수 있습니다.';
+    els.previewIndexLabel.textContent = total > 0 ? `${state.previewDialogueIndex + 1} / ${total}` : '0 / 0';
+    els.btnPreviewPrev.disabled = total <= 1 || state.previewDialogueIndex === 0;
+    els.btnPreviewNext.disabled = total <= 1 || state.previewDialogueIndex >= total - 1;
+    previewBox.dataset.style = line?.style || (line?.speaker ? 'normal' : 'narration');
   }
 
   // ── 씬 ID 변경 ───────────────────────────────────────
@@ -421,8 +721,17 @@
       // 모든 input/textarea/select 변경 감지
       card.querySelectorAll('input,textarea,select').forEach(el => {
         const ev = el.tagName === 'SELECT' ? 'change' : 'input';
+        const beginSnapshot = () => {
+          if (card.dataset.historyCaptured === '1') return;
+          pushHistory();
+          card.dataset.historyCaptured = '1';
+        };
+        el.addEventListener('focus', beginSnapshot, { once: false });
         el.addEventListener(ev, () => {
           onChange(item, el.dataset.field, el.value);
+        });
+        el.addEventListener('blur', () => {
+          card.dataset.historyCaptured = '0';
         });
       });
 
@@ -478,9 +787,22 @@
         } else {
           d[field] = value || (field === 'style' ? 'normal' : '');
         }
-        markDirty(); render();
+        markDirty();
+        render();
+        renderDialoguePreview(scene);
+        renderValidationPanel();
       }
     );
+
+    cards.querySelectorAll('.pcard').forEach((card, index) => {
+      const focusables = card.querySelectorAll('input, textarea, select');
+      focusables.forEach(el => {
+        el.addEventListener('focus', () => {
+          state.previewDialogueIndex = index;
+          renderDialoguePreview(scene);
+        });
+      });
+    });
 
     // portrait 썸네일 실시간 업데이트
     cards.querySelectorAll('[data-field="portrait"]').forEach(input => {
@@ -525,7 +847,7 @@
       (i) => { scene.choices.splice(i, 1); afterChange(); },
       (i) => { if (swap(scene.choices, i-1, i)) afterChange(); },
       (i) => { if (swap(scene.choices, i, i+1)) afterChange(); },
-      (c, field, value) => { c[field] = value; markDirty(); renderWires(); }
+      (c, field, value) => { c[field] = value; markDirty(); renderWires(); renderValidationPanel(); }
     );
 
     els.choiceList.appendChild(cards);
@@ -550,10 +872,51 @@
       (i) => { scene.branches.splice(i, 1); afterChange(); },
       (i) => { if (swap(scene.branches, i-1, i)) afterChange(); },
       (i) => { if (swap(scene.branches, i, i+1)) afterChange(); },
-      (b, field, value) => { b[field] = value; markDirty(); render(); }
+      (b, field, value) => { b[field] = value; markDirty(); render(); renderValidationPanel(); }
     );
 
     els.branchList.appendChild(cards);
+  }
+
+  // 단서 목록
+  function renderEvidenceList(scene) {
+    if (!scene.evidence) scene.evidence = [];
+    els.evidenceList.innerHTML = '';
+
+    const cards = makeCard(
+      '단서', scene.evidence,
+      (e) => `
+        <label><span>단서 ID</span>
+          <input data-field="evidence_id" value="${escapeAttr(e.evidence_id || e.id || '')}" placeholder="예: ev_note"></label>
+        <label><span>이름</span>
+          <input data-field="name" value="${escapeAttr(e.name || '')}"></label>
+        <label><span>설명</span>
+          <textarea data-field="description">${escapeHtml(e.description || '')}</textarea></label>
+        <label><span>이미지</span>
+          <input data-field="image" value="${escapeAttr(e.image || '')}"></label>
+        <label><span>트리거</span>
+          <select data-field="trigger">
+            <option value="auto"${(e.trigger || 'auto') === 'auto' ? ' selected' : ''}>auto</option>
+            <option value="click"${e.trigger === 'click' ? ' selected' : ''}>click</option>
+          </select></label>
+      `,
+      () => { scene.evidence.push(newEvidence()); afterChange(); },
+      (i) => { scene.evidence.splice(i, 1); afterChange(); },
+      (i) => { if (swap(scene.evidence, i-1, i)) afterChange(); },
+      (i) => { if (swap(scene.evidence, i, i+1)) afterChange(); },
+      (evidence, field, value) => {
+        if (field === 'evidence_id') {
+          evidence.evidence_id = value;
+          delete evidence.id;
+        } else {
+          evidence[field] = value;
+        }
+        markDirty();
+        renderValidationPanel();
+      }
+    );
+
+    els.evidenceList.appendChild(cards);
   }
 
   function afterChange() {
@@ -572,11 +935,567 @@
   function newBranch() {
     return { flag_key: '', flag_value: '', next_scene: '' };
   }
+  function newEvidence() {
+    return { evidence_id: '', trigger: 'auto', name: '', description: '', image: '' };
+  }
   function newScene(id) {
     return {
-      id, title: id, background: null, next_scene: null,
+      id, chapter: null, title: id, background: null, music: null, effect: null, next_scene: null,
       branches: [], dialogues: [], choices: [], evidence: []
     };
+  }
+
+  function normalizeOrder(value, fallback) {
+    const parsed = Number.parseInt(value, 10);
+    return Number.isFinite(parsed) ? parsed : fallback;
+  }
+
+  function normalizeFlagValue(value) {
+    if (value === '' || value == null) return null;
+    return value;
+  }
+
+  function normalizeScene(sceneId, scene) {
+    const normalizedDialogues = (scene.dialogues || []).map((dialogue, index) => {
+      const condition = dialogue.condition?.flag_key
+        ? {
+            flag_key: dialogue.condition.flag_key,
+            flag_value: normalizeFlagValue(dialogue.condition.flag_value),
+          }
+        : null;
+
+      return {
+        order: normalizeOrder(dialogue.order, index + 1),
+        speaker: dialogue.speaker || '',
+        text: dialogue.text || '',
+        style: dialogue.style || 'normal',
+        portrait: dialogue.portrait || null,
+        label: dialogue.label || null,
+        condition,
+      };
+    });
+
+    const normalizedChoices = (scene.choices || []).map((choice, index) => ({
+      order: normalizeOrder(choice.order, index + 1),
+      text: choice.text || '',
+      flag_key: choice.flag_key || null,
+      flag_value: normalizeFlagValue(choice.flag_value),
+      next_scene: choice.next_scene || null,
+      next_dialogue: choice.next_dialogue || null,
+    }));
+
+    const normalizedBranches = (scene.branches || []).map((branch, index) => ({
+      order: normalizeOrder(branch.order, index + 1),
+      flag_key: branch.flag_key || '',
+      flag_value: normalizeFlagValue(branch.flag_value),
+      next_scene: branch.next_scene || '',
+    }));
+
+    const normalizedEvidence = (scene.evidence || []).map((evidence) => ({
+      evidence_id: evidence.evidence_id || evidence.id || '',
+      trigger: evidence.trigger || 'auto',
+      name: evidence.name || '',
+      description: evidence.description || '',
+      image: evidence.image || null,
+    }));
+
+    return {
+      id: scene.id || sceneId,
+      chapter: scene.chapter === '' || scene.chapter == null ? null : Number.parseInt(scene.chapter, 10),
+      title: scene.title || sceneId,
+      background: scene.background || null,
+      music: scene.music || null,
+      effect: scene.effect || null,
+      next_scene: scene.next_scene || null,
+      dialogues: normalizedDialogues,
+      choices: normalizedChoices,
+      evidence: normalizedEvidence,
+      branches: normalizedBranches,
+    };
+  }
+
+  function buildExportData() {
+    const normalizedScenes = {};
+    Object.entries(state.data.scenes || {}).forEach(([sceneId, scene]) => {
+      normalizedScenes[sceneId] = normalizeScene(sceneId, scene);
+    });
+
+    const firstScene = state.data.first_scene && normalizedScenes[state.data.first_scene]
+      ? state.data.first_scene
+      : Object.keys(normalizedScenes)[0] || null;
+
+    return {
+      first_scene: firstScene,
+      scenes: normalizedScenes,
+    };
+  }
+
+  function applyBatchBackground() {
+    const nextBackground = (els.fieldBatchBackground.value || '').trim();
+    if (!nextBackground) {
+      setStatus('적용할 배경 경로를 입력하세요', true);
+      return;
+    }
+
+    const targetIds = [...getFilteredSceneIds()];
+    if (targetIds.length === 0) {
+      setStatus('현재 필터 조건에 맞는 씬이 없습니다', true);
+      return;
+    }
+
+    pushHistory();
+    targetIds.forEach(sceneId => {
+      const scene = state.data.scenes[sceneId];
+      if (scene) scene.background = nextBackground;
+    });
+    markDirty();
+    render();
+    renderPanel();
+    setStatus(`✓ ${targetIds.length}개 씬 배경 일괄 변경`);
+  }
+
+  function applyBatchStyle() {
+    const nextStyle = (els.fieldBatchStyle.value || '').trim();
+    if (!nextStyle) {
+      setStatus('적용할 스타일을 선택하세요', true);
+      return;
+    }
+
+    const targetIds = [...getFilteredSceneIds()];
+    if (targetIds.length === 0) {
+      setStatus('현재 필터 조건에 맞는 씬이 없습니다', true);
+      return;
+    }
+
+    let changed = 0;
+    pushHistory();
+    targetIds.forEach(sceneId => {
+      const scene = state.data.scenes[sceneId];
+      (scene?.dialogues || []).forEach(dialogue => {
+        dialogue.style = nextStyle;
+        changed += 1;
+      });
+    });
+
+    if (changed === 0) {
+      state.history.pop();
+      setStatus('변경할 대사가 없습니다', true);
+      return;
+    }
+
+    markDirty();
+    render();
+    renderPanel();
+    setStatus(`✓ ${changed}개 대사 스타일 일괄 변경`);
+  }
+
+  function replaceFlagKeyEverywhere() {
+    const oldKey = (els.fieldBatchFlagOld.value || '').trim();
+    const newKey = (els.fieldBatchFlagNew.value || '').trim();
+    if (!oldKey || !newKey) {
+      setStatus('기존/신규 플래그 키를 모두 입력하세요', true);
+      return;
+    }
+
+    let changed = 0;
+    pushHistory();
+
+    Object.values(state.data.scenes || {}).forEach(scene => {
+      (scene.dialogues || []).forEach(dialogue => {
+        if (dialogue.condition?.flag_key === oldKey) {
+          dialogue.condition.flag_key = newKey;
+          changed += 1;
+        }
+      });
+      (scene.branches || []).forEach(branch => {
+        if (branch.flag_key === oldKey) {
+          branch.flag_key = newKey;
+          changed += 1;
+        }
+      });
+      (scene.choices || []).forEach(choice => {
+        if (choice.flag_key === oldKey) {
+          choice.flag_key = newKey;
+          changed += 1;
+        }
+      });
+    });
+
+    if (changed === 0) {
+      state.history.pop();
+      setStatus('치환된 플래그 키가 없습니다', true);
+      return;
+    }
+
+    markDirty();
+    render();
+    renderPanel();
+    setStatus(`✓ 플래그 키 ${changed}건 치환 완료`);
+  }
+
+  function replaceStringValue(source, from, to) {
+    if (typeof source !== 'string' || source.length === 0) return { value: source, changed: 0 };
+    let count = 0;
+    const replaced = source.replaceAll(from, () => {
+      count += 1;
+      return to;
+    });
+    return { value: replaced, changed: count };
+  }
+
+  function replaceTextEverywhere() {
+    const oldText = els.fieldBatchTextOld.value || '';
+    const newText = els.fieldBatchTextNew.value || '';
+    if (!oldText) {
+      setStatus('기존 문자열을 입력하세요', true);
+      return;
+    }
+
+    let changed = 0;
+    pushHistory();
+
+    Object.values(state.data.scenes || {}).forEach(scene => {
+      ['title', 'background', 'music', 'effect'].forEach(field => {
+        const result = replaceStringValue(scene[field], oldText, newText);
+        scene[field] = result.value;
+        changed += result.changed;
+      });
+
+      (scene.dialogues || []).forEach(dialogue => {
+        ['speaker', 'text', 'portrait', 'label'].forEach(field => {
+          const result = replaceStringValue(dialogue[field], oldText, newText);
+          dialogue[field] = result.value;
+          changed += result.changed;
+        });
+        if (dialogue.condition) {
+          ['flag_key', 'flag_value'].forEach(field => {
+            const result = replaceStringValue(dialogue.condition[field], oldText, newText);
+            dialogue.condition[field] = result.value;
+            changed += result.changed;
+          });
+        }
+      });
+
+      (scene.choices || []).forEach(choice => {
+        ['text', 'flag_key', 'flag_value', 'next_scene', 'next_dialogue'].forEach(field => {
+          const result = replaceStringValue(choice[field], oldText, newText);
+          choice[field] = result.value;
+          changed += result.changed;
+        });
+      });
+
+      (scene.branches || []).forEach(branch => {
+        ['flag_key', 'flag_value', 'next_scene'].forEach(field => {
+          const result = replaceStringValue(branch[field], oldText, newText);
+          branch[field] = result.value;
+          changed += result.changed;
+        });
+      });
+
+      (scene.evidence || []).forEach(evidence => {
+        ['evidence_id', 'name', 'description', 'image'].forEach(field => {
+          const result = replaceStringValue(evidence[field], oldText, newText);
+          evidence[field] = result.value;
+          changed += result.changed;
+        });
+      });
+    });
+
+    if (changed === 0) {
+      state.history.pop();
+      setStatus('치환된 문자열이 없습니다', true);
+      return;
+    }
+
+    markDirty();
+    render();
+    renderPanel();
+    setStatus(`✓ 문자열 ${changed}건 치환 완료`);
+  }
+
+  function sortScenesByChapter() {
+    const scenes = state.data.scenes || {};
+    const sceneEntries = Object.entries(scenes);
+    if (sceneEntries.length === 0) {
+      setStatus('정렬할 씬이 없습니다', true);
+      return;
+    }
+
+    pushHistory();
+
+    sceneEntries.sort((a, b) => {
+      const sceneA = a[1] || {};
+      const sceneB = b[1] || {};
+      const chapterA = sceneA.chapter == null ? Number.MAX_SAFE_INTEGER : Number(sceneA.chapter);
+      const chapterB = sceneB.chapter == null ? Number.MAX_SAFE_INTEGER : Number(sceneB.chapter);
+      if (chapterA !== chapterB) return chapterA - chapterB;
+      const titleCompare = String(sceneA.title || a[0]).localeCompare(String(sceneB.title || b[0]), 'ko');
+      if (titleCompare !== 0) return titleCompare;
+      return a[0].localeCompare(b[0], 'ko');
+    });
+
+    state.data.scenes = Object.fromEntries(sceneEntries);
+    state.layout = {};
+    autoLayout();
+    markDirty();
+    render();
+    renderPanel();
+    setStatus('✓ 챕터 기준 정렬 보조 적용 완료');
+  }
+
+  function duplicateScene(id) {
+    const scene = state.data.scenes[id];
+    if (!scene) return;
+
+    pushHistory();
+
+    let nextId = `${id}_copy`;
+    let suffix = 2;
+    while (state.data.scenes[nextId]) {
+      nextId = `${id}_copy_${suffix++}`;
+    }
+
+    const copied = JSON.parse(JSON.stringify(scene));
+    copied.id = nextId;
+    copied.title = copied.title ? `${copied.title} 복사본` : nextId;
+    state.data.scenes[nextId] = copied;
+
+    const pos = state.layout[id] || { x: 40, y: 40 };
+    state.layout[nextId] = { x: pos.x + 48, y: pos.y + 48 };
+    state.selectedId = nextId;
+    markDirty();
+    render();
+    renderPanel();
+    setStatus(`✓ 씬 복제: ${nextId}`);
+  }
+
+  function collectValidation() {
+    const scenes = state.data.scenes || {};
+    const firstScene = state.data.first_scene;
+    const findings = [];
+    const reachable = new Set();
+    const stack = [];
+    const evidenceOwners = new Map();
+    const labelOwners = new Map();
+    const sceneIdOwners = new Map();
+
+    if (firstScene && scenes[firstScene]) {
+      stack.push(firstScene);
+      while (stack.length) {
+        const id = stack.pop();
+        if (reachable.has(id) || !scenes[id]) continue;
+        reachable.add(id);
+        const scene = scenes[id];
+        if (scene.next_scene && scenes[scene.next_scene]) stack.push(scene.next_scene);
+        (scene.branches || []).forEach(branch => {
+          if (branch.next_scene && scenes[branch.next_scene]) stack.push(branch.next_scene);
+        });
+        (scene.choices || []).forEach(choice => {
+          if (choice.next_scene && scenes[choice.next_scene]) stack.push(choice.next_scene);
+        });
+      }
+    }
+
+    Object.entries(scenes).forEach(([sceneKey, scene]) => {
+      const declaredId = scene.id || sceneKey;
+      const dialogueLabels = new Set(
+        (scene.dialogues || [])
+          .map(dialogue => dialogue.label)
+          .filter(Boolean)
+      );
+      if (!sceneIdOwners.has(declaredId)) sceneIdOwners.set(declaredId, []);
+      sceneIdOwners.get(declaredId).push(sceneKey);
+
+      if (scene.next_scene && !scenes[scene.next_scene]) {
+        findings.push({
+          type: 'error',
+          sceneId: sceneKey,
+          title: '기본 다음 씬 누락',
+          body: `${sceneKey}의 next_scene이 "${scene.next_scene}"를 가리키지만 해당 씬이 없습니다.`,
+        });
+      }
+
+      (scene.choices || []).forEach((choice, index) => {
+        if (choice.next_scene && !scenes[choice.next_scene]) {
+          findings.push({
+            type: 'error',
+            sceneId: sceneKey,
+            title: '선택지 연결 누락',
+            body: `${sceneKey}의 선택지 ${index + 1}이 "${choice.next_scene}"를 가리키지만 해당 씬이 없습니다.`,
+          });
+        }
+        if (choice.next_dialogue && !dialogueLabels.has(choice.next_dialogue)) {
+          findings.push({
+            type: 'error',
+            sceneId: sceneKey,
+            title: '선택지 대사 점프 누락',
+            body: `${sceneKey}의 선택지 ${index + 1}이 "${choice.next_dialogue}" 라벨로 점프하지만 해당 라벨이 이 씬에 없습니다.`,
+          });
+        }
+      });
+
+      (scene.branches || []).forEach((branch, index) => {
+        if (branch.next_scene && !scenes[branch.next_scene]) {
+          findings.push({
+            type: 'error',
+            sceneId: sceneKey,
+            title: '분기 연결 누락',
+            body: `${sceneKey}의 분기 ${index + 1}이 "${branch.next_scene}"를 가리키지만 해당 씬이 없습니다.`,
+          });
+        }
+      });
+
+      (scene.evidence || []).forEach((evidence, index) => {
+        const evidenceId = evidence.evidence_id || evidence.id;
+        if (!evidenceId) return;
+        if (!evidenceOwners.has(evidenceId)) evidenceOwners.set(evidenceId, []);
+        evidenceOwners.get(evidenceId).push(`${sceneKey}#${index + 1}`);
+      });
+
+      (scene.dialogues || []).forEach((dialogue, index) => {
+        if (!dialogue.label) return;
+        if (!labelOwners.has(dialogue.label)) labelOwners.set(dialogue.label, []);
+        labelOwners.get(dialogue.label).push(`${sceneKey}#${index + 1}`);
+      });
+    });
+
+    sceneIdOwners.forEach((owners, id) => {
+      if (owners.length > 1) {
+        findings.push({
+          type: 'error',
+          sceneId: owners[0],
+          title: '중복 SceneID',
+          body: `"${id}"가 ${owners.join(', ')}에 중복 선언되어 있습니다.`,
+        });
+      }
+    });
+
+    evidenceOwners.forEach((owners, id) => {
+      if (owners.length > 1) {
+        findings.push({
+          type: 'error',
+          title: '중복 EvidenceID',
+          body: `"${id}"가 ${owners.join(', ')}에서 중복 사용되고 있습니다.`,
+        });
+      }
+    });
+
+    labelOwners.forEach((owners, label) => {
+      if (owners.length > 1) {
+        findings.push({
+          type: 'warn',
+          title: '중복 Label',
+          body: `"${label}"가 ${owners.join(', ')}에서 중복 사용되고 있습니다.`,
+        });
+      }
+    });
+
+    Object.keys(scenes).forEach(sceneId => {
+      if (sceneId !== firstScene && !reachable.has(sceneId)) {
+        findings.push({
+          type: 'warn',
+          sceneId,
+          title: '미참조 씬',
+          body: `${sceneId}는 first_scene에서 도달할 수 없습니다.`,
+        });
+      }
+    });
+
+    if (firstScene && !scenes[firstScene]) {
+      findings.push({
+        type: 'error',
+        title: 'first_scene 누락',
+        body: `first_scene이 "${firstScene}"로 지정되어 있지만 실제 씬 데이터에 없습니다.`,
+      });
+    }
+
+    return findings;
+  }
+
+  function renderValidationPanel() {
+    const findings = collectValidation();
+    const scoped = state.selectedId
+      ? findings.filter(item => !item.sceneId || item.sceneId === state.selectedId)
+      : findings;
+
+    const errorCount = findings.filter(item => item.type === 'error').length;
+    const warnCount = findings.filter(item => item.type === 'warn').length;
+    els.validationSummary.textContent =
+      findings.length === 0
+        ? '현재 구조 검수 기준으로 확인된 문제는 없습니다.'
+        : `전체 ${findings.length}건 검사 결과: 오류 ${errorCount}건, 경고 ${warnCount}건`;
+
+    els.validationList.innerHTML = '';
+
+    if (scoped.length === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'validation-item';
+      empty.innerHTML = '<strong>현재 씬 기준 문제 없음</strong>선택된 씬과 직접 관련된 오류나 경고가 없습니다.';
+      els.validationList.appendChild(empty);
+      return;
+    }
+
+    scoped.forEach(item => {
+      const box = document.createElement('div');
+      box.className = `validation-item ${item.type}`;
+      box.innerHTML = `<strong>${escapeHtml(item.title)}</strong>${escapeHtml(item.body)}`;
+      els.validationList.appendChild(box);
+    });
+  }
+
+  function renderAnalysisPanel() {
+    const sceneId = state.selectedId;
+    if (!sceneId || !state.data.scenes[sceneId]) {
+      els.analysisSummary.textContent = '';
+      return;
+    }
+
+    const scene = state.data.scenes[sceneId];
+    const incoming = [];
+    Object.entries(state.data.scenes || {}).forEach(([otherId, otherScene]) => {
+      if (otherId === sceneId) return;
+      if (otherScene.next_scene === sceneId) incoming.push(`${otherId} (기본)`);
+      (otherScene.branches || []).forEach((branch, index) => {
+        if (branch.next_scene === sceneId) incoming.push(`${otherId} (분기 ${index + 1})`);
+      });
+      (otherScene.choices || []).forEach((choice, index) => {
+        if (choice.next_scene === sceneId) incoming.push(`${otherId} (선택지 ${index + 1})`);
+      });
+    });
+
+    const readsFlags = new Set();
+    (scene.dialogues || []).forEach(dialogue => {
+      if (dialogue.condition?.flag_key) readsFlags.add(dialogue.condition.flag_key);
+    });
+    (scene.branches || []).forEach(branch => {
+      if (branch.flag_key) readsFlags.add(branch.flag_key);
+    });
+
+    const writesFlags = new Set();
+    (scene.choices || []).forEach(choice => {
+      if (choice.flag_key) writesFlags.add(choice.flag_key);
+    });
+
+    const nextTargets = [];
+    if (scene.next_scene) nextTargets.push(`기본: ${scene.next_scene}`);
+    (scene.branches || []).forEach((branch, index) => {
+      if (branch.next_scene) nextTargets.push(`분기 ${index + 1}: ${branch.next_scene}`);
+    });
+    (scene.choices || []).forEach((choice, index) => {
+      if (choice.next_scene) nextTargets.push(`선택지 ${index + 1}: ${choice.next_scene}`);
+    });
+
+    const reachable = collectReachableScenes();
+    const lines = [
+      `엔딩 씬: ${isEndingScene(scene) ? '예' : '아니오'}`,
+      `도달 가능: ${reachable.has(sceneId) || sceneId === state.data.first_scene ? '예' : '아니오'}`,
+      `이전 연결: ${incoming.length ? incoming.join(', ') : '없음'}`,
+      `다음 연결: ${nextTargets.length ? nextTargets.join(', ') : '없음'}`,
+      `읽는 플래그: ${readsFlags.size ? [...readsFlags].join(', ') : '없음'}`,
+      `쓰는 플래그: ${writesFlags.size ? [...writesFlags].join(', ') : '없음'}`,
+    ];
+
+    els.analysisSummary.innerHTML = lines.map(line => `<div>${escapeHtml(line)}</div>`).join('');
   }
 
   // ── 와이어 드래그 ─────────────────────────────────────
@@ -652,6 +1571,11 @@
       }
       state.data = window.GAME_DATA;
       state.layout = {};
+      state.history = [];
+      state.future = [];
+      state.dirty = false;
+      state.filters = { query: '', chapter: '' };
+      els.fieldSearch.value = '';
       autoLayout();
       loadLayout();
       state.selectedId = null;
@@ -665,7 +1589,9 @@
 
   // ── 내보내기 ──────────────────────────────────────────
   function exportData() {
-    const json = JSON.stringify(state.data, null, 2);
+    const payload = buildExportData();
+    state.data = payload;
+    const json = JSON.stringify(payload, null, 2);
     const content = `window.GAME_DATA = ${json};\n`;
     const blob = new Blob([content], { type: 'text/javascript' });
     const a = document.createElement('a');
@@ -675,6 +1601,8 @@
     URL.revokeObjectURL(a.href);
     state.dirty = false;
     setStatus('✓ 내보내기 완료');
+    render();
+    renderPanel();
   }
 
   // ── 씬 추가 ───────────────────────────────────────────
@@ -714,21 +1642,45 @@
   function bindEvents() {
     // 툴바
     $('btn-add-node').addEventListener('click', addScene);
+    $('btn-undo').addEventListener('click', undo);
+    $('btn-redo').addEventListener('click', redo);
     $('btn-load').addEventListener('click', loadData);
     $('btn-export').addEventListener('click', exportData);
+    els.fieldSearch.addEventListener('input', () => {
+      state.filters.query = els.fieldSearch.value;
+      render();
+    });
+    els.fieldFilterChapter.addEventListener('change', () => {
+      state.filters.chapter = els.fieldFilterChapter.value;
+      render();
+    });
+    els.btnAutoLayout.addEventListener('click', resetAutoLayout);
+    els.btnZoomOut.addEventListener('click', () => setZoom(state.camera.scale * 0.9));
+    els.btnZoomIn.addEventListener('click', () => setZoom(state.camera.scale * 1.1));
+    els.btnApplyBatchBackground.addEventListener('click', applyBatchBackground);
+    els.btnApplyBatchStyle.addEventListener('click', applyBatchStyle);
+    els.btnApplyBatchFlag.addEventListener('click', replaceFlagKeyEverywhere);
+    els.btnApplyBatchText.addEventListener('click', replaceTextEverywhere);
+    els.btnSortScenes.addEventListener('click', sortScenesByChapter);
+    $('btn-duplicate-scene').addEventListener('click', () => {
+      if (state.selectedId) duplicateScene(state.selectedId);
+    });
     $('btn-delete-scene').addEventListener('click', () => {
       if (state.selectedId) deleteScene(state.selectedId);
     });
     $('btn-add-dialogue').addEventListener('click', () => {
       const scene = state.data.scenes[state.selectedId];
       if (!scene) return;
+      pushHistory();
       if (!scene.dialogues) scene.dialogues = [];
       scene.dialogues.push(newDialogue());
+      state.previewDialogueIndex = scene.dialogues.length - 1;
       afterChange();
     });
     $('btn-add-choice').addEventListener('click', () => {
       const scene = state.data.scenes[state.selectedId];
       if (!scene) return;
+      pushHistory();
       if (!scene.choices) scene.choices = [];
       scene.choices.push(newChoice());
       afterChange();
@@ -736,8 +1688,17 @@
     $('btn-add-branch').addEventListener('click', () => {
       const scene = state.data.scenes[state.selectedId];
       if (!scene) return;
+      pushHistory();
       if (!scene.branches) scene.branches = [];
       scene.branches.push(newBranch());
+      afterChange();
+    });
+    $('btn-add-evidence').addEventListener('click', () => {
+      const scene = state.data.scenes[state.selectedId];
+      if (!scene) return;
+      pushHistory();
+      if (!scene.evidence) scene.evidence = [];
+      scene.evidence.push(newEvidence());
       afterChange();
     });
 
@@ -746,13 +1707,53 @@
       const scene = state.data.scenes[state.selectedId];
       if (!scene) return;
       scene.title = els.fieldTitle.value;
-      markDirty(); renderNodes();
+      markDirty(); renderNodes(); renderValidationPanel();
     });
     els.fieldBg.addEventListener('input', () => {
       const scene = state.data.scenes[state.selectedId];
       if (!scene) return;
       scene.background = els.fieldBg.value;
       markDirty();
+      renderDialoguePreview(scene);
+    });
+    els.fieldChapter.addEventListener('input', () => {
+      const scene = state.data.scenes[state.selectedId];
+      if (!scene) return;
+      scene.chapter = els.fieldChapter.value === '' ? null : Number.parseInt(els.fieldChapter.value, 10);
+      markDirty();
+    });
+    els.fieldMusic.addEventListener('input', () => {
+      const scene = state.data.scenes[state.selectedId];
+      if (!scene) return;
+      scene.music = els.fieldMusic.value || null;
+      markDirty();
+    });
+    els.fieldEffect.addEventListener('input', () => {
+      const scene = state.data.scenes[state.selectedId];
+      if (!scene) return;
+      scene.effect = els.fieldEffect.value || null;
+      markDirty();
+    });
+    els.fieldTitle.addEventListener('focus', pushHistory);
+    els.fieldBg.addEventListener('focus', pushHistory);
+    els.fieldChapter.addEventListener('focus', pushHistory);
+    els.fieldMusic.addEventListener('focus', pushHistory);
+    els.fieldEffect.addEventListener('focus', pushHistory);
+    els.fieldSceneId.addEventListener('focus', pushHistory);
+
+    els.btnPreviewPrev.addEventListener('click', () => {
+      const scene = state.data.scenes[state.selectedId];
+      if (!scene?.dialogues?.length) return;
+      state.previewDialogueIndex = Math.max(0, state.previewDialogueIndex - 1);
+      renderDialoguePreview(scene);
+    });
+
+    els.btnPreviewNext.addEventListener('click', () => {
+      const scene = state.data.scenes[state.selectedId];
+      const total = scene?.dialogues?.length || 0;
+      if (total === 0) return;
+      state.previewDialogueIndex = Math.min(total - 1, state.previewDialogueIndex + 1);
+      renderDialoguePreview(scene);
     });
 
     els.fieldSceneId.addEventListener('blur', () => {
@@ -839,11 +1840,14 @@
       const scene = state.data.scenes[id];
       if (!scene) return;
       if (pin.classList.contains('pin-out')) {
+        pushHistory();
         scene.next_scene = null;
       } else if (pin.classList.contains('pin-branch')) {
+        pushHistory();
         const b = scene.branches?.[+pin.dataset.branch];
         if (b) b.next_scene = '';
       } else if (pin.classList.contains('pin-choice')) {
+        pushHistory();
         const c = scene.choices?.[+pin.dataset.choice];
         if (c) c.next_scene = '';
       }
@@ -865,6 +1869,7 @@
     document.addEventListener('keydown', e => {
       if (e.ctrlKey && e.key === 's') { e.preventDefault(); exportData(); return; }
       if (e.ctrlKey && e.key === 'z') { e.preventDefault(); undo(); return; }
+      if (e.ctrlKey && (e.key === 'y' || (e.shiftKey && e.key === 'Z'))) { e.preventDefault(); redo(); return; }
       if (e.key === 'Delete' && !isTyping() && state.selectedId) {
         deleteScene(state.selectedId);
         return;
