@@ -2,14 +2,15 @@
 
 ## 1. 목적
 
-본 문서는 `xlsx -> game_data` 단방향 구조를 `xlsx <-> game_data` 양방향 구조로 확장하기 위한 설계 문서다.
+본 문서는 `xlsx -> game_data` 단방향 구조를 `xlsx <-> game_data` 양방향 구조로 확장한 뒤, 현재 실무 운영 기준까지 정리하기 위한 문서다.
 
-현재 메인 작업 툴은 `EditorNode`이므로, 실질적인 목표는 다음과 같다.
+현재 메인 작업 툴은 `EditorNode`와 `game_data.js` 직접 편집 흐름이므로, 실질적인 목표는 다음과 같다.
 
 ```text
-Node Editor
+Node Editor / direct edit
 ↔ game_data
-↔ xlsx
+↔ generated xlsx
+↔ script.xlsx(수동 복붙 검수)
 ```
 
 ---
@@ -20,12 +21,12 @@ Node Editor
 
 하지만 현재는 다음 이유로 역방향 변환이 필요하다.
 
-- 메인 편집이 노드형 에디터에서 이루어짐
+- 메인 편집이 노드형 에디터 또는 `game_data.js`에서 이루어짐
 - 수정 결과를 테이블 문서로 다시 정리해야 함
 - 검수 / 공유 / 백업은 여전히 xlsx가 유리함
 - 특정 시점의 데이터를 표 형태로 비교해야 할 수 있음
 
-즉, `json -> xlsx`는 단순 편의 기능이 아니라, 현재 작업 흐름을 유지하기 위한 필수 구조다.
+즉, `game_data -> generated xlsx`는 단순 편의 기능이 아니라, 현재 작업 흐름을 유지하기 위한 필수 구조다.
 
 ---
 
@@ -40,8 +41,9 @@ Node Editor
 ### 3-2. 출력
 
 - `content/generated/script.generated.xlsx`
+- `content/generated/script.generated_delimited/*.csv, *.tsv`
 
-기존 `script.xlsx`를 바로 덮어쓰기보다는, 기본적으로는 별도 파일로 생성하는 방식을 권장한다.
+기존 `script.xlsx`를 바로 덮어쓰기보다는, 기본적으로는 별도 파일로 생성한 뒤 사람이 필요한 시트만 원본 표에 복붙하는 방식을 권장한다.
 
 ---
 
@@ -101,16 +103,17 @@ Node Editor
 
 ### 7-1. 기본 방침
 
-- 메인 작업은 노드형 에디터
-- 최종 반영은 `game_data.js`
+- 메인 작업은 노드형 에디터 또는 `game_data.js`
+- 최종 반영 기준은 `game_data.js`
 - 테이블 산출물은 필요 시 역변환으로 생성
 
 ### 7-2. 추천 사용 방식
 
-1. 노드형 에디터에서 데이터 수정
-2. `game_data.js` 갱신
-3. `json_to_generated_xlsx.py` 실행
-4. 생성된 xlsx를 검수 / 공유 / 백업용으로 사용
+1. 노드형 에디터 또는 `game_data.js`에서 데이터 수정
+2. `content/tools/validate_game_data.py`로 구조 검수
+3. `content/tools/json_to_generated_xlsx.py --with-delimited` 실행
+4. 생성된 xlsx / csv / tsv를 검수 / 공유 / 백업용으로 사용
+5. 필요 시 generated 시트 내용을 `script.xlsx` 원본 표에 수동 복붙
 
 ---
 
@@ -118,7 +121,8 @@ Node Editor
 
 - 역변환 시 주석, 수동 색상, 수동 메모 같은 엑셀 전용 부가 정보는 복원하지 않는다.
 - 역변환은 구조 데이터 복원에 초점을 둔다.
-- 따라서 `script.xlsx`를 완전한 수기 문서로 쓰기보다, 구조 검수 가능한 산출물로 보는 편이 적절하다.
+- `script.xlsx`를 자동으로 직접 덮어쓰지 않는다.
+- 따라서 `script.xlsx`를 완전한 수기 문서로 쓰기보다, 구조 검수 가능한 원본 표 포맷으로 보는 편이 적절하다.
 
 ---
 
@@ -126,8 +130,8 @@ Node Editor
 
 양방향 파이프라인의 핵심은 다음과 같다.
 
-- 편집 중심은 노드형 에디터
+- 편집 중심은 노드형 에디터와 `game_data`
 - 실행 중심은 `game_data`
-- 검수 / 공유 중심은 `xlsx`
+- 검수 / 공유 중심은 generated xlsx / csv / tsv / 필요 시 `script.xlsx`
 
-즉, 세 포맷이 역할을 분담하되, 어느 한쪽에 갇히지 않도록 상호 변환 가능한 구조를 유지하는 것이 목표다.
+즉, 세 포맷이 역할을 분담하되, 현재 실무에선 `game_data 중심 + generated 산출물 검수` 구조를 유지하는 것이 목표다.

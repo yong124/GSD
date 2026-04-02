@@ -135,19 +135,30 @@ Node Editor가 메인 툴이 된 이후에는,
 
 그래서 현재는 다음과 같은 운영 개념으로 정리되어 있다.
 
-- 메인 편집: Node Editor
+- 메인 편집: Node Editor, 필요 시 `game_data.js` 직접 수정
 - 런타임 반영: game_data
 - 대량 수정 / 검수 / 공유: generated xlsx 및 script.xlsx
 
 즉,
 
-`Node Editor -> game_data -> xlsx`
+`Node Editor / direct edit -> game_data -> generated xlsx`
 
 흐름을 중심으로,
 필요할 때 표 기반 작업을 다시 수행할 수 있는 보조 파이프라인을 두었다.
 
 이 구조는 기획 툴과 문서 포맷을 분리하지 않고,
 상황에 따라 오갈 수 있게 만든 점이 특징이다.
+
+이후 운영 단계에서는 여기에 한 가지가 더 붙었다.
+
+- `validate_game_data.py`로 구조 오류를 먼저 검수
+
+즉 현재 실무 흐름은 아래에 가깝다.
+
+1. Node Editor 또는 `game_data.js`에서 수정
+2. `validate_game_data.py`로 참조 / order / id 오류 검수
+3. `json_to_generated_xlsx.py --with-delimited`로 generated xlsx와 csv/tsv 산출
+4. 필요 시 `script.xlsx` 원본 표에 수동 복붙
 
 ---
 
@@ -185,7 +196,8 @@ Node Editor가 메인 툴이 된 이후에는,
 5. 자체 편집기 실험
 6. 노드형 에디터 전환
 7. 양방향 데이터 파이프라인 정리
-8. 세계관 / 캐릭터 / 관계 문서화
+8. 구조 검수 스크립트 추가
+9. 세계관 / 캐릭터 / 관계 문서화
 
 즉, 기획자가
 `콘텐츠를 설계하는 것`에서 멈추지 않고,
@@ -218,4 +230,4 @@ Node Editor가 메인 툴이 된 이후에는,
 
 ## 11. 한 줄 요약
 
-`경성뎐`은 1930년대 경성을 배경으로 한 서사형 ADV를 기획하며, 하드코딩 프로토타입에서 시작해 데이터 테이블 구조, xlsx 파이프라인, 노드형 에디터, 세계관 및 캐릭터 문서 체계까지 직접 확장해 온 프로젝트다.
+`경성뎐`은 1930년대 경성을 배경으로 한 서사형 ADV를 기획하며, 하드코딩 프로토타입에서 시작해 데이터 테이블 구조, xlsx 파이프라인, 노드형 에디터, 구조 검수 스크립트, 세계관 및 캐릭터 문서 체계까지 직접 확장해 온 프로젝트다.

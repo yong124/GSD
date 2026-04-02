@@ -1,20 +1,51 @@
 ﻿SceneID,Chapter,Title,Background,Music,NextScene,Effect
-ch1_court,1,묻힌 판결,assets/bg/court.jpeg,assets/sfx/tense.mp3,ch1_editor,
-ch1_editor,1,편집부,assets/bg/newsroom.jpeg,assets/sfx/newsroom.mp3,,
-ch2_cafe,2,카페 낙원,assets/bg/cafe.jpeg,assets/sfx/jazz.mp3,,
-ch2_factory,2,폐공장,assets/bg/factory.jpeg,assets/sfx/creepy.mp3,ch2_cafe,flicker
-ch2_hospital,2,낙원의 문,assets/bg/hospital.jpeg,assets/sfx/gloomy.mp3,ch2_factory,
-ch3_cafe,3,언니의 방,assets/bg/cafe.jpeg,assets/sfx/jazz_dark.mp3,ch3_storage,
-ch3_room4,3,기숙사 4번방,assets/bg/storage.jpeg,assets/sfx/creepy_2.mp3,,resonance
-ch3_storage,3,창고,assets/bg/storage.jpeg,assets/sfx/mystery.mp3,ch3_room4,
-ch4a_library,4,자료실,assets/bg/newsroom.jpeg,assets/sfx/mystery.mp3,ch4a_slum,
-ch4a_slum,4,빈민가,assets/bg/warehouse.jpg,assets/sfx/ambient.mp3,,
-ch4b_cafe,4,낙원 재방문,assets/bg/cafe.jpeg,assets/sfx/jazz_dark.mp3,ch4b_okryeon,
-ch4b_okryeon,4,옥련과의 대화,assets/bg/cafe.jpeg,assets/sfx/sad.mp3,,
-ch5_ritual_path,5,지하의 문,assets/bg/ritual_room.jpg,assets/sfx/ritual.mp3,ch5_ritual_room,
-ch5_ritual_room,5,의례실,assets/bg/ritual_room.jpg,assets/sfx/ritual_climax.mp3,ch6_ending,blood
-ch6_ending,6,결말,assets/bg/ritual_room.jpg,assets/sfx/ritual_climax.mp3,,blood
-ch6_ending_a,6,돌아오지 않은 언니,assets/bg/cafe.jpeg,assets/sfx/ending.mp3,ch6_epilogue,
-ch6_ending_b,6,기록된 것들,assets/bg/newsroom.jpeg,assets/sfx/ending.mp3,ch6_epilogue,
-ch6_ending_c,6,문 너머,assets/bg/ritual_room.jpg,assets/sfx/sad.mp3,ch6_epilogue,
-ch6_epilogue,6,에필로그,assets/bg/newsroom.jpeg,assets/sfx/newsroom.mp3,,
+ch1_court,1,묻힌 판결,assets/bg/court.jpeg,assets/sfx/ambient.mp3,ch1_newsroom,
+ch1_newsroom,1,난향일보 편집국,assets/bg/newsroom.jpeg,assets/sfx/newsroom.mp3,,
+ch1_newsroom_defiant,1,난향일보 편집국,assets/bg/newsroom.jpeg,assets/sfx/newsroom.mp3,ch2_hospital,
+ch1_newsroom_obedient,1,난향일보 편집국,assets/bg/newsroom.jpeg,assets/sfx/newsroom.mp3,ch2_hospital,
+ch2_cafe,2,카페 낙원,assets/bg/cafe.jpeg,assets/sfx/jazz.mp3,ch2_well,
+ch2_factory,2,경성 외곽 폐공장,assets/bg/factory.jpeg,assets/sfx/creepy.mp3,ch2_cafe,
+ch2_hospital,2,정신병원 접견실,assets/bg/hospital.jpeg,assets/sfx/tense.mp3,,
+ch2_hospital_a,2,정신병원 — 감응 질문,assets/bg/hospital.jpeg,assets/sfx/tense.mp3,ch2_hospital_end,1
+ch2_hospital_b,2,정신병원 — 문 질문,assets/bg/hospital.jpeg,assets/sfx/tense.mp3,ch2_hospital_end,1
+ch2_hospital_end,2,정신병원 — 탈주,assets/bg/hospital.jpeg,assets/sfx/tense.mp3,ch2_factory,3
+ch2_well,2,우물터 담벼락,assets/bg/storage.jpeg,assets/sfx/jazz_dark.mp3,ch3_warehouse,
+ch3_hallway,3,낙원 2층 복도,assets/bg/cafe.jpeg,assets/sfx/sad.mp3,ch3_room4,
+ch3_room4,3,기숙사 4번 방,assets/bg/storage.jpeg,assets/sfx/sad.mp3,,
+ch3_room4_comfort,3,혼자 두지 않는 말,assets/bg/storage.jpeg,assets/sfx/sad.mp3,ch4a_library,
+ch3_room4_record,3,기록의 다음 장,assets/bg/storage.jpeg,assets/sfx/sad.mp3,ch4a_library,
+ch3_room4_touch,3,벽의 응답,assets/bg/storage.jpeg,assets/sfx/creepy_2.mp3,ch4a_library,2
+ch3_score_read,3,악보의 안쪽,assets/bg/warehouse.jpg,assets/sfx/mystery.mp3,ch3_hallway,
+ch3_score_trust,3,송순의 귀,assets/bg/warehouse.jpg,assets/sfx/mystery.mp3,ch3_hallway,
+ch3_warehouse,3,낙원 무대 뒤 창고,assets/bg/warehouse.jpg,assets/sfx/tense.mp3,ch3_hallway,
+ch4a_articles_note,4,핵심만 베끼다,assets/bg/newsroom.jpeg,assets/sfx/mystery.mp3,ch4a_slum,
+ch4a_articles_take,4,접힌 문장을 챙기다,assets/bg/newsroom.jpeg,assets/sfx/mystery.mp3,ch4a_slum,
+ch4a_editor_room,4,편집장실,assets/bg/newsroom.jpeg,assets/sfx/newsroom.mp3,ch4b_cafe,
+ch4a_library,4,난향일보 자료실,assets/bg/newsroom.jpeg,assets/sfx/mystery.mp3,ch4a_slum,
+ch4a_slum,4,경성 외곽 빈민가,assets/bg/storage.jpeg,assets/sfx/gloomy.mp3,ch4a_editor_room,
+ch4b_backroom,4,낙원 뒷방,assets/bg/cafe.jpeg,assets/sfx/sad.mp3,ch5_ritual_path,
+ch4b_cafe,4,여급의 루트,assets/bg/cafe.jpeg,assets/sfx/jazz_dark.mp3,,
+ch4b_cafe_hold,4,낙원의 침묵,assets/bg/cafe.jpeg,assets/sfx/jazz_dark.mp3,ch4b_backroom,
+ch4b_cafe_press,4,낙원의 상처,assets/bg/cafe.jpeg,assets/sfx/jazz_dark.mp3,ch4b_backroom,
+ch5_contact_editor,5,짧은 연락,assets/bg/storage.jpeg,assets/sfx/creepy_2.mp3,ch5_descent,
+ch5_descent,5,숨겨진 계단,assets/bg/storage.jpeg,assets/sfx/creepy_2.mp3,ch5_guarded_door,3
+ch5_guarded_door,5,문 앞의 정적,assets/bg/storage.jpeg,assets/sfx/creepy_2.mp3,ch5_ritual_room,
+ch5_guarded_door_listen,5,문에 귀를 대다,assets/bg/storage.jpeg,assets/sfx/creepy_2.mp3,ch5_ritual_room,2
+ch5_guarded_door_steady,5,함께 버티는 숨,assets/bg/storage.jpeg,assets/sfx/creepy_2.mp3,ch5_ritual_room,
+ch5_no_contact,5,둘만의 약속,assets/bg/storage.jpeg,assets/sfx/creepy_2.mp3,ch5_descent,
+ch5_ritual_path,5,지하 진입로,assets/bg/storage.jpeg,assets/sfx/creepy_2.mp3,ch5_descent,1
+ch5_ritual_room,5,지하 의례실,assets/bg/ritual_room.jpg,assets/sfx/ritual.mp3,ch6_threshold,2
+ch6_choice_a,6,붙드는 쪽,assets/bg/ritual_room.jpg,assets/sfx/ritual_climax.mp3,ch6_outcome,
+ch6_choice_b,6,막아서는 쪽,assets/bg/ritual_room.jpg,assets/sfx/ritual_climax.mp3,ch6_outcome,
+ch6_choice_c,6,멈춘 쪽,assets/bg/ritual_room.jpg,assets/sfx/ritual_climax.mp3,ch6_outcome,
+ch6_ending_a,6,엔딩 A — 돌아오지 않은 언니,assets/bg/ritual_room.jpg,assets/sfx/ending.mp3,ch6_epilogue,
+ch6_ending_b,6,엔딩 B — 기록된 것들,assets/bg/ritual_room.jpg,assets/sfx/ending.mp3,ch6_epilogue,
+ch6_ending_c,6,엔딩 C — 문 너머,assets/bg/ritual_room.jpg,assets/sfx/ending.mp3,ch6_epilogue,2
+ch6_epilogue,6,에필로그,assets/bg/newsroom.jpeg,assets/sfx/ending.mp3,,
+ch6_outcome,6,의식의 균열,assets/bg/ritual_room.jpg,assets/sfx/ritual_climax.mp3,ch6_ending_c,2
+ch6_path_a,6,허밍의 응답,assets/bg/ritual_room.jpg,assets/sfx/ritual_climax.mp3,ch6_ending_c,
+ch6_path_a2,6,돌아오지 않은 숨,assets/bg/ritual_room.jpg,assets/sfx/ending.mp3,ch6_ending_c,
+ch6_path_b,6,기록자의 선택,assets/bg/ritual_room.jpg,assets/sfx/ritual_climax.mp3,ch6_ending_c,
+ch6_path_b2,6,남겨진 기록,assets/bg/ritual_room.jpg,assets/sfx/ending.mp3,ch6_ending_c,
+ch6_ritual_scene,6,의식 현장,assets/bg/ritual_room.jpg,assets/sfx/ritual_climax.mp3,,4
+ch6_threshold,6,의식 직전,assets/bg/ritual_room.jpg,assets/sfx/ritual.mp3,ch6_ritual_scene,

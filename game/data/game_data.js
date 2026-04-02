@@ -148,7 +148,7 @@ window.GAME_DATA = {
         {
           "order": 3,
           "speaker": "편집장",
-          "text": "그냥 실종이 아니지. 입에 파란 천 쑤셔 넣고 바쳤다는 놈이야. 근데 무죄야, 정신병자란 이유로. 이런 게 기사야, 유 기자.",
+          "text": "단순한 실종이 아니지. 입에 푸른 천을 쑤셔 넣고 바쳤다는 자야. 그런데 무죄야, 정신병자라는 이유로. 이런 게 기사야, 유 기자.",
           "style": "normal",
           "portrait": "assets/portraits/editor.jpeg",
           "condition": null
@@ -317,7 +317,7 @@ window.GAME_DATA = {
         {
           "order": 1,
           "speaker": "",
-          "text": "경성 정신병원, 접견실. 철제 창살, 낡은 접견 테이블. 교도관이 문 앞에 대기 중이다.",
+          "text": "경성 정신병원 접견실. 석회 냄새 밴 벽, 녹 슨 창살, 오래 닦여 결이 죽은 접견 탁자. 문 앞엔 교도관 하나가 팔짱을 낀 채 숨소리마저 감시하고 있다.",
           "style": "narration",
           "portrait": null,
           "condition": null
@@ -325,7 +325,7 @@ window.GAME_DATA = {
         {
           "order": 2,
           "speaker": "유웅룡",
-          "text": "…이판규 씨죠? 기사로 쓰기 전에 묻겠습니다. 당신이 죽였습니까, 아니면 정말 누군가에게 넘긴 겁니까.",
+          "text": "…이판규 씨요. 기사로 문장을 만들기 전에 먼저 묻겠습니다. 당신 손으로 죽였습니까, 아니면 누구에게 넘긴 겁니까.",
           "style": "normal",
           "portrait": "assets/portraits/yuu.jpeg",
           "condition": null
@@ -333,7 +333,7 @@ window.GAME_DATA = {
         {
           "order": 3,
           "speaker": "이판규",
-          "text": "…왔어. 또, 기자. 이번엔 몇 번째더라. (천천히 고개를 든다) 내가 죽인 게 아니야. 그 애들은… 내가 바친 거야.",
+          "text": "…또 왔군. 기자. 몇 번째더라, 이런 얼굴은. (천천히 고개를 든다) 내가 죽인 게 아니야. 그 애들은… 올려 보낸 거지. 바친 거야.",
           "style": "normal",
           "portrait": "assets/portraits/pan_crazy.png",
           "condition": null
@@ -349,7 +349,7 @@ window.GAME_DATA = {
         {
           "order": 5,
           "speaker": "이판규",
-          "text": "청의의 감응을 이은… (갑자기 주문처럼) 감응, 감응, 숭성하옵시며—",
+          "text": "청의의 감응을 잇는 분께… (갑자기 주문처럼) 감응이여, 감응이여, 숭성하옵시며—",
           "style": "crazy",
           "portrait": "assets/portraits/pan_crazy.png",
           "condition": null
@@ -357,7 +357,7 @@ window.GAME_DATA = {
         {
           "order": 6,
           "speaker": "유웅룡",
-          "text": "그만. 주문 외우듯 얼버무리지 마요. 종교입니까, 사기입니까, 아니면 당신 같은 자들이 죄를 덜 무섭게 부르는 방식입니까.",
+          "text": "그만두시오. 주문으로 죄목을 흐리지 마요. 종교입니까, 사기입니까, 아니면 당신 같은 자들이 제 겁을 덜기 위해 붙이는 이름입니까.",
           "style": "normal",
           "portrait": "assets/portraits/yuu.jpeg",
           "condition": null
@@ -365,7 +365,7 @@ window.GAME_DATA = {
         {
           "order": 7,
           "speaker": "이판규",
-          "text": "종교? 아냐… 감응이야. 진짜 감응. 애들은 열쇠였어. 둘 다 틀렸어. 문은 조금도 안 벌어졌는데, 노래만 계속 들렸어… 문밖에서 누가 숨 쉬는 소리처럼.",
+          "text": "종교가 아냐… 감응이지. 참된 감응. 그 애들은 열쇠였어. 허나 둘 다 틀렸어. 문은 한 치도 벌어지지 않았는데 노래만 자꾸 들렸어… 문 저편에서 누가 젖은 숨을 들이마시는 것처럼.",
           "style": "crazy",
           "portrait": "assets/portraits/pan_crazy.png",
           "condition": null
@@ -373,7 +373,7 @@ window.GAME_DATA = {
         {
           "order": 8,
           "speaker": "",
-          "text": "이판규는 마지막 문장에서만 유웅룡의 눈을 똑바로 본다. 마치 자신이 아니라, 아직 보지 못한 무언가를 대신 겁내는 사람처럼.",
+          "text": "이판규는 마지막 문장에서만 유웅룡을 똑바로 본다. 제 죄를 변명하는 눈이 아니라, 아직 오지 않은 무엇을 먼저 본 사람의 눈이다.",
           "style": "narration",
           "portrait": null,
           "condition": null
@@ -382,14 +382,14 @@ window.GAME_DATA = {
       "choices": [
         {
           "order": 1,
-          "text": "그 망상이 어디서 시작됐는지 끝까지 캐묻는다.",
+          "text": "그 망상의 근원부터 기어이 묻고 늘어진다.",
           "flag_key": "InfoLevel",
           "flag_value": 1,
           "next_scene": "ch2_hospital_a"
         },
         {
           "order": 2,
-          "text": "그가 두려워하는 '문'의 정체부터 확인한다.",
+          "text": "그가 벌벌 떠는 '문'의 정체부터 확인한다.",
           "flag_key": "InfoLevel",
           "flag_value": 2,
           "next_scene": "ch2_hospital_b"
@@ -407,14 +407,14 @@ window.GAME_DATA = {
       "effect": 1,
       "branches": [],
       "dialogues": [
-        {
-          "order": 1,
-          "speaker": "이판규",
-          "text": "감응? 하하… 인간과 청의동자 사이에 귀를 여는 일이야. 노래가 먼저 가고, 사람 마음이 그 뒤를 따라가. 나는 그 길 닦는 자였을 뿐이야.",
-          "style": "crazy",
-          "portrait": "assets/portraits/pan_crazy.png",
-          "condition": null
-        },
+          {
+            "order": 1,
+            "speaker": "이판규",
+            "text": "감응? 하하… 사람과 청의동자 사이에 귀를 트는 일이지. 노래가 먼저 길을 내고, 사람 마음이 그 뒤를 질질 따라가. 나는 다만 그 길에 진창을 고른 자였어.",
+            "style": "crazy",
+            "portrait": "assets/portraits/pan_crazy.png",
+            "condition": null
+          },
         {
           "order": 2,
           "speaker": "유웅룡",
@@ -423,22 +423,22 @@ window.GAME_DATA = {
           "portrait": "assets/portraits/yuu.jpeg",
           "condition": null
         },
-        {
-          "order": 3,
-          "speaker": "이판규",
-          "text": "눈이 네 개인 아이. 해와 달을 같이 뜨게 만드는 것. 그분의 눈이 돌아오면, 보는 자마다 제일 숨기고 싶은 걸 먼저 보게 돼. 그래서 다들 무릎을 꿇어.",
-          "style": "crazy",
-          "portrait": "assets/portraits/pan_crazy.png",
-          "condition": null
-        },
-        {
-          "order": 4,
-          "speaker": "이판규",
-          "text": "나는 문지기였어. 준비하는 자. 그런데 그 애들은 문 앞에서 자꾸 울기만 했어. 노래를 못 받았어. 그래서 다시 가져오라 했지. 더 잘 들리는 그릇을.",
-          "style": "crazy",
-          "portrait": "assets/portraits/pan_crazy.png",
-          "condition": null
-        },
+          {
+            "order": 3,
+            "speaker": "이판규",
+            "text": "눈이 넷인 아이. 해와 달을 한 하늘에 억지로 띄우는 것. 그분의 눈이 돌아오면 보는 자마다 제 속에 제일 감춘 것을 먼저 들키게 돼. 그래서 다들 무릎부터 꿇지.",
+            "style": "crazy",
+            "portrait": "assets/portraits/pan_crazy.png",
+            "condition": null
+          },
+          {
+            "order": 4,
+            "speaker": "이판규",
+            "text": "나는 문지기였어. 준비하는 자. 허나 그 애들은 문 앞에서 자꾸 울기만 했어. 노래를 못 받았지. 그래서 다시 가져오라 했어. 더 잘 울리고, 더 오래 견딜 그릇을.",
+            "style": "crazy",
+            "portrait": "assets/portraits/pan_crazy.png",
+            "condition": null
+          },
         {
           "order": 5,
           "speaker": "유웅룡",
@@ -447,22 +447,22 @@ window.GAME_DATA = {
           "portrait": "assets/portraits/yuu.jpeg",
           "condition": null
         },
-        {
-          "order": 6,
-          "speaker": "이판규",
-          "text": "사람? 하하… 그분 앞에선 다 비슷해. 그릇이거나, 재가 되거나, 기록에서 지워지거나.",
-          "style": "crazy",
-          "portrait": "assets/portraits/pan_crazy.png",
-          "condition": null
-        },
-        {
-          "order": 7,
-          "speaker": "",
-          "text": "유웅룡은 비웃으려다 마지막 단어에서 멈춘다. '지워진다'는 말만은 기묘하게도 재판정 공기와 한 통속의 냄새를 풍긴다. 미친 자의 입에서 나왔는데도, 이상하리만치 현실 쪽에 가깝다.",
-          "style": "narration",
-          "portrait": null,
-          "condition": null
-        }
+          {
+            "order": 6,
+            "speaker": "이판규",
+            "text": "사람? 하하… 그분 앞에선 다 비슷해. 그릇이 되거나, 재가 되거나, 기록에서 문째 뜯겨 나가거나.",
+            "style": "crazy",
+            "portrait": "assets/portraits/pan_crazy.png",
+            "condition": null
+          },
+          {
+            "order": 7,
+            "speaker": "",
+            "text": "유웅룡은 비웃음을 입가에서 거둔다. '지워진다'는 마지막 한 마디만은 기묘하게도 재판정 공기와 같은 냄새를 풍긴다. 미친 자의 입에서 나왔는데도, 지나치게 현실에 가깝다.",
+            "style": "narration",
+            "portrait": null,
+            "condition": null
+          }
       ],
       "choices": [],
       "evidence": []
@@ -477,14 +477,14 @@ window.GAME_DATA = {
       "effect": 1,
       "branches": [],
       "dialogues": [
-        {
-          "order": 1,
-          "speaker": "이판규",
-          "text": "문? 이승과 저승 사이에 있는 게 아니야. 사람들 얼굴 뒤에 있는 거야. 무녀가 노래하면 틈이 먼저 나고, 그다음 방 안 공기가 바뀌어. 근데 나는 열쇠를 틀렸어. 그분이 그 소리를 싫어했어…",
-          "style": "crazy",
-          "portrait": "assets/portraits/pan_crazy.png",
-          "condition": null
-        },
+          {
+            "order": 1,
+            "speaker": "이판규",
+            "text": "문? 이승 저승 사이에 있는 게 아냐. 사람들 낯짝 뒤에 붙어 있는 거지. 무녀가 노래하면 틈이 먼저 가고, 그다음 방 안 공기부터 달라져. 그런데 나는 열쇠를 틀렸어. 그분이 그 소릴 싫어했어…",
+            "style": "crazy",
+            "portrait": "assets/portraits/pan_crazy.png",
+            "condition": null
+          },
         {
           "order": 2,
           "speaker": "유웅룡",
@@ -493,14 +493,14 @@ window.GAME_DATA = {
           "portrait": "assets/portraits/yuu.jpeg",
           "condition": null
         },
-        {
-          "order": 3,
-          "speaker": "이판규",
-          "text": "무녀야. 청의의 무녀. 이해심이 찾아냈어. 낙원의 그 여자. 노래를 시작하면, 다들 처음엔 그냥 좋은 목소리라고만 생각하지. 그다음부턴 못 잊어.",
-          "style": "crazy",
-          "portrait": "assets/portraits/pan_crazy.png",
-          "condition": null
-        },
+          {
+            "order": 3,
+            "speaker": "이판규",
+            "text": "무녀야. 청의의 무녀. 이해심이 찾아냈어. 낙원의 그 여자. 노래가 시작되면 사람들은 처음엔 고운 목청이라 여기지. 그다음부터는 평생 귀에서 못 떼어.",
+            "style": "crazy",
+            "portrait": "assets/portraits/pan_crazy.png",
+            "condition": null
+          },
         {
           "order": 4,
           "speaker": "유웅룡",
@@ -509,22 +509,22 @@ window.GAME_DATA = {
           "portrait": "assets/portraits/yuu.jpeg",
           "condition": null
         },
-        {
-          "order": 5,
-          "speaker": "이판규",
-          "text": "노래하는 여자, 푸른 옷, 문 앞의 숨… 거기서 다 시작돼. 먼저 허밍이 들리고, 다음엔 아무도 안 열어 준 문이 안쪽에서부터 젖어.",
-          "style": "crazy",
-          "portrait": "assets/portraits/pan_crazy.png",
-          "condition": null
-        },
-        {
-          "order": 6,
-          "speaker": "",
-          "text": "문이라는 말이 떨어질 때마다 접견실 철문이 미세하게 떨린다. 유웅룡은 소음이라고 넘기려 하지만, 두 번째부터는 타이밍이 너무 정확하다.",
-          "style": "narration",
-          "portrait": null,
-          "condition": null
-        }
+          {
+            "order": 5,
+            "speaker": "이판규",
+            "text": "노래하는 여자, 푸른 옷, 문 앞의 숨… 거기서 다 비롯돼. 먼저 허밍이 들리고, 다음엔 아무도 열지 않은 문이 안에서부터 축축이 젖어 와.",
+            "style": "crazy",
+            "portrait": "assets/portraits/pan_crazy.png",
+            "condition": null
+          },
+          {
+            "order": 6,
+            "speaker": "",
+            "text": "문이라는 말이 떨어질 적마다 접견실 철문이 가늘게 떨린다. 유웅룡은 소음이라 넘기려 하지만, 두 번째부터는 그 타이밍이 지나치게 정확하다.",
+            "style": "narration",
+            "portrait": null,
+            "condition": null
+          }
       ],
       "choices": [],
       "evidence": []
@@ -542,7 +542,7 @@ window.GAME_DATA = {
         {
           "order": 1,
           "speaker": "이판규",
-          "text": "…기자 양반. 당신은 해인가요, 달인가요…?",
+          "text": "…기자 양반. 당신은 해요, 달이요…?",
           "style": "crazy",
           "portrait": "assets/portraits/pan_crazy.png",
           "condition": null
@@ -550,7 +550,7 @@ window.GAME_DATA = {
         {
           "order": 2,
           "speaker": "이판규",
-          "text": "잘못했어요… 다신 안 그럴게요…! 문은 아직 열리지 않았어요…!!",
+          "text": "잘못했어요… 다시는 안 그럴게요…! 문은 아직 다 안 열렸어요… 아직 아니란 말이오…!",
           "style": "crazy",
           "portrait": "assets/portraits/pan_crazy.png",
           "condition": null
@@ -558,7 +558,7 @@ window.GAME_DATA = {
         {
           "order": 3,
           "speaker": "",
-          "text": "이판규가 갑자기 벌떡 일어서며 교도관을 밀치고 달아난다. 웃는 얼굴인데, 달아나는 건 살기 위해서가 아니라 뭔가 부르지 않으려고 입을 막는 사람처럼 보인다.",
+          "text": "이판규가 갑자기 벌떡 일어나 교도관을 밀치고 달아난다. 웃는 낯인데, 살기 위해 뛰는 꼴이 아니다. 제 입에서 무언가 새어 나올까 두려워 입을 틀어막는 사람의 달음질이다.",
           "style": "narration",
           "portrait": null,
           "condition": null
@@ -566,7 +566,7 @@ window.GAME_DATA = {
           {
             "order": 4,
             "speaker": "유웅룡",
-            "text": "'낙원의 여자'… 청의의 무녀… 재판장, 기사 클리핑, 미친놈의 헛소리. 지저분하게도 전부 한 줄로 이어지기 시작한다.",
+            "text": "'낙원의 여자'… 청의의 무녀… 재판장, 접힌 기사, 미친 자의 넋두리. 지저분한 조각들이 하나의 문장으로 꿰이기 시작한다.",
             "style": "thought",
             "portrait": "assets/portraits/yuu.jpeg",
             "condition": null
@@ -574,7 +574,7 @@ window.GAME_DATA = {
           {
             "order": 5,
             "speaker": "유웅룡",
-            "text": "문부터 물었더니 결국 장소와 여자 이름까지 같이 딸려 나오는군. 헛소리치곤 이어지는 결이 지나치게 곱습니다.",
+            "text": "문부터 캐물었더니 끝내 장소와 여자 이름까지 딸려 나오는군. 헛소리라기엔 이어지는 결이 지나치게 매끈합니다.",
             "style": "thought",
             "portrait": "assets/portraits/yuu.jpeg",
             "condition": {
@@ -585,7 +585,7 @@ window.GAME_DATA = {
           {
             "order": 6,
             "speaker": "유웅룡",
-            "text": "그래도 확인은 해야 한다. 세상이 덮으려는 건 대개, 정말 덮어야 할 것과 남기면 안 되는 것을 같이 숨기니까.",
+            "text": "그래도 확인은 해야 한다. 세상이 접어 넣는 건 대개, 감춰야 할 추문과 끝내 남겨선 안 될 이름을 한데 묶어 덮는 법이니까.",
             "style": "thought",
             "portrait": "assets/portraits/yuu.jpeg",
             "condition": null
@@ -671,7 +671,7 @@ window.GAME_DATA = {
         {
           "order": 9,
           "speaker": "유웅룡",
-          "text": "시신 하나, 쪽지 한 장, 설명되지 않는 흔적들. 보통 같으면 몇 줄 뽑아 사회면 구석에 밀어 넣고 말 일인데… 이번 건 너무 노골적으로 서로 이어져 있군.",
+          "text": "시신 하나, 쪽지 한 장, 설명되지 않는 흔적들. 보통 같으면 몇 줄 뽑아 사회면 구석에 밀어 넣고 말 일인데… 이번 건 지나치게 노골적으로 서로 이어져 있군.",
           "style": "thought",
           "portrait": "assets/portraits/yuu.jpeg",
           "condition": null
@@ -708,7 +708,7 @@ window.GAME_DATA = {
         {
           "order": 1,
           "speaker": "",
-          "text": "1932년 토요일 밤. 경성 종로, 카페 '낙원'. 붉고 푸른 혼합 조도. 담배 연기. 재즈풍 반주.",
+          "text": "1932년 토요일 밤, 종로 카페 낙원. 붉은 전등과 푸른 간접등이 한데 엉겨 사람 얼굴을 낯설게 물들인다. 담배 연기와 값싼 향수 냄새 사이로 재즈풍 반주가 미끈하게 미끄러진다.",
           "style": "narration",
           "portrait": null,
           "condition": null
@@ -716,7 +716,7 @@ window.GAME_DATA = {
         {
           "order": 2,
           "speaker": "유웅룡",
-          "text": "토요일, 낙원… 그녀가 노래하면, 문이 열린다… 일단 확인해보자.",
+          "text": "토요일, 낙원, 노래하는 여자, 열린다는 문. 신문감치고는 조악하고, 덮인 사건치고는 지나치게 친절하군. 어디까지 맞는지 직접 봐야겠어.",
           "style": "thought",
           "portrait": "assets/portraits/yuu.jpeg",
           "condition": null
@@ -732,7 +732,7 @@ window.GAME_DATA = {
         {
           "order": 4,
           "speaker": "유웅룡",
-          "text": "커피로 할게요. (메뉴판을 덮으며) 여기 노래 잘하는 분이 계셨다고 들었는데요.",
+          "text": "커피로 주시오. (메뉴판을 덮는다) 들으니 이 집에 제법 이름난 노래하는 여자가 있었다지요.",
           "style": "normal",
           "portrait": "assets/portraits/yuu.jpeg",
           "condition": null
@@ -740,7 +740,7 @@ window.GAME_DATA = {
         {
           "order": 5,
           "speaker": "점장",
-          "text": "아… 그런 분이 있었죠. 요즘은 공연 안 합니다. 분위기가 좀… 달라졌거든요. 밤에 남아 있는 손님들이 공연보다 다른 걸 기다리게 됐달까요.",
+          "text": "아… 그런 이가 있긴 했지요. 요새는 무대에 세우지 않습니다. 집 안 공기가 좀 달라졌거든요. 밤늦게 남는 손님들은 노래보다 다른 걸 기다리는 눈치라.",
           "style": "normal",
           "portrait": "assets/portraits/manager.png",
           "condition": null
@@ -748,7 +748,7 @@ window.GAME_DATA = {
         {
           "order": 6,
           "speaker": "여급",
-          "text": "그냥… 그런 거 요즘은 안 해요. 이름을 부르면 다시 돌아오는 것도 있어서요. 손님은 못 들은 걸로 하세요.",
+          "text": "그런 건 이제 안 해요. 이름을 입에 올렸다가 되돌아오는 것도 있으니까…. 손님은 못 들은 셈 치세요.",
           "style": "normal",
           "portrait": "assets/portraits/waitress_generic.png",
           "condition": null
@@ -764,7 +764,7 @@ window.GAME_DATA = {
         {
           "order": 8,
           "speaker": "송순",
-          "text": "커피는 괜찮으세요, 손님? 날이… 많이 추워졌죠. (커피를 따르며 쪽지를 미끄러뜨린다) 오늘 밤, 우물터 옆 담벼락에서 기다릴게요. 여기선 오래 못 말해요.",
+          "text": "커피는 입에 맞으세요, 손님? 밤공기가 제법 매워졌지요. (잔을 채우며 쪽지를 미끄러뜨린다) 오늘 밤, 우물터 옆 담벼락으로 와요. 여기서는 오래 말을 못 붙입니다.",
           "style": "normal",
           "portrait": "assets/portraits/songsoon.jpeg",
           "condition": null
@@ -772,7 +772,7 @@ window.GAME_DATA = {
         {
           "order": 9,
           "speaker": "",
-          "text": "그 순간, 무대 위 조명이 깜빡이며 흔들린다. 커피잔 위 연기 속으로 파란 빛이 잠시 스쳐간다. 누군가 허밍 한 소절을 흘리고 지나간 것 같지만, 무대 위 악사는 아무도 입을 열지 않는다.",
+          "text": "그 순간 무대 전등이 짧게 떨린다. 커피잔 위 연기 사이로 푸른 빛이 스쳐 지나가고, 누군가 허밍 한 토막을 흘린 듯한 기척이 남는다. 그러나 무대 위 악사들 가운데 입을 연 이는 없다.",
           "style": "narration",
           "portrait": null,
           "condition": null
@@ -780,7 +780,7 @@ window.GAME_DATA = {
           {
             "order": 10,
             "speaker": "유웅룡",
-            "text": "공연이 멈춘 집, 말을 닫은 여급들, 그리고 쪽지를 건네는 여자. 누군가 여기서 계속 지워지고 있다. 그런데 흔적만은 지워지질 않는다.",
+            "text": "무대는 멎었고, 여급들은 입을 닫았고, 쪽지는 손에서 손으로 미끄러진다. 누군가 이 집에서 사람을 지우고 있다. 그런데 지운 자리만은 어째 저리 또렷한가.",
             "style": "thought",
             "portrait": "assets/portraits/yuu.jpeg",
             "condition": null
@@ -788,7 +788,7 @@ window.GAME_DATA = {
           {
             "order": 11,
             "speaker": "유웅룡",
-            "text": "병원에서 들은 '문'이 헛소리만은 아니었군. 여기선 다들 문을 보진 못해도, 문 앞에서 멈춘 얼굴은 하고 있습니다.",
+            "text": "병원에서 들은 '문'이 아주 헛소리는 아니었군. 이 집 사람들은 문을 보았다고 말하진 못해도, 문 앞에서 발을 거둔 얼굴은 하고 있습니다.",
             "style": "thought",
             "portrait": "assets/portraits/yuu.jpeg",
             "condition": {
@@ -885,7 +885,7 @@ window.GAME_DATA = {
         {
           "order": 10,
           "speaker": "유웅룡",
-          "text": "좋습니다. 대신 이제부턴 혼자 움직이지 마십시오. 누가 없어졌는지 입 다무는 사람들 틈에선, 같이 본 사람이 하나라도 더 있어야 하니까.",
+          "text": "좋군요. 대신 이제부턴 혼자 움직이지 마십시오. 누가 없어졌는지 입 다무는 사람들 틈에선, 같이 본 사람이 하나라도 더 있어야 하니까.",
           "style": "normal",
           "portrait": "assets/portraits/yuu.jpeg",
           "condition": null
@@ -923,7 +923,7 @@ window.GAME_DATA = {
         {
           "order": 1,
           "speaker": "",
-          "text": "그날 밤, 우물터 담벼락에서 만난 뒤. 두 사람은 낙원 무대 뒤 창고로 조심스럽게 숨어든다.",
+          "text": "그날 밤, 우물터 담벼락에서 접선을 마친 뒤. 두 사람은 낙원 무대 뒤 창고로 발소리를 죽이며 스며든다.",
           "style": "narration",
           "portrait": null,
           "condition": null
@@ -931,7 +931,7 @@ window.GAME_DATA = {
         {
           "order": 2,
           "speaker": "송순",
-          "text": "언니가 자주 머물던 곳이에요. 여기서 뭔가 들었다고 했어요… 노래 소리, 기도 같은 소리, 누가 문 반대편에서 따라 흥얼거리는 소리. 저는 무서워서 끝까지 들어오지 못했어요.",
+          "text": "언니가 자주 붙들려 있던 곳이에요. 여기서 자꾸 뭘 들었다고 했어요. 노래 같기도 하고, 염불 같기도 하고, 문 저편에서 누가 따라 흥얼거리는 소리요. 전 무서워서 끝까지 못 들어왔어요.",
           "style": "normal",
           "portrait": "assets/portraits/songsoon.jpeg",
           "condition": null
@@ -939,7 +939,7 @@ window.GAME_DATA = {
         {
           "order": 3,
           "speaker": "유웅룡",
-          "text": "혼자 여기까지 오려 했다는 겁니까. 아무리 그래도 무모했어요.",
+          "text": "혼자 여기까지 올 작정이었습니까. 대담한 게 아니라, 거의 목숨을 내놓는 셈이었어요.",
           "style": "normal",
           "portrait": "assets/portraits/yuu.jpeg",
           "condition": null
@@ -947,7 +947,7 @@ window.GAME_DATA = {
         {
           "order": 4,
           "speaker": "송순",
-          "text": "무모해도 와야 했어요. 언니는 아무 말도 없이 사라졌으니까. 누군가는 끝까지 찾아야 하잖아요.",
+          "text": "그래도 와야 했어요. 언니는 인사 한마디 없이 끊겼으니까. 이런 일은 누군가 끝까지 붙들지 않으면, 금세 없던 날로 넘어가 버리잖아요.",
           "style": "normal",
           "portrait": "assets/portraits/songsoon.jpeg",
           "condition": null
@@ -955,7 +955,7 @@ window.GAME_DATA = {
         {
           "order": 5,
           "speaker": "",
-          "text": "흩어진 악보들 사이, 유독 한 장만 젖은 것처럼 번들거린다. 푸른 잉크로 덧칠된 음표가 빛을 받지 않아도 미세하게 떠오른다.",
+          "text": "흩어진 악보들 사이, 유독 한 장만 젖은 비단처럼 번들거린다. 푸른 잉크로 덧씌운 음표가 빛을 받지 않아도 희미하게 떠오른다.",
           "style": "narration",
           "portrait": null,
           "condition": null
@@ -963,7 +963,7 @@ window.GAME_DATA = {
         {
           "order": 6,
           "speaker": "유웅룡",
-          "text": "…이상하다… 왜 이러지… 글자를 읽는 게 아니라, 글자가 내 안쪽을 읽는 것 같아…",
+          "text": "…기묘하군… 왜 이러지. 내가 글자를 읽는 게 아니라, 글자가 내 속을 먼저 더듬는 것 같아…",
           "style": "crazy",
           "portrait": "assets/portraits/yuu.jpeg",
           "condition": null
@@ -971,7 +971,7 @@ window.GAME_DATA = {
         {
           "order": 7,
           "speaker": "송순",
-          "text": "기자님! (그의 손을 잡으며) 호흡을 고르세요. 천천히. 제가 있어요.",
+          "text": "기자님. (그의 손을 붙잡는다) 숨부터 고르세요. 천천히요. 여기, 제가 있어요.",
           "style": "normal",
           "portrait": "assets/portraits/songsoon.jpeg",
           "condition": null
@@ -979,7 +979,7 @@ window.GAME_DATA = {
         {
           "order": 8,
           "speaker": "송순",
-          "text": "(악보를 살피며) 이 노래… 음표 사이에 아주 작은 글씨가 — '청의의 감응을 숭성하옵시며…'",
+          "text": "(악보를 들여다본다) 이 노래… 음표 사이에 아주 작은 글씨가 있어요. '청의의 감응을 숭성하옵시며…'",
           "style": "normal",
           "portrait": "assets/portraits/songsoon.jpeg",
           "condition": null
@@ -987,7 +987,7 @@ window.GAME_DATA = {
         {
           "order": 9,
           "speaker": "송순",
-          "text": "이건 노래가 아니에요. 부르면 누군가 대답하게 만드는 주문이에요.",
+          "text": "이건 노래가 아니에요. 불러서 듣게 하는 게 아니라, 부르면 무언가가 대답하게 만드는 주문이에요.",
           "style": "normal",
           "portrait": "assets/portraits/songsoon.jpeg",
           "condition": null
@@ -995,7 +995,7 @@ window.GAME_DATA = {
         {
           "order": 10,
           "speaker": "유웅룡",
-          "text": "송순 씨는… 아무렇지도 않습니까? 난 이것만 봐도 속이 뒤집히는데.",
+          "text": "송순 씨는… 괜찮습니까? 난 종이 한 장 붙든 것뿐인데 속이 뒤집히는데.",
           "style": "normal",
           "portrait": "assets/portraits/yuu.jpeg",
           "condition": null
@@ -1003,7 +1003,7 @@ window.GAME_DATA = {
         {
           "order": 11,
           "speaker": "송순",
-          "text": "무섭죠. 그런데, 이상하게도 저는 괜찮아요. 귀에 익은 소리처럼 들려요. 그래서 더 무서워요.",
+          "text": "무섭죠. 그런데 전… 이상하리만치 귀에 익어요. 예전부터 멀리서 듣던 소리 같아요. 그래서 더 서늘해요.",
           "style": "scared",
           "portrait": "assets/portraits/songsoon.jpeg",
           "condition": null
@@ -1011,7 +1011,7 @@ window.GAME_DATA = {
         {
           "order": 12,
           "speaker": "유웅룡",
-          "text": "…겁에 질린 얼굴이 아니군. 겁을 참고 서 있는 얼굴이야.",
+          "text": "…겁먹은 얼굴이 아니군요. 겁을 들고도 물러서지 않는 얼굴이군.",
           "style": "thought",
           "portrait": "assets/portraits/yuu.jpeg",
           "condition": null
@@ -1019,7 +1019,7 @@ window.GAME_DATA = {
         {
           "order": 13,
           "speaker": "유웅룡",
-          "text": "송순 씨, 내가 본 걸 전부 믿진 마십시오. 대신 당신이 들은 걸 함부로 버리지도 않겠어요.",
+          "text": "송순 씨, 내가 본 걸 전부 믿을 필요는 없습니다. 다만 당신이 들은 걸 함부로 미친 소리로 몰아세우진 않겠어요.",
           "style": "normal",
           "portrait": "assets/portraits/yuu.jpeg",
           "condition": null
@@ -1027,7 +1027,7 @@ window.GAME_DATA = {
         {
           "order": 14,
           "speaker": "송순",
-          "text": "(벽 너머에서 희미한 허밍이 들린다) …언니. 내가 왔어. 이번엔 그냥 지나치지 않을게.",
+          "text": "(벽 너머에서 희미한 허밍이 스민다) …언니, 나 왔어. 이번엔 듣고도 모른 체하지 않을게.",
           "style": "normal",
           "portrait": "assets/portraits/songsoon.jpeg",
           "condition": null
@@ -1036,14 +1036,14 @@ window.GAME_DATA = {
         "choices": [
           {
             "order": 1,
-            "text": "머리가 깨질 듯해도 악보를 끝까지 읽어 본다.",
+            "text": "관자놀이가 깨질 듯해도 악보를 끝까지 읽어 낸다.",
             "flag_key": "ReadRitualScore",
             "flag_value": true,
             "next_scene": "ch3_score_read"
           },
           {
             "order": 2,
-            "text": "악보보다 송순 씨 귀를 먼저 믿는다.",
+            "text": "악보보다 송순 씨의 귀와 숨결을 먼저 믿는다.",
             "flag_key": "TrustedSongsoon",
             "flag_value": true,
             "next_scene": "ch3_score_trust"
@@ -1080,7 +1080,7 @@ window.GAME_DATA = {
           {
             "order": 2,
             "speaker": "유웅룡",
-            "text": "참으로 좋은 신앙이군. 사람 살리는 법보다, 이름부터 벗기는 법을 먼저 적어 두었으니.",
+            "text": "참으로 훌륭한 신앙이군요. 사람 살리는 법보다 이름 벗기는 법을 먼저 적어 두었으니.",
             "style": "normal",
             "portrait": "assets/portraits/yuu.jpeg",
             "condition": null
@@ -1088,9 +1088,17 @@ window.GAME_DATA = {
           {
             "order": 3,
             "speaker": "송순",
-            "text": "그걸 끝까지 읽었으니, 이제 저도 물러서지 않을게요. 기자님이 버티면 저도 버틸게요.",
+            "text": "그걸 끝까지 읽으셨으니, 이제 저도 물러서지 않을게요. 기자님이 버티면 저도 버틸 거예요.",
             "style": "normal",
             "portrait": "assets/portraits/songsoon.jpeg",
+            "condition": null
+          },
+          {
+            "order": 4,
+            "speaker": "",
+            "text": "악보를 끝까지 본 대가처럼, 유웅룡의 귓속에서 한동안 허밍이 가늘게 남는다. 그러나 이제 그 소리는 공포만이 아니라, 지워지는 순서를 적어 둔 증언처럼 들린다.",
+            "style": "narration",
+            "portrait": null,
             "condition": null
           }
         ],
@@ -1110,7 +1118,7 @@ window.GAME_DATA = {
           {
             "order": 1,
             "speaker": "유웅룡",
-            "text": "좋습니다. 오늘은 종이보다 사람 쪽을 믿지요. 종이는 속일 수 있어도, 겁먹은 숨결까지 흉내 내진 못하니까.",
+            "text": "좋습니다. 오늘은 종이보다 사람 쪽을 믿지요. 종이는 속일 수 있어도, 겁먹은 숨결까지는 흉내 내지 못하니까.",
             "style": "normal",
             "portrait": "assets/portraits/yuu.jpeg",
             "condition": null
@@ -1129,6 +1137,14 @@ window.GAME_DATA = {
             "text": "짧은 말 하나가 창고 안 공기를 바꾼다. 송순은 겁을 거두진 못했지만, 적어도 제 감각을 변명처럼 쥐고 있진 않게 된다.",
             "style": "narration",
             "portrait": null,
+            "condition": null
+          },
+          {
+            "order": 4,
+            "speaker": "유웅룡",
+            "text": "오늘은 당신 귀를 먼저 빌리겠습니다. 내가 놓치는 쪽이 있으면, 먼저 말해 주시오.",
+            "style": "normal",
+            "portrait": "assets/portraits/yuu.jpeg",
             "condition": null
           }
         ],
@@ -1156,7 +1172,7 @@ window.GAME_DATA = {
         {
           "order": 2,
           "speaker": "송순",
-          "text": "언니 방은 저 끝이에요. 예전엔 밤마다 웃음소리가 새어 나왔는데… 지금은 숨소리도 안 들려요.",
+          "text": "언니 방은 저 끝이에요. 예전엔 밤마다 웃음이 새어 나왔는데… 이젠 숨소리 하나 안 새요.",
           "style": "normal",
           "portrait": "assets/portraits/songsoon.jpeg",
           "condition": null
@@ -1188,7 +1204,7 @@ window.GAME_DATA = {
         {
           "order": 6,
           "speaker": "송순",
-          "text": "그 말, 이상하네요. 오늘 처음 만난 사람한테 들으면 안심될 줄은 몰랐어요. 그런데 지금은 그 말 아니면 문을 못 열 것 같아요.",
+          "text": "그 말, 기묘하네요. 오늘 처음 만난 사람한테 듣고 마음이 놓일 줄은 몰랐어요. 그런데 지금은 그 말 아니면 문을 못 열 것 같아요.",
           "style": "normal",
           "portrait": "assets/portraits/songsoon.jpeg",
           "condition": null
@@ -1196,7 +1212,7 @@ window.GAME_DATA = {
           {
             "order": 7,
             "speaker": "유웅룡",
-            "text": "안심하진 마십시오. 다만 문이 열리면, 적어도 혼자 본 일로 남진 않게 하겠습니다.",
+            "text": "안심하진 마십시오. 다만 문이 열리면, 적어도 당신 혼자 본 일로 남진 않게 하겠습니다.",
             "style": "normal",
             "portrait": "assets/portraits/yuu.jpeg",
             "condition": null
@@ -1219,6 +1235,17 @@ window.GAME_DATA = {
             "style": "narration",
             "portrait": null,
             "condition": null
+          },
+          {
+            "order": 10,
+            "speaker": "송순",
+            "text": "…가요. 이번엔 제가 먼저 손잡이를 놓지 않을게요.",
+            "style": "normal",
+            "portrait": "assets/portraits/songsoon.jpeg",
+            "condition": {
+              "flag_key": "TrustedSongsoon",
+              "flag_value": true
+            }
           }
       ],
       "choices": [],
@@ -1237,7 +1264,7 @@ window.GAME_DATA = {
         {
           "order": 1,
           "speaker": "",
-          "text": "딸칵 — 오래된 자물쇠가 풀린다. 차가운 공기가 스며나온다. 누군가 막 방을 비우고 나간 듯한 냄새와, 너무 오래 아무도 살지 않은 공간의 냄새가 동시에 난다.",
+          "text": "딸칵 — 오래된 자물쇠가 풀린다. 차가운 공기가 스며나온다. 누군가 막 방을 비우고 나간 듯한 냄새와, 몹시 오래 아무도 살지 않은 공간의 냄새가 동시에 난다.",
           "style": "narration",
           "portrait": null,
           "condition": null
@@ -1306,13 +1333,13 @@ window.GAME_DATA = {
           "portrait": "assets/portraits/songsoon.jpeg",
           "condition": null
         },
-        {
-          "order": 10,
-          "speaker": "유웅룡",
-          "text": "청의의 무녀. 이판규가 중얼거리던 말이 허풍만은 아니었군. 재판정에선 끝난 사건이, 여기선 아직 끝나지 않았어요.",
-          "style": "thought",
-          "portrait": "assets/portraits/yuu.jpeg",
-          "condition": null
+          {
+            "order": 10,
+            "speaker": "유웅룡",
+            "text": "청의의 무녀. 이판규가 중얼거리던 말이 허풍만은 아니었군. 재판정에서 끝낸 사건이, 여기선 아직 끝나지 않았어요.",
+            "style": "thought",
+            "portrait": "assets/portraits/yuu.jpeg",
+            "condition": null
         },
         {
           "order": 11,
@@ -1322,22 +1349,44 @@ window.GAME_DATA = {
           "portrait": "assets/portraits/songsoon.jpeg",
           "condition": null
         },
-        {
-          "order": 12,
-          "speaker": "유웅룡",
-          "text": "…이건 신문면 몇 단으로 다룰 일이 아니군. 누가 덮으려 드는지까지 같이 적어두지 않으면, 또 없던 일 되겠습니다.",
-          "style": "thought",
-          "portrait": "assets/portraits/yuu.jpeg",
-          "condition": null
-        },
-        {
-          "order": 13,
-          "speaker": "",
-          "text": "방 안 어딘가에서 다시 짧은 허밍이 스친다. 이번엔 송순의 손끝이 멈추지 않는다. 대신 벽지 아래, 누군가 손톱으로 긁어 남긴 듯한 문양이 처음으로 눈에 들어온다.",
-          "style": "narration",
-          "portrait": null,
-          "condition": null
-        }
+          {
+            "order": 12,
+            "speaker": "유웅룡",
+            "text": "…이건 신문면 몇 단으로 끝낼 일이 아니군. 누가 덮으려 드는지까지 함께 적어 두지 않으면, 또 없던 일이 되겠습니다.",
+            "style": "thought",
+            "portrait": "assets/portraits/yuu.jpeg",
+            "condition": null
+          },
+          {
+            "order": 13,
+            "speaker": "",
+            "text": "방 안 어딘가에서 다시 짧은 허밍이 스친다. 이번엔 송순의 손끝이 멈추지 않는다. 대신 벽지 아래, 누군가 손톱으로 긁어 남긴 듯한 문양이 처음으로 눈에 들어온다.",
+            "style": "narration",
+            "portrait": null,
+            "condition": null
+          },
+          {
+            "order": 14,
+            "speaker": "유웅룡",
+            "text": "악보에서 본 말과 같은 결이군. 먼저 벗겨지는 건 이름, 그 다음은 사람의 자리겠지.",
+            "style": "thought",
+            "portrait": "assets/portraits/yuu.jpeg",
+            "condition": {
+              "flag_key": "ReadRitualScore",
+              "flag_value": true
+            }
+          },
+          {
+            "order": 15,
+            "speaker": "송순",
+            "text": "제가 먼저 본 걸 말할게요. 기자님은 그걸 적어 줘요. 우리 둘 다 빠지면 안 돼요.",
+            "style": "normal",
+            "portrait": "assets/portraits/songsoon.jpeg",
+            "condition": {
+              "flag_key": "TrustedSongsoon",
+              "flag_value": true
+            }
+          }
       ],
         "choices": [
           {
@@ -1407,7 +1456,7 @@ window.GAME_DATA = {
           {
             "order": 2,
             "speaker": "유웅룡",
-            "text": "…문양이 아니라 자국이었군. 누군가 연 게 아니라, 안쪽에서 한 번 밀고 나왔던 흔적입니다.",
+            "text": "…문양이 아니라 자국이었군. 누가 바깥에서 연 게 아니라, 안쪽에서 한 번 밀고 나오려 했던 흔적입니다.",
             "style": "normal",
             "portrait": "assets/portraits/yuu.jpeg",
             "condition": null
@@ -1445,7 +1494,7 @@ window.GAME_DATA = {
           {
             "order": 2,
             "speaker": "유웅룡",
-            "text": "남겨 둔 문장치곤 지나치게 또렷하군요. 살려 달라는 글이라기보다, 나중에 누가 구조를 알아보길 바란 글에 가깝습니다.",
+            "text": "남겨 둔 문장치곤 지나치게 또렷하군요. 살려 달라는 글이라기보다, 나중에 누가 구조를 알아보길 바란 기록에 가깝습니다.",
             "style": "thought",
             "portrait": "assets/portraits/yuu.jpeg",
             "condition": null
@@ -1456,6 +1505,14 @@ window.GAME_DATA = {
             "text": "그럼 끝까지 읽어야죠. 언니가 남긴 말이면, 적어도 우린 다 읽고 나가야 해요.",
             "style": "normal",
             "portrait": "assets/portraits/songsoon.jpeg",
+            "condition": null
+          },
+          {
+            "order": 4,
+            "speaker": "",
+            "text": "종이 위 문장을 따라갈수록 방 안의 공포는 도리어 또렷한 순서를 갖추기 시작한다. 유웅룡은 처음으로 이 사건이 괴담이 아니라 설계된 삭제라는 감각을 붙든다.",
+            "style": "narration",
+            "portrait": null,
             "condition": null
           }
         ],
@@ -1475,7 +1532,7 @@ window.GAME_DATA = {
           {
             "order": 1,
             "speaker": "유웅룡",
-            "text": "송순 씨, 이 일 전부 당신 몫으로 짊어질 생각은 마십시오. 없어지는 사람을 쫓는 일까지, 남은 사람 하나한테만 미루는 건 너무 비겁해요.",
+            "text": "송순 씨, 이 일 전부 당신 몫으로 짊어질 생각은 마십시오. 없어지는 사람을 쫓는 일까지, 남은 사람 하나한테만 미루는 건 지나치게 비겁해요.",
             "style": "normal",
             "portrait": "assets/portraits/yuu.jpeg",
             "condition": null
@@ -1494,6 +1551,14 @@ window.GAME_DATA = {
             "text": "탓은 나중에 합시다. 지금은 누가 지웠는지부터 찾아야지요.",
             "style": "normal",
             "portrait": "assets/portraits/yuu.jpeg",
+            "condition": null
+          },
+          {
+            "order": 4,
+            "speaker": "",
+            "text": "그 말 이후 송순의 시선은 죄책감에 붙들리지 않고 방 안 증거들로 다시 옮겨 간다. 서로의 몫을 나눠 든다는 감각이 처음 분명해진다.",
+            "style": "narration",
+            "portrait": null,
             "condition": null
           }
         ],
@@ -1521,7 +1586,7 @@ window.GAME_DATA = {
         {
           "order": 2,
           "speaker": "유웅룡",
-          "text": "1924년 기사… 지금과 똑같은 패턴의 실종 사건이다. 파란 천, 눈 없는 시신, 여성 실종.",
+          "text": "1924년 기사… 지금과 닮은 꼴의 실종 사건입니다. 푸른 천, 눈 없는 시신, 여자들의 실종.",
           "style": "thought",
           "portrait": "assets/portraits/yuu.jpeg",
           "condition": null
@@ -1545,7 +1610,7 @@ window.GAME_DATA = {
         {
           "order": 5,
           "speaker": "유웅룡",
-          "text": "처음부터 알고 있었던 거군. 날 이 일에 들인 것도 우연은 아니었겠지. 누군가는 다시 쓰게 될 줄 알았다는 뜻인가.",
+          "text": "처음부터 알고 있었던 거군. 날 이 일에 들인 것도 우연은 아니었겠지. 언젠가 누군가는 다시 이 문장을 잇게 될 줄 알았다는 뜻인가.",
           "style": "thought",
           "portrait": "assets/portraits/yuu.jpeg",
           "condition": null
@@ -1561,7 +1626,7 @@ window.GAME_DATA = {
         {
           "order": 7,
           "speaker": "유웅룡",
-          "text": "그래도 남아 있는 게 있군. 완전히 지워지진 않은 문장, 버려지지 않은 기사, 그리고 다시 읽는 내 눈.",
+          "text": "그래도 남아 있는 게 있군. 아주 다 지워지진 않은 문장, 버려지지 않은 기사, 그리고 다시 읽는 내 눈.",
           "style": "thought",
           "portrait": "assets/portraits/yuu.jpeg",
           "condition": null
@@ -1573,6 +1638,17 @@ window.GAME_DATA = {
           "style": "thought",
           "portrait": "assets/portraits/yuu.jpeg",
           "condition": null
+        },
+        {
+          "order": 9,
+          "speaker": "유웅룡",
+          "text": "방 안에서 읽은 일기와 정확히 이어집니다. 저쪽은 사람 하나의 증언이었고, 이쪽은 그 증언이 묻힌 방식이군.",
+          "style": "thought",
+          "portrait": "assets/portraits/yuu.jpeg",
+          "condition": {
+            "flag_key": "InvestigationScore",
+            "flag_value": 2
+          }
         }
       ],
         "choices": [
@@ -1622,7 +1698,7 @@ window.GAME_DATA = {
           {
             "order": 2,
             "speaker": "유웅룡",
-            "text": "좋습니다. 누가 접어 둔 건지 알겠으니, 이제 누가 그 접힌 틈으로 사람을 밀어 넣었는지도 보러 가야지.",
+            "text": "좋습니다. 누가 접어 둔 건지 알겠으니, 이제 누가 그 접힌 틈으로 사람을 밀어 넣었는지도 보러 가야지요.",
             "style": "thought",
             "portrait": "assets/portraits/yuu.jpeg",
             "condition": null
@@ -1714,7 +1790,7 @@ window.GAME_DATA = {
         {
           "order": 6,
           "speaker": "노인",
-          "text": "그 여잔 천국을 약속하지 않았어. 대신 조선을 구하려면 한 번 몽땅 썩은 살을 도려내야 한다고 했지. 이상하지? 세상이 너무 기울어져 있으면, 구원보다 파멸이 더 공평해 보일 때가 있거든.",
+            "text": "그 여잔 천국을 약속하지 않았어. 대신 조선을 구하려면 한 번 몽땅 썩은 살을 도려내야 한다고 했지. 기묘하지? 세상이 지나치게 기울어져 있으면, 구원보다 파멸이 더 공평해 보일 때가 있거든.",
           "style": "normal",
           "portrait": "assets/portraits/elder_slum.png",
           "condition": null
@@ -1760,7 +1836,7 @@ window.GAME_DATA = {
         {
           "order": 1,
           "speaker": "",
-          "text": "같은 날. 송순 단독 루트. 카페 낙원 내부. 손님이 빠진 뒤의 낙원은 화려한 조명보다 오래 남은 침묵이 더 두드러진다.",
+          "text": "같은 날 밤, 송순이 홀로 남은 낙원. 손님이 빠져나간 뒤의 실내는 화려한 전등보다 남겨진 침묵이 더 선명하다. 웃음이 걷힌 자리에 젖은 나무 냄새와 식은 연주만 남아 있다.",
           "style": "narration",
           "portrait": null,
           "condition": null
@@ -1768,7 +1844,7 @@ window.GAME_DATA = {
         {
           "order": 2,
           "speaker": "송순",
-          "text": "옥련 씨. 언니에 대해 알고 있는 게 있으면 말해줘요. 제발.",
+          "text": "옥련 씨. 언니 일로 아는 게 있으면 말해줘요. 제발, 이번엔 모른 척하지 말아요.",
           "style": "normal",
           "portrait": "assets/portraits/songsoon.jpeg",
           "condition": null
@@ -1776,7 +1852,7 @@ window.GAME_DATA = {
         {
           "order": 3,
           "speaker": "옥련",
-          "text": "…(목소리를 낮추며) 송금 언니는 이해심 님께 직접 선택받았어요. '그릇이 되어야 한다'고. 노래가 문을 여는 열쇠라고 했어요. 처음엔 다들 무대에 서는 기회인 줄 알았어요.",
+          "text": "…(목소리를 낮춘다) 송금 언니는 이해심 님께 직접 골라졌어요. '그릇이 되어야 한다'고 했죠. 노래가 문을 여는 열쇠라면서. 처음엔 다들 무대에 설 기회쯤으로 알았어요.",
           "style": "normal",
           "portrait": "assets/portraits/kum_fixed.png",
           "condition": null
@@ -1792,7 +1868,7 @@ window.GAME_DATA = {
         {
           "order": 5,
           "speaker": "옥련",
-          "text": "저는 겁이 나서 도망쳤어요. 언니는 남았고요. 더는 모르겠어요. 아니… 알아도 말하면 다시 그날 냄새가 나요. 젖은 비단 냄새랑 피 냄새가 같이.",
+          "text": "전 겁이 나서 달아났어요. 송금 언니는 남았고요. 더는 모르겠어요. 아니… 알아도 입에 올리면 그날 냄새가 다시 나요. 젖은 비단 냄새랑 비린 피 냄새가 한꺼번에.",
           "style": "normal",
           "portrait": "assets/portraits/kum_fixed.png",
           "condition": null
@@ -1800,7 +1876,7 @@ window.GAME_DATA = {
           {
             "order": 6,
             "speaker": "송순",
-            "text": "떠올리기 싫어도, 누군가는 붙들어야 해요. 안 그러면 언니도, 다른 사람들도 정말 없던 사람 취급을 받을 테니까.",
+            "text": "떠올리기 싫어도 누군가는 붙들어야 해요. 안 그러면 언니도, 다른 애들도, 애초에 없던 사람처럼 처리될 테니까요.",
             "style": "normal",
             "portrait": "assets/portraits/songsoon.jpeg",
             "condition": null
@@ -1808,7 +1884,7 @@ window.GAME_DATA = {
         {
           "order": 7,
           "speaker": "옥련",
-          "text": "그날 다들 노래를 들었어요. 근데 아무도 같은 소리를 들은 것 같지 않았어요. 어떤 애는 엄마 목소리 같다고 했고, 어떤 애는 물속에서 누가 웃는 소리 같다고 했어요. 그게 제일 무서웠어요.",
+          "text": "그날 다들 노래를 듣긴 했어요. 그런데 아무도 같은 소릴 들은 것 같지가 않았어요. 누구는 어미 목소리 같다고 했고, 누구는 물 밑에서 누가 웃는 소리 같다 했어요. 그게 제일 무서웠어요.",
           "style": "normal",
           "portrait": "assets/portraits/kum_fixed.png",
           "condition": null
@@ -1816,7 +1892,7 @@ window.GAME_DATA = {
         {
           "order": 8,
           "speaker": "옥련",
-          "text": "송금 언니는 마지막까지 조용했어요. 겁먹은 게 아니라, 이미 자기 몫이 정해진 사람처럼 보여서 더 무서웠어요.",
+          "text": "송금 언니는 끝까지 조용했어요. 겁먹은 사람 같지가 않았어요. 이미 제 몫이 정해졌다는 걸 먼저 알아버린 얼굴이라, 그래서 더 무서웠어요.",
           "style": "normal",
           "portrait": "assets/portraits/kum_fixed.png",
           "condition": null
@@ -1825,14 +1901,14 @@ window.GAME_DATA = {
         "choices": [
           {
             "order": 1,
-            "text": "알겠어요. 고마워요. (멈춘다)",
+            "text": "알겠어요. 더는 억지로 묻지 않을게요.",
             "flag_key": "EndingAScore",
             "flag_value": 2,
             "next_scene": "ch4b_cafe_hold"
           },
           {
             "order": 2,
-            "text": "제발, 조금만 더. (캐묻는다)",
+            "text": "조금만 더 말해줘요. 여기서 멈출 순 없어요.",
             "flag_key": "OkryunPushed",
             "flag_value": true,
             "next_scene": "ch4b_cafe_press"
@@ -1853,7 +1929,7 @@ window.GAME_DATA = {
           {
             "order": 1,
             "speaker": "송순",
-            "text": "…알겠어요. 여기까지 들은 것만으로도 충분해요. 더 헤집으면 옥련 씨 숨까지 막히겠네요.",
+            "text": "…알겠어요. 여기까지로 할게요. 더 헤집으면 옥련 씨 숨통까지 죄는 셈이겠네요.",
             "style": "normal",
             "portrait": "assets/portraits/songsoon.jpeg",
             "condition": null
@@ -1861,7 +1937,7 @@ window.GAME_DATA = {
           {
             "order": 2,
             "speaker": "옥련",
-            "text": "미안해요. 더 말하면 내가 그 밤으로 다시 끌려가는 것 같아서…. 그래도 송금 언니를 찾는다면, 무대 뒤 문은 꼭 봐요. 다들 거길 피했어요.",
+            "text": "미안해요. 더 말하면 내가 그 밤으로 다시 끌려들 것 같아서…. 그래도 송금 언니를 찾을 거라면 무대 뒤 문은 꼭 봐요. 다들 거길 못 본 척했어요.",
             "style": "normal",
             "portrait": "assets/portraits/kum_fixed.png",
             "condition": null
@@ -1869,7 +1945,7 @@ window.GAME_DATA = {
           {
             "order": 3,
             "speaker": "송순",
-            "text": "말해줘서 고마워요. 도망친 사람의 입도 기록이니까요. 그것까지 없던 일로 만들 순 없어요.",
+            "text": "말해줘서 고마워요. 도망친 사람의 입도 남는 법이니까요. 그 말까지 없던 일로 만들 순 없어요.",
             "style": "normal",
             "portrait": "assets/portraits/songsoon.jpeg",
             "condition": null
@@ -1891,7 +1967,7 @@ window.GAME_DATA = {
           {
             "order": 1,
             "speaker": "송순",
-            "text": "아뇨, 여기서 멈출 순 없어요. 무서운 줄 알아요. 그래도 언니가 어디로 끌려갔는지는 알아야 해요.",
+            "text": "아뇨, 여기서 멈출 순 없어요. 무서운 줄 알아요. 그래도 언니가 어디로 끌려갔는지는 끝내 알아야 해요.",
             "style": "normal",
             "portrait": "assets/portraits/songsoon.jpeg",
             "condition": null
@@ -1899,7 +1975,7 @@ window.GAME_DATA = {
           {
             "order": 2,
             "speaker": "옥련",
-            "text": "…창고예요. 무대 뒤, 손님들 눈 안 닿는 데. 거기서 아래로 내려가는 문을 봤어요. 다들 보지 못한 척했지만 난 봤어요. 송금 언니도 그리로 갔어요.",
+            "text": "…창고예요. 무대 뒤, 손님들 눈길 안 닿는 데. 거기 아래로 내려가는 문이 있었어요. 다들 못 본 척했지만 난 봤어요. 송금 언니도 그리로 갔어요.",
             "style": "scared",
             "portrait": "assets/portraits/kum_fixed.png",
             "condition": null
@@ -1907,7 +1983,7 @@ window.GAME_DATA = {
           {
             "order": 3,
             "speaker": "송순",
-            "text": "됐어요. 그거면 돼요. 이제 내가 가서 볼게요. 누가 못 본 척했는지까지 전부 기억해 둘 거예요.",
+            "text": "됐어요. 그거면 됐어요. 이제 내가 가서 볼게요. 누가 못 본 척했는지까지 전부 기억해 둘 거예요.",
             "style": "normal",
             "portrait": "assets/portraits/songsoon.jpeg",
             "condition": null
@@ -1929,7 +2005,7 @@ window.GAME_DATA = {
         {
           "order": 1,
           "speaker": "",
-          "text": "옥련과 헤어진 뒤, 송순은 낙원 뒷방의 의자에 잠시 주저앉는다. 무대 소리도, 사람 기척도 이제 거의 없다.",
+          "text": "옥련과 헤어진 뒤, 송순은 낙원 뒷방 의자에 잠시 주저앉는다. 무대 소리도, 사람 기척도 이제는 거의 남지 않았다. 한때는 웃음과 유행가가 돌던 방이, 지금은 누군가 숨을 죽여 버틴 흔적만 품고 있다.",
           "style": "narration",
           "portrait": null,
           "condition": null
@@ -1937,7 +2013,7 @@ window.GAME_DATA = {
           {
             "order": 2,
             "speaker": "송순",
-            "text": "언니는 남고, 옥련 씨는 달아났어…. 그날 이 낙원 안에서 대체 무슨 꼴이 벌어진 거지.",
+            "text": "언니는 남고, 옥련 씨는 달아났어…. 그날 이 낙원 안에서 대체 어떤 꼴이 벌어졌던 거지.",
             "style": "thought",
             "portrait": "assets/portraits/songsoon.jpeg",
             "condition": null
@@ -1945,7 +2021,7 @@ window.GAME_DATA = {
         {
           "order": 3,
           "speaker": "",
-          "text": "문틈 너머로 무대가 보인다. 한때는 손님 웃음소리가 가득하던 장소가, 지금은 누군가를 삼켜버린 입처럼 어둡다.",
+          "text": "문틈 너머로 무대가 보인다. 예전엔 손님 웃음이 흘러넘치던 자리가, 지금은 사람 하나를 삼키고도 모른 체하는 입처럼 어둡다.",
           "style": "narration",
           "portrait": null,
           "condition": null
@@ -1953,7 +2029,7 @@ window.GAME_DATA = {
         {
           "order": 4,
           "speaker": "송순",
-          "text": "기다리기만 하다간 언니도, 나도, 다들 그저 사라진 사람 취급을 받겠지. 살아 있는 쪽이 끝끝내 말하지 않으면, 없던 일이 되는 건 순식간이야.",
+          "text": "기다리기만 하다간 언니도, 나도, 다들 그저 사라진 사람 취급을 받겠지. 살아남은 쪽이 끝내 입을 열지 않으면, 없던 일이 되는 건 순식간이야.",
           "style": "thought",
           "portrait": "assets/portraits/songsoon.jpeg",
           "condition": null
@@ -1961,7 +2037,7 @@ window.GAME_DATA = {
         {
           "order": 5,
           "speaker": "",
-          "text": "아주 멀리서, 익숙한 허밍 한 소절이 스친다. 이번엔 송순이 고개를 들고 그 소리를 따라간다.",
+          "text": "아주 멀리서, 익숙한 허밍 한 자락이 스친다. 이번엔 송순이 고개를 들고 그 소리를 외면하지 않는다.",
           "style": "narration",
           "portrait": null,
           "condition": null
@@ -1969,7 +2045,7 @@ window.GAME_DATA = {
         {
           "order": 6,
           "speaker": "송순",
-          "text": "기다려, 언니. 이번엔 내가 너한테 갈게. 네가 못 돌아오면, 내가 네 이름이라도 붙들고 나오겠어.",
+          "text": "기다려, 언니. 이번엔 내가 너한테 갈게. 네가 못 돌아오더라도, 네 이름만은 내가 붙들고 나올 거야.",
           "style": "normal",
           "portrait": "assets/portraits/songsoon.jpeg",
           "condition": null
@@ -2137,7 +2213,7 @@ window.GAME_DATA = {
         {
           "order": 4,
           "speaker": "유웅룡",
-          "text": "청의동자. 눈이 네 개인 아이. 해와 달의 원천. 심판이니 정화니 떠들지만, 결국은 이 도시를 태워도 된다고 허락해 줄 이름이 필요했던 겁니다.",
+          "text": "청의동자. 눈이 넷인 아이. 해와 달의 근원. 심판이니 정화니 떠들지만, 결국은 이 도시를 태워도 된다고 허락해 줄 이름이 필요했던 겁니다.",
           "style": "thought",
           "portrait": "assets/portraits/yuu.jpeg",
           "condition": null
@@ -2176,6 +2252,28 @@ window.GAME_DATA = {
         },
         {
           "order": 9,
+          "speaker": "유웅룡",
+          "text": "창고에서 당신 귀를 믿었듯, 이번에도 이름부터 놓치지 않겠습니다.",
+          "style": "normal",
+          "portrait": "assets/portraits/yuu.jpeg",
+          "condition": {
+            "flag_key": "TrustedSongsoon",
+            "flag_value": true
+          }
+        },
+        {
+          "order": 10,
+          "speaker": "유웅룡",
+          "text": "방에서 읽은 기록이 맞다면, 아래엔 사람을 지우는 순서까지 남아 있을 겁니다. 눈으로 확인하고 문장으로 묶죠.",
+          "style": "normal",
+          "portrait": "assets/portraits/yuu.jpeg",
+          "condition": {
+            "flag_key": "InvestigationScore",
+            "flag_value": 3
+          }
+        },
+        {
+          "order": 11,
           "speaker": "",
           "text": "어둠 속 창고 깊숙이, 선반 뒤편에 숨겨진 문. 자물쇠도 없다. 문 너머로 미세하게 흘러나오는 공기는 마치 안쪽에서 누군가 오래 기다린 숨 같다.",
           "style": "narration",
@@ -2183,7 +2281,7 @@ window.GAME_DATA = {
           "condition": null
         },
         {
-          "order": 10,
+          "order": 12,
           "speaker": "유웅룡",
           "text": "먼저 들어갑니다. (그녀에게 손을 내민다)",
           "style": "normal",
@@ -2242,6 +2340,14 @@ window.GAME_DATA = {
             "style": "normal",
             "portrait": "assets/portraits/yuu.jpeg",
             "condition": null
+          },
+          {
+            "order": 4,
+            "speaker": "유웅룡",
+            "text": "기사는 나중입니다. 이번엔 편집장이 접어 두더라도, 한 줄쯤은 먼저 도착하게 만들어 두죠.",
+            "style": "thought",
+            "portrait": "assets/portraits/yuu.jpeg",
+            "condition": null
           }
         ],
         "choices": [],
@@ -2280,6 +2386,17 @@ window.GAME_DATA = {
             "style": "normal",
             "portrait": "assets/portraits/yuu.jpeg",
             "condition": null
+          },
+          {
+            "order": 4,
+            "speaker": "송순",
+            "text": "네. 둘이 본 일이면, 적어도 혼자 남아 부정당하진 않을 거예요.",
+            "style": "normal",
+            "portrait": "assets/portraits/songsoon.jpeg",
+            "condition": {
+              "flag_key": "SongsoonTrust",
+              "flag_value": 1
+            }
           }
         ],
         "choices": [],
@@ -2321,6 +2438,17 @@ window.GAME_DATA = {
         },
         {
           "order": 4,
+          "speaker": "유웅룡",
+          "text": "악보에서 본 순서대로라면, 먼저 이름을 흐리고 그다음 발을 끌어당기겠지. 귀를 빼앗기지 마십시오.",
+          "style": "thought",
+          "portrait": "assets/portraits/yuu.jpeg",
+          "condition": {
+            "flag_key": "ReadRitualScore",
+            "flag_value": true
+          }
+        },
+        {
+          "order": 5,
           "speaker": "",
           "text": "계단 벽면엔 손톱으로 긁은 듯한 자국과 말라붙은 푸른 얼룩이 이어진다. 누군가 위로 올라오려다 실패한 흔적처럼 보인다.",
           "style": "narration",
@@ -2328,7 +2456,7 @@ window.GAME_DATA = {
           "condition": null
         },
         {
-          "order": 5,
+          "order": 6,
           "speaker": "송순",
           "text": "사람이 만든 종교라면, 왜 이렇게 남은 흔적이 짐승 같을까요.",
           "style": "normal",
@@ -2336,7 +2464,7 @@ window.GAME_DATA = {
           "condition": null
         },
         {
-          "order": 6,
+          "order": 7,
           "speaker": "유웅룡",
           "text": "사람이 감당 못 할 걸 신이라고 부르기 시작하면, 그다음엔 늘 사람이 먼저 망가집니다.",
           "style": "thought",
@@ -2344,7 +2472,18 @@ window.GAME_DATA = {
           "condition": null
         },
         {
-          "order": 7,
+          "order": 8,
+          "speaker": "송순",
+          "text": "그래도 들릴 건 들을게요. 무섭다고 귀를 막으면, 또 누가 사라졌는지도 모르고 지나가게 되니까.",
+          "style": "normal",
+          "portrait": "assets/portraits/songsoon.jpeg",
+          "condition": {
+            "flag_key": "TrustedSongsoon",
+            "flag_value": true
+          }
+        },
+        {
+          "order": 9,
           "speaker": "",
           "text": "두 사람의 발소리가 계단 아래 어둠에 잠긴다. 노랫소리는 멈추지 않는다. 멈추지 않는다는 사실 하나만으로도, 아직 늦지 않았다는 희망과 이미 늦었다는 공포가 동시에 따라온다.",
           "style": "narration",
@@ -2368,7 +2507,7 @@ window.GAME_DATA = {
         {
           "order": 1,
           "speaker": "",
-          "text": "계단 끝엔 나무도 쇠도 아닌 재질의 문이 서 있다. 젖은 살결처럼 미세하게 숨 쉬는 듯 보인다.",
+          "text": "계단 끝엔 나무도 쇠도 아닌 재질의 문이 서 있다. 젖은 살갗처럼 미세하게 꿈틀거리며, 가까이 갈수록 사람 체온을 거꾸로 빨아들이는 것처럼 서늘하다.",
           "style": "narration",
           "portrait": null,
           "condition": null
@@ -2384,7 +2523,7 @@ window.GAME_DATA = {
         {
           "order": 3,
           "speaker": "유웅룡",
-          "text": "살아 있다고 해도 지금 와선 피할 수 없죠. 열어야 합니다.",
+          "text": "살아 있다고 해도 이제 와 피할 수는 없죠. 열어야 합니다.",
           "style": "normal",
           "portrait": "assets/portraits/yuu.jpeg",
           "condition": null
@@ -2416,7 +2555,7 @@ window.GAME_DATA = {
           {
             "order": 7,
             "speaker": "유웅룡",
-            "text": "창고에서 본 악보가 맞다면, 저 목소린 그냥 노래가 아닙니다. 문 쪽으로 사람 숨을 끌고 가는 소리예요. 더 늦기 전에 끊어야 합니다.",
+            "text": "창고에서 본 악보가 맞다면, 저 목소린 단순한 노래가 아닙니다. 문 쪽으로 사람 숨을 끌고 가는 소리예요. 더 늦기 전에 끊어야 합니다.",
             "style": "normal",
             "portrait": "assets/portraits/yuu.jpeg",
             "condition": {
@@ -2427,11 +2566,22 @@ window.GAME_DATA = {
           {
             "order": 8,
             "speaker": "송순",
-            "text": "그래도 저 소릴 따라갈 수 있어요. 무섭긴 해도, 저는 저 안에서 언니 목소리를 구분할 수 있어요.",
+            "text": "그래도 저 소릴 따라갈 수 있어요. 무섭긴 해도, 전 저 안에서 언니 목소리를 골라낼 수 있어요.",
             "style": "normal",
             "portrait": "assets/portraits/songsoon.jpeg",
             "condition": {
               "flag_key": "TrustedSongsoon",
+              "flag_value": true
+            }
+          },
+          {
+            "order": 9,
+            "speaker": "유웅룡",
+            "text": "신문사엔 한 줄 남겨 두었으니, 이제 남은 건 물러서지 않는 일뿐입니다.",
+            "style": "thought",
+            "portrait": "assets/portraits/yuu.jpeg",
+            "condition": {
+              "flag_key": "CalledEditor",
               "flag_value": true
             }
           }
@@ -2475,7 +2625,7 @@ window.GAME_DATA = {
         {
           "order": 2,
           "speaker": "유웅룡",
-          "text": "…이 소리, 이제 남의 목소리로만 안 들립니다. 한 번 귀를 들이면 사람 숨의 결까지 흉내 내는군요.",
+          "text": "…이 소리, 이제 남의 목소리로만은 안 들립니다. 한 번 귀를 들이면 사람 숨의 결까지 흉내 내는군요.",
           "style": "thought",
           "portrait": "assets/portraits/yuu.jpeg",
           "condition": null
@@ -2505,7 +2655,7 @@ window.GAME_DATA = {
         {
           "order": 1,
           "speaker": "유웅룡",
-          "text": "한 번만 더 숨 고르지요. 여기서 겁이 나는 건 부끄러운 일이 아닙니다. 겁이 난 채로도 끝까지 가는 편이 훨씬 어렵지.",
+          "text": "한 번만 더 숨 고르지요. 여기서 겁이 나는 건 부끄러운 일이 아닙니다. 겁이 난 채로도 끝까지 가는 편이 훨씬 어렵지요.",
           "style": "normal",
           "portrait": "assets/portraits/yuu.jpeg",
           "condition": null
@@ -2572,14 +2722,14 @@ window.GAME_DATA = {
             "portrait": "assets/portraits/yuu.jpeg",
             "condition": null
           },
-        {
-          "order": 5,
-          "speaker": "송순",
-          "text": "언니가 살아있어요. 아직 의식이 끝나지 않았어요.",
-          "style": "normal",
-          "portrait": "assets/portraits/songsoon.jpeg",
-          "condition": null
-        },
+          {
+            "order": 5,
+            "speaker": "송순",
+            "text": "언니가 살아 있어요. 아직 의식이 안 끝났어요.",
+            "style": "normal",
+            "portrait": "assets/portraits/songsoon.jpeg",
+            "condition": null
+          },
           {
             "order": 6,
             "speaker": "",
@@ -2599,7 +2749,7 @@ window.GAME_DATA = {
           {
             "order": 8,
             "speaker": "",
-            "text": "유웅룡은 문 앞에서 귀에 남았던 결을 떠올린다. 이제는 저 노래의 음정만이 아니라, 그 밑에 숨은 낯선 호흡까지 희미하게 구분된다. 가까워졌다는 뜻이고, 동시에 너무 깊이 들였다는 뜻이기도 하다.",
+            "text": "유웅룡은 문 앞에서 귀에 남았던 결을 떠올린다. 이제는 저 노래의 음정만이 아니라, 그 밑에 숨은 낯선 호흡까지 희미하게 구분된다. 가까워졌다는 뜻이고, 동시에 지나치게 깊이 들였다는 뜻이기도 하다.",
             "style": "narration",
             "portrait": null,
             "condition": {
@@ -2618,13 +2768,35 @@ window.GAME_DATA = {
           {
             "order": 10,
             "speaker": "송순",
+            "text": "그래도 전 저 안에서 언니를 찾을 수 있어요. 기자님은 기록을 놓치지 말고, 전 목소리를 놓치지 않을게요.",
+            "style": "normal",
+            "portrait": "assets/portraits/songsoon.jpeg",
+            "condition": {
+              "flag_key": "TrustedSongsoon",
+              "flag_value": true
+            }
+          },
+          {
+            "order": 11,
+            "speaker": "",
+            "text": "어딘가 위쪽, 닿을 듯 말 듯 먼 곳에선 아직도 도시의 숨이 남아 있다. 유웅룡은 편집장에게 남긴 한 줄이 문득 떠오르지만, 이제 그 문장은 퇴로가 아니라 증인 하나를 더 만드는 장치에 가깝다.",
+            "style": "narration",
+            "portrait": null,
+            "condition": {
+              "flag_key": "CalledEditor",
+              "flag_value": true
+            }
+          },
+          {
+            "order": 12,
+            "speaker": "송순",
             "text": "그래도 가야 해요. 저 안에 언니가 있다면, 그 목소리라도 붙잡아야 하니까.",
             "style": "normal",
             "portrait": "assets/portraits/songsoon.jpeg",
             "condition": null
           },
           {
-            "order": 11,
+            "order": 13,
             "speaker": "",
             "text": "바닥 가장자리엔 누군가 남긴 손자국들이 겹겹이 말라 있다. 올라오려던 사람도 있었고, 마지막까지 붙잡히지 않으려 버틴 사람도 있었다는 뜻이다.",
             "style": "narration",
@@ -2680,7 +2852,7 @@ window.GAME_DATA = {
           {
             "order": 4,
             "speaker": "유웅룡",
-            "text": "그럼 갑시다. 이번엔 끝까지.",
+            "text": "그럼 갑시다. 이번엔 끝까지 갑니다.",
             "style": "normal",
             "portrait": "assets/portraits/yuu.jpeg",
             "condition": null
@@ -2720,6 +2892,17 @@ window.GAME_DATA = {
           },
           {
             "order": 8,
+            "speaker": "유웅룡",
+            "text": "자료실에서 주운 기사도, 방 안에서 읽은 기록도 결국 여기까지 밀려왔군요. 이제 남은 건 외면하지 않는 일뿐입니다.",
+            "style": "thought",
+            "portrait": "assets/portraits/yuu.jpeg",
+            "condition": {
+              "flag_key": "InvestigationScore",
+              "flag_value": 3
+            }
+          },
+          {
+            "order": 9,
             "speaker": "",
             "text": "누구에게도 연락하지 않기로 한 덕에, 두 사람은 도움받을 길도 핑계 댈 길도 없이 같은 공포를 정면으로 마주 선다.",
             "style": "narration",
@@ -2746,7 +2929,7 @@ window.GAME_DATA = {
           {
             "order": 1,
             "speaker": "",
-            "text": "지하 의례실 깊숙이. 이해심이 제단 앞에 선다. 송금은 청색 한복 차림으로 노래하고 있다. 표정이 없다. 살기 위해 버틴 끝에 생기는 무표정이 아니라, 너무 오래 빌려 쓰여 자기 얼굴을 잃어버린 사람의 무표정이다.",
+            "text": "지하 의례실 깊숙이. 이해심이 제단 앞에 선다. 송금은 청색 한복 차림으로 노래하고 있다. 표정이 없다. 살기 위해 버틴 끝에 생기는 무표정이 아니라, 지나치게 오래 빌려 쓰여 자기 얼굴을 잃어버린 사람의 무표정이다.",
             "style": "narration",
             "portrait": null,
             "condition": null
@@ -2973,7 +3156,7 @@ window.GAME_DATA = {
           {
             "order": 2,
             "speaker": "유웅룡",
-            "text": "…젠장, 한 박자 늦었군.",
+            "text": "…빌어먹을, 한 박자 늦었군.",
             "style": "thought",
             "portrait": "assets/portraits/yuu.jpeg",
             "condition": null
@@ -3163,10 +3346,21 @@ window.GAME_DATA = {
         {
           "order": 2,
           "speaker": "",
-          "text": "유웅룡은 이해심을 향해 달려가며, 지난 기사들에서 지워진 문장들을 머릿속으로 되짚는다. 덮인 문장이 많을수록, 이번엔 몸으로라도 빈칸을 메워야 한다고 느낀다.",
+          "text": "유웅룡은 이해심을 향해 달려가며, 지난 기사들에서 지워진 문장들을 머릿속으로 되짚는다. 덮인 문장이 많을수록, 이번엔 몸으로라도 그 빈칸을 메워야 한다고 느낀다.",
           "style": "narration",
           "portrait": null,
           "condition": null
+        },
+        {
+          "order": 3,
+          "speaker": "유웅룡",
+          "text": "접힌 기록을 또 하나 만들 바엔, 차라리 여기서 같이 부서지는 편이 낫지.",
+          "style": "thought",
+          "portrait": "assets/portraits/yuu.jpeg",
+          "condition": {
+            "flag_key": "FoundOldArticles",
+            "flag_value": true
+          }
         }
       ],
       "choices": [],
@@ -3223,7 +3417,7 @@ window.GAME_DATA = {
             {
               "order": 3,
               "speaker": "",
-              "text": "허밍이 아직 귓가에서 가시지 않는다. 유웅룡은 자신 또한 저 문턱에서 완전히 비켜 선 목격자만은 아니게 되었다는 사실을 안다. 그래서 더더욱, 본 자의 이름으로 적어 두어야 한다.",
+              "text": "허밍이 아직 귓가에서 가시지 않는다. 유웅룡은 자신 또한 저 문턱에서 아주 비켜 선 목격자만은 아니게 되었다는 사실을 안다. 그래서 더더욱, 본 자의 이름으로 적어 두어야 한다.",
               "style": "narration",
               "portrait": null,
               "condition": {
@@ -3288,7 +3482,7 @@ window.GAME_DATA = {
           {
             "order": 6,
             "speaker": "송순",
-            "text": "그래도 언니 이름이 완전히 끊기진 않았어요. 아주 잠깐이라도, 나를 알아본 쪽이 있었어요. 그걸로 끝까지 붙들 거예요.",
+            "text": "그래도 언니 이름이 아주 끊기진 않았어요. 아주 잠깐이라도, 나를 알아본 쪽이 있었어요. 그걸로 끝까지 붙들 거예요.",
             "style": "normal",
             "portrait": "assets/portraits/songsoon.jpeg",
             "condition": {
@@ -3306,6 +3500,14 @@ window.GAME_DATA = {
               "flag_key": "ResonanceLevel",
               "flag_value": 2
             }
+          },
+          {
+            "order": 8,
+            "speaker": "송순",
+            "text": "데려오지 못해도 붙들 수는 있어요. 언니가 사라진 자리를, 내가 끝까지 놓지 않을 거예요.",
+            "style": "normal",
+            "portrait": "assets/portraits/songsoon.jpeg",
+            "condition": null
           }
         ],
       "choices": [],
@@ -3382,6 +3584,17 @@ window.GAME_DATA = {
               "flag_key": "ResonanceLevel",
               "flag_value": 2
             }
+          },
+          {
+            "order": 8,
+            "speaker": "송순",
+            "text": "그 수첩엔 언니 이름을 제일 먼저 적어줘요. 그 다음이 누구든, 언니가 맨 앞에 와야 해요.",
+            "style": "normal",
+            "portrait": "assets/portraits/songsoon.jpeg",
+            "condition": {
+              "flag_key": "TrustedSongsoon",
+              "flag_value": true
+            }
           }
         ],
       "choices": [],
@@ -3400,7 +3613,7 @@ window.GAME_DATA = {
           {
             "order": 1,
             "speaker": "",
-            "text": "문이 완전히 열린다. 무엇이 나왔는지 보이지 않는다. 공간 전체가 잠시 정지한다. 소리가 없다. 빛이 없다. 보는 쪽이 먼저 멈춘 건지, 세상이 먼저 숨을 죽인 건지도 알 수 없다.",
+            "text": "문이 활짝 열린다. 무엇이 나왔는지 보이지 않는다. 공간 전체가 잠시 정지한다. 소리가 없다. 빛이 없다. 보는 쪽이 먼저 멈춘 건지, 세상이 먼저 숨을 죽인 건지도 알 수 없다.",
             "style": "narration",
             "portrait": null,
             "condition": null
@@ -3416,7 +3629,7 @@ window.GAME_DATA = {
         {
           "order": 3,
           "speaker": "유웅룡",
-          "text": "…뭐가 나왔을까요.",
+          "text": "…무엇이 나온 걸까요.",
           "style": "normal",
           "portrait": "assets/portraits/yuu.jpeg",
           "condition": null
@@ -3432,7 +3645,7 @@ window.GAME_DATA = {
         {
           "order": 5,
           "speaker": "",
-          "text": "대답 대신, 멀리서 아주 짧은 허밍이 한 번 더 스친다. 둘 다 그 소리를 들었는지조차 확신하지 못한다. 확신하지 못한다는 사실이 오히려 오래 남는다.",
+          "text": "대답 대신, 멀리서 아주 짧은 허밍이 한 번 더 스친다. 둘 다 그 소리를 들었는지조차 확신하지 못한다. 확신하지 못한다는 사실이 오히려 더 오래 남는다.",
           "style": "narration",
           "portrait": null,
           "condition": null
@@ -3448,7 +3661,7 @@ window.GAME_DATA = {
           {
             "order": 7,
             "speaker": "송순",
-            "text": "…모른 척은 할 수 있어도, 잊을 수는 없을 거예요.",
+            "text": "…모른 체는 할 수 있어도, 잊을 수는 없을 거예요.",
             "style": "normal",
             "portrait": "assets/portraits/songsoon.jpeg",
             "condition": null
@@ -3474,6 +3687,17 @@ window.GAME_DATA = {
               "flag_key": "ResonanceLevel",
               "flag_value": 2
             }
+          },
+          {
+            "order": 10,
+            "speaker": "유웅룡",
+            "text": "답을 얻진 못했어도, 질문까지 잃어버리진 않았군요. 아마 그게 오늘 밤 남은 전부겠지.",
+            "style": "thought",
+            "portrait": "assets/portraits/yuu.jpeg",
+            "condition": {
+              "flag_key": "InvestigationScore",
+              "flag_value": 3
+            }
           }
         ],
       "choices": [],
@@ -3492,7 +3716,7 @@ window.GAME_DATA = {
         {
           "order": 1,
           "speaker": "",
-          "text": "며칠 뒤, 경성. 난향일보에 짧은 기사가 실렸다.",
+          "text": "며칠 뒤, 경성. 난향일보에는 짧은 기사 한 토막만 실렸다.",
           "style": "narration",
           "portrait": null,
           "condition": null
@@ -3557,6 +3781,28 @@ window.GAME_DATA = {
             "condition": {
               "flag_key": "TrustedSongsoon",
               "flag_value": true
+            }
+          },
+          {
+            "order": 9,
+            "speaker": "",
+            "text": "도시 한복판에서는 아무 일도 없었던 것처럼 전차 종이 울린다. 그러나 어떤 이름들은 한 번 적힌 뒤부터, 비록 신문에 나지 않아도 쉽게 다시 지워지지 않는다.",
+            "style": "narration",
+            "portrait": null,
+            "condition": {
+              "flag_key": "InvestigationScore",
+              "flag_value": 3
+            }
+          },
+          {
+            "order": 10,
+            "speaker": "",
+            "text": "그리고 아주 드문 밤이면, 바람결 어딘가에서 허밍이 짧게 스친다. 들은 사람만 잠깐 걸음을 늦춘다.",
+            "style": "narration",
+            "portrait": null,
+            "condition": {
+              "flag_key": "ResonanceLevel",
+              "flag_value": 2
             }
           }
         ],

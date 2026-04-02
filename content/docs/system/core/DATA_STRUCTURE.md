@@ -19,15 +19,15 @@
 
 ### 2-1. 현재 운영 기준
 
-현재 프로젝트의 메인 작업 툴은 `EditorNode` 노드형 에디터다.
+현재 프로젝트의 메인 작업 툴은 `EditorNode` 노드형 에디터와 `game_data.js` 직접 편집 흐름이다.
 
 운영 방향은 다음과 같다.
 
-- 메인 편집: `EditorNode`
-- 테이블 백업 / 정리 / 검수: `script.xlsx`
+- 메인 편집: `EditorNode`, 필요 시 `game/data/game_data.js`
+- 테이블 백업 / 정리 / 검수: `script.xlsx`, `content/generated/script.generated.xlsx`
 - 게임 반영 데이터: `game_data.js`
 
-즉, 과거에는 `xlsx -> game_data` 중심의 단방향 구조였다면, 앞으로는 **노드형 에디터를 메인 작성 툴로 사용하고, 필요 시 xlsx와 상호 변환 가능한 양방향 구조**를 목표로 한다.
+즉, 과거에는 `xlsx -> game_data` 중심의 단방향 구조였다면, 현재는 **노드형 에디터 / game_data 중심으로 작업하고, 필요 시 xlsx를 보조 산출물로 왕복시키는 구조**를 운영 기준으로 삼는다.
 
 ### 2-2. 데이터 흐름
 
@@ -40,10 +40,10 @@ Node Editor
 
 ### 2-3. 운용 원칙
 
-- 실제 수정 작업은 노드형 에디터를 우선한다.
-- `game_data.js`는 런타임 반영 파일이므로 직접 수정하지 않는다.
-- `script.xlsx`는 원본 문서이면서, 동시에 검수 / 공유 / 백업용 테이블 산출물로 사용한다.
-- 따라서 `xlsx -> game_data`뿐 아니라 `game_data -> xlsx`도 지원해야 한다.
+- 구조 편집과 일반 수정은 노드형 에디터를 우선한다.
+- 서사 반복 보강과 빠른 톤 수정은 `game_data.js` 직접 수정도 허용한다.
+- `script.xlsx`는 절대 단일 원본이라기보다 검수 / 공유 / 백업용 테이블 포맷으로 운용한다.
+- 따라서 `xlsx -> game_data`뿐 아니라 `game_data -> generated xlsx`가 현재 실무상 더 중요하다.
 
 ---
 
@@ -309,11 +309,11 @@ SceneTable
 | 역할 | 설명 |
 | --- | --- |
 | 백업 | 구조화된 테이블 백업본 |
-| 검수 | 표 기반 검토 문서 |
+| 검수 | generated xlsx와 비교하는 표 기반 검토 문서 |
 | 공유 | 외부 공유 / 전달용 포맷 |
 | 정리 | 대량 데이터 정리 및 비교 용도 |
 
-즉, 메인 작업은 노드형 에디터에서 진행하더라도, `xlsx`는 여전히 프로젝트 운영상 필요한 산출물이다.
+즉, 메인 작업이 노드형 에디터나 `game_data.js`에서 진행되더라도, `xlsx`는 여전히 프로젝트 운영상 필요한 산출물이다.
 
 ---
 
@@ -323,31 +323,31 @@ SceneTable
 
 기존 구조는 `xlsx -> game_data` 중심이었다.
 
-하지만 현재는 노드형 에디터가 메인 작업 툴이므로, 에디터에서 수정된 데이터를 다시 테이블 형태로 내보내는 기능이 필요하다.
+하지만 현재는 노드형 에디터와 `game_data.js` 직접 수정이 메인 흐름이므로, 수정된 데이터를 다시 테이블 형태로 내보내는 기능이 필요하다.
 
 즉, 앞으로의 기준은 다음과 같다.
 
 ```text
 xlsx -> game_data
-game_data -> xlsx
+game_data -> generated xlsx
 ```
 
 또는 실질적으로는 아래와 같이 이해할 수 있다.
 
 ```text
-Node Editor -> game_data -> xlsx
+Node Editor / direct edit -> game_data -> generated xlsx
 ```
 
 ### 14-2. 목적
 
-- 노드형 에디터에서 편집한 결과를 테이블 문서로 복원
+- 노드형 에디터 또는 `game_data.js`에서 편집한 결과를 테이블 문서로 복원
 - 검수 / 공유 / 백업이 가능한 문서 형태 유지
 - 메인 편집 툴과 문서 포맷 사이의 단절 해소
 
 ### 14-3. 운영 원칙
 
-- 편집의 중심은 노드형 에디터
-- 결과 정리와 검수는 xlsx
+- 편집의 중심은 노드형 에디터와 `game_data.js`
+- 결과 정리와 검수는 generated xlsx 및 필요 시 `script.xlsx`
 - 양쪽 포맷은 상호 변환 가능해야 함
 
 ---
@@ -357,7 +357,7 @@ Node Editor -> game_data -> xlsx
 현재 `경성뎐`의 데이터 시스템은 다음 방향으로 이해하면 된다.
 
 - 데이터 단위는 Scene / Dialogue / Choice / Branch / Evidence 테이블로 분리한다.
-- 실제 메인 편집은 `EditorNode` 노드형 에디터에서 진행한다.
+- 실제 메인 편집은 `EditorNode`와 `game_data.js` 중심으로 진행한다.
 - `xlsx`는 백업 / 검수 / 공유용 테이블 산출물로 유지한다.
-- `game_data.js`는 최종 런타임 반영 파일이다.
-- 따라서 시스템은 `노드형 에디터 중심 + xlsx 양방향 동기화` 구조를 기준으로 발전한다.
+- `game_data.js`는 현재 실질적인 메인 반영 원본이다.
+- 따라서 시스템은 `노드형 에디터 + game_data 중심 + generated xlsx 검수` 구조를 기준으로 발전한다.
