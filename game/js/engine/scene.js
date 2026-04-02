@@ -3,6 +3,7 @@
  */
 const Scene = (() => {
   let _data = null;
+  let _firstSceneId = null;
 
   const SCENE_THEMES = {
     court:       'linear-gradient(160deg, #0d1520 0%, #1a2535 50%, #0d1015 100%)',
@@ -76,9 +77,11 @@ const Scene = (() => {
     return scene.next_scene;
   }
 
-  function runScene(scene, fromLabel) {
+  function runScene(scene, fromLabel, restoreProgress = false) {
     State.currentSceneId = scene.id;
-    State.dialogueIndex = 0;
+    if (!restoreProgress || fromLabel) {
+      State.dialogueIndex = 0;
+    }
 
     setBackground(scene.background || '', scene.id);
     AudioManager.playBgm(scene.music || '');
@@ -118,21 +121,22 @@ const Scene = (() => {
       }
     }
 
-    Dialogue.start(scene.dialogues || [], afterDialogue, fromLabel);
+    Dialogue.start(scene.dialogues || [], afterDialogue, fromLabel, restoreProgress && !fromLabel);
   }
 
   return {
     init(gameData) {
       _data = gameData.scenes;
+      _firstSceneId = gameData.first_scene || Object.keys(gameData.scenes || {})[0] || null;
     },
 
-    load(sceneId, fromLabel) {
+    load(sceneId, fromLabel, options = {}) {
+      const { restoreProgress = false } = options;
       const scene = _data[sceneId];
       if (!scene) {
         console.warn(`Missing scene: [${sceneId}] Falling back to first scene.`);
-        const firstSceneId = Object.keys(_data)[0];
-        if (firstSceneId && firstSceneId !== sceneId) {
-          this.load(firstSceneId);
+        if (_firstSceneId && _firstSceneId !== sceneId) {
+          this.load(_firstSceneId, null, { restoreProgress: false });
         }
         return;
       }
@@ -146,14 +150,14 @@ const Scene = (() => {
         container.style.opacity = '0';
         setTimeout(() => {
           container.style.opacity = '1';
-          showChapterCard(scene.chapter, scene.title, () => runScene(scene, fromLabel));
+          showChapterCard(scene.chapter, scene.title, () => runScene(scene, fromLabel, restoreProgress));
         }, 500);
       } else {
         container.style.transition = 'opacity 0.35s';
         container.style.opacity = '0';
         setTimeout(() => {
           container.style.opacity = '1';
-          runScene(scene, fromLabel);
+          runScene(scene, fromLabel, restoreProgress);
         }, 350);
       }
     }

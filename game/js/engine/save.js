@@ -61,7 +61,7 @@ const Save = (() => {
       document.getElementById('save-btn').addEventListener('click', () => Save.save(false));
       document.getElementById('load-btn').addEventListener('click', () => {
         if (Save.load()) {
-          Scene.load(State.currentSceneId);
+          Scene.load(State.currentSceneId, null, { restoreProgress: true });
         }
       });
     }

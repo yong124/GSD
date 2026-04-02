@@ -45,8 +45,7 @@ const State = (() => {
     },
 
     serialize() {
-      const { dialogueIndex, ...saveState } = _state;
-      return JSON.stringify(saveState);
+      return JSON.stringify(_state);
     },
 
     deserialize(json) {

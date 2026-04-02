@@ -38,7 +38,7 @@
       return;
     }
     hideTitleScreen();
-    Scene.load(State.currentSceneId || data.first_scene);
+    Scene.load(State.currentSceneId || data.first_scene, null, { restoreProgress: true });
   }
 
   function initTitleScreen(data) {

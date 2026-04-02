@@ -94,11 +94,12 @@ const Dialogue = (() => {
     }
 
     showLine(_lines[_index]);
+    State.dialogueIndex = _index;
     _index++;
   }
 
   return {
-    start(lines, onDone, fromLabel) {
+    start(lines, onDone, fromLabel, restoreProgress = false) {
       _lines = (lines || []).filter(line => {
         if (!line.condition) return true;
         const actual = State.getFlag(line.condition.flag_key);
@@ -111,6 +112,9 @@ const Dialogue = (() => {
       if (fromLabel) {
         const idx = _lines.findIndex(l => l.label === fromLabel);
         _index = idx >= 0 ? idx : 0;
+      } else if (restoreProgress) {
+        const savedIndex = Number.isInteger(State.dialogueIndex) ? State.dialogueIndex : 0;
+        _index = Math.max(0, Math.min(savedIndex, Math.max(_lines.length - 1, 0)));
       } else {
         _index = 0;
       }
