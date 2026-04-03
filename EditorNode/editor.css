@@ -195,10 +195,27 @@ button.small { padding: 1px 7px; font-size: 11px; }
   height: 100%;
   display: block;
 }
-#panel-empty { flex: 1; display: flex; align-items: center; justify-content: center;
-  color: var(--text-dim); }
+#panel-content { order: 1; }
+#panel-empty { order: 2; flex: 1; display: flex; align-items: center; justify-content: center;
+  color: var(--text-dim); padding: 16px; text-align: center; }
 #panel-content.hidden { display: none; }
 #panel-content { padding: 12px; display: flex; flex-direction: column; gap: 12px; }
+
+#panel-tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.panel-tab {
+  flex: 1;
+  padding: 8px 10px;
+}
+
+.panel-tab.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(200, 168, 75, 0.08);
+}
 
 #panel-header { display: flex; gap: 8px; align-items: center; }
 #field-title { flex: 1; }

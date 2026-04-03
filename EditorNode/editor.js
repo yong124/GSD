@@ -10,13 +10,21 @@
   const PIN_R = 6; // pin radius
 
   const STYLE_OPTIONS = ['normal', 'narration', 'thought', 'crazy', 'scared', 'magic'];
+  const EMOTION_TYPE_OPTIONS = ['Neutral', 'Tense', 'Uneasy', 'Afraid', 'Sad', 'Angry', 'Shaken', 'Trance', 'Crazy'];
+  const STANDING_SLOT_OPTIONS = ['Left', 'Center', 'Right'];
+  const FOCUS_TYPE_OPTIONS = ['Speaker', 'None', 'Dual'];
+  const ENTER_MOTION_OPTIONS = ['None', 'FadeIn', 'SlideLeft', 'SlideRight'];
+  const EXIT_MOTION_OPTIONS = ['None', 'FadeOut', 'SlideOutLeft', 'SlideOutRight'];
+  const IDLE_MOTION_OPTIONS = ['None', 'Tremble', 'ShakeLight', 'ShakeHard'];
+  const FX_TYPE_OPTIONS = ['None', 'Fog', 'BlueTrace', 'BloodSmear', 'Flicker', 'RitualGlow'];
 
   // ── 상태 ──────────────────────────────────────────────
   const state = {
-    data: { first_scene: '', scenes: {} },
+    data: { first_scene: '', characters: {}, character_emotions: {}, scenes: {} },
     layout: {},       // { sceneId: { x, y } }
     selectedId: null,
     selectedIds: new Set(),
+    panelTab: 'node',
     previewDialogueIndex: 0,
     filters: { query: '', chapter: '' },
     camera: { x: 100, y: 100, scale: 1 },
@@ -43,6 +51,9 @@
     els.panel        = $('panel');
     els.panelEmpty   = $('panel-empty');
     els.panelContent = $('panel-content');
+    els.tabNodeEditor = $('tab-node-editor');
+    els.tabCharacterEditor = $('tab-character-editor');
+    els.panelTabSections = Array.from(document.querySelectorAll('[data-panel-tab]'));
     els.fieldTitle   = $('field-title');
     els.fieldBg      = $('field-background');
     els.fieldSearch  = $('field-search');
@@ -54,8 +65,16 @@
     els.fieldChapter = $('field-chapter');
     els.fieldMusic   = $('field-music');
     els.fieldEffect  = $('field-effect');
+    els.fieldPriorityBudget = $('field-priority-budget');
+    els.fieldPriorityDialogues = $('field-priority-dialogues');
+    els.btnApplyPriorityDialogues = $('btn-apply-priority-dialogues');
+    els.btnAddPriorityGroup = $('btn-add-priority-group');
+    els.priorityDialogueList = $('priority-dialogue-list');
+    els.priorityAfterList = $('priority-after-list');
     els.fieldSceneId = $('field-scene-id');
     els.evidenceList = $('evidence-list');
+    els.characterList = $('character-list');
+    els.characterEmotionList = $('character-emotion-list');
     els.analysisSummary = $('analysis-summary');
     els.validationSummary = $('validation-summary');
     els.validationList = $('validation-list');
@@ -93,6 +112,44 @@
   function escapeAttr(s) {
     return String(s ?? '').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
   }
+
+  function renderSelectOptions(options, selectedValue, includeBlank = true) {
+    const normalized = selectedValue ?? '';
+    const items = [];
+    if (includeBlank) {
+      items.push(`<option value="">(none)</option>`);
+    }
+    options.forEach(option => {
+      items.push(`<option value="${escapeAttr(option)}"${normalized === option ? ' selected' : ''}>${escapeHtml(option)}</option>`);
+    });
+    return items.join('');
+  }
+  function replaceEnumInputs(container, mappings) {
+    mappings.forEach(({ field, options, includeBlank = true }) => {
+      container.querySelectorAll(`input[data-field="${field}"]`).forEach(input => {
+        const select = document.createElement('select');
+        select.dataset.field = field;
+        select.innerHTML = renderSelectOptions(options, input.value || '', includeBlank);
+        input.replaceWith(select);
+      });
+    });
+  }
+  function replaceCharacterIdInputs(container, fieldName = 'CharacterID') {
+    const characterIds = Object.keys(state.data.characters || {}).sort();
+    container.querySelectorAll(`input[data-field="${fieldName}"]`).forEach(input => {
+      const select = document.createElement('select');
+      select.dataset.field = fieldName;
+      select.innerHTML = renderSelectOptions(characterIds, input.value || '', false);
+      if (!characterIds.includes(input.value || '')) {
+        const custom = document.createElement('option');
+        custom.value = input.value || '';
+        custom.textContent = input.value || '(none)';
+        custom.selected = true;
+        select.prepend(custom);
+      }
+      input.replaceWith(select);
+    });
+  }
   function uid() {
     return 'scene_' + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
   }
@@ -123,6 +180,20 @@
     state.selectedId = null;
     state.selectedIds = new Set();
     state.previewDialogueIndex = 0;
+  }
+
+  function setPanelTab(tab) {
+    state.panelTab = tab === 'character' ? 'character' : 'node';
+    renderPanel();
+  }
+
+  function applyPanelTabVisibility() {
+    const activeTab = state.panelTab === 'character' ? 'character' : 'node';
+    if (els.tabNodeEditor) els.tabNodeEditor.classList.toggle('active', activeTab === 'node');
+    if (els.tabCharacterEditor) els.tabCharacterEditor.classList.toggle('active', activeTab === 'character');
+    (els.panelTabSections || []).forEach(section => {
+      section.classList.toggle('hidden', section.dataset.panelTab !== activeTab);
+    });
   }
 
   function getSelectedSceneIds() {
@@ -217,7 +288,10 @@
 
   function restoreSnapshot(snapshot) {
     const parsed = JSON.parse(snapshot);
-    state.data = parsed.data || { first_scene: '', scenes: {} };
+    state.data = parsed.data || { first_scene: '', characters: {}, character_emotions: {}, scenes: {} };
+    if (!state.data.characters) state.data.characters = {};
+    if (!state.data.character_emotions) state.data.character_emotions = {};
+    if (!state.data.scenes) state.data.scenes = {};
     state.layout = parsed.layout || {};
   }
 
@@ -424,9 +498,9 @@
       scene.next_scene,
     ];
 
-    (scene.dialogues || []).forEach(dialogue => {
-      tokens.push(dialogue.label, dialogue.speaker, dialogue.text, dialogue.condition?.flag_key, dialogue.condition?.flag_value);
-    });
+      (scene.dialogues || []).forEach(dialogue => {
+        tokens.push(dialogue.label, dialogue.speaker, dialogue.speaker_id, dialogue.emotion_type, dialogue.text, dialogue.condition?.flag_key, dialogue.condition?.flag_value);
+      });
     (scene.choices || []).forEach(choice => {
       tokens.push(choice.text, choice.flag_key, choice.flag_value, choice.next_scene, choice.next_dialogue);
     });
@@ -757,13 +831,29 @@
   function renderPanel() {
     ensurePrimarySelection();
     const id = state.selectedId;
-    if (!id || !state.data.scenes[id]) {
+    const hasScene = Boolean(id && state.data.scenes[id]);
+    renderCharacterList();
+    renderCharacterEmotionList();
+
+    if (state.panelTab === 'character') {
+      els.panelEmpty.classList.add('hidden');
+      els.panelContent.classList.remove('hidden');
+      applyPanelTabVisibility();
+      return;
+    }
+
+    if (!hasScene) {
       els.panelEmpty.classList.remove('hidden');
-      els.panelContent.classList.add('hidden');
+      els.panelContent.classList.remove('hidden');
+      applyPanelTabVisibility();
+      (els.panelTabSections || []).forEach(section => {
+        if (section.dataset.panelTab === 'node') section.classList.add('hidden');
+      });
       return;
     }
     els.panelEmpty.classList.add('hidden');
     els.panelContent.classList.remove('hidden');
+    applyPanelTabVisibility();
 
     const scene = state.data.scenes[id];
 
@@ -772,11 +862,17 @@
     els.fieldChapter.value = scene.chapter ?? '';
     els.fieldMusic.value = scene.music || '';
     els.fieldEffect.value = scene.effect || '';
+    els.fieldPriorityBudget.value = scene.priority_budget ?? '';
+    els.fieldPriorityDialogues.value = scene.priority_dialogues
+      ? JSON.stringify(scene.priority_dialogues, null, 2)
+      : '';
     els.fieldSceneId.value = id;
 
     renderDialoguePreview(scene);
     renderDialogueList(scene);
     renderChoiceList(scene);
+    renderPriorityDialogueList(scene);
+    renderPriorityAfterList(scene);
     renderBranchList(scene);
     renderEvidenceList(scene);
     renderAnalysisPanel();
@@ -797,12 +893,14 @@
         : '';
       els.previewChapter.textContent = scene?.chapter ? `CHAPTER ${scene.chapter}` : 'SCENE';
       els.previewSceneTitle.textContent = scene?.title || scene?.id || '씬 정보 없음';
-      els.previewSpeaker.textContent = line?.speaker || '';
+    const previewSpeakerName =
+      state.data.characters?.[line?.speaker_id]?.display_name || line?.speaker || '';
+    els.previewSpeaker.textContent = previewSpeakerName;
       els.previewText.textContent = line?.text || '대사를 선택하거나 입력하면 여기서 바로 확인할 수 있습니다.';
       els.previewIndexLabel.textContent = total > 0 ? `${state.previewDialogueIndex + 1} / ${total}` : '0 / 0';
       els.btnPreviewPrev.disabled = total <= 1 || state.previewDialogueIndex === 0;
       els.btnPreviewNext.disabled = total <= 1 || state.previewDialogueIndex >= total - 1;
-      previewBox.dataset.style = line?.style || (line?.speaker ? 'normal' : 'narration');
+      previewBox.dataset.style = line?.style || (previewSpeakerName ? 'normal' : 'narration');
       els.previewChoiceList.innerHTML = choices.length
         ? choices.map(choice => `<div class="preview-choice-item">${escapeHtml(choice.text || '(빈 선택지)')}</div>`).join('')
         : '<div class="preview-choice-empty">이 씬에는 선택지가 없습니다.</div>';
@@ -908,6 +1006,22 @@
           <input data-field="label" value="${escapeAttr(d.label || '')}" placeholder="예: after_choice_a"></label>
         <label><span>화자</span>
           <input data-field="speaker" value="${escapeAttr(d.speaker || '')}"></label>
+        <label><span>SpeakerID</span>
+          <input data-field="speaker_id" value="${escapeAttr(d.speaker_id || '')}" placeholder="?? Yuu"></label>
+        <label><span>EmotionType</span>
+          <input data-field="emotion_type" value="${escapeAttr(d.emotion_type || '')}" placeholder="?? Neutral"></label>
+        <label><span>StandingSlot</span>
+          <input data-field="standing_slot" value="${escapeAttr(d.standing_slot || '')}" placeholder="?? Left"></label>
+        <label><span>FocusType</span>
+          <input data-field="focus_type" value="${escapeAttr(d.focus_type || '')}" placeholder="?? Speaker"></label>
+        <label><span>EnterMotion</span>
+          <input data-field="enter_motion" value="${escapeAttr(d.enter_motion || '')}" placeholder="?? FadeIn"></label>
+        <label><span>ExitMotion</span>
+          <input data-field="exit_motion" value="${escapeAttr(d.exit_motion || '')}" placeholder="?? FadeOut"></label>
+        <label><span>IdleMotion</span>
+          <input data-field="idle_motion" value="${escapeAttr(d.idle_motion || '')}" placeholder="?? Tremble"></label>
+        <label><span>FxType</span>
+          <input data-field="fx_type" value="${escapeAttr(d.fx_type || '')}" placeholder="?? BlueTrace"></label>
         <label><span>스타일</span>
           <select data-field="style">
             ${STYLE_OPTIONS.map(s => `<option value="${s}"${(d.style||'normal')===s?' selected':''}>${s}</option>`).join('')}
@@ -970,6 +1084,51 @@
       });
     });
 
+    replaceEnumInputs(cards, [
+      { field: 'emotion_type', options: EMOTION_TYPE_OPTIONS },
+      { field: 'standing_slot', options: STANDING_SLOT_OPTIONS },
+      { field: 'focus_type', options: FOCUS_TYPE_OPTIONS },
+      { field: 'enter_motion', options: ENTER_MOTION_OPTIONS },
+      { field: 'exit_motion', options: EXIT_MOTION_OPTIONS },
+      { field: 'idle_motion', options: IDLE_MOTION_OPTIONS },
+      { field: 'fx_type', options: FX_TYPE_OPTIONS },
+    ]);
+
+    // speaker_id → 캐릭터 드롭다운 교체
+    const characterIds = Object.keys(state.data.characters || {}).sort();
+    cards.querySelectorAll('input[data-field="speaker_id"]').forEach(input => {
+      const sel = document.createElement('select');
+      sel.dataset.field = 'speaker_id';
+      const blank = document.createElement('option');
+      blank.value = ''; blank.textContent = '—';
+      sel.appendChild(blank);
+      characterIds.forEach(cid => {
+        const opt = document.createElement('option');
+        opt.value = cid;
+        opt.textContent = state.data.characters[cid]?.display_name || cid;
+        if (input.value === cid) opt.selected = true;
+        sel.appendChild(opt);
+      });
+      input.replaceWith(sel);
+    });
+
+    // speaker_id 변경 시 emotion_type 선택지 연동
+    cards.querySelectorAll('select[data-field="speaker_id"]').forEach(speakerSel => {
+      speakerSel.addEventListener('change', () => {
+        const sid = speakerSel.value;
+        const card = speakerSel.closest('.pcard');
+        const emotionSel = card?.querySelector('select[data-field="emotion_type"]');
+        if (!emotionSel) return;
+        const cur = emotionSel.value;
+        const emotions = sid
+          ? Object.keys((state.data.character_emotions || {})[sid] || {})
+          : [];
+        const opts = emotions.length > 0 ? emotions : EMOTION_TYPE_OPTIONS;
+        emotionSel.innerHTML = '<option value="">—</option>' +
+          opts.map(e => `<option value="${e}"${cur === e ? ' selected' : ''}>${e}</option>`).join('');
+      });
+    });
+
     els.dialogueList.appendChild(cards);
   }
 
@@ -985,8 +1144,10 @@
           <input data-field="text" value="${escapeAttr(c.text || '')}"></label>
         <label><span>다음 씬 (없으면 현재 씬 유지)</span>
           <input data-field="next_scene" value="${escapeAttr(c.next_scene || '')}"></label>
-        <label><span>다음 대사 레이블 (선택)</span>
+        <label><span>조사 분기 키 (next_dialogue)</span>
           <input data-field="next_dialogue" value="${escapeAttr(c.next_dialogue || '')}" placeholder="예: after_choice_a"></label>
+        <label><span>조사 비용 (priority_cost, 비워두면 일반 선택지)</span>
+          <input data-field="priority_cost" type="number" min="0" step="1" value="${escapeAttr(c.priority_cost != null ? String(c.priority_cost) : '')}"></label>
         <label><span>플래그 키</span>
           <input data-field="flag_key" value="${escapeAttr(c.flag_key || '')}"></label>
         <label><span>플래그 값</span>
@@ -1000,6 +1161,194 @@
     );
 
     els.choiceList.appendChild(cards);
+  }
+
+  function createPriorityDialogueLine() {
+    return {
+      order: 0,
+      speaker: '',
+      speaker_id: '',
+      emotion_type: '',
+      text: '',
+      portrait: null,
+      style: 'narration',
+    };
+  }
+
+  function getNextPriorityGroupKey(scene) {
+    const existing = new Set(Object.keys(scene.priority_dialogues || {}));
+    const suggested = (scene.choices || [])
+      .map(choice => String(choice.next_dialogue || '').trim())
+      .filter(Boolean);
+
+    const unusedSuggested = suggested.find(key => !existing.has(key));
+    if (unusedSuggested) return unusedSuggested;
+
+    let index = 1;
+    let candidate = `priority_branch_${index}`;
+    while (existing.has(candidate)) {
+      index += 1;
+      candidate = `priority_branch_${index}`;
+    }
+    return candidate;
+  }
+
+  function renamePriorityDialogueGroup(scene, oldKey, nextKey) {
+    const trimmed = (nextKey || '').trim();
+    if (!trimmed || trimmed === oldKey) return true;
+    if (scene.priority_dialogues?.[trimmed]) return false;
+    scene.priority_dialogues[trimmed] = scene.priority_dialogues[oldKey] || [];
+    delete scene.priority_dialogues[oldKey];
+    (scene.choices || []).forEach(choice => {
+      if (choice.next_dialogue === oldKey) choice.next_dialogue = trimmed;
+    });
+    return true;
+  }
+
+  function renderPriorityDialogueList(scene) {
+    scene.priority_dialogues = scene.priority_dialogues || {};
+    els.priorityDialogueList.innerHTML = '';
+
+    const groupEntries = Object.entries(scene.priority_dialogues);
+    if (groupEntries.length === 0) {
+      els.priorityDialogueList.innerHTML = '<div class="preview-choice-empty">등록된 조사 분기 대사가 없습니다.</div>';
+      return;
+    }
+
+    const wrap = document.createElement('div');
+    wrap.style.display = 'flex';
+    wrap.style.flexDirection = 'column';
+    wrap.style.gap = '10px';
+
+    groupEntries.forEach(([groupKey, lines]) => {
+      const groupCard = document.createElement('div');
+      groupCard.className = 'pcard';
+
+      const keyOptions = (scene.choices || [])
+        .map(choice => String(choice.next_dialogue || '').trim())
+        .filter(Boolean)
+        .filter((key, index, array) => array.indexOf(key) === index)
+        .map(key => `<option value="${escapeAttr(key)}"></option>`)
+        .join('');
+
+      groupCard.innerHTML = `
+        <div class="pcard-toolbar">
+          <span>조사 분기 키</span>
+          <div class="actions">
+            <button type="button" data-action="add-line">+</button>
+            <button type="button" data-action="delete-group" class="danger">횞</button>
+          </div>
+        </div>
+        <label><span>PriorityKey</span>
+          <input data-role="group-key" list="priority-key-options-${escapeAttr(groupKey)}" value="${escapeAttr(groupKey)}" placeholder="예: inspect_wall">
+          <datalist id="priority-key-options-${escapeAttr(groupKey)}">${keyOptions}</datalist>
+        </label>
+        <div class="priority-group-lines"></div>
+      `;
+
+      const groupKeyInput = groupCard.querySelector('[data-role="group-key"]');
+      groupKeyInput.addEventListener('focus', pushHistory, { once: true });
+      groupKeyInput.addEventListener('blur', () => {
+        const nextKey = groupKeyInput.value.trim();
+        if (!renamePriorityDialogueGroup(scene, groupKey, nextKey)) {
+          setStatus('이미 존재하는 PriorityKey입니다', true);
+          renderPanel();
+          return;
+        }
+        markDirty();
+        renderPanel();
+      });
+
+      groupCard.querySelector('[data-action="add-line"]').addEventListener('click', () => {
+        pushHistory();
+        scene.priority_dialogues[groupKey] = scene.priority_dialogues[groupKey] || [];
+        scene.priority_dialogues[groupKey].push(createPriorityDialogueLine());
+        afterChange();
+      });
+
+      groupCard.querySelector('[data-action="delete-group"]').addEventListener('click', () => {
+        pushHistory();
+        delete scene.priority_dialogues[groupKey];
+        afterChange();
+      });
+
+      const lineWrap = groupCard.querySelector('.priority-group-lines');
+      const lineCards = makeCard(
+        '분기 대사',
+        lines,
+        (line) => `
+          <label><span>화자</span>
+            <input data-field="speaker" value="${escapeAttr(line.speaker || '')}"></label>
+          <label><span>SpeakerID</span>
+            <input data-field="speaker_id" value="${escapeAttr(line.speaker_id || '')}"></label>
+          <label><span>EmotionType</span>
+            <input data-field="emotion_type" value="${escapeAttr(line.emotion_type || '')}"></label>
+          <label><span>스타일</span>
+            <select data-field="style">
+              ${STYLE_OPTIONS.map(s => `<option value="${s}"${(line.style || 'narration') === s ? ' selected' : ''}>${s}</option>`).join('')}
+            </select></label>
+          <label><span>텍스트</span>
+            <textarea data-field="text">${escapeHtml(line.text || '')}</textarea></label>
+        `,
+        () => {
+          scene.priority_dialogues[groupKey].push(createPriorityDialogueLine());
+          afterChange();
+        },
+        (index) => {
+          scene.priority_dialogues[groupKey].splice(index, 1);
+          afterChange();
+        },
+        (index) => { if (swap(scene.priority_dialogues[groupKey], index - 1, index)) afterChange(); },
+        (index) => { if (swap(scene.priority_dialogues[groupKey], index, index + 1)) afterChange(); },
+        (line, field, value) => {
+          line[field] = value || (field === 'style' ? 'narration' : '');
+          markDirty();
+          els.fieldPriorityDialogues.value = JSON.stringify(scene.priority_dialogues, null, 2);
+        }
+      );
+
+      replaceEnumInputs(lineCards, [
+        { field: 'emotion_type', options: EMOTION_TYPE_OPTIONS },
+      ]);
+
+      const characterIds = Object.keys(state.data.characters || {}).sort();
+      lineCards.querySelectorAll('input[data-field="speaker_id"]').forEach(input => {
+        const select = document.createElement('select');
+        select.dataset.field = 'speaker_id';
+        select.innerHTML = renderSelectOptions(characterIds, input.value || '', true);
+        input.replaceWith(select);
+      });
+
+      lineWrap.appendChild(lineCards);
+      wrap.appendChild(groupCard);
+    });
+
+    els.priorityDialogueList.appendChild(wrap);
+  }
+
+  // 조사 후 대사 목록
+  function renderPriorityAfterList(scene) {
+    if (!scene.priority_after_dialogues) scene.priority_after_dialogues = [];
+    els.priorityAfterList.innerHTML = '';
+
+    const cards = makeCard(
+      '조사 후 대사', scene.priority_after_dialogues,
+      (d) => `
+        <label><span>화자</span>
+          <input data-field="speaker" value="${escapeAttr(d.speaker || '')}"></label>
+        <label><span>텍스트</span>
+          <textarea data-field="text">${escapeHtml(d.text || '')}</textarea></label>
+        <label><span>스타일</span>
+          <input data-field="style" value="${escapeAttr(d.style || 'narration')}"></label>
+      `,
+      () => { scene.priority_after_dialogues.push({ order: scene.priority_after_dialogues.length + 1, speaker: '', text: '', style: 'narration', portrait: null }); afterChange(); },
+      (i) => { scene.priority_after_dialogues.splice(i, 1); afterChange(); },
+      (i) => { if (swap(scene.priority_after_dialogues, i-1, i)) afterChange(); },
+      (i) => { if (swap(scene.priority_after_dialogues, i, i+1)) afterChange(); },
+      (d, field, value) => { d[field] = value; markDirty(); }
+    );
+
+    els.priorityAfterList.appendChild(cards);
   }
 
   // 분기 목록
@@ -1068,6 +1417,239 @@
     els.evidenceList.appendChild(cards);
   }
 
+  function getCharacterRows() {
+    return Object.entries(state.data.characters || {}).map(([characterId, character]) => ({
+      CharacterID: characterId,
+      DisplayName: character?.display_name || '',
+      DefaultEmotionType: character?.default_emotion_type || '',
+      DefaultImagePath: character?.default_image_path || '',
+    }));
+  }
+
+  function getCharacterEmotionRows() {
+    const rows = [];
+    Object.entries(state.data.character_emotions || {}).forEach(([characterId, emotionMap]) => {
+      Object.entries(emotionMap || {}).forEach(([emotionType, imagePath]) => {
+        rows.push({
+          CharacterID: characterId,
+          EmotionType: emotionType,
+          ImagePath: imagePath || '',
+        });
+      });
+    });
+    return rows;
+  }
+
+  function syncCharacterEmotionBuckets() {
+    Object.keys(state.data.character_emotions || {}).forEach(characterId => {
+      if (!state.data.characters?.[characterId] && Object.keys(state.data.character_emotions[characterId] || {}).length === 0) {
+        delete state.data.character_emotions[characterId];
+      }
+    });
+  }
+
+  function renameCharacterId(oldId, newId) {
+    const trimmed = (newId || '').trim();
+    if (!oldId || !trimmed || trimmed === oldId) return true;
+    if (state.data.characters[trimmed]) return false;
+
+    state.data.characters[trimmed] = state.data.characters[oldId] || {
+      id: trimmed,
+      display_name: '',
+      default_emotion_type: '',
+      default_image_path: '',
+    };
+    state.data.characters[trimmed].id = trimmed;
+    delete state.data.characters[oldId];
+
+    if (state.data.character_emotions?.[oldId]) {
+      state.data.character_emotions[trimmed] = state.data.character_emotions[oldId];
+      delete state.data.character_emotions[oldId];
+    }
+
+    Object.values(state.data.scenes || {}).forEach(scene => {
+      (scene.dialogues || []).forEach(dialogue => {
+        if (dialogue.speaker_id === oldId) dialogue.speaker_id = trimmed;
+      });
+    });
+
+    return true;
+  }
+
+  function moveCharacterEmotion(oldCharacterId, oldEmotionType, nextCharacterId, nextEmotionType, imagePath) {
+    const characterId = (nextCharacterId || '').trim();
+    const emotionType = (nextEmotionType || '').trim();
+    if (!characterId || !emotionType) return false;
+
+    if (!state.data.character_emotions) state.data.character_emotions = {};
+    if (!state.data.character_emotions[characterId]) state.data.character_emotions[characterId] = {};
+    state.data.character_emotions[characterId][emotionType] = imagePath || '';
+
+    if (oldCharacterId && state.data.character_emotions?.[oldCharacterId]) {
+      delete state.data.character_emotions[oldCharacterId][oldEmotionType];
+      if (Object.keys(state.data.character_emotions[oldCharacterId]).length === 0) {
+        delete state.data.character_emotions[oldCharacterId];
+      }
+    }
+
+    return true;
+  }
+
+  function renderCharacterList() {
+    els.characterList.innerHTML = '';
+    const rows = getCharacterRows();
+
+    const cards = makeCard(
+      'Character', rows,
+      (row) => `
+        <label><span>CharacterID</span>
+          <input data-field="CharacterID" value="${escapeAttr(row.CharacterID || '')}" placeholder="예: Yuu"></label>
+        <label><span>DisplayName</span>
+          <input data-field="DisplayName" value="${escapeAttr(row.DisplayName || '')}" placeholder="예: 유웅룡"></label>
+        <label><span>DefaultEmotionType</span>
+          <input data-field="DefaultEmotionType" value="${escapeAttr(row.DefaultEmotionType || '')}" placeholder="예: Neutral"></label>
+        <label><span>DefaultImagePath</span>
+          <input data-field="DefaultImagePath" value="${escapeAttr(row.DefaultImagePath || '')}" placeholder="assets/standing/..."></label>
+      `,
+      () => {
+        const characterId = `Character${rows.length + 1}`;
+        if (!state.data.characters) state.data.characters = {};
+        state.data.characters[characterId] = {
+          id: characterId,
+          display_name: '',
+          default_emotion_type: 'Neutral',
+          default_image_path: '',
+        };
+        afterChange();
+      },
+      (i) => {
+        const target = rows[i];
+        if (!target) return;
+        delete state.data.characters[target.CharacterID];
+        delete state.data.character_emotions[target.CharacterID];
+        Object.values(state.data.scenes || {}).forEach(scene => {
+          (scene.dialogues || []).forEach(dialogue => {
+            if (dialogue.speaker_id === target.CharacterID) dialogue.speaker_id = null;
+          });
+        });
+        afterChange();
+      },
+      () => {},
+      () => {},
+      (row, field, value) => {
+        const currentId = row.CharacterID;
+        if (!state.data.characters[currentId]) {
+          state.data.characters[currentId] = {
+            id: currentId,
+            display_name: '',
+            default_emotion_type: '',
+            default_image_path: '',
+          };
+        }
+
+        if (field === 'CharacterID') {
+          const nextId = (value || '').trim();
+          if (!nextId) return;
+          if (!renameCharacterId(currentId, nextId)) {
+            setStatus('이미 존재하는 CharacterID입니다', true);
+            renderPanel();
+            return;
+          }
+          row.CharacterID = nextId;
+          markDirty();
+          renderPanel();
+          return;
+        } else {
+          const target = state.data.characters[row.CharacterID];
+          if (field === 'DisplayName') target.display_name = value || '';
+          if (field === 'DefaultEmotionType') target.default_emotion_type = value || '';
+          if (field === 'DefaultImagePath') target.default_image_path = value || '';
+        }
+
+        markDirty();
+        renderNodes();
+        renderAnalysisPanel();
+        renderValidationPanel();
+      }
+    );
+
+    replaceEnumInputs(cards, [
+      { field: 'DefaultEmotionType', options: EMOTION_TYPE_OPTIONS },
+    ]);
+
+    els.characterList.appendChild(cards);
+  }
+
+  function renderCharacterEmotionList() {
+    els.characterEmotionList.innerHTML = '';
+    const rows = getCharacterEmotionRows();
+
+    const cards = makeCard(
+      'CharacterEmotion', rows,
+      (row) => `
+        <label><span>CharacterID</span>
+          <input data-field="CharacterID" value="${escapeAttr(row.CharacterID || '')}" placeholder="예: Yuu"></label>
+        <label><span>EmotionType</span>
+          <input data-field="EmotionType" value="${escapeAttr(row.EmotionType || '')}" placeholder="예: Neutral"></label>
+        <label><span>ImagePath</span>
+          <input data-field="ImagePath" value="${escapeAttr(row.ImagePath || '')}" placeholder="assets/standing/..."></label>
+      `,
+      () => {
+        if (!state.data.character_emotions) state.data.character_emotions = {};
+        if (!state.data.character_emotions.__NewCharacter__) state.data.character_emotions.__NewCharacter__ = {};
+        state.data.character_emotions.__NewCharacter__.Neutral = '';
+        afterChange();
+      },
+      (i) => {
+        const target = rows[i];
+        if (!target) return;
+        if (state.data.character_emotions?.[target.CharacterID]) {
+          delete state.data.character_emotions[target.CharacterID][target.EmotionType];
+          if (Object.keys(state.data.character_emotions[target.CharacterID]).length === 0) {
+            delete state.data.character_emotions[target.CharacterID];
+          }
+        }
+        afterChange();
+      },
+      () => {},
+      () => {},
+      (row, field, value) => {
+        const currentCharacterId = row.CharacterID;
+        const currentEmotionType = row.EmotionType;
+
+        if (field === 'ImagePath') {
+          if (!state.data.character_emotions[currentCharacterId]) state.data.character_emotions[currentCharacterId] = {};
+          state.data.character_emotions[currentCharacterId][currentEmotionType] = value || '';
+        } else {
+          const nextCharacterId = field === 'CharacterID' ? value : row.CharacterID;
+          const nextEmotionType = field === 'EmotionType' ? value : row.EmotionType;
+          const imagePath = state.data.character_emotions?.[currentCharacterId]?.[currentEmotionType] || row.ImagePath || '';
+          if (!moveCharacterEmotion(currentCharacterId, currentEmotionType, nextCharacterId, nextEmotionType, imagePath)) {
+            setStatus('CharacterID와 EmotionType은 비워둘 수 없습니다', true);
+            renderPanel();
+            return;
+          }
+          row.CharacterID = (nextCharacterId || '').trim();
+          row.EmotionType = (nextEmotionType || '').trim();
+          syncCharacterEmotionBuckets();
+          markDirty();
+          renderPanel();
+          return;
+        }
+
+        syncCharacterEmotionBuckets();
+        markDirty();
+      }
+    );
+
+    replaceCharacterIdInputs(cards, 'CharacterID');
+    replaceEnumInputs(cards, [
+      { field: 'EmotionType', options: EMOTION_TYPE_OPTIONS, includeBlank: false },
+    ]);
+
+    els.characterEmotionList.appendChild(cards);
+  }
+
   function afterChange() {
     markDirty();
     render();
@@ -1076,10 +1658,10 @@
 
   // 기본 객체 생성
   function newDialogue() {
-    return { order: 0, speaker: '', text: '', portrait: null, style: 'normal', condition: null };
+    return { order: 0, speaker: '', speaker_id: '', emotion_type: '', text: '', portrait: null, style: 'normal', condition: null };
   }
   function newChoice() {
-    return { order: 0, text: '', next_scene: '', next_dialogue: '', flag_key: '', flag_value: '' };
+    return { order: 0, text: '', next_scene: '', next_dialogue: '', priority_cost: '', flag_key: '', flag_value: '' };
   }
   function newBranch() {
     return { flag_key: '', flag_value: '', next_scene: '' };
@@ -1087,9 +1669,16 @@
   function newEvidence() {
     return { evidence_id: '', trigger: 'auto', name: '', description: '', image: '' };
   }
+  function newCharacter() {
+    return { CharacterID: '', DisplayName: '', DefaultEmotionType: 'Neutral', DefaultImagePath: '' };
+  }
+  function newCharacterEmotion() {
+    return { CharacterID: '', EmotionType: 'Neutral', ImagePath: '' };
+  }
   function newScene(id) {
     return {
       id, chapter: null, title: id, background: null, music: null, effect: null, next_scene: null,
+      priority_budget: null, priority_dialogues: {}, priority_after_dialogues: [],
       branches: [], dialogues: [], choices: [], evidence: []
     };
   }
@@ -1116,6 +1705,14 @@
       return {
         order: normalizeOrder(dialogue.order, index + 1),
         speaker: dialogue.speaker || '',
+        speaker_id: dialogue.speaker_id || null,
+        emotion_type: dialogue.emotion_type || null,
+        standing_slot: dialogue.standing_slot || null,
+        focus_type: dialogue.focus_type || null,
+        enter_motion: dialogue.enter_motion || null,
+        exit_motion: dialogue.exit_motion || null,
+        idle_motion: dialogue.idle_motion || null,
+        fx_type: dialogue.fx_type || null,
         text: dialogue.text || '',
         style: dialogue.style || 'normal',
         portrait: dialogue.portrait || null,
@@ -1124,13 +1721,45 @@
       };
     });
 
-    const normalizedChoices = (scene.choices || []).map((choice, index) => ({
-      order: normalizeOrder(choice.order, index + 1),
-      text: choice.text || '',
-      flag_key: choice.flag_key || null,
-      flag_value: normalizeFlagValue(choice.flag_value),
-      next_scene: choice.next_scene || null,
-      next_dialogue: choice.next_dialogue || null,
+    const normalizedChoices = (scene.choices || []).map((choice, index) => {
+      const c = {
+        order: normalizeOrder(choice.order, index + 1),
+        text: choice.text || '',
+        flag_key: choice.flag_key || null,
+        flag_value: normalizeFlagValue(choice.flag_value),
+        next_scene: choice.next_scene || null,
+        next_dialogue: choice.next_dialogue || null,
+      };
+      const cost = choice.priority_cost != null && choice.priority_cost !== ''
+        ? Number.parseInt(choice.priority_cost, 10)
+        : null;
+      if (cost != null && Number.isFinite(cost)) c.priority_cost = cost;
+      return c;
+    });
+
+    const normalizedPriorityDialogues = {};
+    Object.entries(scene.priority_dialogues || {}).forEach(([groupKey, lines]) => {
+      const trimmedKey = String(groupKey || '').trim();
+      if (!trimmedKey) return;
+      normalizedPriorityDialogues[trimmedKey] = (lines || []).map((line, index) => ({
+        order: normalizeOrder(line.order, index + 1),
+        speaker: line.speaker || '',
+        speaker_id: line.speaker_id || null,
+        emotion_type: line.emotion_type || null,
+        text: line.text || '',
+        style: line.style || 'narration',
+        portrait: line.portrait || null,
+      }));
+    });
+
+    const normalizedPriorityAfterDialogues = (scene.priority_after_dialogues || []).map((line, index) => ({
+      order: normalizeOrder(line.order, index + 1),
+      speaker: line.speaker || '',
+      speaker_id: line.speaker_id || null,
+      emotion_type: line.emotion_type || null,
+      text: line.text || '',
+      style: line.style || 'narration',
+      portrait: line.portrait || null,
     }));
 
     const normalizedBranches = (scene.branches || []).map((branch, index) => ({
@@ -1148,7 +1777,7 @@
       image: evidence.image || null,
     }));
 
-    return {
+    const result = {
       id: scene.id || sceneId,
       chapter: scene.chapter === '' || scene.chapter == null ? null : Number.parseInt(scene.chapter, 10),
       title: scene.title || sceneId,
@@ -1161,6 +1790,17 @@
       evidence: normalizedEvidence,
       branches: normalizedBranches,
     };
+
+    const budget = scene.priority_budget != null && scene.priority_budget !== ''
+      ? Number.parseInt(scene.priority_budget, 10)
+      : null;
+    if (budget) result.priority_budget = budget;
+    if (Object.keys(normalizedPriorityDialogues).length > 0)
+      result.priority_dialogues = normalizedPriorityDialogues;
+    if (normalizedPriorityAfterDialogues.length > 0)
+      result.priority_after_dialogues = normalizedPriorityAfterDialogues;
+
+    return result;
   }
 
   function buildExportData() {
@@ -1175,6 +1815,8 @@
 
     return {
       first_scene: firstScene,
+      characters: state.data.characters || {},
+      character_emotions: state.data.character_emotions || {},
       scenes: normalizedScenes,
     };
   }
@@ -1722,6 +2364,9 @@
         return;
       }
       state.data = window.GAME_DATA;
+      if (!state.data.characters) state.data.characters = {};
+      if (!state.data.character_emotions) state.data.character_emotions = {};
+      if (!state.data.scenes) state.data.scenes = {};
       state.layout = {};
       state.history = [];
       state.future = [];
@@ -1838,6 +2483,8 @@
     els.btnApplyBatchFlag.addEventListener('click', replaceFlagKeyEverywhere);
     els.btnApplyBatchText.addEventListener('click', replaceTextEverywhere);
     els.btnSortScenes.addEventListener('click', sortScenesByChapter);
+    if (els.tabNodeEditor) els.tabNodeEditor.addEventListener('click', () => setPanelTab('node'));
+    if (els.tabCharacterEditor) els.tabCharacterEditor.addEventListener('click', () => setPanelTab('character'));
     $('btn-duplicate-scene').addEventListener('click', () => {
       if (state.selectedId) duplicateScene(state.selectedId);
     });
@@ -1879,6 +2526,36 @@
       scene.evidence.push(newEvidence());
       afterChange();
     });
+    $('btn-add-character').addEventListener('click', () => {
+      pushHistory();
+      const row = newCharacter();
+      let suffix = Object.keys(state.data.characters || {}).length + 1;
+      do {
+        row.CharacterID = `Character${suffix++}`;
+      } while (state.data.characters?.[row.CharacterID]);
+      if (!state.data.characters) state.data.characters = {};
+      state.data.characters[row.CharacterID] = {
+        id: row.CharacterID,
+        display_name: row.DisplayName,
+        default_emotion_type: row.DefaultEmotionType,
+        default_image_path: row.DefaultImagePath,
+      };
+      afterChange();
+    });
+    $('btn-add-character-emotion').addEventListener('click', () => {
+      pushHistory();
+      const row = newCharacterEmotion();
+      row.CharacterID = Object.keys(state.data.characters || {})[0] || 'Character1';
+      if (!state.data.character_emotions) state.data.character_emotions = {};
+      if (!state.data.character_emotions[row.CharacterID]) state.data.character_emotions[row.CharacterID] = {};
+      let emotionType = row.EmotionType;
+      let suffix = 2;
+      while (state.data.character_emotions[row.CharacterID][emotionType] != null) {
+        emotionType = `Neutral${suffix++}`;
+      }
+      state.data.character_emotions[row.CharacterID][emotionType] = row.ImagePath;
+      afterChange();
+    });
 
     // 패널 필드
     els.fieldTitle.addEventListener('input', () => {
@@ -1917,11 +2594,85 @@
       markDirty();
       refreshMetaViews();
     });
+
+    els.fieldPriorityBudget.addEventListener('input', () => {
+      const scene = state.data.scenes[state.selectedId];
+      if (!scene) return;
+      const v = els.fieldPriorityBudget.value;
+      scene.priority_budget = v === '' ? null : Number.parseInt(v, 10);
+      markDirty();
+    });
+
+    els.priorityAfterList.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-action]');
+      if (!btn) return;
+      const scene = state.data.scenes[state.selectedId];
+      if (!scene) return;
+      const card = btn.closest('.card');
+      const idx = card ? Number(card.dataset.index) : -1;
+      const action = btn.dataset.action;
+      pushHistory();
+      if (action === 'add-priority-after') {
+        scene.priority_after_dialogues = scene.priority_after_dialogues || [];
+        scene.priority_after_dialogues.push({ order: scene.priority_after_dialogues.length + 1, speaker: '', text: '', style: 'narration', portrait: null });
+      } else if (action === 'del' && idx >= 0) {
+        scene.priority_after_dialogues.splice(idx, 1);
+      }
+      afterChange();
+    });
+
+    document.getElementById('btn-add-priority-after').addEventListener('click', () => {
+      const scene = state.data.scenes[state.selectedId];
+      if (!scene) return;
+      pushHistory();
+      scene.priority_after_dialogues = scene.priority_after_dialogues || [];
+      scene.priority_after_dialogues.push({ order: scene.priority_after_dialogues.length + 1, speaker: '', text: '', style: 'narration', portrait: null });
+      afterChange();
+    });
+
+    if (els.btnApplyPriorityDialogues) {
+      const replacement = els.btnApplyPriorityDialogues.cloneNode(true);
+      els.btnApplyPriorityDialogues.replaceWith(replacement);
+      els.btnApplyPriorityDialogues = replacement;
+      els.btnApplyPriorityDialogues.addEventListener('click', () => {
+        const scene = state.data.scenes[state.selectedId];
+        if (!scene) return;
+        const raw = els.fieldPriorityDialogues.value.trim();
+        if (!raw) {
+          scene.priority_dialogues = null;
+          markDirty();
+          renderPanel();
+          return;
+        }
+        try {
+          scene.priority_dialogues = JSON.parse(raw);
+          markDirty();
+          renderPanel();
+          setStatus('priority_dialogues applied');
+        } catch (e) {
+          setStatus('Priority dialogue JSON parse error: ' + e.message, true);
+        }
+      });
+    }
+
+    if (els.btnAddPriorityGroup) {
+      els.btnAddPriorityGroup.addEventListener('click', () => {
+        const scene = state.data.scenes[state.selectedId];
+        if (!scene) return;
+        pushHistory();
+        scene.priority_dialogues = scene.priority_dialogues || {};
+        const nextKey = getNextPriorityGroupKey(scene);
+        scene.priority_dialogues[nextKey] = [createPriorityDialogueLine()];
+        afterChange();
+      });
+    }
+
     els.fieldTitle.addEventListener('focus', pushHistory);
     els.fieldBg.addEventListener('focus', pushHistory);
     els.fieldChapter.addEventListener('focus', pushHistory);
     els.fieldMusic.addEventListener('focus', pushHistory);
     els.fieldEffect.addEventListener('focus', pushHistory);
+    els.fieldPriorityBudget.addEventListener('focus', pushHistory);
     els.fieldSceneId.addEventListener('focus', pushHistory);
 
     els.btnPreviewPrev.addEventListener('click', () => {

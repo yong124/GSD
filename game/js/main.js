@@ -25,6 +25,7 @@
     AudioManager.enable();
     Save.clear();
     State.reset();
+    Evidence.resetSession();
     State.chapter = 0;
     hideTitleScreen();
     Choice.hide();
@@ -87,12 +88,14 @@
     Dialogue.init();
     Evidence.init();
     Save.init();
+    Evidence.hydrateSession();
     initTitleScreen(data);
 
     // 엔딩 이벤트 수신
     document.addEventListener('game:ending', () => {
       Save.clear();
       State.reset();
+      Evidence.resetSession();
       showTitleScreen();
     });
   }

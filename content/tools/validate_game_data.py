@@ -99,6 +99,53 @@ def validate_evidence_ids(scenes, issues):
         issues.append(f"[Duplicate.evidence_id] {dup}")
 
 
+def validate_characters(data, issues):
+    characters = data.get("characters", {}) or {}
+    character_emotions = data.get("character_emotions", {}) or {}
+
+    for character_id, character in characters.items():
+        if not isinstance(character, dict):
+            issues.append(f"[Character.invalid] {character_id} is not an object")
+            continue
+        default_emotion_type = character.get("default_emotion_type")
+        if default_emotion_type and default_emotion_type not in (character_emotions.get(character_id) or {}):
+            issues.append(
+                f"[Character.default_emotion_type] {character_id} -> {default_emotion_type} (missing EmotionType)"
+            )
+
+    for character_id, emotion_map in character_emotions.items():
+        if character_id not in characters:
+            issues.append(f"[CharacterEmotion.missing_character] {character_id}")
+            continue
+        if not isinstance(emotion_map, dict):
+            issues.append(f"[CharacterEmotion.invalid] {character_id} is not an object")
+            continue
+        if "Neutral" not in emotion_map:
+            issues.append(f"[CharacterEmotion.missing_neutral] {character_id}")
+
+
+def validate_dialogue_character_refs(scene_id, scene, data, issues):
+    characters = data.get("characters", {}) or {}
+    character_emotions = data.get("character_emotions", {}) or {}
+
+    for dialogue in scene.get("dialogues", []):
+        speaker_id = dialogue.get("speaker_id")
+        emotion_type = dialogue.get("emotion_type")
+
+        if speaker_id and speaker_id not in characters:
+            issues.append(
+                f"[Dialogue.speaker_id] {scene_id} order={dialogue.get('order')} -> {speaker_id} (missing CharacterID)"
+            )
+            continue
+
+        if speaker_id and emotion_type:
+            emotion_map = character_emotions.get(speaker_id, {})
+            if emotion_type not in emotion_map:
+                issues.append(
+                    f"[Dialogue.emotion_type] {scene_id} order={dialogue.get('order')} -> {speaker_id}/{emotion_type} (missing EmotionType)"
+                )
+
+
 def main():
     args = parse_args()
     input_path = os.path.abspath(args.input)
@@ -122,8 +169,10 @@ def main():
         validate_scene_refs(scene_id, scenes, issues)
         validate_scene_orders(scene_id, scene, issues)
         validate_dialog_labels(scene_id, scene, issues)
+        validate_dialogue_character_refs(scene_id, scene, data, issues)
 
     validate_evidence_ids(scenes, issues)
+    validate_characters(data, issues)
 
     print(f"검수 대상: {input_path}")
     print(f"씬 수: {len(scenes)}")

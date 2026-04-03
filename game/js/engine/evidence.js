@@ -3,6 +3,7 @@
  */
 const Evidence = (() => {
   let _allEvidence = {}; // evidence_id → evidence 객체 (game_data에서 로드)
+  let _seenEvidence = new Set();
 
   function showToast(name) {
     const el = document.getElementById('evidence-toast');
@@ -14,6 +15,25 @@ const Evidence = (() => {
       el.classList.remove('show');
       setTimeout(() => el.classList.add('hidden'), 400);
     }, 3000);
+  }
+
+  function updateMemoBadge() {
+    const btn = document.getElementById('memo-btn');
+    const badge = document.getElementById('memo-badge');
+    if (!btn || !badge) return;
+
+    const unread = State.getEvidence().filter(id => !_seenEvidence.has(id)).length;
+    btn.classList.toggle('has-unread', unread > 0);
+    badge.classList.toggle('hidden', unread === 0);
+    badge.textContent = unread > 9 ? '9+' : String(unread);
+    if (typeof window.refreshGameHUD === 'function') {
+      window.refreshGameHUD();
+    }
+  }
+
+  function markAllRead() {
+    State.getEvidence().forEach(id => _seenEvidence.add(id));
+    updateMemoBadge();
   }
 
   function renderMemo() {
@@ -38,6 +58,11 @@ const Evidence = (() => {
     }).join('');
   }
 
+  function registerEvidenceFlag(evidenceId) {
+    if (!evidenceId) return;
+    State.setFlag(`HasEvidence_${evidenceId}`, true);
+  }
+
   return {
     /** game_data에서 모든 씬의 evidence를 인덱싱 */
     index(scenes) {
@@ -54,7 +79,9 @@ const Evidence = (() => {
         // trigger: 'auto' 또는 Enum ID 1 지원
         if (ev.trigger === 'auto' || ev.trigger === 1) {
           const isNew = State.addEvidence(ev.evidence_id);
+          registerEvidenceFlag(ev.evidence_id);
           if (isNew) showToast(ev.name);
+          updateMemoBadge();
         }
       });
     },
@@ -64,7 +91,9 @@ const Evidence = (() => {
       const ev = _allEvidence[evidenceId];
       if (!ev) return;
       const isNew = State.addEvidence(evidenceId);
+      registerEvidenceFlag(evidenceId);
       if (isNew) showToast(ev.name);
+      updateMemoBadge();
     },
 
     /** 씬 대화 종료 시 trigger=2(click) 단서 수집 */
@@ -72,9 +101,21 @@ const Evidence = (() => {
       (scene.evidence || []).forEach(ev => {
         if (ev.trigger === 'click' || ev.trigger === 2) {
           const isNew = State.addEvidence(ev.evidence_id);
+          registerEvidenceFlag(ev.evidence_id);
           if (isNew) showToast(ev.name);
+          updateMemoBadge();
         }
       });
+    },
+
+    hydrateSession() {
+      _seenEvidence = new Set(State.getEvidence());
+      updateMemoBadge();
+    },
+
+    resetSession() {
+      _seenEvidence = new Set();
+      updateMemoBadge();
     },
 
     init() {
@@ -84,9 +125,16 @@ const Evidence = (() => {
 
       btn.addEventListener('click', () => {
         renderMemo();
+        const willOpen = panel.classList.contains('hidden');
         panel.classList.toggle('hidden');
+        if (willOpen) {
+          markAllRead();
+        }
       });
-      close.addEventListener('click', () => panel.classList.add('hidden'));
+      close.addEventListener('click', () => {
+        panel.classList.add('hidden');
+      });
+      updateMemoBadge();
     }
   };
 })();

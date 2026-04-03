@@ -155,6 +155,16 @@ python -m http.server 3901
 ```js
 window.GAME_DATA = {
   first_scene: "scene_id",
+  characters: {
+    "CharacterID": {
+      id, display_name, default_emotion_type, default_image_path
+    }
+  },
+  character_emotions: {
+    "CharacterID": {
+      "EmotionType": "assets/portraits/..."
+    }
+  },
   scenes: {
     "scene_id": {
       id,
@@ -168,6 +178,9 @@ window.GAME_DATA = {
         { order, flag_key, flag_value, next_scene }
       ],
       dialogues: [
+        // 필수: order, speaker, text, style, portrait, condition
+        // 선택: label, speaker_id, emotion_type, standing_slot, focus_type,
+        //        enter_motion, exit_motion, idle_motion, fx_type
         { order, label, speaker, text, style, portrait, condition }
       ],
       choices: [

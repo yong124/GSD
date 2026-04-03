@@ -178,9 +178,87 @@
   margin-right: 4px;
 }
 
+.choice-btn.choice-investigation {
+  border-left: 2px solid rgba(58, 106, 170, 0.58);
+}
+
+.choice-btn.choice-investigation:hover {
+  border-color: rgba(118, 164, 230, 0.62);
+  color: #d8e6fb;
+}
+
+.choice-btn.choice-relationship {
+  border-left: 2px solid rgba(200, 168, 75, 0.58);
+}
+
+.choice-btn.choice-relationship:hover {
+  border-color: rgba(216, 190, 120, 0.62);
+}
+
+.choice-btn.choice-risk {
+  border-left: 2px solid rgba(148, 66, 66, 0.58);
+}
+
+.choice-btn.choice-risk:hover {
+  border-color: rgba(186, 100, 100, 0.62);
+  color: #e3b2b2;
+}
+
+.choice-btn.choice-decision {
+  border-left: 2px solid rgba(160, 160, 160, 0.42);
+}
+
 .choice-btn.choice-picked {
   border-color: var(--gold);
   color: var(--gold-light);
   background: rgba(36, 24, 11, 0.98);
   transform: scale(0.992);
+}
+
+/* ── 조사 우선순위 모드 ── */
+.priority-indicator {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--gold);
+  opacity: 0.75;
+  text-align: center;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(200, 168, 75, 0.18);
+  margin-bottom: 4px;
+}
+
+.priority-header {
+  padding: 2px 0 10px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid rgba(200, 168, 75, 0.18);
+}
+
+.priority-kicker {
+  color: var(--gold);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-align: center;
+}
+
+.priority-title {
+  margin-top: 6px;
+  color: var(--text-main);
+  font-size: 16px;
+  text-align: center;
+  letter-spacing: 0.06em;
+}
+
+.priority-hint {
+  margin-top: 6px;
+  color: var(--text-dim);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.priority-choice {
+  border-left: 2px solid rgba(200, 168, 75, 0.4);
 }

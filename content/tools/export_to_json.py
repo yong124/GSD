@@ -11,10 +11,12 @@ Excel → game_data.js 변환 스크립트
 
 Excel 컬럼 규칙 (PascalCase):
   SceneTable / Scenes        : SceneID, Chapter, Title, Background, Music, NextScene, Effect
-  DialogTable / Dialogues    : SceneID, Order, Label, Speaker, Text, Style, Portrait, ConditionKey, ConditionValue
+  DialogTable / Dialogues    : SceneID, Order, Label, Speaker, SpeakerID, EmotionType, StandingSlot, FocusType, EnterMotion, ExitMotion, IdleMotion, FxType, Text, Style, Portrait, ConditionKey, ConditionValue
   ChoiceTable / Choices      : SceneID, Order, Text, FlagKey, FlagValue, NextScene, NextDialogue
   BranchTable / Branches     : SceneID, Order, FlagKey, FlagValue, NextScene
   EvidenceTable / Evidence   : EvidenceID, SceneId, Trigger, Name, Description, Image
+  CharacterTable / Characters: CharacterID, DisplayName, DefaultEmotionType, DefaultImagePath
+  CharacterEmotionTable / CharacterEmotions : CharacterID, EmotionType, ImagePath
 
 무시 규칙:
   시트명이 $로 시작하면 export 대상에서 제외
@@ -85,6 +87,8 @@ def build_game_data(wb):
     choices_raw = read_sheet(resolve_sheet(wb, "ChoiceTable", "Choices"))
     branches_raw = read_sheet(resolve_sheet(wb, "BranchTable", "Branches")) if "BranchTable" in wb.sheetnames or "Branches" in wb.sheetnames else []
     evidence_raw = read_sheet(resolve_sheet(wb, "EvidenceTable", "Evidence"))
+    characters_raw = read_sheet(resolve_sheet(wb, "CharacterTable", "Characters")) if "CharacterTable" in wb.sheetnames or "Characters" in wb.sheetnames else []
+    character_emotions_raw = read_sheet(resolve_sheet(wb, "CharacterEmotionTable", "CharacterEmotions")) if "CharacterEmotionTable" in wb.sheetnames or "CharacterEmotions" in wb.sheetnames else []
 
     # SceneID 기준으로 씬 딕셔너리 구성
     scenes = {}
@@ -116,6 +120,19 @@ def build_game_data(wb):
                 "portrait": d.get("Portrait"),
                 "condition": None,
             }
+            optional_fields = {
+                "speaker_id": d.get("SpeakerID"),
+                "emotion_type": d.get("EmotionType"),
+                "standing_slot": d.get("StandingSlot"),
+                "focus_type": d.get("FocusType"),
+                "enter_motion": d.get("EnterMotion"),
+                "exit_motion": d.get("ExitMotion"),
+                "idle_motion": d.get("IdleMotion"),
+                "fx_type": d.get("FxType"),
+            }
+            for key, value in optional_fields.items():
+                if value is not None:
+                    entry[key] = value
             if d.get("Label"):
                 entry["label"] = d["Label"]
             cond_key = d.get("ConditionKey")
@@ -168,10 +185,35 @@ def build_game_data(wb):
                 "image":       e.get("Image"),
             })
 
+    characters = {}
+    for c in characters_raw:
+        character_id = c.get("CharacterID")
+        if not character_id:
+            continue
+        characters[character_id] = {
+            "id": character_id,
+            "display_name": c.get("DisplayName") or character_id,
+            "default_emotion_type": c.get("DefaultEmotionType") or "Neutral",
+            "default_image_path": c.get("DefaultImagePath"),
+        }
+
+    character_emotions = {}
+    for row in character_emotions_raw:
+        character_id = row.get("CharacterID")
+        emotion_type = row.get("EmotionType")
+        image_path = row.get("ImagePath")
+        if not character_id or not emotion_type or not image_path:
+            continue
+        if character_id not in character_emotions:
+            character_emotions[character_id] = {}
+        character_emotions[character_id][emotion_type] = image_path
+
     first_scene = scenes_raw[0]["SceneID"] if scenes_raw else None
 
     return {
         "first_scene": first_scene,
+        "characters": characters,
+        "character_emotions": character_emotions,
         "scenes": scenes,
     }
 

@@ -36,37 +36,48 @@
     <div id="panel">
       <div id="panel-empty">씬을 선택하세요</div>
       <div id="panel-content" class="hidden">
-        <div id="panel-header">
+        <div id="panel-tabs">
+          <button id="tab-node-editor" class="panel-tab active" type="button">노드 편집</button>
+          <button id="tab-character-editor" class="panel-tab" type="button">캐릭터 편집</button>
+        </div>
+        <div id="panel-header" data-panel-tab="node">
           <input id="field-title" type="text" placeholder="씬 제목">
           <button id="btn-duplicate-scene">씬 복제</button>
           <button id="btn-delete-scene" class="danger">씬 삭제</button>
         </div>
-        <div class="panel-section">
+        <div class="panel-section" data-panel-tab="node">
           <div class="section-label">씬 ID</div>
           <input id="field-scene-id" type="text" placeholder="씬 ID (영문, 언더스코어)">
         </div>
 
-        <div class="panel-section">
+        <div class="panel-section" data-panel-tab="node">
           <div class="section-label">배경</div>
           <input id="field-background" type="text" placeholder="assets/backgrounds/...">
         </div>
 
-        <div class="panel-section">
+        <div class="panel-section" data-panel-tab="node">
           <div class="section-label">챕터</div>
           <input id="field-chapter" type="number" min="1" step="1" placeholder="예: 3">
         </div>
 
-        <div class="panel-section">
+        <div class="panel-section" data-panel-tab="node">
           <div class="section-label">음악</div>
           <input id="field-music" type="text" placeholder="assets/sfx/...">
         </div>
 
-        <div class="panel-section">
+        <div class="panel-section" data-panel-tab="node">
           <div class="section-label">이펙트</div>
           <input id="field-effect" type="text" placeholder="예: flicker, resonance, shake, blood">
         </div>
 
-        <div class="panel-section">
+        <div class="panel-section" data-panel-tab="node">
+          <div class="section-label">조사 예산 (priority_budget)
+            <span class="section-hint">0이면 일반 선택지 모드</span>
+          </div>
+          <input id="field-priority-budget" type="number" min="0" step="1" placeholder="예: 2">
+        </div>
+
+        <div class="panel-section" data-panel-tab="node">
           <div class="section-label">대사 프리뷰</div>
           <div id="dialogue-preview" class="dialogue-preview">
             <div id="preview-background" class="preview-background">
@@ -89,35 +100,71 @@
           </div>
         </div>
 
-        <div class="panel-section">
+        <div class="panel-section" data-panel-tab="node">
           <div class="section-label">대사
             <button id="btn-add-dialogue" class="small">+</button>
           </div>
           <div id="dialogue-list"></div>
         </div>
 
-        <div class="panel-section">
+        <div class="panel-section" data-panel-tab="node">
           <div class="section-label">선택지
             <button id="btn-add-choice" class="small">+</button>
           </div>
           <div id="choice-list"></div>
         </div>
 
-        <div class="panel-section">
+        <div class="panel-section" data-panel-tab="node">
+          <div class="section-label">조사 후 대사 (priority_after_dialogues)
+            <button id="btn-add-priority-after" class="small">+</button>
+          </div>
+          <div id="priority-after-list"></div>
+        </div>
+
+        <div class="panel-section" data-panel-tab="node">
+          <div class="section-label">조사 분기 대사 (priority_dialogues)
+            <button id="btn-add-priority-group" class="small">+</button>
+          </div>
+          <div id="priority-dialogue-list"></div>
+        </div>
+
+        <div class="panel-section" data-panel-tab="node">
+          <div class="section-label">조사 분기 대사 JSON
+            <span class="section-hint">고급 편집용</span>
+          </div>
+          <textarea id="field-priority-dialogues" rows="6" placeholder='{"after_key": [{"order":1,"speaker":"","text":"...","style":"narration"}]}'></textarea>
+          <button id="btn-apply-priority-dialogues" class="small" style="margin-top:4px">적용</button>
+        </div>
+
+        <div class="panel-section" data-panel-tab="node">
           <div class="section-label">분기
             <button id="btn-add-branch" class="small">+</button>
           </div>
           <div id="branch-list"></div>
         </div>
 
-        <div class="panel-section">
+        <div class="panel-section" data-panel-tab="node">
           <div class="section-label">단서
             <button id="btn-add-evidence" class="small">+</button>
           </div>
           <div id="evidence-list"></div>
         </div>
 
-        <div class="panel-section">
+        <div class="panel-section" data-panel-tab="character">
+          <div class="section-label">Characters
+            <button id="btn-add-character" class="small">+</button>
+          </div>
+          <div id="character-list"></div>
+        </div>
+
+        <div class="panel-section" data-panel-tab="character">
+          <div class="section-label">CharacterEmotions
+            <button id="btn-add-character-emotion" class="small">+</button>
+          </div>
+          <div id="character-emotion-list"></div>
+        </div>
+
+        <div class="panel-section" data-panel-tab="node">
           <div class="section-label">구조 검수</div>
           <div id="analysis-summary" class="validation-summary"></div>
           <div id="validation-summary" class="validation-summary"></div>

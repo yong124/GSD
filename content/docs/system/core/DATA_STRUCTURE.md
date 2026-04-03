@@ -361,3 +361,27 @@ Node Editor / direct edit -> game_data -> generated xlsx
 - `xlsx`는 백업 / 검수 / 공유용 테이블 산출물로 유지한다.
 - `game_data.js`는 현재 실질적인 메인 반영 원본이다.
 - 따라서 시스템은 `노드형 에디터 + game_data 중심 + generated xlsx 검수` 구조를 기준으로 발전한다.
+---
+
+## 확장 현황
+
+### 완료된 확장
+
+`export_to_json.py`에서 이미 처리 중인 항목:
+
+- `CharacterTable` → `game_data.characters`
+- `CharacterEmotionTable` → `game_data.character_emotions`
+- `DialogTable.Label` → 대사 라벨, 같은 씬 내 점프 기준
+- `DialogTable.SpeakerID`, `EmotionType`, `StandingSlot`, `FocusType`, `EnterMotion`, `ExitMotion`, `IdleMotion`, `FxType` → 선택 컬럼, 있을 때만 포함
+- `ChoiceTable.NextDialogue` → 같은 씬 내 대사 라벨 점프
+
+xlsx에 해당 시트/컬럼이 없으면 export 시 생략되므로, 순차적으로 추가 가능.
+
+### 다음 단계
+
+- `조사 우선순위 시스템` (PriorityGroup/Budget/Cost 계열 컬럼) → [조사_우선순위_시스템_계획.md](/G:/GSD/content/docs/system/core/조사_우선순위_시스템_계획.md)
+- 스탠딩/포커스 UI 렌더러 구현
+- CharacterTable / CharacterEmotionTable xlsx 시트 실제 작성
+
+상세 스키마: [CHARACTER_SCHEMA_AND_EDITING_PLAN.md](/G:/GSD/content/docs/system/core/CHARACTER_SCHEMA_AND_EDITING_PLAN.md)
+게임성 확장: [GAMEPLAY_AND_CHARACTER_SYSTEM_PLAN.md](/G:/GSD/content/docs/system/core/GAMEPLAY_AND_CHARACTER_SYSTEM_PLAN.md)

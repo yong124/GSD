@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>경성뎐 : 여급 실종사건</title>
-  <link rel="stylesheet" href="css/main.css">
-  <link rel="stylesheet" href="css/dialogue.css">
-  <link rel="stylesheet" href="css/effects.css">
+  <link rel="stylesheet" href="css/main.css?v=4">
+  <link rel="stylesheet" href="css/dialogue.css?v=4">
+  <link rel="stylesheet" href="css/effects.css?v=4">
 </head>
 <body>
 
@@ -19,6 +19,33 @@
   <div id="vignette"></div>
   <!-- 공포 이펙트 오버레이 -->
   <div id="effect-overlay"></div>
+  <div id="investigation-hud" aria-hidden="true">
+    <div class="hud-row">
+      <span id="hud-scene-title"></span>
+      <span id="hud-chapter"></span>
+    </div>
+    <div class="hud-row">
+      <span id="hud-evidence-count"></span>
+      <span id="hud-state-readout"></span>
+    </div>
+  </div>
+  <div id="standing-stage" aria-hidden="true">
+    <div class="standing-slot" data-slot="Left">
+      <div class="standing-figure">
+        <img class="standing-img" alt="">
+      </div>
+    </div>
+    <div class="standing-slot" data-slot="Center">
+      <div class="standing-figure">
+        <img class="standing-img" alt="">
+      </div>
+    </div>
+    <div class="standing-slot" data-slot="Right">
+      <div class="standing-figure">
+        <img class="standing-img" alt="">
+      </div>
+    </div>
+  </div>
 
   <div id="title-screen">
     <div id="title-backdrop"></div>
@@ -51,6 +78,11 @@
     <div id="scene-banner-title"></div>
   </div>
 
+  <div id="scene-goal" class="hidden">
+    <div id="scene-goal-kicker"></div>
+    <div id="scene-goal-text"></div>
+  </div>
+
   <!-- ── 대화창 ── -->
   <div id="dialogue-box">
     <div id="portrait-wrap">
@@ -69,7 +101,10 @@
   </div>
 
   <!-- ── 메모장 (단서) 버튼 ── -->
-  <button id="memo-btn" title="단서 메모장">📋</button>
+  <button id="memo-btn" title="단서 메모장">
+    <span class="memo-btn-icon">📋</span>
+    <span id="memo-badge" class="hidden" aria-hidden="true"></span>
+  </button>
 
   <!-- ── 메모장 패널 ── -->
   <div id="memo-panel" class="hidden">
@@ -89,6 +124,14 @@
     <button id="load-btn">불러오기</button>
   </div>
 
+  <!-- ── 슬롯 선택 패널 ── -->
+  <div id="slot-panel" class="hidden">
+    <div id="slot-panel-title"></div>
+    <div id="slot-list"></div>
+    <button id="slot-cancel">취소</button>
+  </div>
+  <div id="slot-overlay" class="hidden"></div>
+
   <!-- ── 저장/불러오기 알림 ── -->
   <div id="system-toast" class="hidden"></div>
 
@@ -98,15 +141,15 @@
 <script src="data/game_data.js"></script>
 
 <!-- 엔진 모듈 -->
-<script src="js/engine/state.js"></script>
-<script src="js/engine/save.js"></script>
-<script src="js/engine/effects.js"></script>
-<script src="js/engine/audio.js"></script>
-<script src="js/engine/evidence.js"></script>
-<script src="js/engine/dialogue.js"></script>
-<script src="js/engine/choice.js"></script>
-<script src="js/engine/scene.js"></script>
-<script src="js/main.js"></script>
+<script src="js/engine/state.js?v=4"></script>
+<script src="js/engine/save.js?v=4"></script>
+<script src="js/engine/effects.js?v=4"></script>
+<script src="js/engine/audio.js?v=4"></script>
+<script src="js/engine/evidence.js?v=4"></script>
+<script src="js/engine/dialogue.js?v=4"></script>
+<script src="js/engine/choice.js?v=4"></script>
+<script src="js/engine/scene.js?v=4"></script>
+<script src="js/main.js?v=4"></script>
 
 </body>
 </html>

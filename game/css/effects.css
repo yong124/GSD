@@ -95,3 +95,43 @@
 #evidence-toast.show {
   animation: toast-in 0.3s ease forwards;
 }
+
+@keyframes blue-trace-pulse {
+  0% { opacity: 0; }
+  20% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.effect-blue-trace #effect-overlay {
+  background: radial-gradient(circle at 50% 45%, rgba(72, 132, 224, 0.28), rgba(10, 16, 40, 0.02) 58%, transparent 78%);
+  opacity: 1;
+  animation: blue-trace-pulse 0.9s ease forwards;
+}
+
+@keyframes ritual-glow-pulse {
+  0% { opacity: 0; }
+  25% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.effect-ritual-glow #effect-overlay {
+  background:
+    radial-gradient(circle at 50% 56%, rgba(210, 175, 92, 0.14), transparent 34%),
+    radial-gradient(circle at 50% 54%, rgba(42, 90, 170, 0.22), transparent 60%);
+  opacity: 1;
+  animation: ritual-glow-pulse 1s ease forwards;
+}
+
+@keyframes blood-smear-pulse {
+  0% { opacity: 0; }
+  18% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.effect-blood-smear #effect-overlay {
+  background:
+    linear-gradient(120deg, transparent 0%, rgba(84, 10, 10, 0.32) 32%, transparent 64%),
+    radial-gradient(circle at 80% 22%, rgba(120, 15, 15, 0.18), transparent 28%);
+  opacity: 1;
+  animation: blood-smear-pulse 0.85s ease forwards;
+}

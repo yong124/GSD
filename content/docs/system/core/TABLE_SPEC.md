@@ -31,12 +31,23 @@
 |------|------|------|------|
 | `SceneID` | string | ✅ | 소속 씬. SceneTable.SceneID 참조. |
 | `Order` | int | ✅ | 씬 내 표시 순서. 오름차순 정렬. |
+| `Label` | string | | 대사 지점 식별 라벨. 같은 씬 내 점프 기준. ex) `after_push` |
 | `Speaker` | string | | 화자 이름. 비어있으면 내레이션 처리. |
+| `SpeakerID` | string | | CharacterTable.CharacterID 참조. 있으면 캐릭터 데이터 우선 사용. |
+| `EmotionType` | string | | 이 대사 시점의 감정 상태. CharacterEmotionTable 참조. |
+| `StandingSlot` | string | | 스탠딩 위치. `Left` / `Center` / `Right` |
+| `FocusType` | string | | 포커스 타입. `Speaker` / `None` / `Dual` |
+| `EnterMotion` | string | | 등장 모션. `None` / `FadeIn` / `SlideLeft` / `SlideRight` |
+| `ExitMotion` | string | | 퇴장 모션. `None` / `FadeOut` / `SlideOutLeft` / `SlideOutRight` |
+| `IdleMotion` | string | | 유지 모션. `None` / `Tremble` / `ShakeLight` / `ShakeHard` |
+| `FxType` | string | | 대사 순간 FX. `None` / `Fog` / `BlueTrace` / `BloodSmear` / `Flicker` / `RitualGlow` |
 | `Text` | string | ✅ | 대사 본문. |
 | `Style` | string | | 대사 스타일. 기본값: `normal`. 아래 Style 목록 참조. |
 | `Portrait` | string | | 초상화 이미지 상대경로. ex) `assets/portraits/yuu.jpeg` |
 | `ConditionKey` | string | | 조건부 대사: 이 플래그 키가 조건값과 일치할 때만 표시. |
 | `ConditionValue` | string | | 조건부 대사: ConditionKey 와 함께 사용. |
+
+> `SpeakerID` / `EmotionType` 등 확장 컬럼은 없으면 export 시 생략된다. 기존 `Speaker` / `Portrait` 기반과 공존 가능.
 
 **Style 목록:**
 
@@ -68,20 +79,24 @@ ConditionKey=editor_rel, ConditionValue=1
 | `SceneID` | string | ✅ | 소속 씬. SceneTable.SceneID 참조. |
 | `Order` | int | ✅ | 선택지 표시 순서. |
 | `Text` | string | ✅ | 선택지 버튼에 표시될 텍스트. |
-| `NextScene` | string | | 선택 시 이동할 SceneID. 비면 씬의 기본 NextScene 사용. |
+| `NextScene` | string | | 선택 시 이동할 SceneID. |
+| `NextDialogue` | string | | 같은 씬 내 이동할 대사 라벨. DialogTable.Label 참조. |
 | `FlagKey` | string | | 선택 시 기록할 플래그 키. |
 | `FlagValue` | string | | FlagKey 에 저장할 값. 비면 `true`. |
 
 **동작:**
 
 ```
-플레이어가 선택 → FlagKey에 FlagValue 기록 → NextScene으로 이동
+플레이어가 선택 → FlagKey에 FlagValue 기록
+  → NextScene이 있으면 해당 씬으로 이동
+  → NextDialogue가 있으면 현재 씬 내 해당 Label로 점프
+  → 둘 다 없으면 씬의 기본 NextScene 사용
 선택지가 하나도 없으면 → Dialogue 종료 후 씬의 NextScene으로 자동 이동
 ```
 
 ---
 
-## 4. BranchTable ← **신규 추가 필요**
+## 4. BranchTable
 
 씬 전환 시 플래그 조건에 따라 NextScene을 분기. 위에서부터 순서대로 평가하며 처음 매칭되는 항목 사용.
 
@@ -184,7 +199,39 @@ assets/ev/          ← 미사용 (ev 폴더는 현재 연결 안 됨)
 | 시트명 | 상태 | 비고 |
 |--------|------|------|
 | `SceneTable` | ✅ 있음 | |
-| `DialogTable` | ✅ 있음 | `ConditionKey`, `ConditionValue` 컬럼 **추가 필요** |
-| `ChoiceTable` | ✅ 있음 | |
-| `BranchTable` | ❌ 없음 | **시트 신규 추가 필요** |
+| `DialogTable` | ✅ 있음 | `Label`, `SpeakerID`, `EmotionType` 등 확장 컬럼 추가 권장 |
+| `ChoiceTable` | ✅ 있음 | `NextDialogue` 컬럼 추가 권장 |
+| `BranchTable` | ✅ 필요 | 없으면 export 시 분기 무시됨. 구조: SceneID, Order, FlagKey, FlagValue, NextScene |
 | `EvidenceTable` | ✅ 있음 | |
+| `CharacterTable` | 권장 | 없으면 export 시 `characters` 비어있음. 구조: CharacterID, DisplayName, DefaultEmotionType, DefaultImagePath |
+| `CharacterEmotionTable` | 권장 | 없으면 `character_emotions` 비어있음. 구조: CharacterID, EmotionType, ImagePath |
+---
+
+## 6. CharacterTable
+
+캐릭터 기본 정보. `export_to_json.py`에서 읽어 `game_data.characters`로 빌드된다.
+
+| 컬럼 | 타입 | 필수 | 설명 |
+|------|------|------|------|
+| `CharacterID` | string | ✅ | 캐릭터 고유 ID. ex) `Yuu`, `Songsoon` |
+| `DisplayName` | string | ✅ | 화면 출력 이름. ex) `유웅룡` |
+| `DefaultEmotionType` | string | ✅ | 기본 감정 타입. ex) `Neutral` |
+| `DefaultImagePath` | string | | 기본 이미지 경로. ex) `assets/portraits/yuu.jpeg` |
+
+---
+
+## 7. CharacterEmotionTable
+
+캐릭터 감정별 이미지. `export_to_json.py`에서 읽어 `game_data.character_emotions`로 빌드된다.
+
+| 컬럼 | 타입 | 필수 | 설명 |
+|------|------|------|------|
+| `CharacterID` | string | ✅ | CharacterTable.CharacterID 참조. |
+| `EmotionType` | string | ✅ | 감정 타입. `Neutral` / `Tense` / `Uneasy` / `Afraid` / `Sad` / `Angry` / `Shaken` / `Trance` / `Crazy` |
+| `ImagePath` | string | ✅ | 감정 대응 이미지 경로. |
+
+**운영 규칙:**
+- `CharacterID + EmotionType` 조합은 유일해야 함
+- 모든 캐릭터는 최소 `Neutral` 또는 기본 감정 1개 필수
+
+상세 스키마 계획: [CHARACTER_SCHEMA_AND_EDITING_PLAN.md](/G:/GSD/content/docs/system/core/CHARACTER_SCHEMA_AND_EDITING_PLAN.md)

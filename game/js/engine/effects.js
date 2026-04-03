@@ -11,11 +11,21 @@
  */
 const Effects = (() => {
   const EFFECT_CLASSES = ['effect-flicker', 'effect-resonance', 'effect-shake', 'effect-blood'];
+  const MOMENTARY_EFFECT_CLASSES = ['effect-blue-trace', 'effect-ritual-glow', 'effect-blood-smear', 'effect-flicker'];
   const container = () => document.getElementById('game-container');
+  let _momentaryTimer = null;
 
   function clearAll() {
     EFFECT_CLASSES.forEach(cls => container().classList.remove(cls));
     document.getElementById('effect-overlay').style.opacity = '0';
+  }
+
+  function clearMomentary() {
+    MOMENTARY_EFFECT_CLASSES.forEach(cls => container().classList.remove(cls));
+    if (_momentaryTimer) {
+      clearTimeout(_momentaryTimer);
+      _momentaryTimer = null;
+    }
   }
 
   return {
@@ -47,6 +57,20 @@ const Effects = (() => {
           container().classList.remove(cls);
         }, { once: true });
       }
+    },
+
+    pulse(effectName, duration = 900) {
+      clearMomentary();
+      if (!effectName) return;
+
+      const normalized = `effect-${String(effectName).trim().replace(/_/g, '-').toLowerCase()}`;
+      if (!MOMENTARY_EFFECT_CLASSES.includes(normalized)) return;
+
+      container().classList.add(normalized);
+      _momentaryTimer = setTimeout(() => {
+        container().classList.remove(normalized);
+        _momentaryTimer = null;
+      }, duration);
     },
 
     clear: clearAll,

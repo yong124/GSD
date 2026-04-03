@@ -29,7 +29,7 @@ SHEET_DEFS = {
         "headers": ["SceneID", "Chapter", "Title", "Background", "Music", "NextScene", "Effect"],
     },
     "DialogTable": {
-        "headers": ["SceneID", "Order", "Speaker", "Text", "Style", "Portrait", "ConditionKey", "ConditionValue", "Label"],
+        "headers": ["SceneID", "Order", "Speaker", "SpeakerID", "EmotionType", "StandingSlot", "FocusType", "EnterMotion", "ExitMotion", "IdleMotion", "FxType", "Text", "Style", "Portrait", "ConditionKey", "ConditionValue", "Label"],
     },
     "ChoiceTable": {
         "headers": ["SceneID", "Order", "Text", "FlagKey", "FlagValue", "NextScene", "NextDialogue"],
@@ -39,6 +39,12 @@ SHEET_DEFS = {
     },
     "EvidenceTable": {
         "headers": ["EvidenceID", "SceneId", "Trigger", "Name", "Description", "Image"],
+    },
+    "CharacterTable": {
+        "headers": ["CharacterID", "DisplayName", "DefaultEmotionType", "DefaultImagePath"],
+    },
+    "CharacterEmotionTable": {
+        "headers": ["CharacterID", "EmotionType", "ImagePath"],
     },
 }
 
@@ -118,6 +124,14 @@ def build_dialog_rows(data):
                 "SceneID": scene_id,
                 "Order": line.get("order"),
                 "Speaker": line.get("speaker"),
+                "SpeakerID": line.get("speaker_id"),
+                "EmotionType": line.get("emotion_type"),
+                "StandingSlot": line.get("standing_slot"),
+                "FocusType": line.get("focus_type"),
+                "EnterMotion": line.get("enter_motion"),
+                "ExitMotion": line.get("exit_motion"),
+                "IdleMotion": line.get("idle_motion"),
+                "FxType": line.get("fx_type"),
                 "Text": line.get("text"),
                 "Style": line.get("style"),
                 "Portrait": line.get("portrait"),
@@ -180,6 +194,34 @@ def build_evidence_rows(data):
     return rows
 
 
+def build_character_rows(data):
+    rows = []
+    characters = data.get("characters", {})
+    for character_id in sorted(characters.keys()):
+        character = characters[character_id]
+        rows.append({
+            "CharacterID": character.get("id", character_id),
+            "DisplayName": character.get("display_name"),
+            "DefaultEmotionType": character.get("default_emotion_type"),
+            "DefaultImagePath": character.get("default_image_path"),
+        })
+    return rows
+
+
+def build_character_emotion_rows(data):
+    rows = []
+    character_emotions = data.get("character_emotions", {})
+    for character_id in sorted(character_emotions.keys()):
+        emotions = character_emotions[character_id] or {}
+        for emotion_type in sorted(emotions.keys()):
+            rows.append({
+                "CharacterID": character_id,
+                "EmotionType": emotion_type,
+                "ImagePath": emotions.get(emotion_type),
+            })
+    return rows
+
+
 def build_sheet_rows(data):
     return {
         "SceneTable": build_scene_rows(data),
@@ -187,6 +229,8 @@ def build_sheet_rows(data):
         "ChoiceTable": build_choice_rows(data),
         "BranchTable": build_branch_rows(data),
         "EvidenceTable": build_evidence_rows(data),
+        "CharacterTable": build_character_rows(data),
+        "CharacterEmotionTable": build_character_emotion_rows(data),
     }
 
 
