@@ -61,8 +61,8 @@ G:/GSD/
 EditorNode ↔ game_data ↔ xlsx → 게임 런타임
 ```
 
-즉, 실무상 메인 작업은 `EditorNode`와 `game_data` 중심으로 진행하고,
-`script.xlsx`는 원본 테이블이자 대량 수정 / 검수 / 공유용 포맷으로 함께 운용한다.
+즉, 현재 실무상 메인 작업은 `EditorNode`와 `game_data` 중심으로 진행하고,
+`script.xlsx`는 원본 테이블이지만 실제 운영에선 `대량 수정 / 검수 / 공유용 포맷`에 더 가깝게 함께 운용한다.
 
 ---
 
@@ -73,6 +73,7 @@ EditorNode ↔ game_data ↔ xlsx → 게임 런타임
 - 구조 편집과 일반 데이터 수정은 `EditorNode`를 우선한다.
 - 테이블 검수, 대량 편집, 복붙 작업은 `script.xlsx`와 generated xlsx를 사용한다.
 - generated 파일은 원본이 아니라 보조 산출물이다.
+- 현재 빠른 서사/연출 반복 작업은 `game_data.js` 직접 수정도 적극 허용한다.
 
 ### game_data.js 직접 수정 원칙
 
@@ -80,6 +81,13 @@ EditorNode ↔ game_data ↔ xlsx → 게임 런타임
 - 다만 현재 프로젝트는 시나리오 밀도 조정, 캐릭터성 보강, 관계 아크 반영처럼 **빠른 서사 반복 작업**이 필요하므로, 이 경우 `game_data.js`를 직접 수정할 수 있다.
 - 직접 수정 후에는 필요 시 generated xlsx를 다시 뽑아 `script.xlsx` 검수 흐름으로 되돌린다.
 - `export_to_json.py`를 다시 실행하면 `game_data.js`가 덮어써질 수 있으므로, 어떤 파일을 기준으로 작업 중인지 항상 의식한다.
+
+### 최근 운영상 추가된 원칙
+
+- 한국어 데이터 대량 수정은 가능하면 `apply_patch` 위주로 한다.
+- PowerShell / shell 경유 문자열 삽입은 실제 `???` 손상을 만들 수 있으므로 주의한다.
+- 브라우저용 `JS/CSS`를 수정했는데 반영이 안 보이면, 먼저 `index.html`의 리소스 버전 쿼리(`?v=`)를 함께 올렸는지 확인한다.
+- 타이틀 / 저장 / 패널 흐름처럼 브라우저 캐시 영향이 큰 구간은 코드 수정 후 버전 갱신을 기본 습관으로 둔다.
 
 ---
 
@@ -188,7 +196,15 @@ window.GAME_DATA = {
       ],
       evidence: [
         { evidence_id, trigger, name, description, image }
-      ]
+      ],
+      // 선택 확장
+      priority_budget,
+      priority_dialogues,
+      priority_after_dialogues,
+      goal_kicker,
+      goal_text,
+      priority_title,
+      priority_hint
     }
   }
 }
@@ -202,6 +218,14 @@ window.GAME_DATA = {
 - 대화 종료 후 evidence / choice 처리
 - 후속 `next_scene` 또는 branch 이동
 
+현재 추가로 존재하는 런타임 축:
+
+- `Character / CharacterEmotion` 기반 화자/이미지 참조
+- `StandingSlot / FocusType / Motion / Fx` 기반 스테이징
+- `priority_budget` 기반 조사 우선순위 선택 루프
+- `3슬롯 저장/불러오기`
+- HUD / 장면 목표 / 메모장 배지 / 선택 결과 토스트
+
 ---
 
 ## 에디터 기준
@@ -211,6 +235,8 @@ window.GAME_DATA = {
 - `EditorNode`는 단순 뷰어가 아니라 아래를 함께 담당한다.
   - 씬 구조 편집
   - 대사 / 선택지 / 분기 / 단서 수정
+  - 캐릭터 / 감정 편집
+  - priority 조사 대사 편집
   - 검색 / 필터
   - 구조 검수
   - 프리뷰
@@ -240,3 +266,5 @@ Get-Content '경로' -Encoding utf8
 - `game_data.js`와 `script.xlsx` 중 어느 쪽을 기준으로 작업 중인지 항상 명확히 한다.
 - generated xlsx는 복붙 / 검수용이지 장기 원본이 아니다.
 - 문서 구조가 이미 커졌기 때문에, 새 문서를 만들 때는 `core / scenario / writing / characters / editor / portfolio` 중 어디에 속하는지 먼저 결정한다.
+- 타이틀 버튼, 저장 패널, 메모장 패널처럼 입력 흐름에 걸리는 UI를 수정했으면 `새 게임 / 이어하기 / ESC / 단축키`까지 같이 본다.
+- 브라우저 QA가 막혀도, 임시 폴더나 캐시 폴더는 작업 후 정리한다.

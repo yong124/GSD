@@ -295,6 +295,14 @@ const Scene = (() => {
           runScene(scene, fromLabel, restoreProgress);
         }, 350);
       }
+    },
+
+    getHudContext() {
+      return _hudContext;
+    },
+
+    setHudContext(context) {
+      _hudContext = context || null;
     }
   };
 })();
@@ -313,6 +321,8 @@ window.refreshGameHUD = function () {
 
   if (!titleEl || !chapterEl || !evidenceEl || !stateEl || !focusRow || !focusKicker || !focusText || !container) return;
 
+  const hudCtx = Scene.getHudContext();
+
   titleEl.textContent = scene?.title || '';
   chapterEl.textContent = scene?.chapter ? `CHAPTER ${scene.chapter}` : '';
   evidenceEl.textContent = `단서 ${State.getEvidence().length}건`;
@@ -329,19 +339,19 @@ window.refreshGameHUD = function () {
   if (resonance >= 2) parts.push('공명 짙음');
   else if (resonance >= 1) parts.push('공명 전조');
   stateEl.textContent = parts.join(' · ') || '추적 중';
-  focusRow.classList.toggle('hidden', !_hudContext);
-  focusKicker.textContent = _hudContext?.kicker || '';
-  focusText.textContent = _hudContext?.text || '';
+  focusRow.classList.toggle('hidden', !hudCtx);
+  focusKicker.textContent = hudCtx?.kicker || '';
+  focusText.textContent = hudCtx?.text || '';
 
   container.classList.remove('state-resonance-low', 'state-resonance-high', 'state-trust-high');
-  container.classList.toggle('hud-priority-active', _hudContext?.mode === 'priority');
+  container.classList.toggle('hud-priority-active', hudCtx?.mode === 'priority');
   if (resonance >= 2) container.classList.add('state-resonance-high');
   else if (resonance >= 1) container.classList.add('state-resonance-low');
   if (trust >= 2 || trusted) container.classList.add('state-trust-high');
 };
 
 window.setGameHUDContext = function (context) {
-  _hudContext = context || null;
+  Scene.setHudContext(context);
   if (typeof window.refreshGameHUD === 'function') {
     window.refreshGameHUD();
   }

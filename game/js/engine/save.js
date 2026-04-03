@@ -148,6 +148,7 @@ const Save = (() => {
       Evidence.hydrateSession();
     }
     showToast(`슬롯 ${n}에서 불러왔습니다.`, 'toast-save');
+    document.dispatchEvent(new Event('game:loaded'));
     Scene.load(State.currentSceneId, null, { restoreProgress: true });
     return true;
   }

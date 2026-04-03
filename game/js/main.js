@@ -34,12 +34,11 @@
 
   function continueGame(data) {
     AudioManager.enable();
-    if (!Save.load()) {
+    if (!Save.hasSave()) {
       showTitleScreen();
       return;
     }
-    hideTitleScreen();
-    Scene.load(State.currentSceneId || data.first_scene, null, { restoreProgress: true });
+    Save.load();
   }
 
   function initTitleScreen(data) {
@@ -138,6 +137,10 @@
       State.reset();
       Evidence.resetSession();
       showTitleScreen();
+    });
+
+    document.addEventListener('game:loaded', () => {
+      hideTitleScreen();
     });
   }
 
