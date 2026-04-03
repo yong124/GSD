@@ -1,6 +1,3 @@
-/**
- * Global game state store.
- */
 const State = (() => {
   let _state = {
     currentSceneId: null,
@@ -10,7 +7,28 @@ const State = (() => {
     chapter: 1,
   };
 
+  const _listeners = {};
+
+  function _emit(event, data) {
+    if (!_listeners[event]) return;
+    _listeners[event].forEach(cb => cb(data));
+  }
+
   return {
+    init() {
+      console.log('[State] Initialized');
+    },
+
+    on(event, callback) {
+      if (!_listeners[event]) _listeners[event] = [];
+      _listeners[event].push(callback);
+    },
+
+    off(event, callback) {
+      if (!_listeners[event]) return;
+      _listeners[event] = _listeners[event].filter(cb => cb !== callback);
+    },
+
     get currentSceneId()  { return _state.currentSceneId; },
     set currentSceneId(v) { _state.currentSceneId = v; },
 
@@ -21,7 +39,12 @@ const State = (() => {
     set chapter(v) { _state.chapter = v; },
 
     setFlag(key, value) {
+      const prev = _state.flags[key];
       _state.flags[key] = value;
+      if (prev !== value) {
+        _emit(`change:${key}`, value);
+        _emit('change', { key, value });
+      }
     },
 
     getFlag(key) {
@@ -35,6 +58,7 @@ const State = (() => {
     addEvidence(id) {
       if (!_state.evidence.includes(id)) {
         _state.evidence.push(id);
+        _emit('evidence:added', id);
         return true;
       }
       return false;
@@ -58,6 +82,7 @@ const State = (() => {
           evidence: Array.isArray(parsed.evidence) ? parsed.evidence : [],
           chapter: Number.isFinite(parsed.chapter) ? parsed.chapter : 1,
         };
+        _emit('loaded', _state);
         return true;
       } catch (e) {
         console.error('State.deserialize failed:', e);
@@ -73,6 +98,7 @@ const State = (() => {
         evidence: [],
         chapter: 1,
       };
+      _emit('reset');
     },
 
     dump() {

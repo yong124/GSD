@@ -50,20 +50,12 @@ const Scene = (() => {
   }
 
   function showSceneBanner(scene) {
-    const el = document.getElementById('scene-banner');
-    const kicker = document.getElementById('scene-banner-kicker');
-    const title = document.getElementById('scene-banner-title');
+    UIManager.showBanner(scene);
+  }
 
-    kicker.textContent = scene.chapter ? `CHAPTER ${scene.chapter}` : 'SCENE';
-    title.textContent = scene.title || scene.id || '';
-    el.classList.remove('hidden');
-    el.classList.add('show');
-
-    clearTimeout(el._timer);
-    el._timer = setTimeout(() => {
-      el.classList.remove('show');
-      el.classList.add('hidden');
-    }, 2200);
+  function showSceneGoal(scene) {
+    const goal = getSceneGoal(scene);
+    if (goal) UIManager.showGoal(goal);
   }
 
   function getSceneGoal(scene) {
@@ -73,108 +65,11 @@ const Scene = (() => {
         text: scene.goal_text,
       };
     }
-
-    const choices = scene.choices || [];
-    if ((scene.priority_budget || 0) > 0 && choices.length > 0) {
-      return {
-        kicker: '조사 임무',
-        text: '은폐된 흔적들 사이에서 진실의 파편을 선별합니다.',
-      };
-    }
-    if (choices.length > 0) {
-      return {
-        kicker: '결단 목표',
-        text: '운명의 갈림길에서 다음 행보를 결단합니다. 그 대가 또한 기록될 것입니다.',
-      };
-    }
-    if ((scene.evidence || []).length > 0) {
-      return {
-        kicker: '기록 수집',
-        text: '사소한 기록조차 역사의 단서가 될 수 있음을 명심하십시오.',
-      };
-    }
     return null;
   }
 
-  function showSceneGoal(scene) {
-    const meta = getSceneGoal(scene);
-    const el = document.getElementById('scene-goal');
-    const kicker = document.getElementById('scene-goal-kicker');
-    const text = document.getElementById('scene-goal-text');
-
-    if (!el || !kicker || !text) return;
-
-    clearTimeout(el._timer);
-    if (!meta) {
-      el.classList.remove('show');
-      el.classList.add('hidden');
-      return;
-    }
-
-    kicker.textContent = meta.kicker;
-    text.textContent = meta.text;
-    el.classList.remove('hidden');
-    el.classList.add('show');
-
-    el._timer = setTimeout(() => {
-      el.classList.remove('show');
-      el.classList.add('hidden');
-    }, 2600);
-  }
-
-  function getStateReadout() {
-    const parts = [];
-    const resonance = Number(State.getFlag('ResonanceLevel') || 0);
-    const trust = Number(State.getFlag('SongsoonTrust') || 0);
-    const investigation = Number(State.getFlag('InvestigationScore') || 0);
-
-    if (investigation >= 3) parts.push('조사 집착');
-    else if (investigation >= 1) parts.push('조사 진행');
-
-    if (trust >= 2 || State.getFlag('TrustedSongsoon') === true) parts.push('송순 신뢰');
-    else if (trust >= 1) parts.push('동행 유지');
-
-    if (resonance >= 2) parts.push('공명 짙음');
-    else if (resonance >= 1) parts.push('공명 전조');
-
-    return parts.join(' · ') || '추적 중';
-  }
-
-  function applyStateMood() {
-    const container = document.getElementById('game-container');
-    const resonance = Number(State.getFlag('ResonanceLevel') || 0);
-    const trust = Number(State.getFlag('SongsoonTrust') || 0);
-    const trusted = State.getFlag('TrustedSongsoon') === true;
-
-    container.classList.remove('state-resonance-low', 'state-resonance-high', 'state-trust-high');
-
-    if (resonance >= 2) container.classList.add('state-resonance-high');
-    else if (resonance >= 1) container.classList.add('state-resonance-low');
-
-    if (trust >= 2 || trusted) container.classList.add('state-trust-high');
-  }
-
   function updateHud(scene) {
-    const titleEl = document.getElementById('hud-scene-title');
-    const chapterEl = document.getElementById('hud-chapter');
-    const evidenceEl = document.getElementById('hud-evidence-count');
-    const stateEl = document.getElementById('hud-state-readout');
-    const focusRow = document.getElementById('hud-focus-row');
-    const focusKicker = document.getElementById('hud-focus-kicker');
-    const focusText = document.getElementById('hud-focus-text');
-    const container = document.getElementById('game-container');
-
-    if (!titleEl || !chapterEl || !evidenceEl || !stateEl || !focusRow || !focusKicker || !focusText || !container) return;
-
-    titleEl.textContent = scene?.title || '';
-    chapterEl.textContent = scene?.chapter ? `CHAPTER ${scene.chapter}` : '';
-    evidenceEl.textContent = `단서 ${State.getEvidence().length}건`;
-    stateEl.textContent = getStateReadout();
-    focusRow.classList.toggle('hidden', !_hudContext);
-    focusKicker.textContent = _hudContext?.kicker || '';
-    focusText.textContent = _hudContext?.text || '';
-    container.classList.toggle('hud-priority-active', _hudContext?.mode === 'priority');
-    applyStateMood();
+    UIManager.updateHUD(scene, _hudContext);
   }
 
   function resolveNextScene(scene) {
@@ -200,8 +95,9 @@ const Scene = (() => {
     AudioManager.playBgm(scene.music || '');
     Effects.apply(scene.effect || '');
     Evidence.collectAuto(scene);
-    showSceneBanner(scene);
-    showSceneGoal(scene);
+    UIManager.showBanner(scene);
+    const goal = getSceneGoal(scene);
+    if (goal) UIManager.showGoal(goal);
     updateHud(scene);
 
     Save.save(true);

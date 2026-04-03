@@ -10,12 +10,14 @@
 
   function hideTitleScreen() {
     _titleVisible = false;
+    InputManager.setTitleVisible(false);
     $('title-screen').classList.add('hidden');
   }
 
   function showTitleScreen() {
     const hasSave = Save.hasSave();
     _titleVisible = true;
+    InputManager.setTitleVisible(true);
     $('title-screen').classList.remove('hidden');
     $('continue-btn').disabled = !hasSave;
     $('continue-btn').setAttribute('aria-disabled', String(!hasSave));
@@ -60,78 +62,24 @@
     showTitleScreen();
   }
 
-  function initHotkeys() {
-    document.addEventListener('keydown', e => {
-      if (_titleVisible) return;
-
-      if (e.code === 'Escape') {
-        if (Save.isPanelOpen()) {
-          e.preventDefault();
-          Save.hidePanel();
-          return;
-        }
-        if (Evidence.isOpen()) {
-          e.preventDefault();
-          Evidence.hide();
-          return;
-        }
-      }
-
-      if (Choice.isVisible()) return;
-
-      if (e.key === 'm' || e.key === 'M') {
-        e.preventDefault();
-        document.getElementById('memo-btn').click();
-        return;
-      }
-
-      if (Save.isPanelOpen() || Evidence.isOpen()) return;
-
-      if (e.key === 's' || e.key === 'S') {
-        e.preventDefault();
-        Save.save(false);
-        return;
-      }
-
-      if (e.key === 'l' || e.key === 'L') {
-        e.preventDefault();
-        Save.load();
-      }
-    });
-  }
-
   function init() {
-    if (!window.GAME_DATA) {
+    const data = window.GAME_DATA;
+    if (!data) {
       document.body.innerHTML = `
-        <div style="
-          color:#c8a84b; background:#0a0a0f;
-          font-family:monospace; padding:40px;
-          height:100vh; display:flex; flex-direction:column;
-          justify-content:center; align-items:center; gap:16px;
-        ">
+        <div style="color:#c8a84b; background:#0a0a0f; padding:40px; font-family:monospace; height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:16px;">
           <div style="font-size:18px">⚠ game_data.js 파일이 없습니다.</div>
-          <div style="font-size:13px; color:#7a6e5a;">
-            content/tools/ 폴더에서 아래 명령을 실행하세요:<br><br>
-            <code style="color:#e8d08a;">python export_to_json.py</code>
-          </div>
+          <div style="font-size:13px; color:#7a6e5a;">python export_to_json.py 를 실행해 데이터를 먼저 생성하세요.</div>
         </div>`;
       return;
     }
 
-    const data = window.GAME_DATA;
+    // [Refactor] Centralized engine bootstrap
+    Engine.init(data);
 
-    // 엔진 초기화
-    Scene.init(data);
-    AudioManager.init();
-    Evidence.index(data.scenes);
-    Dialogue.init();
-    Evidence.init();
-    Save.init();
-    Evidence.hydrateSession();
+    InputManager.setTitleVisible(true);
     initTitleScreen(data);
-    initHotkeys();
 
-    // 엔딩 이벤트 수신
+    // 엔진 시그널 수신
     document.addEventListener('game:ending', () => {
       Save.clear();
       State.reset();
@@ -139,9 +87,7 @@
       showTitleScreen();
     });
 
-    document.addEventListener('game:loaded', () => {
-      hideTitleScreen();
-    });
+    document.addEventListener('game:loaded', () => hideTitleScreen());
   }
 
   // DOM 준비 후 실행
@@ -150,5 +96,4 @@
   } else {
     init();
   }
-
 })();
