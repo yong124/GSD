@@ -1,6 +1,3 @@
-/**
- * localStorage save/load helpers — 3-slot system.
- */
 const Save = (() => {
   const SLOT_COUNT = 3;
   const SAVE_KEY = n => `gyeongseong_save_${n}`;
@@ -101,10 +98,19 @@ const Save = (() => {
   return {
     init() {
       migrateLegacy();
+
+      const saveBtn = document.getElementById('save-btn');
+      const loadBtn = document.getElementById('load-btn');
       const closeBtn = document.getElementById('slot-panel-close');
+      const cancelBtn = document.getElementById('slot-cancel');
       const overlay = document.getElementById('slot-overlay');
+
+      if (saveBtn) saveBtn.addEventListener('click', () => Save.save(false));
+      if (loadBtn) loadBtn.addEventListener('click', () => Save.load());
       if (closeBtn) closeBtn.addEventListener('click', hidePanel);
+      if (cancelBtn) cancelBtn.addEventListener('click', hidePanel);
       if (overlay) overlay.addEventListener('click', hidePanel);
+
       console.log('[Save] Initialized');
     },
 
@@ -130,20 +136,18 @@ const Save = (() => {
       return false;
     },
 
-
     clear() {
       for (let n = 1; n <= SLOT_COUNT; n++) {
         localStorage.removeItem(SAVE_KEY(n));
       }
+      localStorage.removeItem('gyeongseong_last_slot');
     },
 
-    init() {
-      migrateLegacy();
+    isPanelOpen() {
+      const el = document.getElementById(Config.SELECTORS.SLOT_PANEL);
+      return el && !el.classList.contains('hidden');
+    },
 
-      document.getElementById('save-btn').addEventListener('click', () => Save.save(false));
-      document.getElementById('load-btn').addEventListener('click', () => Save.load());
-      document.getElementById('slot-cancel').addEventListener('click', hideSlotPanel);
-      document.getElementById('slot-overlay').addEventListener('click', hideSlotPanel);
-    }
+    hidePanel
   };
 })();

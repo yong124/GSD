@@ -165,6 +165,25 @@ const UIManager = (() => {
     if (el) el.classList.toggle('hidden-hint', !visible);
   }
 
+  function showChapterCard(chapter, title, onDone) {
+    const card = $('chapter-card');
+    const num = $('chapter-number');
+    const tit = $('chapter-title');
+    if (!card) return;
+
+    if (num) num.textContent = `CHAPTER ${chapter}`;
+    if (tit) tit.textContent = title;
+    
+    card.classList.remove('hidden');
+    card.classList.add('show');
+
+    setTimeout(() => {
+      card.classList.remove('show');
+      card.classList.add('hidden');
+      if (onDone) onDone();
+    }, 2800);
+  }
+
   function setStandingSlot(slotIndex, data, isFocus, isDim, motionClass) {
     const slotEl = document.querySelector(`.standing-slot[data-slot="${slotIndex}"]`);
     if (!slotEl) return;
@@ -175,7 +194,7 @@ const UIManager = (() => {
     slotEl.classList.toggle('is-dim', !!isDim);
 
     if (data && img) {
-      img.src = data.imagePath || '';
+      img.src = data.image || '';
       img.alt = data.name || '';
     }
 
@@ -342,6 +361,7 @@ const UIManager = (() => {
     setPanelVisible,
     renderSaveSlotList,
     updateMemoBadge,
-    renderMemo
+    renderMemo,
+    showChapterCard
   };
 })();

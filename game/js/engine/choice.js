@@ -35,6 +35,7 @@ const Choice = (() => {
 
   return {
     show(choices, onChoose) {
+      UIManager.setDialogueBoxVisible(false);
       const mappedChoices = choices.map(c => ({ ...c, type: getChoiceType(c) }));
       
       UIManager.renderChoiceList(mappedChoices, (picked) => {
@@ -54,6 +55,7 @@ const Choice = (() => {
     },
 
     showPriority(scene, onDone) {
+      UIManager.setDialogueBoxVisible(false);
       const choices = (scene.choices || []).map(c => ({ ...c, type: getChoiceType(c, true) }));
       const budget = scene.priority_budget || 0;
       const priorityDialogues = scene.priority_dialogues || {};
@@ -97,6 +99,7 @@ const Choice = (() => {
           setTimeout(() => {
             const branchLines = (priorityDialogues || {})[choice.next_dialogue || ''] || [];
             if (branchLines.length > 0) {
+              UIManager.setChoiceBoxVisible(false);
               Dialogue.start(branchLines, render, null);
             } else {
               render();

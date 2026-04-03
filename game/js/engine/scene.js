@@ -35,18 +35,7 @@ const Scene = (() => {
   }
 
   function showChapterCard(chapter, title, onDone) {
-    const card = document.getElementById('chapter-card');
-    const num = document.getElementById('chapter-number');
-    const tit = document.getElementById('chapter-title');
-
-    num.textContent = `CHAPTER ${chapter}`;
-    tit.textContent = title;
-    card.classList.remove('hidden');
-
-    setTimeout(() => {
-      card.classList.add('hidden');
-      if (onDone) onDone();
-    }, 2800);
+    UIManager.showChapterCard(chapter, title, onDone);
   }
 
   function showSceneBanner(scene) {
@@ -96,9 +85,8 @@ const Scene = (() => {
     Effects.apply(scene.effect || '');
     Evidence.collectAuto(scene);
     UIManager.showBanner(scene);
-    const goal = getSceneGoal(scene);
-    if (goal) UIManager.showGoal(goal);
-    updateHud(scene);
+    UIManager.showGoal(getSceneGoal(scene));
+    UIManager.updateHUD(scene, _hudContext);
 
     Save.save(true);
 
@@ -199,56 +187,7 @@ const Scene = (() => {
 
     setHudContext(context) {
       _hudContext = context || null;
+      UIManager.updateHUD(State.currentSceneId ? _data?.[State.currentSceneId] : null, _hudContext);
     }
   };
 })();
-
-window.refreshGameHUD = function () {
-  const sceneId = State.currentSceneId;
-  const scene = sceneId ? Scene && window.GAME_DATA?.scenes?.[sceneId] : null;
-  const titleEl = document.getElementById('hud-scene-title');
-  const chapterEl = document.getElementById('hud-chapter');
-  const evidenceEl = document.getElementById('hud-evidence-count');
-  const stateEl = document.getElementById('hud-state-readout');
-  const focusRow = document.getElementById('hud-focus-row');
-  const focusKicker = document.getElementById('hud-focus-kicker');
-  const focusText = document.getElementById('hud-focus-text');
-  const container = document.getElementById('game-container');
-
-  if (!titleEl || !chapterEl || !evidenceEl || !stateEl || !focusRow || !focusKicker || !focusText || !container) return;
-
-  const hudCtx = Scene.getHudContext();
-
-  titleEl.textContent = scene?.title || '';
-  chapterEl.textContent = scene?.chapter ? `CHAPTER ${scene.chapter}` : '';
-  evidenceEl.textContent = `단서 ${State.getEvidence().length}건`;
-
-  const resonance = Number(State.getFlag('ResonanceLevel') || 0);
-  const trust = Number(State.getFlag('SongsoonTrust') || 0);
-  const investigation = Number(State.getFlag('InvestigationScore') || 0);
-  const trusted = State.getFlag('TrustedSongsoon') === true;
-  const parts = [];
-  if (investigation >= 3) parts.push('조사 집착');
-  else if (investigation >= 1) parts.push('조사 진행');
-  if (trust >= 2 || trusted) parts.push('송순 신뢰');
-  else if (trust >= 1) parts.push('동행 유지');
-  if (resonance >= 2) parts.push('공명 짙음');
-  else if (resonance >= 1) parts.push('공명 전조');
-  stateEl.textContent = parts.join(' · ') || '추적 중';
-  focusRow.classList.toggle('hidden', !hudCtx);
-  focusKicker.textContent = hudCtx?.kicker || '';
-  focusText.textContent = hudCtx?.text || '';
-
-  container.classList.remove('state-resonance-low', 'state-resonance-high', 'state-trust-high');
-  container.classList.toggle('hud-priority-active', hudCtx?.mode === 'priority');
-  if (resonance >= 2) container.classList.add('state-resonance-high');
-  else if (resonance >= 1) container.classList.add('state-resonance-low');
-  if (trust >= 2 || trusted) container.classList.add('state-trust-high');
-};
-
-window.setGameHUDContext = function (context) {
-  Scene.setHudContext(context);
-  if (typeof window.refreshGameHUD === 'function') {
-    window.refreshGameHUD();
-  }
-};

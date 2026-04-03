@@ -59,8 +59,13 @@ const InputManager = (() => {
     }
   }
 
+  function isTitleVisible() {
+    return _titleVisible;
+  }
+
   return {
     init,
-    setTitleVisible
+    setTitleVisible,
+    isTitleVisible
   };
 })();

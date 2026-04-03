@@ -25,6 +25,10 @@
   opacity: 0.6;
 }
 
+#dialogue-box.hidden {
+  display: none !important;
+}
+
 /* 초상화 영역 */
 #portrait-wrap {
   width: 130px;
