@@ -239,10 +239,13 @@ const Dialogue = (() => {
 
     init() {
       const box = document.getElementById('dialogue-box');
-      box.addEventListener('click', () => Dialogue.advance());
+      box.addEventListener('click', () => {
+        if (Save.isPanelOpen() || Evidence.isOpen()) return;
+        Dialogue.advance();
+      });
       document.addEventListener('keydown', e => {
         const titleVisible = !document.getElementById('title-screen').classList.contains('hidden');
-        if (titleVisible || Choice.isVisible()) return;
+        if (titleVisible || Choice.isVisible() || Save.isPanelOpen() || Evidence.isOpen()) return;
         if (e.code === 'Space' || e.code === 'Enter') {
           e.preventDefault();
           Dialogue.advance();

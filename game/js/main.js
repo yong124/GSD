@@ -61,6 +61,46 @@
     showTitleScreen();
   }
 
+  function initHotkeys() {
+    document.addEventListener('keydown', e => {
+      if (_titleVisible) return;
+
+      if (e.code === 'Escape') {
+        if (Save.isPanelOpen()) {
+          e.preventDefault();
+          Save.hidePanel();
+          return;
+        }
+        if (Evidence.isOpen()) {
+          e.preventDefault();
+          Evidence.hide();
+          return;
+        }
+      }
+
+      if (Choice.isVisible()) return;
+
+      if (e.key === 'm' || e.key === 'M') {
+        e.preventDefault();
+        document.getElementById('memo-btn').click();
+        return;
+      }
+
+      if (Save.isPanelOpen() || Evidence.isOpen()) return;
+
+      if (e.key === 's' || e.key === 'S') {
+        e.preventDefault();
+        Save.save(false);
+        return;
+      }
+
+      if (e.key === 'l' || e.key === 'L') {
+        e.preventDefault();
+        Save.load();
+      }
+    });
+  }
+
   function init() {
     if (!window.GAME_DATA) {
       document.body.innerHTML = `
@@ -90,6 +130,7 @@
     Save.init();
     Evidence.hydrateSession();
     initTitleScreen(data);
+    initHotkeys();
 
     // 엔딩 이벤트 수신
     document.addEventListener('game:ending', () => {

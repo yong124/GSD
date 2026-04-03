@@ -5,6 +5,21 @@ const Evidence = (() => {
   let _allEvidence = {}; // evidence_id → evidence 객체 (game_data에서 로드)
   let _seenEvidence = new Set();
 
+  function getEvidenceCategory(ev) {
+    const id = ev?.evidence_id || '';
+    const name = ev?.name || '';
+    const desc = ev?.description || '';
+    const text = `${id} ${name} ${desc}`;
+
+    if (/Ritual|Mask|Hanbok|Diary|Score|Note|의례|무녀|감응|문/.test(text)) {
+      return { key: 'ritual', title: '의례와 공명', hint: '문, 무녀, 감응과 연결된 흔적' };
+    }
+    if (/OldArticles|기사|기록|일기|편집장/.test(text)) {
+      return { key: 'record', title: '기록과 기사', hint: '지워졌거나 남겨진 문장들' };
+    }
+    return { key: 'trace', title: '현장 물증', hint: '현장에서 직접 붙잡은 흔적' };
+  }
+
   function showToast(name) {
     const el = document.getElementById('evidence-toast');
     el.textContent = `단서 획득: 『${name}』`;
@@ -38,23 +53,51 @@ const Evidence = (() => {
 
   function renderMemo() {
     const list = document.getElementById('memo-list');
+    const meta = document.getElementById('memo-meta');
     const ids = State.getEvidence();
+    const unread = ids.filter(id => !_seenEvidence.has(id)).length;
+    if (meta) {
+      meta.textContent = ids.length === 0
+        ? '아직 붙잡은 흔적이 없습니다.'
+        : `전체 ${ids.length}건 · 새 단서 ${unread}건`;
+    }
     if (ids.length === 0) {
       list.innerHTML = '<div class="memo-empty">아직 획득한 단서가 없습니다.</div>';
       return;
     }
-    list.innerHTML = ids.map(id => {
+    const groups = new Map();
+    ids.forEach(id => {
       const ev = _allEvidence[id];
-      if (!ev) return '';
-      const imgHtml = ev.image
-        ? `<img class="memo-item-img" src="${ev.image}" alt="${ev.name}">`
-        : '';
+      if (!ev) return;
+      const category = getEvidenceCategory(ev);
+      if (!groups.has(category.key)) {
+        groups.set(category.key, { ...category, items: [] });
+      }
+      groups.get(category.key).items.push(ev);
+    });
+
+    list.innerHTML = Array.from(groups.values()).map(group => {
+      const itemsHtml = group.items.map(ev => {
+        const imgHtml = ev.image
+          ? `<img class="memo-item-img" src="${ev.image}" alt="${ev.name}">`
+          : '';
+        const unreadClass = _seenEvidence.has(ev.evidence_id) ? '' : ' memo-item-unread';
+        return `
+          <div class="memo-item${unreadClass}">
+            ${imgHtml}
+            <div class="memo-item-name">${ev.name}</div>
+            <div class="memo-item-desc">${ev.description}</div>
+          </div>`;
+      }).join('');
+
       return `
-        <div class="memo-item">
-          ${imgHtml}
-          <div class="memo-item-name">${ev.name}</div>
-          <div class="memo-item-desc">${ev.description}</div>
-        </div>`;
+        <section class="memo-group">
+          <div class="memo-group-header">
+            <div class="memo-group-title">${group.title}</div>
+            <div class="memo-group-hint">${group.hint}</div>
+          </div>
+          ${itemsHtml}
+        </section>`;
     }).join('');
   }
 
@@ -114,8 +157,20 @@ const Evidence = (() => {
     },
 
     resetSession() {
+      const panel = document.getElementById('memo-panel');
+      if (panel) panel.classList.add('hidden');
       _seenEvidence = new Set();
       updateMemoBadge();
+    },
+
+    hide() {
+      const panel = document.getElementById('memo-panel');
+      if (panel) panel.classList.add('hidden');
+    },
+
+    isOpen() {
+      const panel = document.getElementById('memo-panel');
+      return !!panel && !panel.classList.contains('hidden');
     },
 
     init() {
@@ -132,7 +187,7 @@ const Evidence = (() => {
         }
       });
       close.addEventListener('click', () => {
-        panel.classList.add('hidden');
+        Evidence.hide();
       });
       updateMemoBadge();
     }

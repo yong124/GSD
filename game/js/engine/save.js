@@ -67,26 +67,32 @@ const Save = (() => {
     const panel = document.getElementById('slot-panel');
     const overlay = document.getElementById('slot-overlay');
     const title = document.getElementById('slot-panel-title');
+    const subtitle = document.getElementById('slot-panel-subtitle');
     const list = document.getElementById('slot-list');
+    const lastSlot = parseInt(localStorage.getItem('gyeongseong_last_slot') || '1', 10);
 
     title.textContent = action === 'save' ? '저장 슬롯 선택' : '불러오기 슬롯 선택';
+    subtitle.textContent = action === 'save'
+      ? `마지막 자동저장 슬롯은 ${lastSlot}번입니다. 원하는 위치에 현재 진행을 남길 수 있습니다.`
+      : `마지막 자동저장 슬롯은 ${lastSlot}번입니다. 저장된 지점으로 진행을 되돌립니다.`;
     list.innerHTML = '';
 
     for (let n = 1; n <= SLOT_COUNT; n++) {
       const info = getSlotInfo(n);
       const btn = document.createElement('button');
-      btn.className = 'slot-btn' + (info ? '' : ' slot-empty');
+      btn.className = 'slot-btn' + (info ? '' : ' slot-empty') + (n === lastSlot ? ' slot-last-used' : '');
       btn.dataset.slot = n;
+      const tagHtml = n === lastSlot ? '<span class="slot-tag">자동저장</span>' : '';
 
       if (info) {
         const sceneTitle = getSceneTitle(info.sceneId);
         btn.innerHTML = `
-          <span class="slot-name">슬롯 ${n}  ·  CH${info.chapter}  ${sceneTitle}</span>
+          <span class="slot-name">슬롯 ${n}  ·  CH${info.chapter}  ${sceneTitle}${tagHtml}</span>
           <span class="slot-info">${formatTimestamp(info.timestamp)}</span>
         `;
       } else {
         btn.innerHTML = `
-          <span class="slot-name">슬롯 ${n}</span>
+          <span class="slot-name">슬롯 ${n}${tagHtml}</span>
           <span class="slot-info">비어있음</span>
         `;
         if (action === 'load') {
@@ -168,6 +174,13 @@ const Save = (() => {
         if (localStorage.getItem(SAVE_KEY(n))) return true;
       }
       return false;
+    },
+
+    hidePanel: hideSlotPanel,
+
+    isPanelOpen() {
+      const panel = document.getElementById('slot-panel');
+      return !!panel && !panel.classList.contains('hidden');
     },
 
     clear() {

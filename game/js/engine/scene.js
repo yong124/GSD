@@ -4,6 +4,7 @@
 const Scene = (() => {
   let _data = null;
   let _firstSceneId = null;
+  let _hudContext = null;
 
   const SCENE_THEMES = {
     court:       'linear-gradient(160deg, #0d1520 0%, #1a2535 50%, #0d1015 100%)',
@@ -158,13 +159,21 @@ const Scene = (() => {
     const chapterEl = document.getElementById('hud-chapter');
     const evidenceEl = document.getElementById('hud-evidence-count');
     const stateEl = document.getElementById('hud-state-readout');
+    const focusRow = document.getElementById('hud-focus-row');
+    const focusKicker = document.getElementById('hud-focus-kicker');
+    const focusText = document.getElementById('hud-focus-text');
+    const container = document.getElementById('game-container');
 
-    if (!titleEl || !chapterEl || !evidenceEl || !stateEl) return;
+    if (!titleEl || !chapterEl || !evidenceEl || !stateEl || !focusRow || !focusKicker || !focusText || !container) return;
 
     titleEl.textContent = scene?.title || '';
     chapterEl.textContent = scene?.chapter ? `CHAPTER ${scene.chapter}` : '';
     evidenceEl.textContent = `단서 ${State.getEvidence().length}건`;
     stateEl.textContent = getStateReadout();
+    focusRow.classList.toggle('hidden', !_hudContext);
+    focusKicker.textContent = _hudContext?.kicker || '';
+    focusText.textContent = _hudContext?.text || '';
+    container.classList.toggle('hud-priority-active', _hudContext?.mode === 'priority');
     applyStateMood();
   }
 
@@ -182,6 +191,7 @@ const Scene = (() => {
 
   function runScene(scene, fromLabel, restoreProgress = false) {
     State.currentSceneId = scene.id;
+    _hudContext = null;
     if (!restoreProgress || fromLabel) {
       State.dialogueIndex = 0;
     }
@@ -296,9 +306,12 @@ window.refreshGameHUD = function () {
   const chapterEl = document.getElementById('hud-chapter');
   const evidenceEl = document.getElementById('hud-evidence-count');
   const stateEl = document.getElementById('hud-state-readout');
+  const focusRow = document.getElementById('hud-focus-row');
+  const focusKicker = document.getElementById('hud-focus-kicker');
+  const focusText = document.getElementById('hud-focus-text');
   const container = document.getElementById('game-container');
 
-  if (!titleEl || !chapterEl || !evidenceEl || !stateEl || !container) return;
+  if (!titleEl || !chapterEl || !evidenceEl || !stateEl || !focusRow || !focusKicker || !focusText || !container) return;
 
   titleEl.textContent = scene?.title || '';
   chapterEl.textContent = scene?.chapter ? `CHAPTER ${scene.chapter}` : '';
@@ -316,9 +329,20 @@ window.refreshGameHUD = function () {
   if (resonance >= 2) parts.push('공명 짙음');
   else if (resonance >= 1) parts.push('공명 전조');
   stateEl.textContent = parts.join(' · ') || '추적 중';
+  focusRow.classList.toggle('hidden', !_hudContext);
+  focusKicker.textContent = _hudContext?.kicker || '';
+  focusText.textContent = _hudContext?.text || '';
 
   container.classList.remove('state-resonance-low', 'state-resonance-high', 'state-trust-high');
+  container.classList.toggle('hud-priority-active', _hudContext?.mode === 'priority');
   if (resonance >= 2) container.classList.add('state-resonance-high');
   else if (resonance >= 1) container.classList.add('state-resonance-low');
   if (trust >= 2 || trusted) container.classList.add('state-trust-high');
+};
+
+window.setGameHUDContext = function (context) {
+  _hudContext = context || null;
+  if (typeof window.refreshGameHUD === 'function') {
+    window.refreshGameHUD();
+  }
 };

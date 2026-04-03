@@ -48,6 +48,19 @@ const Choice = (() => {
     };
   }
 
+  function updatePriorityHud(scene, left) {
+    if (typeof window.setGameHUDContext !== 'function') return;
+    if (!scene) {
+      window.setGameHUDContext(null);
+      return;
+    }
+    window.setGameHUDContext({
+      mode: 'priority',
+      kicker: '조사 중',
+      text: `${scene.priority_title || scene.title || '조사 장면'} · ${left} / ${scene.priority_budget || 0}`,
+    });
+  }
+
   function getChoiceType(choice, isPriority = false) {
     if (isPriority) return 'choice-investigation';
     const key = choice?.flag_key || '';
@@ -117,6 +130,7 @@ const Choice = (() => {
           .sort((a, b) => (a.order || 0) - (b.order || 0));
 
         if (remaining.length === 0 || spent >= budget) {
+          updatePriorityHud(null, 0);
           elBox().classList.add('hidden');
           elList().innerHTML = '';
           if (onDone) onDone();
@@ -128,6 +142,7 @@ const Choice = (() => {
         list.innerHTML = '';
 
         const meta = buildPriorityMeta(scene, budget - spent);
+        updatePriorityHud(scene, budget - spent);
         const header = document.createElement('div');
         header.className = 'priority-header';
         header.innerHTML = `
@@ -178,6 +193,7 @@ const Choice = (() => {
     },
 
     hide() {
+      updatePriorityHud(null, 0);
       elList().innerHTML = '';
       elBox().classList.add('hidden');
     },

@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>경성뎐 : 여급 실종사건</title>
-  <link rel="stylesheet" href="css/main.css?v=4">
-  <link rel="stylesheet" href="css/dialogue.css?v=4">
-  <link rel="stylesheet" href="css/effects.css?v=4">
+  <link rel="stylesheet" href="css/main.css?v=6">
+  <link rel="stylesheet" href="css/dialogue.css?v=6">
+  <link rel="stylesheet" href="css/effects.css?v=6">
 </head>
 <body>
 
@@ -27,6 +27,10 @@
     <div class="hud-row">
       <span id="hud-evidence-count"></span>
       <span id="hud-state-readout"></span>
+    </div>
+    <div id="hud-focus-row" class="hud-row hidden">
+      <span id="hud-focus-kicker"></span>
+      <span id="hud-focus-text"></span>
     </div>
   </div>
   <div id="standing-stage" aria-hidden="true">
@@ -109,7 +113,10 @@
   <!-- ── 메모장 패널 ── -->
   <div id="memo-panel" class="hidden">
     <div id="memo-header">
-      <span>단서 메모장</span>
+      <div>
+        <div>단서 메모장</div>
+        <div id="memo-meta"></div>
+      </div>
       <button id="memo-close">✕</button>
     </div>
     <div id="memo-list"></div>
@@ -127,6 +134,7 @@
   <!-- ── 슬롯 선택 패널 ── -->
   <div id="slot-panel" class="hidden">
     <div id="slot-panel-title"></div>
+    <div id="slot-panel-subtitle"></div>
     <div id="slot-list"></div>
     <button id="slot-cancel">취소</button>
   </div>
@@ -141,15 +149,15 @@
 <script src="data/game_data.js"></script>
 
 <!-- 엔진 모듈 -->
-<script src="js/engine/state.js?v=4"></script>
-<script src="js/engine/save.js?v=4"></script>
-<script src="js/engine/effects.js?v=4"></script>
-<script src="js/engine/audio.js?v=4"></script>
-<script src="js/engine/evidence.js?v=4"></script>
-<script src="js/engine/dialogue.js?v=4"></script>
-<script src="js/engine/choice.js?v=4"></script>
-<script src="js/engine/scene.js?v=4"></script>
-<script src="js/main.js?v=4"></script>
+<script src="js/engine/state.js?v=6"></script>
+<script src="js/engine/save.js?v=6"></script>
+<script src="js/engine/effects.js?v=6"></script>
+<script src="js/engine/audio.js?v=6"></script>
+<script src="js/engine/evidence.js?v=6"></script>
+<script src="js/engine/dialogue.js?v=6"></script>
+<script src="js/engine/choice.js?v=6"></script>
+<script src="js/engine/scene.js?v=6"></script>
+<script src="js/main.js?v=6"></script>
 
 </body>
 </html>
