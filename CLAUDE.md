@@ -124,6 +124,20 @@ python -m http.server 3901
 
 - `content/docs/system/writing/DIALOGUE_PERIOD_TONE_GUIDE.md`
 
+### Claude 보조 기준
+
+- `.claude/rules/경성뎐_운영_규칙.md`
+- `.claude/references/작업_축_선택_가이드.md`
+- `.claude/references/검증_체크리스트.md`
+- `.claude/skills/gsd-data-polish/SKILL.md`
+- `.claude/skills/gsd-runtime-ui/SKILL.md`
+- `.claude/skills/gsd-priority-investigation/SKILL.md`
+- `.claude/skills/gsd-editornode-pipeline/SKILL.md`
+- `.claude/skills/gsd-release-checks/SKILL.md`
+- `.claude/commands/데이터-폴리시.md`
+- `.claude/commands/런타임-UI.md`
+- `.claude/commands/릴리즈-체크.md`
+
 ### 캐릭터 기준 문서
 
 - `content/docs/system/characters/CHARACTER_ARCS_INDEX.md`
