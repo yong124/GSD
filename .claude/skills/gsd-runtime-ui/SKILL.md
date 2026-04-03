@@ -58,6 +58,10 @@ Before choosing this skill over others, read:
    - `Esc`
    - `M / S / L`
    - dialogue advance while panels are open
+5. Before browser automation:
+   - confirm `http://127.0.0.1:4173` responds
+   - if it does not, start a local server from `G:\GSD\game`
+   - prefer `G:\GSD\content\tools\run_browser_playtest_*.ps1` wrappers over raw `node` entrypoints
 
 ## Do not
 
@@ -65,6 +69,7 @@ Before choosing this skill over others, read:
 - do not let runtime globals reach IIFE-private state directly
 - do not add raw numeric meters unless the task explicitly wants visible stats
 - do not improve panel visuals without also checking input flow
+- do not run browser QA with raw `node ...browser_playtest...js` unless the local server is already confirmed up
 
 ## Validate
 
@@ -76,15 +81,24 @@ node --check G:\GSD\game\js\main.js
 
 Add other `node --check` calls for touched files.
 
+For browser QA, prefer:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File G:\GSD\content\tools\run_browser_playtest_save_flow.ps1
+powershell -ExecutionPolicy Bypass -File G:\GSD\content\tools\run_browser_playtest_full_run.ps1
+```
+
 ## Watchouts
 
 - Cache issues are common. If behavior seems unchanged, check `?v=` first.
 - HUD helpers must not reach IIFE-private state directly from globals.
 - Prefer subtle state feedback over raw meters.
+- `ERR_CONNECTION_REFUSED` during Playwright boot usually means the local server is down, not that the runtime itself is broken.
 
 ## Done when
 
 - touched runtime JS files pass `node --check`
 - browser cache busting was handled where needed
+- browser QA ran against a confirmed live local server
 - title, panels, and hotkeys do not obviously fight each other
 - the UI makes the current player task more legible than before

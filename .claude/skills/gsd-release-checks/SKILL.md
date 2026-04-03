@@ -47,6 +47,9 @@ py G:\GSD\content\tools\json_to_generated_xlsx.py
 - `G:\GSD\content\docs\portfolio\다음_스레드_인수인계.md`
 
 6. Clean up temporary folders created for QA or tooling.
+7. If browser QA was part of the round:
+   - confirm the local game server is reachable before the script runs
+   - prefer wrapper scripts that auto-check or auto-start the server
 
 ## Do not
 
@@ -54,6 +57,7 @@ py G:\GSD\content\tools\json_to_generated_xlsx.py
 - do not claim a browser fix without checking cache-bust handling
 - do not forget handoff updates after major project-state changes
 - do not mix unrelated work into a single vague commit if the scope is clearly separable
+- do not treat `ERR_CONNECTION_REFUSED` as a runtime bug before checking whether the local server is simply down
 
 ## Commit guidance
 
@@ -68,6 +72,7 @@ Prefer commit messages that reflect the actual slice of work, such as:
 
 - Do not leave behind cache/test temp folders.
 - Do not describe work as finished if browser cache can still hide the fix.
+- Browser QA depends on a live local server. Wrapper scripts are safer than raw `node` entrypoints.
 
 ## Final response pattern
 
@@ -81,6 +86,7 @@ When wrapping up, prefer this order:
 
 - worktree state is understood
 - required validation has run for the touched layer
+- browser QA wrappers were used when browser automation was part of the task
 - temporary artifacts are cleaned up
 - handoff is updated if needed
 - commit scope can be explained in one line

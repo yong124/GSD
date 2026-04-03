@@ -16,6 +16,7 @@ const Save = (() => {
     if (!raw) return null;
     try {
       const parsed = JSON.parse(raw);
+      if (!parsed.currentSceneId) return null;
       return {
         sceneId: parsed.currentSceneId || '',
         chapter: parsed.chapter || 1,
@@ -23,6 +24,11 @@ const Save = (() => {
         state: raw,
       };
     } catch { return null; }
+  }
+
+  function getSavableState() {
+    const state = State.dump();
+    return state && state.currentSceneId ? state : null;
   }
 
   function formatTimestamp(iso) {
@@ -44,7 +50,12 @@ const Save = (() => {
 
   function handleSlotClick(n) {
     if (_pendingAction === 'save') {
-      const state = State.dump();
+      const state = getSavableState();
+      if (!state) {
+        UIManager.showToast('장면이 시작된 뒤에 저장할 수 있습니다.', 'toast-save');
+        hidePanel();
+        return;
+      }
       state.timestamp = new Date().toISOString();
       localStorage.setItem(SAVE_KEY(n), JSON.stringify(state));
       localStorage.setItem('gyeongseong_last_slot', n);
@@ -56,7 +67,7 @@ const Save = (() => {
         localStorage.setItem('gyeongseong_last_slot', n);
         UIManager.showToast(`슬롯 ${n}번 기록을 불러왔습니다.`, 'toast-save');
         document.dispatchEvent(new Event('game:loaded'));
-        Scene.load(State.currentSceneId, null, true);
+        Scene.load(State.currentSceneId, null, { restoreProgress: true });
       }
     }
     hidePanel();
@@ -116,10 +127,15 @@ const Save = (() => {
 
     save(silent = false) {
       if (silent) {
+        const state = getSavableState();
+        if (!state) return;
         const lastSlot = localStorage.getItem('gyeongseong_last_slot') || '1';
-        const state = State.dump();
         state.timestamp = new Date().toISOString();
         localStorage.setItem(SAVE_KEY(lastSlot), JSON.stringify(state));
+        return;
+      }
+      if (!getSavableState()) {
+        UIManager.showToast('장면이 시작된 뒤에 저장할 수 있습니다.', 'toast-save');
         return;
       }
       showSlotPanel('save');

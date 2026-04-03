@@ -50,6 +50,7 @@ body { display: flex; align-items: center; justify-content: center; }
   background-repeat: no-repeat;
   transition: opacity 0.6s ease;
   filter: brightness(0.55) sepia(0.3);
+  pointer-events: none;
 }
 
 /* ── 비네트 (주변 어둠) ── */
@@ -970,7 +971,7 @@ body { display: flex; align-items: center; justify-content: center; }
 #slot-overlay {
   position: absolute; inset: 0;
   background: rgba(0, 0, 0, 0.6);
-  z-index: 45;
+  z-index: 65;
 }
 #slot-panel {
   position: absolute;
@@ -981,7 +982,7 @@ body { display: flex; align-items: center; justify-content: center; }
     linear-gradient(180deg, rgba(20, 18, 14, 0.96) 0%, rgba(10, 8, 6, 0.98) 100%);
   border: 1px solid var(--gold-dim);
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
-  z-index: 46;
+  z-index: 66;
   padding: 32px;
   backdrop-filter: var(--panel-blur);
 }
