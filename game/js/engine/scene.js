@@ -77,20 +77,20 @@ const Scene = (() => {
     const choices = scene.choices || [];
     if ((scene.priority_budget || 0) > 0 && choices.length > 0) {
       return {
-        kicker: '조사 목표',
-        text: '남은 조사 기회 안에서 무엇을 먼저 확인할지 가려냅니다.',
+        kicker: '조사 임무',
+        text: '은폐된 흔적들 사이에서 진실의 파편을 선별합니다.',
       };
     }
     if (choices.length > 0) {
       return {
-        kicker: '결정 목표',
-        text: '다음 행동 방식을 정하고 그 대가를 감수합니다.',
+        kicker: '결단 목표',
+        text: '운명의 갈림길에서 다음 행보를 결단합니다. 그 대가 또한 기록될 것입니다.',
       };
     }
     if ((scene.evidence || []).length > 0) {
       return {
-        kicker: '기록 목표',
-        text: '현장에 남은 흔적과 기록을 놓치지 않고 붙듭니다.',
+        kicker: '기록 수집',
+        text: '사소한 기록조차 역사의 단서가 될 수 있음을 명심하십시오.',
       };
     }
     return null;
