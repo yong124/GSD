@@ -1,9 +1,4 @@
-/**
- * Dialogue typing and progression controller.
- */
 const Dialogue = (() => {
-  const TYPING_SPEED = 32;
-
   let _lines = [];
   let _index = 0;
   let _typing = false;
@@ -11,12 +6,6 @@ const Dialogue = (() => {
   let _onDone = null;
   let _stageState = {};
 
-  const elBox = () => document.getElementById('dialogue-box');
-  const elSpeaker = () => document.getElementById('speaker-name');
-  const elText = () => document.getElementById('dialogue-text');
-  const elPortrait = () => document.getElementById('portrait-img');
-  const elHint = () => document.getElementById('click-hint');
-  const elStage = () => document.getElementById('standing-stage');
   const MOTION_CLASSES = ['motion-fade-in', 'motion-slide-left', 'motion-slide-right', 'motion-tremble', 'motion-shake-light', 'motion-shake-hard'];
 
   function getCharacterName(line) {
@@ -34,16 +23,7 @@ const Dialogue = (() => {
 
   function resetStage() {
     _stageState = {};
-    const stage = elStage();
-    if (!stage) return;
-    stage.querySelectorAll('.standing-slot').forEach(slot => {
-      slot.classList.remove('is-visible', 'is-focus', 'is-dim', ...MOTION_CLASSES);
-      const img = slot.querySelector('.standing-img');
-      if (img) {
-        img.removeAttribute('src');
-        img.alt = '';
-      }
-    });
+    UIManager.clearStandingAll();
   }
 
   function toMotionClass(motionName) {
@@ -51,24 +31,7 @@ const Dialogue = (() => {
     return `motion-${String(motionName).trim().replace(/([a-z])([A-Z])/g, '$1-$2').replace(/_/g, '-').toLowerCase()}`;
   }
 
-  function clearSlotMotion(slotEl) {
-    slotEl.classList.remove(...MOTION_CLASSES);
-  }
-
-  function applySlotMotion(slotEl, motionName, duration = 520) {
-    const motionClass = toMotionClass(motionName);
-    if (!motionClass || !MOTION_CLASSES.includes(motionClass)) return;
-    clearSlotMotion(slotEl);
-    slotEl.classList.add(motionClass);
-    setTimeout(() => {
-      slotEl.classList.remove(motionClass);
-    }, duration);
-  }
-
   function renderStage(line) {
-    const stage = elStage();
-    if (!stage) return;
-
     const incomingSlot = line?.standing_slot || null;
     const incomingSpeakerId = line?.speaker_id || null;
     const shouldAnimateEnter =
@@ -86,100 +49,57 @@ const Dialogue = (() => {
     }
 
     const focusSlot = line?.focus_type === 'Speaker' ? line?.standing_slot : null;
-    stage.querySelectorAll('.standing-slot').forEach(slotEl => {
-      const slotKey = slotEl.dataset.slot;
-      const img = slotEl.querySelector('.standing-img');
+    
+    // slots are 1, 2, 3 usually
+    [1, 2, 3].forEach(slotKey => {
       const staged = _stageState[slotKey];
-
-      slotEl.classList.remove('is-visible', 'is-focus', 'is-dim');
-
-      if (!staged || !staged.imagePath) {
-        clearSlotMotion(slotEl);
-        if (img) {
-          img.removeAttribute('src');
-          img.alt = '';
+      const isFocus = focusSlot ? (String(slotKey) === String(focusSlot)) : false;
+      const isDim = focusSlot ? !isFocus : false;
+      
+      let motion = null;
+      if (staged) {
+        if (String(slotKey) === String(incomingSlot) && shouldAnimateEnter) {
+          motion = toMotionClass(line.enter_motion);
+        } else if (isFocus && line?.idle_motion) {
+          motion = toMotionClass(line.idle_motion);
         }
-        return;
       }
 
-      img.src = staged.imagePath;
-      img.alt = staged.name || '';
-      slotEl.classList.add('is-visible');
-
-      if (focusSlot) {
-        slotEl.classList.add(slotKey === focusSlot ? 'is-focus' : 'is-dim');
-      }
-
-      if (slotKey === incomingSlot && shouldAnimateEnter) {
-        applySlotMotion(slotEl, line.enter_motion, 520);
-      } else if (slotKey === focusSlot && line?.idle_motion) {
-        applySlotMotion(slotEl, line.idle_motion, 620);
-      }
+      UIManager.setStandingSlot(slotKey, staged, isFocus, isDim, motion);
     });
   }
 
-  function typeText(text, onComplete) {
-    const el = elText();
-    el.textContent = '';
-    el.classList.add('typing-cursor');
+  function typeText(speaker, text, portrait, onComplete) {
+    let currentText = '';
     _typing = true;
-    elHint().classList.add('hidden-hint');
+    UIManager.setClickHintVisible(false);
 
     let i = 0;
     clearInterval(_timer);
     _timer = setInterval(() => {
-      el.textContent += text[i++];
+      currentText += text[i++];
+      UIManager.setDialogue(speaker, currentText, portrait);
       if (i >= text.length) {
         clearInterval(_timer);
         _typing = false;
-        el.classList.remove('typing-cursor');
-        elHint().classList.remove('hidden-hint');
+        UIManager.setClickHintVisible(true);
         if (onComplete) onComplete();
       }
-    }, TYPING_SPEED);
-  }
-
-  function setPortrait(speaker, portraitUrl) {
-    const wrap = document.getElementById('portrait-wrap');
-    const img = elPortrait();
-    const old = wrap.querySelector('.portrait-placeholder');
-
-    if (old) old.remove();
-
-    if (portraitUrl) {
-      img.src = portraitUrl;
-      img.style.display = '';
-    } else if (speaker) {
-      img.src = '';
-      img.style.display = 'none';
-
-      const ph = document.createElement('div');
-      ph.className = 'portrait-placeholder';
-      ph.textContent = speaker.charAt(0);
-      wrap.appendChild(ph);
-    } else {
-      img.src = '';
-      img.style.display = 'none';
-    }
+    }, Config.TYPING.DEFAULT_SPEED || 32);
   }
 
   function showLine(line) {
-    const box = elBox();
     renderStage(line);
-    Effects.pulse(line.fx_type || '', 950);
-    const speakerName = getCharacterName(line);
-
-    if (line.style === 'narration' || !speakerName) {
-      box.className = 'narration';
-      elSpeaker().textContent = '';
-      setPortrait('', '');
-    } else {
-      box.className = (line.style && line.style !== 'normal') ? line.style : '';
-      elSpeaker().textContent = speakerName;
-      setPortrait(speakerName, getCharacterImage(line));
+    // Effects check
+    if (typeof EffectManager?.pulse === 'function') {
+      EffectManager.pulse(line.fx_type || '', 950);
     }
+    
+    const speakerName = getCharacterName(line);
+    const portrait = (line.style === 'narration' || !speakerName) ? null : getCharacterImage(line);
+    const displaySpeaker = (line.style === 'narration' || !speakerName) ? '' : speakerName;
 
-    typeText(line.text);
+    typeText(displaySpeaker, line.text, portrait);
   }
 
   function advance() {
@@ -187,9 +107,13 @@ const Dialogue = (() => {
       clearInterval(_timer);
       _typing = false;
       const line = _lines[_index - 1];
-      elText().textContent = line ? line.text : '';
-      elText().classList.remove('typing-cursor');
-      elHint().classList.remove('hidden-hint');
+      if (line) {
+        const speakerName = getCharacterName(line);
+        const portrait = (line.style === 'narration' || !speakerName) ? null : getCharacterImage(line);
+        const displaySpeaker = (line.style === 'narration' || !speakerName) ? '' : speakerName;
+        UIManager.setDialogue(displaySpeaker, line.text, portrait);
+      }
+      UIManager.setClickHintVisible(true);
       return;
     }
 
@@ -232,20 +156,22 @@ const Dialogue = (() => {
         return;
       }
 
+      UIManager.setDialogueBoxVisible(true);
       advance();
     },
 
     advance,
 
     init() {
-      const box = document.getElementById('dialogue-box');
-      box.addEventListener('click', () => {
-        if (Save.isPanelOpen() || Evidence.isOpen()) return;
-        Dialogue.advance();
-      });
+      const box = document.getElementById(Config.SELECTORS.DIALOGUE_BOX);
+      if (box) {
+        box.addEventListener('click', () => {
+          if (Save.isPanelOpen() || Evidence.isOpen()) return;
+          Dialogue.advance();
+        });
+      }
       document.addEventListener('keydown', e => {
-        const titleVisible = !document.getElementById('title-screen').classList.contains('hidden');
-        if (titleVisible || Choice.isVisible() || Save.isPanelOpen() || Evidence.isOpen()) return;
+        if (InputManager.isTitleVisible?.() || Choice.isVisible() || Save.isPanelOpen() || Evidence.isOpen()) return;
         if (e.code === 'Space' || e.code === 'Enter') {
           e.preventDefault();
           Dialogue.advance();

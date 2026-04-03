@@ -5,7 +5,6 @@ const Save = (() => {
   const SLOT_COUNT = 3;
   const SAVE_KEY = n => `gyeongseong_save_${n}`;
 
-  // 구버전 단일 슬롯 마이그레이션
   function migrateLegacy() {
     const legacy = localStorage.getItem('gyeongseong_save');
     if (!legacy) return;
@@ -13,20 +12,6 @@ const Save = (() => {
       localStorage.setItem(SAVE_KEY(1), legacy);
     }
     localStorage.removeItem('gyeongseong_save');
-  }
-
-  function showToast(msg, variant = '') {
-    const el = document.getElementById('system-toast');
-    el.classList.remove('toast-save', 'toast-error', 'toast-choice');
-    if (variant) el.classList.add(variant);
-    el.textContent = msg;
-    el.classList.remove('hidden');
-    el.classList.add('show');
-    clearTimeout(el._timer);
-    el._timer = setTimeout(() => {
-      el.classList.remove('show');
-      setTimeout(() => el.classList.add('hidden'), 300);
-    }, 2000);
   }
 
   function getSlotInfo(n) {
@@ -40,9 +25,7 @@ const Save = (() => {
         timestamp: parsed.timestamp || '',
         state: raw,
       };
-    } catch {
-      return null;
-    }
+    } catch { return null; }
   }
 
   function formatTimestamp(iso) {
@@ -62,108 +45,78 @@ const Save = (() => {
 
   let _pendingAction = null;
 
-  function showSlotPanel(action) {
-    _pendingAction = action;
-    const panel = document.getElementById('slot-panel');
-    const overlay = document.getElementById('slot-overlay');
-    const title = document.getElementById('slot-panel-title');
-    const subtitle = document.getElementById('slot-panel-subtitle');
-    const list = document.getElementById('slot-list');
-    const lastSlot = parseInt(localStorage.getItem('gyeongseong_last_slot') || '1', 10);
-
-    title.textContent = action === 'save' ? '저장 슬롯 선택' : '불러오기 슬롯 선택';
-    subtitle.textContent = action === 'save'
-      ? `마지막 자동저장 슬롯은 ${lastSlot}번입니다. 원하는 위치에 현재 진행을 남길 수 있습니다.`
-      : `마지막 자동저장 슬롯은 ${lastSlot}번입니다. 저장된 지점으로 진행을 되돌립니다.`;
-    list.innerHTML = '';
-
-    for (let n = 1; n <= SLOT_COUNT; n++) {
+  function handleSlotClick(n) {
+    if (_pendingAction === 'save') {
+      const state = State.dump();
+      state.timestamp = new Date().toISOString();
+      localStorage.setItem(SAVE_KEY(n), JSON.stringify(state));
+      localStorage.setItem('gyeongseong_last_slot', n);
+      UIManager.showToast(`슬롯 ${n}번에 저장을 완료했습니다.`, 'toast-save');
+    } else {
       const info = getSlotInfo(n);
-      const btn = document.createElement('button');
-      btn.className = 'slot-btn' + (info ? '' : ' slot-empty') + (n === lastSlot ? ' slot-last-used' : '');
-      btn.dataset.slot = n;
-      const tagHtml = n === lastSlot ? '<span class="slot-tag">자동저장</span>' : '';
-
-      if (info) {
-        const sceneTitle = getSceneTitle(info.sceneId);
-        btn.innerHTML = `
-          <span class="slot-name">슬롯 ${n}  ·  CH${info.chapter}  ${sceneTitle}${tagHtml}</span>
-          <span class="slot-info">${formatTimestamp(info.timestamp)}</span>
-        `;
-      } else {
-        btn.innerHTML = `
-          <span class="slot-name">슬롯 ${n}${tagHtml}</span>
-          <span class="slot-info">비어있음</span>
-        `;
-        if (action === 'load') {
-          btn.disabled = true;
-          btn.style.opacity = '0.4';
-          btn.style.cursor = 'default';
-        }
+      if (info && info.state) {
+        State.deserialize(info.state);
+        localStorage.setItem('gyeongseong_last_slot', n);
+        UIManager.showToast(`슬롯 ${n}번 기록을 불러왔습니다.`, 'toast-save');
+        document.dispatchEvent(new Event('game:loaded'));
+        Scene.load(State.currentSceneId, null, true);
       }
-
-      btn.addEventListener('click', () => {
-        if (action === 'save') saveToSlot(n);
-        else loadFromSlot(n);
-        hideSlotPanel();
-      });
-
-      list.appendChild(btn);
     }
-
-    overlay.classList.remove('hidden');
-    panel.classList.remove('hidden');
+    hidePanel();
   }
 
-  function hideSlotPanel() {
-    document.getElementById('slot-panel').classList.add('hidden');
-    document.getElementById('slot-overlay').classList.add('hidden');
+  function showSlotPanel(action) {
+    _pendingAction = action;
+    const lastSlot = parseInt(localStorage.getItem('gyeongseong_last_slot') || '1', 10);
+    const title = action === 'save' ? '저장 슬롯 선택' : '불러오기 슬롯 선택';
+    const subtitle = action === 'save'
+      ? `마지막 자동저장 슬롯은 ${lastSlot}번입니다. 원하는 위치에 현재 진행을 남길 수 있습니다.`
+      : `마지막 자동저장 슬롯은 ${lastSlot}번입니다. 저장된 지점으로 진행을 되돌립니다.`;
+
+    const slotsData = [];
+    for (let n = 1; n <= SLOT_COUNT; n++) {
+      const info = getSlotInfo(n);
+      slotsData.push({
+        number: n,
+        isEmpty: !info,
+        isLastUsed: n === lastSlot,
+        isDisabled: action === 'load' && !info,
+        chapter: info?.chapter || 1,
+        sceneTitle: getSceneTitle(info?.sceneId),
+        timeText: formatTimestamp(info?.timestamp)
+      });
+    }
+
+    UIManager.renderSaveSlotList(slotsData, handleSlotClick, title, subtitle);
+    UIManager.setPanelVisible(Config.SELECTORS.SLOT_PANEL, true);
+    UIManager.setPanelVisible('slot-overlay', true);
+  }
+
+  function hidePanel() {
+    UIManager.setPanelVisible(Config.SELECTORS.SLOT_PANEL, false);
+    UIManager.setPanelVisible('slot-overlay', false);
     _pendingAction = null;
   }
 
-  function saveToSlot(n, silent = false) {
-    try {
-      const stateJson = JSON.parse(State.serialize());
-      stateJson.timestamp = new Date().toISOString();
-      localStorage.setItem(SAVE_KEY(n), JSON.stringify(stateJson));
-      localStorage.setItem('gyeongseong_last_slot', String(n));
-      if (!silent) showToast(`슬롯 ${n}에 저장했습니다.`, 'toast-save');
-    } catch (e) {
-      showToast('저장에 실패했습니다.', 'toast-error');
-      console.error(e);
-    }
-  }
-
-  function loadFromSlot(n) {
-    const raw = localStorage.getItem(SAVE_KEY(n));
-    if (!raw) {
-      showToast('저장 데이터가 없습니다.', 'toast-error');
-      return false;
-    }
-    if (!State.deserialize(raw)) {
-      showToast('저장 데이터를 불러올 수 없습니다.', 'toast-error');
-      return false;
-    }
-    if (typeof Evidence?.hydrateSession === 'function') {
-      Evidence.hydrateSession();
-    }
-    showToast(`슬롯 ${n}에서 불러왔습니다.`, 'toast-save');
-    document.dispatchEvent(new Event('game:loaded'));
-    Scene.load(State.currentSceneId, null, { restoreProgress: true });
-    return true;
-  }
-
   return {
-    toast: showToast,
+    init() {
+      migrateLegacy();
+      const closeBtn = document.getElementById('slot-panel-close');
+      const overlay = document.getElementById('slot-overlay');
+      if (closeBtn) closeBtn.addEventListener('click', hidePanel);
+      if (overlay) overlay.addEventListener('click', hidePanel);
+      console.log('[Save] Initialized');
+    },
 
     save(silent = false) {
       if (silent) {
-        // 자동저장: 마지막으로 사용한 슬롯 또는 슬롯 1
-        const lastSlot = parseInt(localStorage.getItem('gyeongseong_last_slot') || '1', 10);
-        saveToSlot(lastSlot, true);
-      } else {
-        showSlotPanel('save');
+        const lastSlot = localStorage.getItem('gyeongseong_last_slot') || '1';
+        const state = State.dump();
+        state.timestamp = new Date().toISOString();
+        localStorage.setItem(SAVE_KEY(lastSlot), JSON.stringify(state));
+        return;
       }
+      showSlotPanel('save');
     },
 
     load() {
@@ -177,12 +130,6 @@ const Save = (() => {
       return false;
     },
 
-    hidePanel: hideSlotPanel,
-
-    isPanelOpen() {
-      const panel = document.getElementById('slot-panel');
-      return !!panel && !panel.classList.contains('hidden');
-    },
 
     clear() {
       for (let n = 1; n <= SLOT_COUNT; n++) {
