@@ -6,9 +6,11 @@
 :root {
   --bg-dark:    #0a0a0f;
   --bg-panel:   rgba(8, 5, 3, 0.88);
-  --border:     rgba(180, 140, 80, 0.35);
+  --bg-glass:   rgba(10, 12, 16, 0.65);
+  --border:     rgba(180, 140, 80, 0.28);
   --gold:       #c8a84b;
-  --gold-light: #e8d08a;
+  --gold-dim:   rgba(200, 168, 75, 0.45);
+  --gold-light: #f2e3bd;
   --blue-eerie: #1a2a4a;
   --blue-glow:  #3a6aaa;
   --text-main:  #d4c9b0;
@@ -17,6 +19,7 @@
   --red-blood:  #8a1a1a;
   --font-main:  'Noto Serif KR', 'Nanum Myeongjo', Georgia, serif;
   --font-ui:    'Noto Sans KR', 'Malgun Gothic', sans-serif;
+  --panel-blur: blur(12px);
 }
 
 html, body {
@@ -68,60 +71,101 @@ body { display: flex; align-items: center; justify-content: center; }
 
 #investigation-hud {
   position: absolute;
-  top: 16px;
-  left: 68px;
+  top: 24px;
+  left: 72px;
   z-index: 21;
-  min-width: 240px;
-  max-width: min(420px, calc(100% - 160px));
-  padding: 10px 14px;
-  border: 1px solid rgba(200, 168, 75, 0.16);
-  background: linear-gradient(135deg, rgba(8, 10, 14, 0.72) 0%, rgba(12, 8, 6, 0.78) 100%);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
-  backdrop-filter: blur(4px);
-  transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  min-width: 280px;
+  max-width: min(440px, calc(100% - 160px));
+  padding: 12px 18px;
+  border-left: 2px solid var(--gold);
+  background: 
+    linear-gradient(135deg, rgba(12, 15, 20, 0.85) 0%, rgba(18, 14, 10, 0.88) 100%);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+  backdrop-filter: var(--panel-blur);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+#investigation-hud::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  opacity: 0.15;
+  pointer-events: none;
 }
 
 .hud-row {
   display: flex;
   justify-content: space-between;
+  align-items: baseline;
   gap: 12px;
 }
 
 .hud-row + .hud-row {
-  margin-top: 6px;
-  padding-top: 6px;
-  border-top: 1px solid rgba(200, 168, 75, 0.1);
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(200, 168, 75, 0.08);
 }
 
 #hud-scene-title {
-  color: var(--text-main);
-  font-size: 14px;
-  letter-spacing: 0.04em;
+  color: var(--gold-light);
+  font-family: var(--font-main);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
 }
 
-#hud-chapter,
+#hud-chapter {
+  color: var(--gold-dim);
+  font-family: var(--font-ui);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
 #hud-evidence-count,
-#hud-state-readout,
-#hud-focus-kicker,
-#hud-focus-text {
-  color: var(--text-dim);
+#hud-state-readout {
+  color: var(--text-main);
   font-family: var(--font-ui);
   font-size: 11px;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
+  opacity: 0.8;
+}
+
+#hud-state-readout::before {
+  content: '· ';
+  color: var(--gold);
+}
+
+#hud-focus-row {
+  display: flex;
+  gap: 12px;
+  padding-top: 10px;
+  margin-top: 8px;
+  border-top: 1px solid var(--gold-dim);
+  transition: all 0.3s;
 }
 
 #hud-focus-kicker {
   color: var(--gold);
+  font-family: var(--font-ui);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  white-space: nowrap;
 }
 
 #hud-focus-text {
   color: var(--text-main);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  line-height: 1.5;
   text-align: right;
+  flex: 1;
 }
 
 #game-container.hud-priority-active #investigation-hud {
-  border-color: rgba(200, 168, 75, 0.28);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22), 0 0 0 1px rgba(200, 168, 75, 0.08) inset;
+  border-left-color: #3a6aaa;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45), 0 0 15px rgba(58, 106, 170, 0.15);
 }
 
 #standing-stage {
@@ -639,7 +683,6 @@ body { display: flex; align-items: center; justify-content: center; }
 
 /* ── 상단 메뉴 ── */
 #top-menu {
-  position: absolute; top: 16px; right: 16px;
   display: flex; gap: 8px;
   z-index: 20;
 }
@@ -661,25 +704,33 @@ body { display: flex; align-items: center; justify-content: center; }
 /* ── 메모 버튼 ── */
 #memo-btn {
   position: absolute; top: 16px; left: 16px;
-  background: var(--bg-panel);
+  background: var(--bg-glass);
   border: 1px solid var(--border);
-  color: var(--text-dim);
-  font-size: 18px;
-  width: 40px; height: 40px;
+  color: var(--gold);
+  font-size: 20px;
+  width: 44px; height: 44px;
   cursor: pointer;
   z-index: 20;
-  transition: border-color 0.2s, color 0.2s, transform 0.2s;
+  backdrop-filter: var(--panel-blur);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 #memo-btn:hover {
   border-color: var(--gold);
-  color: var(--gold);
-  transform: translateY(-1px);
+  color: var(--gold-light);
+  transform: translateY(-2px);
+  background: rgba(30, 25, 20, 0.8);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
 }
 
 .memo-btn-icon {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
+  filter: sepia(0.5);
 }
 
 #memo-badge {
@@ -812,20 +863,40 @@ body { display: flex; align-items: center; justify-content: center; }
 
 /* ── 단서 획득 토스트 ── */
 #evidence-toast {
-  position: absolute; bottom: 180px; left: 50%;
+  position: absolute; bottom: 200px; left: 50%;
   transform: translateX(-50%);
-  background: var(--bg-panel);
+  background: rgba(18, 14, 10, 0.92);
   border: 1px solid var(--gold);
   color: var(--gold-light);
-  font-family: var(--font-ui);
-  font-size: 13px;
-  padding: 8px 20px;
+  font-family: var(--font-main);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  padding: 12px 32px;
   z-index: 40;
   white-space: nowrap;
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 10px rgba(200, 168, 75, 0.2);
+  pointer-events: none;
 }
-#evidence-toast.show { opacity: 1; }
+
+#evidence-toast::before {
+  content: '◖ RECORD ◗';
+  display: block;
+  font-family: var(--font-ui);
+  font-size: 9px;
+  color: var(--gold);
+  opacity: 0.6;
+  text-align: center;
+  margin-bottom: 4px;
+  letter-spacing: 0.3em;
+}
+
+#evidence-toast.show { 
+  opacity: 1; 
+  transform: translateX(-50%) translateY(-10px);
+}
 
 /* ── 시스템 토스트 ── */
 #system-toast {
@@ -875,12 +946,14 @@ body { display: flex; align-items: center; justify-content: center; }
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  width: min(420px, calc(100% - 32px));
-  background: linear-gradient(180deg, #0e0c08 0%, #080604 100%);
-  border: 1px solid var(--border);
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.7);
+  width: min(460px, calc(100% - 32px));
+  background: 
+    linear-gradient(180deg, rgba(20, 18, 14, 0.96) 0%, rgba(10, 8, 6, 0.98) 100%);
+  border: 1px solid var(--gold-dim);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
   z-index: 46;
-  padding: 20px;
+  padding: 32px;
+  backdrop-filter: var(--panel-blur);
 }
 #slot-panel-title {
   font-family: var(--font-ui);
