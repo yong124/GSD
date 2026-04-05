@@ -2,6 +2,8 @@ const Evidence = (() => {
   let _allEvidence = {};
   let _seenEvidence = new Set();
   let _activeTab = 'status';
+  let _selectedQuestionId = null;
+  let _selectedEvidenceByQuestion = {};
 
   function getEvidenceCategory(ev) {
     return {
@@ -265,28 +267,161 @@ const Evidence = (() => {
       return dataQuestions
         .filter(question => evaluateQuestionVisible(question.visible_rule_id, context))
         .map(question => {
+        const relatedEvidenceIds = Array.isArray(question.related_evidence_ids) ? question.related_evidence_ids : [];
+        const relatedEvidence = relatedEvidenceIds.map(evidenceId => {
+          const ev = _allEvidence[evidenceId];
+          return {
+            evidenceId,
+            name: ev?.name || evidenceId,
+            isOwned: State.getFlag(`HasEvidence_${evidenceId}`) === true || State.getEvidence().includes(evidenceId),
+          };
+        });
+        const ownedEvidence = relatedEvidence.filter(item => item.isOwned);
+        const solvedFlagId = question.solved_flag_id || '';
+        const isSolved = solvedFlagId ? State.getFlag(solvedFlagId) === true : false;
+        const solutionEvidenceIds = Array.isArray(question.solution_evidence_ids) && question.solution_evidence_ids.length > 0
+          ? question.solution_evidence_ids
+          : (question.solution_evidence_id ? [question.solution_evidence_id] : []);
         return {
+          questionId: question.question_id || '',
           title: question.title || '',
           state: evaluateQuestionState(question.state_rule_id, context),
           detail: question.detail || '',
+          category: question.category || '',
+          isSolved,
+          resolvedDetail: question.resolved_detail || '',
+          successToast: question.success_toast || '',
+          failureToast: question.failure_toast || '',
+          solutionEvidenceId: question.solution_evidence_id || '',
+          solutionEvidenceIds,
+          solutionMode: question.solution_mode || (solutionEvidenceIds.length > 1 ? 'All' : 'Any'),
+          solvedFlagId,
+          rewardFlagId: question.reward_flag_id || '',
+          rewardValue: question.reward_value,
+          rewardMode: question.reward_mode || 'Set',
+          relatedEvidence,
+          ownedEvidence,
         };
       });
     }
     return [];
   }
 
+  function applyQuestionReward(question) {
+    if (!question?.rewardFlagId) return;
+    if (question.rewardMode === 'Add') {
+      const currentValue = State.getFlag(question.rewardFlagId);
+      const base = Number(currentValue || 0);
+      const delta = Number(question.rewardValue || 0);
+      State.setFlag(question.rewardFlagId, base + delta);
+      return;
+    }
+    State.setFlag(question.rewardFlagId, question.rewardValue);
+  }
+
+  function toggleQuestionEvidence(questionId, evidenceId) {
+    if (!questionId || !evidenceId) return;
+    if (!_selectedEvidenceByQuestion[questionId]) {
+      _selectedEvidenceByQuestion[questionId] = new Set();
+    }
+    const bucket = _selectedEvidenceByQuestion[questionId];
+    if (bucket.has(evidenceId)) bucket.delete(evidenceId);
+    else bucket.add(evidenceId);
+    if (this.isOpen()) renderNotebook();
+  }
+
+  function getSelectedEvidenceIds(questionId) {
+    return Array.from(_selectedEvidenceByQuestion[questionId] || []);
+  }
+
+  function isQuestionSolved(question, selectedEvidenceIds) {
+    const solutionIds = question.solutionEvidenceIds || [];
+    if (solutionIds.length === 0) return false;
+    if (question.solutionMode === 'All') {
+      return solutionIds.every(id => selectedEvidenceIds.includes(id));
+    }
+    return selectedEvidenceIds.some(id => solutionIds.includes(id));
+  }
+
+  function solveQuestion(questionId, evidenceIds) {
+    const questions = getQuestionEntries();
+    const question = questions.find(item => item.questionId === questionId);
+    if (!question) {
+      UIManager.showToast('해당 질문을 찾지 못했습니다.', 'error');
+      return;
+    }
+
+    if (question.isSolved) {
+      UIManager.showToast('이미 정리된 질문입니다.', 'save');
+      return;
+    }
+
+    const pickedIds = Array.isArray(evidenceIds) ? evidenceIds : [evidenceIds].filter(Boolean);
+    const allOwned = pickedIds.every(evidenceId => question.ownedEvidence.some(item => item.evidenceId === evidenceId));
+    if (pickedIds.length === 0 || !allOwned) {
+      UIManager.showToast('지금 가진 단서로만 질문을 정리할 수 있습니다.', 'error');
+      return;
+    }
+
+    if (isQuestionSolved(question, pickedIds)) {
+      if (question.solvedFlagId) {
+        State.setFlag(question.solvedFlagId, true);
+      }
+      applyQuestionReward(question);
+      delete _selectedEvidenceByQuestion[questionId];
+      UIManager.showToast(question.successToast || `질문 정리: ${question.title}`, 'impact');
+    } else {
+      UIManager.showToast(question.failureToast || '아직 이 질문을 묶을 근거가 부족합니다.', 'error');
+    }
+
+    if (this.isOpen()) renderNotebook();
+  }
+
   function renderNotebook() {
     const scene = Engine.data?.scenes?.[State.currentSceneId];
+    const questions = getQuestionEntries();
+    if (!questions.find(item => item.questionId === _selectedQuestionId)) {
+      _selectedQuestionId = questions[0]?.questionId || null;
+    }
+    Object.keys(_selectedEvidenceByQuestion).forEach(questionId => {
+      const question = questions.find(item => item.questionId === questionId);
+      if (!question || question.isSolved) {
+        delete _selectedEvidenceByQuestion[questionId];
+        return;
+      }
+      const validIds = new Set((question.ownedEvidence || []).map(item => item.evidenceId));
+      _selectedEvidenceByQuestion[questionId] = new Set(
+        Array.from(_selectedEvidenceByQuestion[questionId] || []).filter(id => validIds.has(id))
+      );
+    });
+
     UIManager.renderNotebook({
       metaText: `단서 ${State.getEvidence().length}건 · ${scene?.title || State.currentSceneId || '대기 중'}`,
       statusCards: getStatusCards(),
       goal: getCurrentSceneGoal(),
       characters: getCharacterEntries(),
       evidenceGroups: prepareMemoData(),
-      questions: getQuestionEntries()
-    }, _activeTab, (tab) => {
-      _activeTab = tab;
-      renderNotebook();
+      questions,
+      selectedQuestionId: _selectedQuestionId,
+      selectedQuestionEvidenceIds: getSelectedEvidenceIds(_selectedQuestionId),
+    }, _activeTab, {
+      onTabChange: (tab) => {
+        _activeTab = tab;
+        renderNotebook();
+      },
+      onQuestionSelect: (questionId) => {
+        _selectedQuestionId = questionId;
+        renderNotebook();
+      },
+      onQuestionSubmit: (questionId, evidenceId) => {
+        solveQuestion(questionId, evidenceId);
+      },
+      onQuestionEvidenceToggle: (questionId, evidenceId) => {
+        toggleQuestionEvidence(questionId, evidenceId);
+      },
+      onQuestionEvidenceCommit: (questionId) => {
+        solveQuestion(questionId, getSelectedEvidenceIds(questionId));
+      }
     });
   }
 
@@ -347,6 +482,9 @@ const Evidence = (() => {
     init() {
       const btn = document.getElementById('memo-btn');
       const close = document.getElementById('memo-close');
+      State.on('change', () => {
+        if (this.isOpen()) renderNotebook();
+      });
 
       if (btn) {
         btn.addEventListener('click', () => {

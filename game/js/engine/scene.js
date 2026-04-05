@@ -78,6 +78,14 @@ const Scene = (() => {
     return (scene.priority_budget || 0) > 0 && (scene.choices || []).some(choice => choice.priority_cost != null);
   }
 
+  function getAvailableEvidenceChoices(scene) {
+    return (scene.evidence_choices || []).filter(choice => {
+      const evidenceId = choice?.evidence_id;
+      if (!evidenceId) return false;
+      return State.getFlag(`HasEvidence_${evidenceId}`) === true;
+    });
+  }
+
   function playContainerTransition(durationMs, onDone) {
     const container = document.getElementById('game-container');
     if (!container) {
@@ -124,30 +132,46 @@ const Scene = (() => {
     function afterDialogue() {
       Evidence.collectOnClick(scene);
       const choices = scene.choices || [];
+      const evidenceChoices = getAvailableEvidenceChoices(scene);
 
-      if (hasPriorityMode(scene)) {
-        const afterLines = scene.priority_after_dialogues || [];
-        Choice.showPriority(scene, () => {
-          if (afterLines.length > 0) {
-            Dialogue.start(afterLines, () => loadResolvedNext(scene), null);
+      const continueAfterEvidence = () => {
+        if (hasPriorityMode(scene)) {
+          const afterLines = scene.priority_after_dialogues || [];
+          Choice.showPriority(scene, () => {
+            if (afterLines.length > 0) {
+              Dialogue.start(afterLines, () => loadResolvedNext(scene), null);
+            } else {
+              loadResolvedNext(scene);
+            }
+          });
+        } else if (choices.length > 0) {
+          Choice.show(choices, chosen => {
+            const nextScene    = chosen.next_scene || null;
+            const nextDialogue = chosen.next_dialogue || null;
+            if (nextScene) {
+              Scene.load(nextScene, nextDialogue);
+            } else if (nextDialogue) {
+              Dialogue.start(scene.dialogues || [], afterDialogue, nextDialogue);
+            } else {
+              loadResolvedNext(scene);
+            }
+          });
+        } else {
+          loadResolvedNext(scene);
+        }
+      };
+
+      if (evidenceChoices.length > 0) {
+        Choice.showEvidence(scene, evidenceChoices, chosen => {
+          const branchLines = (scene.evidence_dialogues || {})[chosen.next_dialogue || ''] || [];
+          if (branchLines.length > 0) {
+            Dialogue.start(branchLines, continueAfterEvidence, null);
           } else {
-            loadResolvedNext(scene);
-          }
-        });
-      } else if (choices.length > 0) {
-        Choice.show(choices, chosen => {
-          const nextScene    = chosen.next_scene || null;
-          const nextDialogue = chosen.next_dialogue || null;
-          if (nextScene) {
-            Scene.load(nextScene, nextDialogue);
-          } else if (nextDialogue) {
-            Dialogue.start(scene.dialogues || [], afterDialogue, nextDialogue);
-          } else {
-            loadResolvedNext(scene);
+            continueAfterEvidence();
           }
         });
       } else {
-        loadResolvedNext(scene);
+        continueAfterEvidence();
       }
     }
 

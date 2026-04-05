@@ -148,6 +148,12 @@ def validate_dialogue_character_refs(scene_id, scene, data, issues):
 
 def validate_questions(data, issues):
     questions = data.get("questions", []) or []
+    evidence_ids = {
+        evidence.get("evidence_id")
+        for scene in (data.get("scenes", {}) or {}).values()
+        for evidence in (scene.get("evidence", []) or [])
+        if evidence.get("evidence_id")
+    }
     visible_rule_ids = {
         rule.get("rule_id")
         for rule in (data.get("rules", []) or [])
@@ -174,6 +180,25 @@ def validate_questions(data, issues):
             issues.append(f"[Question.visible_rule_id] {question.get('question_id') or '(unknown)'} -> {visible_rule_id} (missing Visible RuleID)")
         if state_rule_id and state_rule_id not in state_rule_ids:
             issues.append(f"[Question.state_rule_id] {question.get('question_id') or '(unknown)'} -> {state_rule_id} (missing State RuleID)")
+        related_ids = question.get("related_evidence_ids") or []
+        for evidence_id in related_ids:
+            if evidence_id not in evidence_ids:
+                issues.append(f"[Question.related_evidence_ids] {question.get('question_id') or '(unknown)'} -> {evidence_id} (missing EvidenceID)")
+        solution_evidence_id = question.get("solution_evidence_id")
+        solution_evidence_ids = question.get("solution_evidence_ids") or []
+        if solution_evidence_id:
+            if solution_evidence_id not in evidence_ids:
+                issues.append(f"[Question.solution_evidence_id] {question.get('question_id') or '(unknown)'} -> {solution_evidence_id} (missing EvidenceID)")
+            if related_ids and solution_evidence_id not in related_ids:
+                issues.append(f"[Question.solution_evidence_id] {question.get('question_id') or '(unknown)'} solution must be included in related_evidence_ids")
+        for evidence_id in solution_evidence_ids:
+            if evidence_id not in evidence_ids:
+                issues.append(f"[Question.solution_evidence_ids] {question.get('question_id') or '(unknown)'} -> {evidence_id} (missing EvidenceID)")
+            if related_ids and evidence_id not in related_ids:
+                issues.append(f"[Question.solution_evidence_ids] {question.get('question_id') or '(unknown)'} solution evidence must be included in related_evidence_ids")
+        solution_mode = question.get("solution_mode")
+        if solution_mode and solution_mode not in {"Any", "All"}:
+            issues.append(f"[Question.solution_mode] {question.get('question_id') or '(unknown)'} invalid SolutionMode: {solution_mode}")
 
 
 def validate_state_descriptors(data, issues):

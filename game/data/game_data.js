@@ -185,7 +185,16 @@ window.GAME_DATA = {
       "sort_order": 10,
       "category": "Witness",
       "visible_rule_id": "QR_IpangyuSeen",
-      "state_rule_id": "QS_IpangyuCall"
+      "state_rule_id": "QS_IpangyuCall",
+      "related_evidence_ids": ["EvNote", "EvBlueCloth", "EvRitualNote"],
+      "solution_evidence_id": "EvNote",
+      "solved_flag_id": "QuestionSolved_QIpangyuCall",
+      "resolved_detail": "붉은 쪽지는 이판규가 우연히 뛰쳐나간 것이 아니라, 낙원 쪽의 호출에 떠밀려 움직였다는 직접적인 흔적이다. 그의 광기는 불려간 자의 잔향에 가깝다.",
+      "success_toast": "질문 정리: 이판규를 부른 흔적을 붙들었다.",
+      "failure_toast": "아직은 호출의 근거를 바로 묶기 어렵다.",
+      "reward_flag_id": "InvestigationScore",
+      "reward_value": 1,
+      "reward_mode": "Add"
     },
     {
       "question_id": "QSonggeumMissing",
@@ -194,7 +203,16 @@ window.GAME_DATA = {
       "sort_order": 20,
       "category": "Missing",
       "visible_rule_id": "QR_SonggeumOpen",
-      "state_rule_id": "QS_SonggeumMissing"
+      "state_rule_id": "QS_SonggeumMissing",
+      "related_evidence_ids": ["EvDiary", "EvBlueHanbok", "EvOldArticles"],
+      "solution_evidence_id": "EvDiary",
+      "solved_flag_id": "QuestionSolved_QSonggeumMissing",
+      "resolved_detail": "숨겨진 일기장은 송금의 실종이 단순 도피가 아니라, 의례 속 역할로 밀려 들어간 소거였음을 보여준다. 사라짐은 계획된 순서의 일부다.",
+      "success_toast": "질문 정리: 송금의 실종이 의례와 이어진다는 근거를 확보했다.",
+      "failure_toast": "이 단서만으로는 송금의 실종 이유를 단정하기 어렵다.",
+      "reward_flag_id": "ReadRitualScore",
+      "reward_value": 1,
+      "reward_mode": "Add"
     },
     {
       "question_id": "QRitualLead",
@@ -203,7 +221,18 @@ window.GAME_DATA = {
       "sort_order": 30,
       "category": "Ritual",
       "visible_rule_id": "QR_RitualOpen",
-      "state_rule_id": "QS_RitualLead"
+      "state_rule_id": "QS_RitualLead",
+      "related_evidence_ids": ["EvRitualScore", "EvOldArticles", "EvRitualNote", "EvMask"],
+      "solution_evidence_id": "EvRitualNote",
+      "solution_evidence_ids": ["EvRitualScore", "EvRitualNote"],
+      "solution_mode": "All",
+      "solved_flag_id": "QuestionSolved_QRitualLead",
+      "resolved_detail": "의례실 종이는 낙원의 의식이 우발적 소문이 아니라, 그릇과 순서를 세어가며 밀어붙인 구조적 의례였음을 드러낸다. 누군가 끝까지 판을 쥐고 있었다.",
+      "success_toast": "질문 정리: 낙원의 의식이 계획된 구조였다는 근거를 붙들었다.",
+      "failure_toast": "악보와 의례실 기록이 함께 이어져야 의식의 구조를 단정할 수 있다.",
+      "reward_flag_id": "ResonanceLevel",
+      "reward_value": 1,
+      "reward_mode": "Add"
     }
   ],
   "state_descriptors": [
@@ -386,6 +415,17 @@ window.GAME_DATA = {
       "priority": 30
     },
     {
+      "rule_row_id": "RR_QIpangyuState_00",
+      "rule_id": "QS_IpangyuCall",
+      "rule_kind": "State",
+      "fact_type": "FlagValue",
+      "fact_key": "QuestionSolved_QIpangyuCall",
+      "operator": "Equals",
+      "value": true,
+      "result_value": "해결됨",
+      "priority": 1
+    },
+    {
       "rule_row_id": "RR_QIpangyuState_01",
       "rule_id": "QS_IpangyuCall",
       "rule_kind": "State",
@@ -397,6 +437,17 @@ window.GAME_DATA = {
       "priority": 10
     },
     {
+      "rule_row_id": "RR_QSonggeumState_00",
+      "rule_id": "QS_SonggeumMissing",
+      "rule_kind": "State",
+      "fact_type": "FlagValue",
+      "fact_key": "QuestionSolved_QSonggeumMissing",
+      "operator": "Equals",
+      "value": true,
+      "result_value": "해결됨",
+      "priority": 1
+    },
+    {
       "rule_row_id": "RR_QSonggeumState_01",
       "rule_id": "QS_SonggeumMissing",
       "rule_kind": "State",
@@ -406,6 +457,17 @@ window.GAME_DATA = {
       "value": true,
       "result_value": "단서 확보",
       "priority": 10
+    },
+    {
+      "rule_row_id": "RR_QRitualState_00",
+      "rule_id": "QS_RitualLead",
+      "rule_kind": "State",
+      "fact_type": "FlagValue",
+      "fact_key": "QuestionSolved_QRitualLead",
+      "operator": "Equals",
+      "value": true,
+      "result_value": "해결됨",
+      "priority": 1
     },
     {
       "rule_row_id": "RR_QRitualState_01",
@@ -2873,6 +2935,8 @@ window.GAME_DATA = {
       "music": "assets/sfx/mystery.mp3",
       "next_scene": "ch4a_slum",
       "effect": null,
+      "evidence_prompt_title": "기사와 단서를 맞대 본다",
+      "evidence_prompt_hint": "자료실 기사 위에 지금 가진 단서를 직접 겹쳐 보며, 무엇이 같은 손에 의해 지워졌는지 확인한다.",
       "branches": [],
       "dialogues": [
         {
@@ -3007,6 +3071,70 @@ window.GAME_DATA = {
           "emotion_type": "Tense",
           "standing_slot": "Right",
           "focus_type": "Speaker"
+        }
+      ],
+      "evidence_dialogues": {
+        "present_diary": [
+          {
+            "order": 1,
+            "speaker": "유웅룡",
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker",
+            "text": "일기장을 기사 옆에 펼쳐 두니, 공포를 남긴 문장과 공포를 지운 문장이 한 줄처럼 이어집니다. 누군가는 비명을 기록으로 남기고, 누군가는 그 기록이 읽히지 않게 접어 둔 겁니다.",
+            "style": "thought",
+            "portrait": "assets/portraits/yuu.jpeg",
+            "condition": null
+          },
+          {
+            "order": 2,
+            "speaker": "",
+            "text": "유웅룡은 기사 밑줄과 일기 문장을 번갈아 짚는다. 피해자의 목소리와 편집된 기록이 같은 날숨 안에서 겹치는 순간, 사건은 괴담이 아니라 조작된 삭제로 형태를 갖춘다.",
+            "style": "narration",
+            "portrait": null,
+            "condition": null
+          }
+        ],
+        "present_hanbok": [
+          {
+            "order": 1,
+            "speaker": "유웅룡",
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker",
+            "text": "청색 한복의 결을 기사 문장과 맞대 보니, '실종'이라 적힌 빈칸이 전부 의례의 배역표처럼 읽히는군요. 사람을 찾은 게 아니라, 쓸 몸을 골랐던 겁니다.",
+            "style": "thought",
+            "portrait": "assets/portraits/yuu.jpeg",
+            "condition": null
+          },
+          {
+            "order": 2,
+            "speaker": "",
+            "text": "옷감의 차가운 결이 손끝에 남는다. 기사에 적힌 사라진 여자들의 문장이 더는 사건 기록이 아니라, 역할이 정해진 순번처럼 보이기 시작한다.",
+            "style": "narration",
+            "portrait": null,
+            "condition": null
+          }
+        ]
+      },
+      "evidence_choices": [
+        {
+          "order": 1,
+          "text": "숨겨진 일기장을 기사 옆에 펼쳐 놓는다.",
+          "evidence_id": "EvDiary",
+          "flag_key": "InvestigationScore",
+          "flag_value": 3,
+          "next_dialogue": "present_diary"
+        },
+        {
+          "order": 2,
+          "text": "청색 한복의 결을 기사 기록과 대조한다.",
+          "evidence_id": "EvBlueHanbok",
+          "flag_key": "ReadRitualScore",
+          "flag_value": 1,
+          "next_dialogue": "present_hanbok"
         }
       ],
       "choices": [
@@ -4449,6 +4577,8 @@ window.GAME_DATA = {
       "music": "assets/sfx/ritual.mp3",
       "next_scene": "ch6_threshold",
       "effect": 2,
+      "evidence_prompt_title": "지금 가진 증거를 제단 앞에 들이민다",
+      "evidence_prompt_hint": "의례실에서 붙든 구조와 단서를 지금 이 자리의 흔적에 겹쳐, 무엇이 반복되고 있는지 더 분명하게 확인한다.",
       "branches": [],
       "dialogues": [
         {
@@ -4636,6 +4766,74 @@ window.GAME_DATA = {
             "flag_key": "HasEvidence_EvOldArticles",
             "flag_value": true
           }
+        }
+      ],
+      "evidence_dialogues": {
+        "present_ritual_note": [
+          {
+            "order": 1,
+            "speaker": "유웅룡",
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker",
+            "text": "이 종이에 적힌 '셋 중 하나가 남았다'는 문장은 헛소문이 아니었군요. 제단 앞 숫자와 딱 맞아떨어집니다. 여기선 사람 이름보다 남은 몫이 먼저 세어졌어요.",
+            "style": "thought",
+            "portrait": "assets/portraits/yuu.jpeg",
+            "condition": null
+          },
+          {
+            "order": 2,
+            "speaker": "송순",
+            "speaker_id": "Songsoon",
+            "emotion_type": "Afraid",
+            "standing_slot": "Left",
+            "focus_type": "Speaker",
+            "text": "언니가 사람으로 불린 적이 거의 없었던 거네요…. 처음부터 누가 될지만 정해 놓고 끌고 온 거예요.",
+            "style": "normal",
+            "portrait": "assets/portraits/songsoon.jpeg",
+            "condition": null
+          }
+        ],
+        "present_ritual_score": [
+          {
+            "order": 1,
+            "speaker": "유웅룡",
+            "speaker_id": "Yuu",
+            "emotion_type": "Trance",
+            "standing_slot": "Right",
+            "focus_type": "Speaker",
+            "text": "창고에서 챙긴 악보와 지금 흐르는 노랫소리의 결이 같습니다. 제단은 장식이 아니고, 이 방 전체가 한 곡의 구조 안에 사람 숨을 집어넣는 장치였군요.",
+            "style": "thought",
+            "portrait": "assets/portraits/yuu.jpeg",
+            "condition": null
+          },
+          {
+            "order": 2,
+            "speaker": "",
+            "text": "악보 위 주문과 제단의 흔적이 하나로 포개진다. 들리는 노래가 의식의 배경음이 아니라, 사람을 문턱 쪽으로 몰아넣는 실제 기구였다는 사실이 또렷해진다.",
+            "style": "narration",
+            "portrait": null,
+            "condition": null
+          }
+        ]
+      },
+      "evidence_choices": [
+        {
+          "order": 1,
+          "text": "의례실 종이를 제단 앞 문장과 맞대 본다.",
+          "evidence_id": "EvRitualNote",
+          "flag_key": "ReadRitualScore",
+          "flag_value": 2,
+          "next_dialogue": "present_ritual_note"
+        },
+        {
+          "order": 2,
+          "text": "감응 악보를 지금 울리는 노래와 겹쳐 본다.",
+          "evidence_id": "EvRitualScore",
+          "flag_key": "ResonanceLevel",
+          "flag_value": 2,
+          "next_dialogue": "present_ritual_score"
         }
       ],
       "choices": [],

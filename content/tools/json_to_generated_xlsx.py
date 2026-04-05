@@ -47,7 +47,7 @@ SHEET_DEFS = {
         "headers": ["CharacterID", "EmotionType", "ImagePath"],
     },
     "QuestionTable": {
-        "headers": ["QuestionID", "Title", "Detail", "SortOrder", "Category", "VisibleRuleID", "StateRuleID"],
+        "headers": ["QuestionID", "Title", "Detail", "SortOrder", "Category", "VisibleRuleID", "StateRuleID", "RelatedEvidenceIDs", "SolutionEvidenceID", "SolutionEvidenceIDs", "SolutionMode", "SolvedFlagID", "ResolvedDetail", "SuccessToast", "FailureToast", "RewardFlagID", "RewardValue", "RewardMode"],
     },
     "StateDescriptorTable": {
         "headers": ["DescriptorID", "TargetFlagID", "MinValue", "MaxValue", "Label", "Detail"],
@@ -250,6 +250,17 @@ def build_question_rows(data):
             "Category": question.get("category"),
             "VisibleRuleID": question.get("visible_rule_id"),
             "StateRuleID": question.get("state_rule_id"),
+            "RelatedEvidenceIDs": ", ".join(question.get("related_evidence_ids", []) or []),
+            "SolutionEvidenceID": question.get("solution_evidence_id"),
+            "SolutionEvidenceIDs": ", ".join(question.get("solution_evidence_ids", []) or []),
+            "SolutionMode": question.get("solution_mode"),
+            "SolvedFlagID": question.get("solved_flag_id"),
+            "ResolvedDetail": question.get("resolved_detail"),
+            "SuccessToast": question.get("success_toast"),
+            "FailureToast": question.get("failure_toast"),
+            "RewardFlagID": question.get("reward_flag_id"),
+            "RewardValue": question.get("reward_value"),
+            "RewardMode": question.get("reward_mode"),
         })
     rows.sort(key=lambda x: ((x.get("SortOrder") or 0), (x.get("QuestionID") or "")))
     return rows

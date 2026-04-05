@@ -224,11 +224,13 @@
 .choice-btn.choice-investigation::before { content: '[ 檢 ]'; color: #7aadcc; }
 .choice-btn.choice-relationship::before  { content: '[ 緣 ]'; color: var(--gold); }
 .choice-btn.choice-risk::before          { content: '[ 厄 ]'; color: #c87070; }
+.choice-btn.choice-evidence::before      { content: '[ 證 ]'; color: #d8c589; }
 .choice-btn.choice-decision::before      { content: '[ 斷 ]'; color: var(--text-narr); }
 
 .choice-btn.choice-investigation { border-left: 3px solid #3a6aaa; }
 .choice-btn.choice-relationship  { border-left: 3px solid var(--gold); }
 .choice-btn.choice-risk          { border-left: 3px solid #8a1a1a; }
+.choice-btn.choice-evidence      { border-left: 3px solid #d8c589; }
 .choice-btn.choice-decision      { border-left: 3px solid var(--text-dim); }
 
 .choice-btn.choice-picked {

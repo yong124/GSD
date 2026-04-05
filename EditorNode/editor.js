@@ -1474,6 +1474,17 @@
       Category: question?.category || '',
       VisibleRuleID: question?.visible_rule_id || '',
       StateRuleID: question?.state_rule_id || '',
+      RelatedEvidenceIDs: Array.isArray(question?.related_evidence_ids) ? question.related_evidence_ids.join(', ') : '',
+      SolutionEvidenceID: question?.solution_evidence_id || '',
+      SolutionEvidenceIDs: Array.isArray(question?.solution_evidence_ids) ? question.solution_evidence_ids.join(', ') : '',
+      SolutionMode: question?.solution_mode || '',
+      SolvedFlagID: question?.solved_flag_id || '',
+      ResolvedDetail: question?.resolved_detail || '',
+      SuccessToast: question?.success_toast || '',
+      FailureToast: question?.failure_toast || '',
+      RewardFlagID: question?.reward_flag_id || '',
+      RewardValue: question?.reward_value ?? '',
+      RewardMode: question?.reward_mode || '',
     }));
   }
 
@@ -1563,7 +1574,7 @@
 
     const cards = makeCard(
       'Character', rows,
-      (row) => `
+        (row) => `
         <label><span>CharacterID</span>
           <input data-field="CharacterID" value="${escapeAttr(row.CharacterID || '')}" placeholder="예: Yuu"></label>
         <label><span>DisplayName</span>
@@ -1746,9 +1757,31 @@
           <input data-field="Category" value="${escapeAttr(row.Category || '')}" placeholder="예: Missing"></label>
         <label><span>VisibleRuleID</span>
           <input data-field="VisibleRuleID" value="${escapeAttr(row.VisibleRuleID || '')}" placeholder="예: QR_SonggeumOpen"></label>
-        <label><span>StateRuleID</span>
-          <input data-field="StateRuleID" value="${escapeAttr(row.StateRuleID || '')}" placeholder="예: QS_SonggeumMissing"></label>
-      `,
+          <label><span>StateRuleID</span>
+            <input data-field="StateRuleID" value="${escapeAttr(row.StateRuleID || '')}" placeholder="예: QS_SonggeumMissing"></label>
+          <label><span>RelatedEvidenceIDs</span>
+            <input data-field="RelatedEvidenceIDs" value="${escapeAttr(row.RelatedEvidenceIDs || '')}" placeholder="예: EvDiary, EvOldArticles"></label>
+          <label><span>SolutionEvidenceID</span>
+            <input data-field="SolutionEvidenceID" value="${escapeAttr(row.SolutionEvidenceID || '')}" placeholder="예: EvDiary"></label>
+          <label><span>SolutionEvidenceIDs</span>
+            <input data-field="SolutionEvidenceIDs" value="${escapeAttr(row.SolutionEvidenceIDs || '')}" placeholder="예: EvRitualScore, EvRitualNote"></label>
+          <label><span>SolutionMode</span>
+            <input data-field="SolutionMode" value="${escapeAttr(row.SolutionMode || '')}" placeholder="Any / All"></label>
+          <label><span>SolvedFlagID</span>
+            <input data-field="SolvedFlagID" value="${escapeAttr(row.SolvedFlagID || '')}" placeholder="예: QuestionSolved_QSonggeumMissing"></label>
+          <label><span>ResolvedDetail</span>
+            <textarea data-field="ResolvedDetail" rows="3">${escapeHtml(row.ResolvedDetail || '')}</textarea></label>
+          <label><span>SuccessToast</span>
+            <textarea data-field="SuccessToast" rows="2">${escapeHtml(row.SuccessToast || '')}</textarea></label>
+          <label><span>FailureToast</span>
+            <textarea data-field="FailureToast" rows="2">${escapeHtml(row.FailureToast || '')}</textarea></label>
+          <label><span>RewardFlagID</span>
+            <input data-field="RewardFlagID" value="${escapeAttr(row.RewardFlagID || '')}" placeholder="예: InvestigationScore"></label>
+          <label><span>RewardValue</span>
+            <input data-field="RewardValue" value="${escapeAttr(row.RewardValue != null ? String(row.RewardValue) : '')}" placeholder="예: 1"></label>
+          <label><span>RewardMode</span>
+            <input data-field="RewardMode" value="${escapeAttr(row.RewardMode || '')}" placeholder="Set / Add"></label>
+        `,
       () => {
         state.data.questions = state.data.questions || [];
         state.data.questions.push(newQuestion());
@@ -1766,13 +1799,24 @@
         if (field === 'QuestionID') target.question_id = value || '';
         if (field === 'Title') target.title = value || '';
         if (field === 'Detail') target.detail = value || '';
-        if (field === 'SortOrder') target.sort_order = value === '' ? null : Number.parseInt(value, 10);
-        if (field === 'Category') target.category = value || '';
-        if (field === 'VisibleRuleID') target.visible_rule_id = value || '';
-        if (field === 'StateRuleID') target.state_rule_id = value || '';
-        markDirty();
-      }
-    );
+          if (field === 'SortOrder') target.sort_order = value === '' ? null : Number.parseInt(value, 10);
+          if (field === 'Category') target.category = value || '';
+          if (field === 'VisibleRuleID') target.visible_rule_id = value || '';
+          if (field === 'StateRuleID') target.state_rule_id = value || '';
+          if (field === 'RelatedEvidenceIDs') target.related_evidence_ids = String(value || '').split(',').map(part => part.trim()).filter(Boolean);
+          if (field === 'SolutionEvidenceID') target.solution_evidence_id = value || '';
+          if (field === 'SolutionEvidenceIDs') target.solution_evidence_ids = String(value || '').split(',').map(part => part.trim()).filter(Boolean);
+          if (field === 'SolutionMode') target.solution_mode = value || '';
+          if (field === 'SolvedFlagID') target.solved_flag_id = value || '';
+          if (field === 'ResolvedDetail') target.resolved_detail = value || '';
+          if (field === 'SuccessToast') target.success_toast = value || '';
+          if (field === 'FailureToast') target.failure_toast = value || '';
+          if (field === 'RewardFlagID') target.reward_flag_id = value || '';
+          if (field === 'RewardValue') target.reward_value = value === '' ? null : (/^-?\d+(\.\d+)?$/.test(String(value)) ? Number(value) : value);
+          if (field === 'RewardMode') target.reward_mode = value || '';
+          markDirty();
+        }
+      );
 
     els.questionList.appendChild(cards);
   }
@@ -1912,7 +1956,26 @@
     return { CharacterID: '', EmotionType: 'Neutral', ImagePath: '' };
   }
   function newQuestion() {
-    return { question_id: '', title: '', detail: '', sort_order: null, category: '', visible_rule_id: '', state_rule_id: '' };
+    return {
+      question_id: '',
+      title: '',
+      detail: '',
+      sort_order: null,
+      category: '',
+      visible_rule_id: '',
+      state_rule_id: '',
+      related_evidence_ids: [],
+      solution_evidence_id: '',
+      solution_evidence_ids: [],
+      solution_mode: '',
+      solved_flag_id: '',
+      resolved_detail: '',
+      success_toast: '',
+      failure_toast: '',
+      reward_flag_id: '',
+      reward_value: null,
+      reward_mode: '',
+    };
   }
   function newStateDescriptor() {
     return { descriptor_id: '', target_flag_id: '', min_value: 0, max_value: 0, label: '', detail: '' };

@@ -5,6 +5,7 @@ const Choice = (() => {
     if (!choice) return '선택의 파장이 남습니다.';
     const key = choice.flag_key || '';
     if (isPriority) return '조사 방향이 또렷해집니다.';
+    if (choice.evidence_id) return '붙든 단서가 새로운 반응을 끌어냅니다.';
 
     switch (key) {
       case 'SongsoonTrust':
@@ -28,6 +29,7 @@ const Choice = (() => {
 
   function getChoiceType(choice, isPriority = false) {
     if (isPriority) return 'choice-investigation';
+    if (choice?.evidence_id) return 'choice-evidence';
     const key = choice?.flag_key || '';
     if (['SongsoonTrust', 'TrustedSongsoon', 'OkryunPushed'].includes(key)) return 'choice-relationship';
     if (['InvestigationScore', 'ReadRitualScore', 'FoundOldArticles'].includes(key)) return 'choice-investigation';
@@ -69,6 +71,15 @@ const Choice = (() => {
       hint: scene.priority_hint || '남은 조사 기회 안에서 무엇을 먼저 확인할지 정하세요.',
       indicator: `남은 조사 기회  ${remaining} / ${budget}`,
       hudText: `${title} · ${remaining} / ${budget}`,
+    };
+  }
+
+  function getEvidenceMeta(scene, count) {
+    return {
+      kicker: '증거 제시',
+      title: scene.evidence_prompt_title || '지금 내밀 단서를 고른다',
+      hint: scene.evidence_prompt_hint || '지금 가진 단서 가운데, 이 장면을 흔들 근거를 직접 내밀어 보세요.',
+      indicator: `제시 가능 단서  ${count}건`,
     };
   }
 
@@ -134,6 +145,20 @@ const Choice = (() => {
       };
 
       render();
+    },
+
+    showEvidence(scene, evidenceChoices, onChoose) {
+      UIManager.setDialogueBoxVisible(false);
+      const mappedChoices = mapChoices(evidenceChoices);
+      const meta = getEvidenceMeta(scene, mappedChoices.length);
+
+      UIManager.renderChoiceList(mappedChoices, (picked) => {
+        applyChoiceFlag(picked);
+        showChoiceImpact(picked);
+        finishChoice(onChoose, picked);
+      }, meta);
+
+      UIManager.setChoiceBoxVisible(true);
     },
 
     hide() {

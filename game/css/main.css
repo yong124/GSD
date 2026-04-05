@@ -1115,6 +1115,23 @@ body {
   gap: 10px;
 }
 
+.question-select {
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.18s ease, transform 0.18s ease, background 0.18s ease;
+}
+
+.question-select:hover {
+  border-color: rgba(200, 168, 75, 0.34);
+  background: linear-gradient(180deg, rgba(24, 19, 13, 0.8) 0%, rgba(14, 11, 8, 0.7) 100%);
+}
+
+.question-select.is-selected {
+  border-color: rgba(200, 168, 75, 0.46);
+  box-shadow: inset 0 0 0 1px rgba(200, 168, 75, 0.12);
+}
+
 .question-title {
   color: var(--gold-light);
   font-size: 13px;
@@ -1128,11 +1145,142 @@ body {
   margin-bottom: 4px;
 }
 
+.question-state.is-solved,
+.question-resolution-state.is-solved {
+  color: #d8c589;
+}
+
 .question-detail {
   color: var(--text-dim);
   font-family: var(--font-ui);
   font-size: 11px;
   line-height: 1.6;
+}
+
+.question-resolution {
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid rgba(180, 140, 80, 0.16);
+  background: linear-gradient(180deg, rgba(14, 11, 8, 0.76) 0%, rgba(9, 7, 5, 0.68) 100%);
+}
+
+.question-resolution-title {
+  color: var(--gold-light);
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.question-resolution-state {
+  color: var(--text-main);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.question-resolution-detail,
+.question-resolution-empty {
+  color: var(--text-dim);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.question-resolution-subtitle {
+  margin-top: 12px;
+  margin-bottom: 8px;
+  color: var(--gold);
+  font-family: var(--font-ui);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+}
+
+.question-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.question-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(180, 140, 80, 0.18);
+  background: rgba(16, 12, 9, 0.66);
+  color: var(--text-dim);
+  font-family: var(--font-ui);
+  font-size: 10px;
+  line-height: 1;
+}
+
+.question-chip.is-owned {
+  color: var(--gold-light);
+  border-color: rgba(200, 168, 75, 0.34);
+}
+
+.question-evidence-list {
+  display: grid;
+  gap: 8px;
+}
+
+.question-evidence-btn {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(180, 140, 80, 0.2);
+  background: rgba(15, 11, 8, 0.8);
+  color: var(--text-main);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+}
+
+.question-evidence-btn:hover {
+  border-color: rgba(200, 168, 75, 0.42);
+  background: rgba(24, 18, 13, 0.92);
+  transform: translateY(-1px);
+}
+
+.question-evidence-btn.is-selected {
+  border-color: rgba(200, 168, 75, 0.46);
+  background: rgba(28, 22, 15, 0.96);
+  box-shadow: inset 0 0 0 1px rgba(200, 168, 75, 0.14);
+}
+
+.question-evidence-name {
+  color: var(--text-main);
+}
+
+.question-evidence-tag {
+  color: var(--gold);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
+
+.question-commit-btn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 11px 12px;
+  border: 1px solid rgba(200, 168, 75, 0.26);
+  background: linear-gradient(180deg, rgba(30, 23, 14, 0.92) 0%, rgba(19, 15, 10, 0.88) 100%);
+  color: var(--gold-light);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: border-color 0.18s ease, transform 0.18s ease, background 0.18s ease;
+}
+
+.question-commit-btn:hover {
+  border-color: rgba(200, 168, 75, 0.48);
+  background: linear-gradient(180deg, rgba(40, 30, 18, 0.96) 0%, rgba(24, 18, 12, 0.92) 100%);
+  transform: translateY(-1px);
 }
 
 /* ── 단서 획득 토스트 ── */

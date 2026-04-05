@@ -344,7 +344,7 @@ const UIManager = (() => {
     }).join('');
   }
 
-  function renderNotebook(data, activeTab, onTabChange) {
+  function renderNotebook(data, activeTab, handlers = {}) {
     const list = $('memo-list');
     const meta = $('memo-meta');
     const tabButtons = Array.from(document.querySelectorAll('#memo-tabs .memo-tab'));
@@ -358,7 +358,7 @@ const UIManager = (() => {
       const isActive = btn.dataset.tab === activeTab;
       btn.classList.toggle('is-active', isActive);
       btn.onclick = () => {
-        if (!isActive && onTabChange) onTabChange(btn.dataset.tab);
+        if (!isActive && handlers.onTabChange) handlers.onTabChange(btn.dataset.tab);
       };
     });
 
@@ -408,18 +408,79 @@ const UIManager = (() => {
       return;
     }
 
-    if (activeTab === 'questions') {
-      const questions = (data?.questions || []).map(item => `
-        <article class="question-card">
+      if (activeTab === 'questions') {
+      const questions = data?.questions || [];
+      if (questions.length === 0) {
+        list.innerHTML = '<div class="memo-empty">현재 정리된 질문이 없습니다.</div>';
+        return;
+      }
+
+      const selectedQuestion = questions.find(item => item.questionId === data?.selectedQuestionId) || questions[0];
+      const selectedEvidenceIds = data?.selectedQuestionEvidenceIds || [];
+      const questionCards = questions.map(item => `
+        <button class="question-card question-select ${item.questionId === selectedQuestion?.questionId ? 'is-selected' : ''}" data-question-id="${item.questionId}">
           <div class="question-title">${item.title}</div>
-          <div class="question-state">${item.state}</div>
+          <div class="question-state ${item.isSolved ? 'is-solved' : ''}">${item.state}</div>
           <div class="question-detail">${item.detail}</div>
-        </article>
+        </button>
       `).join('');
 
-      list.innerHTML = questions
-        ? `<section class="notebook-pane"><div class="memo-section-title">남은 질문</div><div class="question-list">${questions}</div></section>`
-        : '<div class="memo-empty">현재 정리된 질문이 없습니다.</div>';
+      const isConnectionQuestion = (selectedQuestion?.solutionEvidenceIds || []).length > 1 || selectedQuestion?.solutionMode === 'All';
+      const evidenceOptions = (selectedQuestion?.ownedEvidence || []).map(item => `
+        <button class="question-evidence-btn ${selectedEvidenceIds.includes(item.evidenceId) ? 'is-selected' : ''}" data-question-id="${selectedQuestion.questionId}" data-evidence-id="${item.evidenceId}">
+          <span class="question-evidence-name">${item.name}</span>
+          <span class="question-evidence-tag">${isConnectionQuestion ? '연결' : '제출'}</span>
+        </button>
+      `).join('');
+
+      const relatedEvidence = (selectedQuestion?.relatedEvidence || []).map(item => `
+        <span class="question-chip ${item.isOwned ? 'is-owned' : 'is-missing'}">${item.name}</span>
+      `).join('');
+
+      const resolutionHtml = selectedQuestion ? `
+        <section class="question-resolution">
+          <div class="memo-section-title">질문 정리</div>
+          <div class="question-resolution-title">${selectedQuestion.title}</div>
+          <div class="question-resolution-state ${selectedQuestion.isSolved ? 'is-solved' : ''}">${selectedQuestion.state}</div>
+          <div class="question-resolution-detail">${selectedQuestion.isSolved && selectedQuestion.resolvedDetail ? selectedQuestion.resolvedDetail : selectedQuestion.detail}</div>
+          <div class="question-resolution-subtitle">관련 단서</div>
+          <div class="question-chip-list">${relatedEvidence || '<span class="question-chip is-missing">연결 단서 없음</span>'}</div>
+          <div class="question-resolution-subtitle">${isConnectionQuestion ? '보유 단서를 연결해 정리' : '보유 단서로 정리'}</div>
+          ${selectedQuestion.isSolved
+            ? '<div class="question-resolution-empty">이미 정리한 질문입니다.</div>'
+            : (evidenceOptions
+              ? `<div class="question-evidence-list">${evidenceOptions}</div>${isConnectionQuestion ? `
+                <button class="question-commit-btn" data-question-id="${selectedQuestion.questionId}">
+                  선택한 단서를 근거로 질문 정리
+                </button>
+              ` : ''}`
+              : '<div class="question-resolution-empty">아직 이 질문을 정리할 단서를 확보하지 못했습니다.</div>')}
+        </section>
+      ` : '';
+
+      list.innerHTML = `
+        <section class="notebook-pane">
+          <div class="memo-section-title">남은 질문</div>
+          <div class="question-list">${questionCards}</div>
+        </section>
+        ${resolutionHtml}
+      `;
+
+      list.querySelectorAll('.question-select').forEach(btn => {
+        btn.addEventListener('click', () => handlers.onQuestionSelect?.(btn.dataset.questionId));
+      });
+      list.querySelectorAll('.question-evidence-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (isConnectionQuestion) {
+            handlers.onQuestionEvidenceToggle?.(btn.dataset.questionId, btn.dataset.evidenceId);
+          } else {
+            handlers.onQuestionSubmit?.(btn.dataset.questionId, btn.dataset.evidenceId);
+          }
+        });
+      });
+      list.querySelectorAll('.question-commit-btn').forEach(btn => {
+        btn.addEventListener('click', () => handlers.onQuestionEvidenceCommit?.(btn.dataset.questionId));
+      });
       return;
     }
 
