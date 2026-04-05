@@ -19,9 +19,11 @@
   const FX_TYPE_OPTIONS = ['None', 'Fog', 'BlueTrace', 'BloodSmear', 'Flicker', 'RitualGlow'];
   const RULE_KIND_OPTIONS = ['Visible', 'State'];
   const QUESTION_RESOLUTION_TYPE_OPTIONS = ['Evidence', 'Contradiction'];
-  const RULE_FACT_TYPE_OPTIONS = ['RevealedCharacter', 'HasEvidence', 'SceneProgressIndex', 'FlagValue'];
+  const EDITOR_DATA_UI = window.EditorDataUI || {};
+  const RULE_FACT_TYPE_OPTIONS = EDITOR_DATA_UI.RULE_FACT_TYPE_OPTIONS || ['RevealedCharacter', 'HasEvidence', 'SceneProgressIndex', 'FlagValue'];
   const RULE_OPERATOR_OPTIONS = ['Equals', 'Gte'];
-  const CONDITION_TYPE_OPTIONS = ['Trust', 'EvidenceOwned', 'RevealedCharacter', 'SceneProgressIndex', 'InvestigationScore', 'ResonanceLevel', 'StateValue'];
+  const CONDITION_TYPE_OPTIONS = EDITOR_DATA_UI.CONDITION_TYPE_OPTIONS || ['Trust', 'EvidenceOwned', 'ChoiceSelected', 'RevealedCharacter', 'SceneProgressIndex', 'ReadRitualScore', 'ResonanceLevel', 'InvestigationScore', 'SongsoonTrust', 'StateValue'];
+  const STATE_TYPE_OPTIONS = EDITOR_DATA_UI.STATE_TYPE_OPTIONS || ['ReadRitualScore', 'ResonanceLevel', 'InvestigationScore', 'SongsoonTrust'];
   const COMPARE_TYPE_OPTIONS = ['Equal', 'NotEqual', 'Greater', 'GreaterEqual', 'Less', 'LessEqual'];
   const CHOICE_GROUP_TYPE_OPTIONS = ['Normal', 'Investigation', 'Evidence'];
   const NEXT_TYPE_OPTIONS = ['Scene', 'Dialog', 'None'];
@@ -33,6 +35,7 @@
     selectedId: null,
     selectedIds: new Set(),
     panelTab: 'node',
+    dataTab: 'characters',
     previewDialogueIndex: 0,
     filters: { query: '', chapter: '' },
     camera: { x: 100, y: 100, scale: 1 },
@@ -51,6 +54,7 @@
   const els = {};
 
   function bindElements() {
+    els.workspace    = $('workspace');
     els.viewport     = $('viewport');
     els.canvas       = $('canvas');
     els.wireLayer    = $('wire-layer');
@@ -60,8 +64,10 @@
     els.panelEmpty   = $('panel-empty');
     els.panelContent = $('panel-content');
     els.tabNodeEditor = $('tab-node-editor');
-    els.tabCharacterEditor = $('tab-character-editor');
+    els.tabDataEditor = $('tab-data-editor');
     els.panelTabSections = Array.from(document.querySelectorAll('[data-panel-tab]'));
+    els.dataPanelTabs = $('data-panel-tabs');
+    els.dataTabButtons = Array.from(document.querySelectorAll('#data-panel-tabs .data-tab'));
     els.fieldTitle   = $('field-title');
     els.fieldBg      = $('field-background');
     els.fieldSearch  = $('field-search');
@@ -154,8 +160,23 @@
       });
     });
   }
+  function getDataOptions(type) {
+    const ui = EDITOR_DATA_UI;
+    if (type === 'characterIds' && typeof ui.collectCharacterIds === 'function') return ui.collectCharacterIds(state.data);
+    if (type === 'choiceIds' && typeof ui.collectChoiceIds === 'function') return ui.collectChoiceIds(state.data);
+    if (type === 'dialogIds' && typeof ui.collectDialogIds === 'function') return ui.collectDialogIds(state.data);
+    if (type === 'sceneIds' && typeof ui.collectSceneIds === 'function') return ui.collectSceneIds(state.data);
+    if (type === 'evidenceIds' && typeof ui.collectEvidenceIds === 'function') return ui.collectEvidenceIds(state.data);
+    if (type === 'ruleIds' && typeof ui.collectRuleIds === 'function') return ui.collectRuleIds(state.data);
+    if (type === 'conditionGroupIds' && typeof ui.collectConditionGroupIds === 'function') return ui.collectConditionGroupIds(state.data);
+    if (type === 'choiceGroupIds' && typeof ui.collectChoiceGroupIds === 'function') return ui.collectChoiceGroupIds(state.data);
+    if (type === 'investigationIds' && typeof ui.collectInvestigationIds === 'function') return ui.collectInvestigationIds(state.data);
+    if (type === 'evidenceCategoryIds' && typeof ui.collectEvidenceCategoryIds === 'function') return ui.collectEvidenceCategoryIds(state.data);
+    return [];
+  }
+
   function replaceCharacterIdInputs(container, fieldName = 'CharacterID') {
-    const characterIds = Object.keys(state.data.characters || {}).sort();
+    const characterIds = getDataOptions('characterIds');
     container.querySelectorAll(`input[data-field="${fieldName}"]`).forEach(input => {
       const select = document.createElement('select');
       select.dataset.field = fieldName;
@@ -203,16 +224,32 @@
   }
 
   function setPanelTab(tab) {
-    state.panelTab = tab === 'character' ? 'character' : 'node';
+    const nextTab = tab === 'data' ? 'data' : 'node';
+    if (state.panelTab === nextTab) return;
+    state.panelTab = nextTab;
+    renderPanel();
+  }
+
+  function setDataTab(tab) {
+    const nextTab = tab || 'characters';
+    if (state.dataTab === nextTab) return;
+    state.dataTab = nextTab;
     renderPanel();
   }
 
   function applyPanelTabVisibility() {
-    const activeTab = state.panelTab === 'character' ? 'character' : 'node';
+    const activeTab = state.panelTab === 'data' ? 'data' : 'node';
+    els.workspace?.classList.toggle('data-mode', activeTab === 'data');
     if (els.tabNodeEditor) els.tabNodeEditor.classList.toggle('active', activeTab === 'node');
-    if (els.tabCharacterEditor) els.tabCharacterEditor.classList.toggle('active', activeTab === 'character');
+    if (els.tabDataEditor) els.tabDataEditor.classList.toggle('active', activeTab === 'data');
+    if (els.dataPanelTabs) els.dataPanelTabs.classList.toggle('hidden', activeTab !== 'data');
+    (els.dataTabButtons || []).forEach(button => {
+      button.classList.toggle('active', button.dataset.dataTab === state.dataTab);
+    });
     (els.panelTabSections || []).forEach(section => {
-      section.classList.toggle('hidden', section.dataset.panelTab !== activeTab);
+      const matchesPanel = section.dataset.panelTab === activeTab;
+      const matchesData = activeTab !== 'data' || !section.dataset.dataTab || section.dataset.dataTab === state.dataTab;
+      section.classList.toggle('hidden', !(matchesPanel && matchesData));
     });
   }
 
@@ -402,12 +439,11 @@
       if (!scene) continue;
 
       const nexts = [];
-      if (scene.next_scene && scenes[scene.next_scene]) nexts.push(scene.next_scene);
       (scene.branches || []).forEach(b => {
         if (b.next_scene && scenes[b.next_scene]) nexts.push(b.next_scene);
       });
       (scene.choices || []).forEach(c => {
-        if (c.next_scene && scenes[c.next_scene]) nexts.push(c.next_scene);
+        if (c.next_type === 'Scene' && c.next_id && scenes[c.next_id]) nexts.push(c.next_id);
       });
 
       nexts.forEach(nid => {
@@ -440,22 +476,29 @@
       if (reachable.has(id) || !scenes[id]) continue;
       reachable.add(id);
       const scene = scenes[id];
-      if (scene.next_scene && scenes[scene.next_scene]) stack.push(scene.next_scene);
       (scene.branches || []).forEach(branch => {
         if (branch.next_scene && scenes[branch.next_scene]) stack.push(branch.next_scene);
       });
       (scene.choices || []).forEach(choice => {
-        if (choice.next_scene && scenes[choice.next_scene]) stack.push(choice.next_scene);
+        if (choice.next_type === 'Scene' && choice.next_id && scenes[choice.next_id]) stack.push(choice.next_id);
       });
     }
 
     return reachable;
   }
 
+  function getDefaultBranch(scene) {
+    return (scene?.branches || []).find(branch => !branch.condition_group_id) || null;
+  }
+
+  function getDefaultNextScene(scene) {
+    return getDefaultBranch(scene)?.next_scene || '';
+  }
+
   function isEndingScene(scene) {
-    const hasDefaultNext = Boolean(scene.next_scene);
+    const hasDefaultNext = Boolean(getDefaultNextScene(scene));
     const hasBranchNext = (scene.branches || []).some(branch => branch.next_scene);
-    const hasChoiceNext = (scene.choices || []).some(choice => choice.next_scene);
+    const hasChoiceNext = (scene.choices || []).some(choice => choice.next_type === 'Scene' && choice.next_id);
     return !hasDefaultNext && !hasBranchNext && !hasChoiceNext;
   }
 
@@ -522,17 +565,17 @@
       scene.background,
       scene.music,
       scene.effect,
-      scene.next_scene,
+      scene.investigation_id,
     ];
 
-      (scene.dialogues || []).forEach(dialogue => {
-        tokens.push(dialogue.label, dialogue.speaker, dialogue.speaker_id, dialogue.emotion_type, dialogue.text, dialogue.condition?.flag_key, dialogue.condition?.flag_value);
-      });
+    (scene.dialogues || []).forEach(dialogue => {
+      tokens.push(dialogue.label, dialogue.speaker, dialogue.speaker_id, dialogue.emotion_type, dialogue.text, dialogue.condition_group_id, dialogue.choice_group_id, dialogue.next_dialog_id);
+    });
     (scene.choices || []).forEach(choice => {
-      tokens.push(choice.text, choice.flag_key, choice.flag_value, choice.next_scene, choice.next_dialogue);
+      tokens.push(choice.choice_id, choice.choice_group_id, choice.text, choice.condition_group_id, choice.next_type, choice.next_id, choice.evidence_id, choice.trust_character_id, choice.state_type);
     });
     (scene.branches || []).forEach(branch => {
-      tokens.push(branch.flag_key, branch.flag_value, branch.next_scene);
+      tokens.push(branch.branch_id, branch.condition_group_id, branch.next_scene);
     });
     (scene.evidence || []).forEach(evidence => {
       tokens.push(evidence.evidence_id || evidence.id, evidence.name, evidence.description);
@@ -609,24 +652,26 @@
 
     Object.entries(scenes).forEach(([id, scene]) => {
       if (!visibleIds.has(id)) return;
-      const from = pinPos(id, 'out');
-      if (from && scene.next_scene && scenes[scene.next_scene] && visibleIds.has(scene.next_scene)) {
-        const to = pinPos(scene.next_scene, 'in');
-        if (to) addWire(from.x, from.y, to.x, to.y, 'wire-next');
+      const defaultNext = getDefaultNextScene(scene);
+      if (defaultNext && scenes[defaultNext] && visibleIds.has(defaultNext)) {
+        const from = pinPos(id, 'out');
+        const to = pinPos(defaultNext, 'in');
+        if (from && to) addWire(from.x, from.y, to.x, to.y, 'wire-next');
       }
       (scene.branches || []).forEach((branch, i) => {
+        if (!branch.condition_group_id) return;
         if (!branch.next_scene || !scenes[branch.next_scene] || !visibleIds.has(branch.next_scene)) return;
         const bfrom = pinPos(id, 'branch', i);
         const bto   = pinPos(branch.next_scene, 'in');
         if (bfrom && bto) {
-          const label = branch.flag_key ? `${branch.flag_key}=${branch.flag_value ?? ''}` : null;
+          const label = branch.condition_group_id || null;
           addWire(bfrom.x, bfrom.y, bto.x, bto.y, 'wire-branch', label);
         }
       });
       (scene.choices || []).forEach((choice, i) => {
-        if (!choice.next_scene || !scenes[choice.next_scene] || !visibleIds.has(choice.next_scene)) return;
+        if (choice.next_type !== 'Scene' || !choice.next_id || !scenes[choice.next_id] || !visibleIds.has(choice.next_id)) return;
         const cfrom = pinPos(id, 'choice', i);
-        const cto   = pinPos(choice.next_scene, 'in');
+        const cto   = pinPos(choice.next_id, 'in');
         if (cfrom && cto) {
           const label = choice.text ? choice.text.slice(0, 12) : null;
           addWire(cfrom.x, cfrom.y, cto.x, cto.y, 'wire-choice', label);
@@ -660,7 +705,7 @@
 
       // branch pin rows HTML
       const branchPins = branches.map((b, i) => {
-        const label = b.flag_key ? `${b.flag_key}` : `branch ${i+1}`;
+        const label = b.condition_group_id ? b.condition_group_id : 'default';
         return `<div class="pin-row" style="color:var(--text-dim);">
           <span>${escapeHtml(label)}</span>
           <div class="pin-branch" data-id="${escapeAttr(id)}" data-branch="${i}"></div>
@@ -859,6 +904,8 @@
     ensurePrimarySelection();
     const id = state.selectedId;
     const hasScene = Boolean(id && state.data.scenes[id]);
+
+    if (state.panelTab === 'data') {
       renderCharacterList();
       renderCharacterEmotionList();
       renderConditionList();
@@ -866,10 +913,8 @@
       renderEvidenceCategoryList();
       renderInvestigationList();
       renderQuestionList();
-    renderStateDescriptorList();
-    renderRuleList();
-
-    if (state.panelTab === 'character') {
+      renderStateDescriptorList();
+      renderRuleList();
       els.panelEmpty.classList.add('hidden');
       els.panelContent.classList.remove('hidden');
       applyPanelTabVisibility();
@@ -898,7 +943,9 @@
     els.fieldEffect.value = scene.effect || '';
     els.fieldGoalKicker.value = scene.goal_kicker || '';
     els.fieldGoalText.value = scene.goal_text || '';
-    els.fieldInvestigationId.value = scene.investigation_id || '';
+    if (els.fieldInvestigationId) {
+      els.fieldInvestigationId.innerHTML = renderSelectOptions(getDataOptions('investigationIds'), scene.investigation_id || '', true);
+    }
     els.fieldEvidencePromptTitle.value = scene.evidence_prompt_title || '';
     els.fieldEvidencePromptHint.value = scene.evidence_prompt_hint || '';
     els.fieldPriorityBudget.value = scene.priority_budget ?? '';
@@ -966,9 +1013,10 @@
     if (state.data.first_scene === oldId) state.data.first_scene = newId;
     // 참조 전체 갱신
     Object.values(state.data.scenes).forEach(scene => {
-      if (scene.next_scene === oldId) scene.next_scene = newId;
       (scene.branches || []).forEach(b => { if (b.next_scene === oldId) b.next_scene = newId; });
-      (scene.choices  || []).forEach(c => { if (c.next_scene === oldId) c.next_scene = newId; });
+      (scene.choices  || []).forEach(c => {
+        if (c.next_type === 'Scene' && c.next_id === oldId) c.next_id = newId;
+      });
     });
     state.selectedIds.delete(oldId);
     state.selectedIds.add(newId);
@@ -1004,27 +1052,38 @@
       card.querySelector('[data-action="down"]').addEventListener('click', () => { pushHistory(); onDown(i); });
       card.querySelector('[data-action="delete"]').addEventListener('click', () => { pushHistory(); onDelete(i); });
 
-      // 모든 input/textarea/select 변경 감지
-      card.querySelectorAll('input,textarea,select').forEach(el => {
-        const ev = el.tagName === 'SELECT' ? 'change' : 'input';
-        const beginSnapshot = () => {
-          if (card.dataset.historyCaptured === '1') return;
-          pushHistory();
-          card.dataset.historyCaptured = '1';
-        };
-        el.addEventListener('focus', beginSnapshot, { once: false });
-        el.addEventListener(ev, () => {
-          onChange(item, el.dataset.field, el.value);
-        });
-        el.addEventListener('blur', () => {
-          card.dataset.historyCaptured = '0';
-        });
-      });
+      bindCardFieldEvents(card, item, onChange);
 
       wrap.appendChild(card);
     });
 
     return wrap;
+  }
+
+  function bindCardFieldEvents(card, item, onChange) {
+    card.querySelectorAll('input,textarea,select').forEach(el => {
+      if (el.dataset.bound === '1') return;
+      const ev = el.tagName === 'SELECT' ? 'change' : 'input';
+      const beginSnapshot = () => {
+        if (card.dataset.historyCaptured === '1') return;
+        pushHistory();
+        card.dataset.historyCaptured = '1';
+      };
+      el.addEventListener('focus', beginSnapshot, { once: false });
+      el.addEventListener(ev, () => {
+        onChange(item, el.dataset.field, el.value);
+      });
+      el.addEventListener('blur', () => {
+        card.dataset.historyCaptured = '0';
+      });
+      el.dataset.bound = '1';
+    });
+  }
+
+  function rebindCardCollection(container, items, onChange) {
+    container.querySelectorAll('.pcard').forEach((card, index) => {
+      bindCardFieldEvents(card, items[index], onChange);
+    });
   }
 
   function swap(arr, i, j) {
@@ -1037,6 +1096,13 @@
   function renderDialogueList(scene) {
     if (!scene.dialogues) scene.dialogues = [];
     els.dialogueList.innerHTML = '';
+    const handleDialogueChange = (d, field, value) => {
+      d[field] = value || (field === 'style' ? 'normal' : '');
+      markDirty();
+      render();
+      renderDialoguePreview(scene);
+      renderValidationPanel();
+    };
 
     const cards = makeCard(
       '대사', scene.dialogues,
@@ -1079,29 +1145,12 @@
           <input data-field="choice_group_id" value="${escapeAttr(d.choice_group_id || '')}" placeholder="예: ChoiceGroupCafe01"></label>
         <label><span>NextDialogID</span>
           <input data-field="next_dialog_id" value="${escapeAttr(d.next_dialog_id || '')}" placeholder="예: Dlg_Cafe_020"></label>
-        <label><span>조건 키</span>
-          <input data-field="cond_key" value="${escapeAttr(d.condition?.flag_key || '')}"></label>
-        <label><span>조건 값</span>
-          <input data-field="cond_value" value="${escapeAttr(d.condition?.flag_value != null ? String(d.condition.flag_value) : '')}"></label>
       `,
       () => { scene.dialogues.splice(0, 0, newDialogue()); afterChange(); },
       (i) => { scene.dialogues.splice(i, 1); afterChange(); },
       (i) => { if (swap(scene.dialogues, i-1, i)) afterChange(); },
       (i) => { if (swap(scene.dialogues, i, i+1)) afterChange(); },
-      (d, field, value) => {
-        if (field === 'cond_key' || field === 'cond_value') {
-          if (!d.condition) d.condition = { flag_key: null, flag_value: null };
-          if (field === 'cond_key')   d.condition.flag_key   = value || null;
-          if (field === 'cond_value') d.condition.flag_value = value || null;
-          if (!d.condition.flag_key && d.condition.flag_value == null) d.condition = null;
-        } else {
-          d[field] = value || (field === 'style' ? 'normal' : '');
-        }
-        markDirty();
-        render();
-        renderDialoguePreview(scene);
-        renderValidationPanel();
-      }
+      handleDialogueChange
     );
 
     cards.querySelectorAll('.pcard').forEach((card, index) => {
@@ -1141,8 +1190,29 @@
       { field: 'fx_type', options: FX_TYPE_OPTIONS },
     ]);
 
+    cards.querySelectorAll('input[data-field="condition_group_id"]').forEach(input => {
+      const select = document.createElement('select');
+      select.dataset.field = 'condition_group_id';
+      select.innerHTML = renderSelectOptions(getDataOptions('conditionGroupIds'), input.value || '', true);
+      input.replaceWith(select);
+    });
+
+    cards.querySelectorAll('input[data-field="choice_group_id"]').forEach(input => {
+      const select = document.createElement('select');
+      select.dataset.field = 'choice_group_id';
+      select.innerHTML = renderSelectOptions(getDataOptions('choiceGroupIds'), input.value || '', true);
+      input.replaceWith(select);
+    });
+
+    cards.querySelectorAll('input[data-field="next_dialog_id"]').forEach(input => {
+      const select = document.createElement('select');
+      select.dataset.field = 'next_dialog_id';
+      select.innerHTML = renderSelectOptions(getDataOptions('dialogIds'), input.value || '', true);
+      input.replaceWith(select);
+    });
+
     // speaker_id → 캐릭터 드롭다운 교체
-    const characterIds = Object.keys(state.data.characters || {}).sort();
+    const characterIds = getDataOptions('characterIds');
     cards.querySelectorAll('input[data-field="speaker_id"]').forEach(input => {
       const sel = document.createElement('select');
       sel.dataset.field = 'speaker_id';
@@ -1176,6 +1246,8 @@
       });
     });
 
+    rebindCardCollection(cards, scene.dialogues, handleDialogueChange);
+
     els.dialogueList.appendChild(cards);
   }
 
@@ -1183,6 +1255,17 @@
   function renderChoiceList(scene) {
     if (!scene.choices) scene.choices = [];
     els.choiceList.innerHTML = '';
+    const handleChoiceChange = (c, field, value) => {
+      if (['trust_value', 'resonance_value', 'state_value', 'priority_cost'].includes(field)) {
+        c[field] = value === '' ? '' : Number(value);
+      } else {
+        c[field] = value;
+      }
+      markDirty();
+      renderWires();
+      renderValidationPanel();
+      if (field === 'next_type') renderChoiceList(scene);
+    };
 
     const cards = makeCard(
       '선택지', scene.choices,
@@ -1207,17 +1290,60 @@
           <input data-field="trust_value" type="number" step="1" value="${escapeAttr(c.trust_value != null ? String(c.trust_value) : '')}"></label>
         <label><span>ResonanceValue</span>
           <input data-field="resonance_value" type="number" step="1" value="${escapeAttr(c.resonance_value != null ? String(c.resonance_value) : '')}"></label>
+        <label><span>PriorityCost</span>
+          <input data-field="priority_cost" type="number" step="1" value="${escapeAttr(c.priority_cost != null ? String(c.priority_cost) : '')}"></label>
+        <label><span>StateType</span>
+          <input data-field="state_type" value="${escapeAttr(c.state_type || '')}" placeholder="예: InvestigationScore"></label>
+        <label><span>StateValue</span>
+          <input data-field="state_value" type="number" step="1" value="${escapeAttr(c.state_value != null ? String(c.state_value) : '')}"></label>
       `,
       () => { scene.choices.push(newChoice()); afterChange(); },
       (i) => { scene.choices.splice(i, 1); afterChange(); },
       (i) => { if (swap(scene.choices, i-1, i)) afterChange(); },
       (i) => { if (swap(scene.choices, i, i+1)) afterChange(); },
-      (c, field, value) => { c[field] = value; markDirty(); renderWires(); renderValidationPanel(); }
+      handleChoiceChange
     );
 
     replaceEnumInputs(cards, [
       { field: 'next_type', options: NEXT_TYPE_OPTIONS },
+      { field: 'state_type', options: STATE_TYPE_OPTIONS },
     ]);
+
+    cards.querySelectorAll('input[data-field="choice_group_id"]').forEach(input => {
+      const select = document.createElement('select');
+      select.dataset.field = 'choice_group_id';
+      select.innerHTML = renderSelectOptions(getDataOptions('choiceGroupIds'), input.value || '', true);
+      input.replaceWith(select);
+    });
+    cards.querySelectorAll('input[data-field="condition_group_id"]').forEach(input => {
+      const select = document.createElement('select');
+      select.dataset.field = 'condition_group_id';
+      select.innerHTML = renderSelectOptions(getDataOptions('conditionGroupIds'), input.value || '', true);
+      input.replaceWith(select);
+    });
+    cards.querySelectorAll('input[data-field="evidence_id"]').forEach(input => {
+      const select = document.createElement('select');
+      select.dataset.field = 'evidence_id';
+      select.innerHTML = renderSelectOptions(getDataOptions('evidenceIds'), input.value || '', true);
+      input.replaceWith(select);
+    });
+    cards.querySelectorAll('input[data-field="trust_character_id"]').forEach(input => {
+      const select = document.createElement('select');
+      select.dataset.field = 'trust_character_id';
+      select.innerHTML = renderSelectOptions(getDataOptions('characterIds'), input.value || '', true);
+      input.replaceWith(select);
+    });
+    cards.querySelectorAll('input[data-field="next_id"]').forEach(input => {
+      const row = input.closest('.pcard');
+      const nextType = row?.querySelector('[data-field="next_type"]')?.value || '';
+      const options = nextType === 'Scene' ? getDataOptions('sceneIds') : nextType === 'Dialog' ? getDataOptions('dialogIds') : [];
+      const select = document.createElement('select');
+      select.dataset.field = 'next_id';
+      select.innerHTML = renderSelectOptions(options, input.value || '', true);
+      input.replaceWith(select);
+    });
+
+    rebindCardCollection(cards, scene.choices, handleChoiceChange);
 
     els.choiceList.appendChild(cards);
   }
@@ -1432,6 +1558,19 @@
       (b, field, value) => { b[field] = value; markDirty(); render(); renderValidationPanel(); }
     );
 
+    cards.querySelectorAll('input[data-field="condition_group_id"]').forEach(input => {
+      const select = document.createElement('select');
+      select.dataset.field = 'condition_group_id';
+      select.innerHTML = renderSelectOptions(getDataOptions('conditionGroupIds'), input.value || '', true);
+      input.replaceWith(select);
+    });
+    cards.querySelectorAll('input[data-field="next_scene"]').forEach(input => {
+      const select = document.createElement('select');
+      select.dataset.field = 'next_scene';
+      select.innerHTML = renderSelectOptions(getDataOptions('sceneIds'), input.value || '', true);
+      input.replaceWith(select);
+    });
+
     els.branchList.appendChild(cards);
   }
 
@@ -1478,6 +1617,13 @@
         renderValidationPanel();
       }
     );
+
+    cards.querySelectorAll('input[data-field="category_id"]').forEach(input => {
+      const select = document.createElement('select');
+      select.dataset.field = 'category_id';
+      select.innerHTML = renderSelectOptions(getDataOptions('evidenceCategoryIds'), input.value || '', true);
+      input.replaceWith(select);
+    });
 
     els.evidenceList.appendChild(cards);
   }
@@ -1654,6 +1800,47 @@
   function renderCharacterList() {
     els.characterList.innerHTML = '';
     const rows = getCharacterRows();
+    const handleCharacterChange = (row, field, value) => {
+      const currentId = row.CharacterID;
+      if (!state.data.characters[currentId]) {
+        state.data.characters[currentId] = {
+          id: currentId,
+          display_name: '',
+          default_emotion_type: '',
+          default_image_path: '',
+          role_text: '',
+          notebook_summary1: '',
+          notebook_summary2: '',
+        };
+      }
+
+      if (field === 'CharacterID') {
+        const nextId = (value || '').trim();
+        if (!nextId) return;
+        if (!renameCharacterId(currentId, nextId)) {
+          setStatus('이미 존재하는 CharacterID입니다', true);
+          renderPanel();
+          return;
+        }
+        row.CharacterID = nextId;
+        markDirty();
+        renderPanel();
+        return;
+      } else {
+        const target = state.data.characters[row.CharacterID];
+        if (field === 'DisplayName') target.display_name = value || '';
+        if (field === 'DefaultEmotionType') target.default_emotion_type = value || '';
+        if (field === 'DefaultImagePath') target.default_image_path = value || '';
+        if (field === 'RoleText') target.role_text = value || '';
+        if (field === 'NotebookSummary1') target.notebook_summary1 = value || '';
+        if (field === 'NotebookSummary2') target.notebook_summary2 = value || '';
+      }
+
+      markDirty();
+      renderNodes();
+      renderAnalysisPanel();
+      renderValidationPanel();
+    };
 
     const cards = makeCard(
       'Character', rows,
@@ -1701,52 +1888,14 @@
       },
       () => {},
       () => {},
-      (row, field, value) => {
-        const currentId = row.CharacterID;
-        if (!state.data.characters[currentId]) {
-          state.data.characters[currentId] = {
-            id: currentId,
-            display_name: '',
-            default_emotion_type: '',
-            default_image_path: '',
-            role_text: '',
-            notebook_summary1: '',
-            notebook_summary2: '',
-          };
-        }
-
-        if (field === 'CharacterID') {
-          const nextId = (value || '').trim();
-          if (!nextId) return;
-          if (!renameCharacterId(currentId, nextId)) {
-            setStatus('이미 존재하는 CharacterID입니다', true);
-            renderPanel();
-            return;
-          }
-          row.CharacterID = nextId;
-          markDirty();
-          renderPanel();
-          return;
-        } else {
-          const target = state.data.characters[row.CharacterID];
-          if (field === 'DisplayName') target.display_name = value || '';
-          if (field === 'DefaultEmotionType') target.default_emotion_type = value || '';
-          if (field === 'DefaultImagePath') target.default_image_path = value || '';
-          if (field === 'RoleText') target.role_text = value || '';
-          if (field === 'NotebookSummary1') target.notebook_summary1 = value || '';
-          if (field === 'NotebookSummary2') target.notebook_summary2 = value || '';
-        }
-
-        markDirty();
-        renderNodes();
-        renderAnalysisPanel();
-        renderValidationPanel();
-      }
+      handleCharacterChange
     );
 
     replaceEnumInputs(cards, [
       { field: 'DefaultEmotionType', options: EMOTION_TYPE_OPTIONS },
     ]);
+
+    rebindCardCollection(cards, rows, handleCharacterChange);
 
     els.characterList.appendChild(cards);
   }
@@ -1754,6 +1903,33 @@
   function renderCharacterEmotionList() {
     els.characterEmotionList.innerHTML = '';
     const rows = getCharacterEmotionRows();
+    const handleCharacterEmotionChange = (row, field, value) => {
+      const currentCharacterId = row.CharacterID;
+      const currentEmotionType = row.EmotionType;
+
+      if (field === 'ImagePath') {
+        if (!state.data.character_emotions[currentCharacterId]) state.data.character_emotions[currentCharacterId] = {};
+        state.data.character_emotions[currentCharacterId][currentEmotionType] = value || '';
+      } else {
+        const nextCharacterId = field === 'CharacterID' ? value : row.CharacterID;
+        const nextEmotionType = field === 'EmotionType' ? value : row.EmotionType;
+        const imagePath = state.data.character_emotions?.[currentCharacterId]?.[currentEmotionType] || row.ImagePath || '';
+        if (!moveCharacterEmotion(currentCharacterId, currentEmotionType, nextCharacterId, nextEmotionType, imagePath)) {
+          setStatus('CharacterID와 EmotionType은 비워둘 수 없습니다', true);
+          renderPanel();
+          return;
+        }
+        row.CharacterID = (nextCharacterId || '').trim();
+        row.EmotionType = (nextEmotionType || '').trim();
+        syncCharacterEmotionBuckets();
+        markDirty();
+        renderPanel();
+        return;
+      }
+
+      syncCharacterEmotionBuckets();
+      markDirty();
+    };
 
     const cards = makeCard(
       'CharacterEmotion', rows,
@@ -1784,33 +1960,7 @@
       },
       () => {},
       () => {},
-      (row, field, value) => {
-        const currentCharacterId = row.CharacterID;
-        const currentEmotionType = row.EmotionType;
-
-        if (field === 'ImagePath') {
-          if (!state.data.character_emotions[currentCharacterId]) state.data.character_emotions[currentCharacterId] = {};
-          state.data.character_emotions[currentCharacterId][currentEmotionType] = value || '';
-        } else {
-          const nextCharacterId = field === 'CharacterID' ? value : row.CharacterID;
-          const nextEmotionType = field === 'EmotionType' ? value : row.EmotionType;
-          const imagePath = state.data.character_emotions?.[currentCharacterId]?.[currentEmotionType] || row.ImagePath || '';
-          if (!moveCharacterEmotion(currentCharacterId, currentEmotionType, nextCharacterId, nextEmotionType, imagePath)) {
-            setStatus('CharacterID와 EmotionType은 비워둘 수 없습니다', true);
-            renderPanel();
-            return;
-          }
-          row.CharacterID = (nextCharacterId || '').trim();
-          row.EmotionType = (nextEmotionType || '').trim();
-          syncCharacterEmotionBuckets();
-          markDirty();
-          renderPanel();
-          return;
-        }
-
-        syncCharacterEmotionBuckets();
-        markDirty();
-      }
+      handleCharacterEmotionChange
     );
 
     replaceCharacterIdInputs(cards, 'CharacterID');
@@ -1818,12 +1968,39 @@
       { field: 'EmotionType', options: EMOTION_TYPE_OPTIONS, includeBlank: false },
     ]);
 
+    rebindCardCollection(cards, rows, handleCharacterEmotionChange);
+
     els.characterEmotionList.appendChild(cards);
   }
 
   function renderQuestionList() {
     els.questionList.innerHTML = '';
     const rows = getQuestionRows();
+    const handleQuestionChange = (row, field, value) => {
+      const target = state.data.questions.find(question => (question.question_id || '') === row.QuestionID) || state.data.questions.find((_, idx) => rows[idx] === row);
+      if (!target) return;
+      if (field === 'QuestionID') target.question_id = value || '';
+      if (field === 'Title') target.title = value || '';
+      if (field === 'Detail') target.detail = value || '';
+      if (field === 'SortOrder') target.sort_order = value === '' ? null : Number.parseInt(value, 10);
+      if (field === 'Category') target.category = value || '';
+      if (field === 'ResolutionType') target.resolution_type = value || 'Evidence';
+      if (field === 'VisibleRuleID') target.visible_rule_id = value || '';
+      if (field === 'StateRuleID') target.state_rule_id = value || '';
+      if (field === 'RelatedEvidenceIDs') target.related_evidence_ids = String(value || '').split(',').map(part => part.trim()).filter(Boolean);
+      if (field === 'SolutionEvidenceIDs') target.solution_evidence_ids = String(value || '').split(',').map(part => part.trim()).filter(Boolean);
+      if (field === 'SolutionMode') target.solution_mode = value || '';
+      if (field === 'ContradictionPrompt') target.contradiction_prompt = value || '';
+      if (field === 'ContradictionStatement') target.contradiction_statement = value || '';
+      if (field === 'SolvedFlagID') target.solved_flag_id = value || '';
+      if (field === 'ResolvedDetail') target.resolved_detail = value || '';
+      if (field === 'SuccessToast') target.success_toast = value || '';
+      if (field === 'FailureToast') target.failure_toast = value || '';
+      if (field === 'RewardFlagID') target.reward_flag_id = value || '';
+      if (field === 'RewardValue') target.reward_value = value === '' ? null : (/^-?\d+(\.\d+)?$/.test(String(value)) ? Number(value) : value);
+      if (field === 'RewardMode') target.reward_mode = value || '';
+      markDirty();
+    };
 
     const cards = makeCard(
       'Question', rows,
@@ -1880,36 +2057,27 @@
       },
       (i) => { if (swap(state.data.questions, i - 1, i)) afterChange(); },
       (i) => { if (swap(state.data.questions, i, i + 1)) afterChange(); },
-      (row, field, value) => {
-        const target = state.data.questions.find(question => (question.question_id || '') === row.QuestionID) || state.data.questions.find((_, idx) => rows[idx] === row);
-        if (!target) return;
-        if (field === 'QuestionID') target.question_id = value || '';
-        if (field === 'Title') target.title = value || '';
-        if (field === 'Detail') target.detail = value || '';
-          if (field === 'SortOrder') target.sort_order = value === '' ? null : Number.parseInt(value, 10);
-          if (field === 'Category') target.category = value || '';
-          if (field === 'ResolutionType') target.resolution_type = value || 'Evidence';
-          if (field === 'VisibleRuleID') target.visible_rule_id = value || '';
-          if (field === 'StateRuleID') target.state_rule_id = value || '';
-          if (field === 'RelatedEvidenceIDs') target.related_evidence_ids = String(value || '').split(',').map(part => part.trim()).filter(Boolean);
-          if (field === 'SolutionEvidenceIDs') target.solution_evidence_ids = String(value || '').split(',').map(part => part.trim()).filter(Boolean);
-          if (field === 'SolutionMode') target.solution_mode = value || '';
-          if (field === 'ContradictionPrompt') target.contradiction_prompt = value || '';
-          if (field === 'ContradictionStatement') target.contradiction_statement = value || '';
-          if (field === 'SolvedFlagID') target.solved_flag_id = value || '';
-          if (field === 'ResolvedDetail') target.resolved_detail = value || '';
-          if (field === 'SuccessToast') target.success_toast = value || '';
-          if (field === 'FailureToast') target.failure_toast = value || '';
-          if (field === 'RewardFlagID') target.reward_flag_id = value || '';
-          if (field === 'RewardValue') target.reward_value = value === '' ? null : (/^-?\d+(\.\d+)?$/.test(String(value)) ? Number(value) : value);
-          if (field === 'RewardMode') target.reward_mode = value || '';
-          markDirty();
-        }
-      );
+      handleQuestionChange
+    );
 
     replaceEnumInputs(cards, [
       { field: 'ResolutionType', options: QUESTION_RESOLUTION_TYPE_OPTIONS, includeBlank: false },
     ]);
+
+    cards.querySelectorAll('input[data-field="VisibleRuleID"]').forEach(input => {
+      const select = document.createElement('select');
+      select.dataset.field = 'VisibleRuleID';
+      select.innerHTML = renderSelectOptions(getDataOptions('ruleIds'), input.value || '', true);
+      input.replaceWith(select);
+    });
+    cards.querySelectorAll('input[data-field="StateRuleID"]').forEach(input => {
+      const select = document.createElement('select');
+      select.dataset.field = 'StateRuleID';
+      select.innerHTML = renderSelectOptions(getDataOptions('ruleIds'), input.value || '', true);
+      input.replaceWith(select);
+    });
+
+    rebindCardCollection(cards, rows, handleQuestionChange);
 
     els.questionList.appendChild(cards);
   }
@@ -1917,6 +2085,19 @@
   function renderConditionList() {
     els.conditionList.innerHTML = '';
     const rows = getConditionRows();
+    const handleConditionChange = (row, field, value) => {
+      const target = state.data.conditions.find(item => (item.condition_id || '') === row.ConditionID) || state.data.conditions.find((_, idx) => rows[idx] === row);
+      if (!target) return;
+      if (field === 'ConditionID') target.condition_id = value || '';
+      if (field === 'ConditionGroupID') target.condition_group_id = value || '';
+      if (field === 'ConditionType') target.condition_type = value || '';
+      if (field === 'ConditionTargetID') target.condition_target_id = value === '' ? null : value;
+      if (field === 'CompareType') target.compare_type = value || '';
+      if (field === 'ConditionValue') target.condition_value = value === '' ? null : value;
+      markDirty();
+      if (field === 'ConditionType') renderConditionList();
+    };
+
     const cards = makeCard(
       'Condition', rows,
       (row) => `
@@ -1937,28 +2118,45 @@
       (i) => { state.data.conditions.splice(i, 1); afterChange(); },
       (i) => { if (swap(state.data.conditions, i - 1, i)) afterChange(); },
       (i) => { if (swap(state.data.conditions, i, i + 1)) afterChange(); },
-      (row, field, value) => {
-        const target = state.data.conditions.find(item => (item.condition_id || '') === row.ConditionID) || state.data.conditions.find((_, idx) => rows[idx] === row);
-        if (!target) return;
-        if (field === 'ConditionID') target.condition_id = value || '';
-        if (field === 'ConditionGroupID') target.condition_group_id = value || '';
-        if (field === 'ConditionType') target.condition_type = value || '';
-        if (field === 'ConditionTargetID') target.condition_target_id = value === '' ? null : value;
-        if (field === 'CompareType') target.compare_type = value || '';
-        if (field === 'ConditionValue') target.condition_value = value === '' ? null : value;
-        markDirty();
-      }
+      handleConditionChange
     );
+
     replaceEnumInputs(cards, [
       { field: 'ConditionType', options: CONDITION_TYPE_OPTIONS, includeBlank: false },
       { field: 'CompareType', options: COMPARE_TYPE_OPTIONS, includeBlank: false },
     ]);
+
+    cards.querySelectorAll('.pcard').forEach(card => {
+      const typeSelect = card.querySelector('[data-field="ConditionType"]');
+      const targetInput = card.querySelector('[data-field="ConditionTargetID"]');
+      if (!typeSelect || !targetInput) return;
+      const options = typeof EDITOR_DATA_UI.getConditionTargetOptions === 'function'
+        ? EDITOR_DATA_UI.getConditionTargetOptions(state.data, typeSelect.value)
+        : [];
+      if (options.length === 0) return;
+      const select = document.createElement('select');
+      select.dataset.field = 'ConditionTargetID';
+      select.innerHTML = renderSelectOptions(options, targetInput.value || '', true);
+      targetInput.replaceWith(select);
+    });
+
+    rebindCardCollection(cards, rows, handleConditionChange);
+
     els.conditionList.appendChild(cards);
   }
 
   function renderChoiceGroupList() {
     els.choiceGroupList.innerHTML = '';
     const rows = getChoiceGroupRows();
+    const handleChoiceGroupChange = (row, field, value) => {
+      const target = state.data.choice_groups.find(item => (item.choice_group_id || '') === row.ChoiceGroupID) || state.data.choice_groups.find((_, idx) => rows[idx] === row);
+      if (!target) return;
+      if (field === 'ChoiceGroupID') target.choice_group_id = value || '';
+      if (field === 'Type') target.type = value || 'Normal';
+      if (field === 'ConditionGroupID') target.condition_group_id = value || '';
+      if (field === 'MaxSelectable') target.max_selectable = value === '' ? null : Number.parseInt(value, 10);
+      markDirty();
+    };
     const cards = makeCard(
       'ChoiceGroup', rows,
       (row) => `
@@ -1975,19 +2173,18 @@
       (i) => { state.data.choice_groups.splice(i, 1); afterChange(); },
       (i) => { if (swap(state.data.choice_groups, i - 1, i)) afterChange(); },
       (i) => { if (swap(state.data.choice_groups, i, i + 1)) afterChange(); },
-      (row, field, value) => {
-        const target = state.data.choice_groups.find(item => (item.choice_group_id || '') === row.ChoiceGroupID) || state.data.choice_groups.find((_, idx) => rows[idx] === row);
-        if (!target) return;
-        if (field === 'ChoiceGroupID') target.choice_group_id = value || '';
-        if (field === 'Type') target.type = value || 'Normal';
-        if (field === 'ConditionGroupID') target.condition_group_id = value || '';
-        if (field === 'MaxSelectable') target.max_selectable = value === '' ? null : Number.parseInt(value, 10);
-        markDirty();
-      }
+      handleChoiceGroupChange
     );
     replaceEnumInputs(cards, [
       { field: 'Type', options: CHOICE_GROUP_TYPE_OPTIONS, includeBlank: false },
     ]);
+    cards.querySelectorAll('input[data-field="ConditionGroupID"]').forEach(input => {
+      const select = document.createElement('select');
+      select.dataset.field = 'ConditionGroupID';
+      select.innerHTML = renderSelectOptions(getDataOptions('conditionGroupIds'), input.value || '', true);
+      input.replaceWith(select);
+    });
+    rebindCardCollection(cards, rows, handleChoiceGroupChange);
     els.choiceGroupList.appendChild(cards);
   }
 
@@ -2023,6 +2220,16 @@
   function renderInvestigationList() {
     els.investigationList.innerHTML = '';
     const rows = getInvestigationRows();
+    const handleInvestigationChange = (row, field, value) => {
+      const target = state.data.investigations.find(item => (item.investigation_id || '') === row.InvestigationID) || state.data.investigations.find((_, idx) => rows[idx] === row);
+      if (!target) return;
+      if (field === 'InvestigationID') target.investigation_id = value || '';
+      if (field === 'Title') target.title = value || '';
+      if (field === 'Hint') target.hint = value || '';
+      if (field === 'Budget') target.budget = value === '' ? null : Number.parseInt(value, 10);
+      if (field === 'ChoiceGroupID') target.choice_group_id = value || '';
+      markDirty();
+    };
     const cards = makeCard(
       'Investigation', rows,
       (row) => `
@@ -2041,23 +2248,33 @@
       (i) => { state.data.investigations.splice(i, 1); afterChange(); },
       (i) => { if (swap(state.data.investigations, i - 1, i)) afterChange(); },
       (i) => { if (swap(state.data.investigations, i, i + 1)) afterChange(); },
-      (row, field, value) => {
-        const target = state.data.investigations.find(item => (item.investigation_id || '') === row.InvestigationID) || state.data.investigations.find((_, idx) => rows[idx] === row);
-        if (!target) return;
-        if (field === 'InvestigationID') target.investigation_id = value || '';
-        if (field === 'Title') target.title = value || '';
-        if (field === 'Hint') target.hint = value || '';
-        if (field === 'Budget') target.budget = value === '' ? null : Number.parseInt(value, 10);
-        if (field === 'ChoiceGroupID') target.choice_group_id = value || '';
-        markDirty();
-      }
+      handleInvestigationChange
     );
+
+    cards.querySelectorAll('input[data-field="ChoiceGroupID"]').forEach(input => {
+      const select = document.createElement('select');
+      select.dataset.field = 'ChoiceGroupID';
+      select.innerHTML = renderSelectOptions(getDataOptions('choiceGroupIds'), input.value || '', true);
+      input.replaceWith(select);
+    });
+    rebindCardCollection(cards, rows, handleInvestigationChange);
     els.investigationList.appendChild(cards);
   }
 
   function renderStateDescriptorList() {
     els.stateDescriptorList.innerHTML = '';
     const rows = getStateDescriptorRows();
+    const handleStateDescriptorChange = (row, field, value) => {
+      const target = state.data.state_descriptors.find(descriptor => (descriptor.descriptor_id || '') === row.DescriptorID) || state.data.state_descriptors.find((_, idx) => rows[idx] === row);
+      if (!target) return;
+      if (field === 'DescriptorID') target.descriptor_id = value || '';
+      if (field === 'TargetFlagID') target.target_flag_id = value || '';
+      if (field === 'MinValue') target.min_value = value === '' ? null : Number(value);
+      if (field === 'MaxValue') target.max_value = value === '' ? null : Number(value);
+      if (field === 'Label') target.label = value || '';
+      if (field === 'Detail') target.detail = value || '';
+      markDirty();
+    };
 
     const cards = makeCard(
       'StateDescriptor', rows,
@@ -2086,18 +2303,16 @@
       },
       (i) => { if (swap(state.data.state_descriptors, i - 1, i)) afterChange(); },
       (i) => { if (swap(state.data.state_descriptors, i, i + 1)) afterChange(); },
-      (row, field, value) => {
-        const target = state.data.state_descriptors.find(descriptor => (descriptor.descriptor_id || '') === row.DescriptorID) || state.data.state_descriptors.find((_, idx) => rows[idx] === row);
-        if (!target) return;
-        if (field === 'DescriptorID') target.descriptor_id = value || '';
-        if (field === 'TargetFlagID') target.target_flag_id = value || '';
-        if (field === 'MinValue') target.min_value = value === '' ? null : Number(value);
-        if (field === 'MaxValue') target.max_value = value === '' ? null : Number(value);
-        if (field === 'Label') target.label = value || '';
-        if (field === 'Detail') target.detail = value || '';
-        markDirty();
-      }
+      handleStateDescriptorChange
     );
+
+    cards.querySelectorAll('input[data-field="TargetFlagID"]').forEach(input => {
+      const select = document.createElement('select');
+      select.dataset.field = 'TargetFlagID';
+      select.innerHTML = renderSelectOptions(STATE_TYPE_OPTIONS, input.value || '', true);
+      input.replaceWith(select);
+    });
+    rebindCardCollection(cards, rows, handleStateDescriptorChange);
 
     els.stateDescriptorList.appendChild(cards);
   }
@@ -2105,6 +2320,20 @@
   function renderRuleList() {
     els.ruleList.innerHTML = '';
     const rows = getRuleRows();
+    const handleRuleChange = (row, field, value) => {
+      const target = state.data.rules.find(rule => (rule.rule_row_id || '') === row.RuleRowID) || state.data.rules.find((_, idx) => rows[idx] === row);
+      if (!target) return;
+      if (field === 'RuleRowID') target.rule_row_id = value || '';
+      if (field === 'RuleID') target.rule_id = value || '';
+      if (field === 'RuleKind') target.rule_kind = value || '';
+      if (field === 'FactType') target.fact_type = value || '';
+      if (field === 'FactKey') target.fact_key = value || '';
+      if (field === 'Operator') target.operator = value || '';
+      if (field === 'Value') target.value = value === '' ? null : value;
+      if (field === 'ResultValue') target.result_value = value || '';
+      if (field === 'Priority') target.priority = value === '' ? null : Number.parseInt(value, 10);
+      markDirty();
+    };
 
     const cards = makeCard(
       'Rule', rows,
@@ -2139,20 +2368,7 @@
       },
       (i) => { if (swap(state.data.rules, i - 1, i)) afterChange(); },
       (i) => { if (swap(state.data.rules, i, i + 1)) afterChange(); },
-      (row, field, value) => {
-        const target = state.data.rules.find(rule => (rule.rule_row_id || '') === row.RuleRowID) || state.data.rules.find((_, idx) => rows[idx] === row);
-        if (!target) return;
-        if (field === 'RuleRowID') target.rule_row_id = value || '';
-        if (field === 'RuleID') target.rule_id = value || '';
-        if (field === 'RuleKind') target.rule_kind = value || '';
-        if (field === 'FactType') target.fact_type = value || '';
-        if (field === 'FactKey') target.fact_key = value || '';
-        if (field === 'Operator') target.operator = value || '';
-        if (field === 'Value') target.value = value === '' ? null : value;
-        if (field === 'ResultValue') target.result_value = value || '';
-        if (field === 'Priority') target.priority = value === '' ? null : Number.parseInt(value, 10);
-        markDirty();
-      }
+      handleRuleChange
     );
 
     replaceEnumInputs(cards, [
@@ -2160,6 +2376,8 @@
       { field: 'FactType', options: RULE_FACT_TYPE_OPTIONS, includeBlank: false },
       { field: 'Operator', options: RULE_OPERATOR_OPTIONS, includeBlank: false },
     ]);
+
+    rebindCardCollection(cards, rows, handleRuleChange);
 
     els.ruleList.appendChild(cards);
   }
@@ -2190,8 +2408,7 @@
       style: 'normal',
       condition_group_id: '',
       choice_group_id: '',
-      next_dialog_id: '',
-      condition: null
+      next_dialog_id: ''
     };
   }
   function newChoice() {
@@ -2207,15 +2424,13 @@
       trust_character_id: '',
       trust_value: '',
       resonance_value: '',
-      next_scene: '',
-      next_dialogue: '',
       priority_cost: '',
-      flag_key: '',
-      flag_value: ''
+      state_type: '',
+      state_value: ''
     };
   }
   function newBranch() {
-    return { branch_id: '', condition_group_id: '', flag_key: '', flag_value: '', next_scene: '' };
+    return { branch_id: '', condition_group_id: '', next_scene: '' };
   }
   function newEvidence() {
     return { evidence_id: '', trigger: 'auto', name: '', description: '', image: '', category_id: '', category_title: '', category_hint: '' };
@@ -2270,7 +2485,7 @@
   }
   function newScene(id) {
     return {
-      id, chapter: null, title: id, background: null, music: null, effect: null, next_scene: null,
+      id, chapter: null, title: id, background: null, music: null, effect: null,
       goal_kicker: null, goal_text: null, investigation_id: null, evidence_prompt_title: null, evidence_prompt_hint: null,
       priority_budget: null, priority_dialogues: {}, priority_after_dialogues: [],
       branches: [], dialogues: [], choices: [], evidence: []
@@ -2289,13 +2504,6 @@
 
   function normalizeScene(sceneId, scene) {
     const normalizedDialogues = (scene.dialogues || []).map((dialogue, index) => {
-      const condition = dialogue.condition?.flag_key
-        ? {
-            flag_key: dialogue.condition.flag_key,
-            flag_value: normalizeFlagValue(dialogue.condition.flag_value),
-          }
-        : null;
-
       return {
         order: normalizeOrder(dialogue.order, index + 1),
         dialog_id: dialogue.dialog_id || null,
@@ -2315,7 +2523,6 @@
         condition_group_id: dialogue.condition_group_id || null,
         choice_group_id: dialogue.choice_group_id || null,
         next_dialog_id: dialogue.next_dialog_id || null,
-        condition,
       };
     });
 
@@ -2332,15 +2539,10 @@
         trust_character_id: choice.trust_character_id || null,
         trust_value: choice.trust_value === '' || choice.trust_value == null ? null : Number(choice.trust_value),
         resonance_value: choice.resonance_value === '' || choice.resonance_value == null ? null : Number(choice.resonance_value),
-        flag_key: choice.flag_key || null,
-        flag_value: normalizeFlagValue(choice.flag_value),
-        next_scene: choice.next_scene || null,
-        next_dialogue: choice.next_dialogue || null,
+        priority_cost: choice.priority_cost === '' || choice.priority_cost == null ? null : Number(choice.priority_cost),
+        state_type: choice.state_type || null,
+        state_value: choice.state_value === '' || choice.state_value == null ? null : Number(choice.state_value),
       };
-      const cost = choice.priority_cost != null && choice.priority_cost !== ''
-        ? Number.parseInt(choice.priority_cost, 10)
-        : null;
-      if (cost != null && Number.isFinite(cost)) c.priority_cost = cost;
       return c;
     });
 
@@ -2373,9 +2575,7 @@
       branch_id: branch.branch_id || null,
       order: normalizeOrder(branch.order, index + 1),
       condition_group_id: branch.condition_group_id || null,
-      flag_key: branch.flag_key || '',
-      flag_value: normalizeFlagValue(branch.flag_value),
-      next_scene: branch.next_scene || branch.next_scene_id || '',
+      next_scene: branch.next_scene || '',
     }));
 
     const normalizedEvidence = (scene.evidence || []).map((evidence) => ({
@@ -2401,7 +2601,6 @@
       investigation_id: scene.investigation_id || null,
       evidence_prompt_title: scene.evidence_prompt_title || null,
       evidence_prompt_hint: scene.evidence_prompt_hint || null,
-      next_scene: scene.next_scene || null,
       dialogues: normalizedDialogues,
       choices: normalizedChoices,
       evidence: normalizedEvidence,
@@ -2412,10 +2611,8 @@
       ? Number.parseInt(scene.priority_budget, 10)
       : null;
     if (budget) result.priority_budget = budget;
-    if (Object.keys(normalizedPriorityDialogues).length > 0)
-      result.priority_dialogues = normalizedPriorityDialogues;
-    if (normalizedPriorityAfterDialogues.length > 0)
-      result.priority_after_dialogues = normalizedPriorityAfterDialogues;
+    if (Object.keys(normalizedPriorityDialogues).length > 0) result.priority_dialogues = normalizedPriorityDialogues;
+    if (normalizedPriorityAfterDialogues.length > 0) result.priority_after_dialogues = normalizedPriorityAfterDialogues;
 
     return result;
   }
@@ -2505,47 +2702,7 @@
   }
 
   function replaceFlagKeyEverywhere() {
-    const oldKey = (els.fieldBatchFlagOld.value || '').trim();
-    const newKey = (els.fieldBatchFlagNew.value || '').trim();
-    if (!oldKey || !newKey) {
-      setStatus('기존/신규 플래그 키를 모두 입력하세요', true);
-      return;
-    }
-
-    let changed = 0;
-    pushHistory();
-
-    Object.values(state.data.scenes || {}).forEach(scene => {
-      (scene.dialogues || []).forEach(dialogue => {
-        if (dialogue.condition?.flag_key === oldKey) {
-          dialogue.condition.flag_key = newKey;
-          changed += 1;
-        }
-      });
-      (scene.branches || []).forEach(branch => {
-        if (branch.flag_key === oldKey) {
-          branch.flag_key = newKey;
-          changed += 1;
-        }
-      });
-      (scene.choices || []).forEach(choice => {
-        if (choice.flag_key === oldKey) {
-          choice.flag_key = newKey;
-          changed += 1;
-        }
-      });
-    });
-
-    if (changed === 0) {
-      state.history.pop();
-      setStatus('치환된 플래그 키가 없습니다', true);
-      return;
-    }
-
-    markDirty();
-    render();
-    renderPanel();
-    setStatus(`✓ 플래그 키 ${changed}건 치환 완료`);
+    setStatus('새 구조에서는 플래그 키 일괄 치환을 사용하지 않습니다. 조건/상태/선택 이력 기준으로 수정하세요.', true);
   }
 
   function replaceStringValue(source, from, to) {
@@ -2582,25 +2739,12 @@
           dialogue[field] = result.value;
           changed += result.changed;
         });
-        if (dialogue.condition?.flag_value != null) {
-          const result = replaceStringValue(dialogue.condition.flag_value, oldText, newText);
-          dialogue.condition.flag_value = result.value;
-          changed += result.changed;
-        }
       });
 
       (scene.choices || []).forEach(choice => {
-        ['text', 'flag_value'].forEach(field => {
+        ['text', 'next_id', 'state_type'].forEach(field => {
           const result = replaceStringValue(choice[field], oldText, newText);
           choice[field] = result.value;
-          changed += result.changed;
-        });
-      });
-
-      (scene.branches || []).forEach(branch => {
-        ['flag_value'].forEach(field => {
-          const result = replaceStringValue(branch[field], oldText, newText);
-          branch[field] = result.value;
           changed += result.changed;
         });
       });
@@ -2703,12 +2847,11 @@
         if (reachable.has(id) || !scenes[id]) continue;
         reachable.add(id);
         const scene = scenes[id];
-        if (scene.next_scene && scenes[scene.next_scene]) stack.push(scene.next_scene);
         (scene.branches || []).forEach(branch => {
           if (branch.next_scene && scenes[branch.next_scene]) stack.push(branch.next_scene);
         });
         (scene.choices || []).forEach(choice => {
-          if (choice.next_scene && scenes[choice.next_scene]) stack.push(choice.next_scene);
+          if (choice.next_type === 'Scene' && choice.next_id && scenes[choice.next_id]) stack.push(choice.next_id);
         });
       }
     }
@@ -2723,30 +2866,21 @@
       if (!sceneIdOwners.has(declaredId)) sceneIdOwners.set(declaredId, []);
       sceneIdOwners.get(declaredId).push(sceneKey);
 
-      if (scene.next_scene && !scenes[scene.next_scene]) {
-        findings.push({
-          type: 'error',
-          sceneId: sceneKey,
-          title: '기본 다음 씬 누락',
-          body: `${sceneKey}의 next_scene이 "${scene.next_scene}"를 가리키지만 해당 씬이 없습니다.`,
-        });
-      }
-
       (scene.choices || []).forEach((choice, index) => {
-        if (choice.next_scene && !scenes[choice.next_scene]) {
+        if (choice.next_type === 'Scene' && choice.next_id && !scenes[choice.next_id]) {
           findings.push({
             type: 'error',
             sceneId: sceneKey,
             title: '선택지 연결 누락',
-            body: `${sceneKey}의 선택지 ${index + 1}이 "${choice.next_scene}"를 가리키지만 해당 씬이 없습니다.`,
+            body: `${sceneKey}의 선택지 ${index + 1}이 "${choice.next_id}"를 가리키지만 해당 씬이 없습니다.`,
           });
         }
-        if (choice.next_dialogue && !dialogueLabels.has(choice.next_dialogue)) {
+        if (choice.next_type === 'Dialog' && choice.next_id && !dialogueLabels.has(choice.next_id)) {
           findings.push({
             type: 'error',
             sceneId: sceneKey,
             title: '선택지 대사 점프 누락',
-            body: `${sceneKey}의 선택지 ${index + 1}이 "${choice.next_dialogue}" 라벨로 점프하지만 해당 라벨이 이 씬에 없습니다.`,
+            body: `${sceneKey}의 선택지 ${index + 1}이 "${choice.next_id}" 라벨로 점프하지만 해당 라벨이 이 씬에 없습니다.`,
           });
         }
       });
@@ -2871,35 +3005,37 @@
     const incoming = [];
     Object.entries(state.data.scenes || {}).forEach(([otherId, otherScene]) => {
       if (otherId === sceneId) return;
-      if (otherScene.next_scene === sceneId) incoming.push(`${otherId} (기본)`);
       (otherScene.branches || []).forEach((branch, index) => {
         if (branch.next_scene === sceneId) incoming.push(`${otherId} (분기 ${index + 1})`);
       });
       (otherScene.choices || []).forEach((choice, index) => {
-        if (choice.next_scene === sceneId) incoming.push(`${otherId} (선택지 ${index + 1})`);
+        if (choice.next_type === 'Scene' && choice.next_id === sceneId) incoming.push(`${otherId} (선택지 ${index + 1})`);
       });
     });
 
-    const readsFlags = new Set();
-    (scene.dialogues || []).forEach(dialogue => {
-      if (dialogue.condition?.flag_key) readsFlags.add(dialogue.condition.flag_key);
-    });
-    (scene.branches || []).forEach(branch => {
-      if (branch.flag_key) readsFlags.add(branch.flag_key);
-    });
+    const readsFlags = new Set(
+      [
+        ...(scene.dialogues || []).map(dialogue => dialogue.condition_group_id).filter(Boolean),
+        ...(scene.branches || []).map(branch => branch.condition_group_id).filter(Boolean),
+        ...(scene.choices || []).map(choice => choice.condition_group_id).filter(Boolean),
+      ]
+    );
 
     const writesFlags = new Set();
     (scene.choices || []).forEach(choice => {
-      if (choice.flag_key) writesFlags.add(choice.flag_key);
+      if (choice.choice_id) writesFlags.add(`Choice:${choice.choice_id}`);
+      if (choice.evidence_id) writesFlags.add(`Evidence:${choice.evidence_id}`);
+      if (choice.trust_character_id && choice.trust_value != null && choice.trust_value !== '') writesFlags.add(`Trust:${choice.trust_character_id}`);
+      if (choice.state_type && choice.state_value != null && choice.state_value !== '') writesFlags.add(`State:${choice.state_type}`);
+      if (choice.resonance_value != null && choice.resonance_value !== '') writesFlags.add('State:ResonanceLevel');
     });
 
     const nextTargets = [];
-    if (scene.next_scene) nextTargets.push(`기본: ${scene.next_scene}`);
     (scene.branches || []).forEach((branch, index) => {
       if (branch.next_scene) nextTargets.push(`분기 ${index + 1}: ${branch.next_scene}`);
     });
     (scene.choices || []).forEach((choice, index) => {
-      if (choice.next_scene) nextTargets.push(`선택지 ${index + 1}: ${choice.next_scene}`);
+      if (choice.next_type && choice.next_id) nextTargets.push(`선택지 ${index + 1}: ${choice.next_type} ${choice.next_id}`);
     });
 
     const reachable = collectReachableScenes();
@@ -2960,11 +3096,17 @@
     pushHistory();
     if (!scene) return;
     if (pinType === 'out') {
-      scene.next_scene = toId;
+      if (!Array.isArray(scene.branches)) scene.branches = [];
+      const defaultBranch = scene.branches.find(branch => !branch.condition_group_id);
+      if (defaultBranch) defaultBranch.next_scene = toId;
+      else scene.branches.unshift({ branch_id: '', condition_group_id: '', next_scene: toId });
     } else if (pinType === 'branch') {
       if (scene.branches?.[idx] !== undefined) scene.branches[idx].next_scene = toId;
     } else if (pinType === 'choice') {
-      if (scene.choices?.[idx] !== undefined) scene.choices[idx].next_scene = toId;
+      if (scene.choices?.[idx] !== undefined) {
+        scene.choices[idx].next_type = 'Scene';
+        scene.choices[idx].next_id = toId;
+      }
     }
     saveLayout();
     markDirty();
@@ -3056,9 +3198,10 @@
     delete state.layout[id];
     // 참조 정리
     Object.values(state.data.scenes).forEach(scene => {
-      if (scene.next_scene === id) scene.next_scene = null;
       (scene.branches || []).forEach(b => { if (b.next_scene === id) b.next_scene = ''; });
-      (scene.choices  || []).forEach(c => { if (c.next_scene === id) c.next_scene = ''; });
+      (scene.choices  || []).forEach(c => {
+        if (c.next_type === 'Scene' && c.next_id === id) c.next_id = '';
+      });
     });
     state.selectedIds.delete(id);
     ensurePrimarySelection();
@@ -3078,9 +3221,10 @@
       delete state.layout[id];
     });
     Object.values(state.data.scenes).forEach(scene => {
-      if (selected.includes(scene.next_scene)) scene.next_scene = null;
       (scene.branches || []).forEach(b => { if (selected.includes(b.next_scene)) b.next_scene = ''; });
-      (scene.choices || []).forEach(c => { if (selected.includes(c.next_scene)) c.next_scene = ''; });
+      (scene.choices || []).forEach(c => {
+        if (c.next_type === 'Scene' && selected.includes(c.next_id)) c.next_id = '';
+      });
     });
     clearSelection();
     saveLayout();
@@ -3115,7 +3259,10 @@
     els.btnApplyBatchText.addEventListener('click', replaceTextEverywhere);
     els.btnSortScenes.addEventListener('click', sortScenesByChapter);
     if (els.tabNodeEditor) els.tabNodeEditor.addEventListener('click', () => setPanelTab('node'));
-    if (els.tabCharacterEditor) els.tabCharacterEditor.addEventListener('click', () => setPanelTab('character'));
+    if (els.tabDataEditor) els.tabDataEditor.addEventListener('click', () => setPanelTab('data'));
+    (els.dataTabButtons || []).forEach(button => {
+      button.addEventListener('click', () => setDataTab(button.dataset.dataTab || 'characters'));
+    });
     $('btn-duplicate-scene').addEventListener('click', () => {
       if (state.selectedId) duplicateScene(state.selectedId);
     });
@@ -3316,7 +3463,7 @@
       markDirty();
       refreshMetaViews();
     });
-    els.fieldInvestigationId.addEventListener('input', () => {
+    els.fieldInvestigationId.addEventListener('change', () => {
       const scene = state.data.scenes[state.selectedId];
       if (!scene) return;
       scene.investigation_id = els.fieldInvestigationId.value || null;
@@ -3569,7 +3716,8 @@
       if (!scene) return;
       if (pin.classList.contains('pin-out')) {
         pushHistory();
-        scene.next_scene = null;
+        const defaultBranch = scene.branches?.find(branch => !branch.condition_group_id);
+        if (defaultBranch) defaultBranch.next_scene = '';
       } else if (pin.classList.contains('pin-branch')) {
         pushHistory();
         const b = scene.branches?.[+pin.dataset.branch];
@@ -3577,7 +3725,10 @@
       } else if (pin.classList.contains('pin-choice')) {
         pushHistory();
         const c = scene.choices?.[+pin.dataset.choice];
-        if (c) c.next_scene = '';
+        if (c) {
+          c.next_type = '';
+          c.next_id = '';
+        }
       }
       markDirty(); render();
       if (state.selectedId === id) renderPanel();

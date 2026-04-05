@@ -11,7 +11,7 @@
     <button id="btn-add-node">+ 씬 추가</button>
     <button id="btn-undo">실행 취소</button>
     <button id="btn-redo">다시 실행</button>
-    <input id="field-search" type="text" placeholder="씬 / 라벨 / 플래그 / 단서 검색">
+    <input id="field-search" type="text" placeholder="씬 / 라벨 / 조건 / 단서 검색">
     <select id="field-filter-chapter">
       <option value="">전체 챕터</option>
     </select>
@@ -38,7 +38,18 @@
       <div id="panel-content" class="hidden">
         <div id="panel-tabs">
           <button id="tab-node-editor" class="panel-tab active" type="button">노드 편집</button>
-          <button id="tab-character-editor" class="panel-tab" type="button">캐릭터 편집</button>
+          <button id="tab-data-editor" class="panel-tab" type="button">데이터 편집</button>
+        </div>
+        <div id="data-panel-tabs" class="hidden" data-panel-tab="data">
+          <button class="data-tab active" type="button" data-data-tab="characters">캐릭터</button>
+          <button class="data-tab" type="button" data-data-tab="character-emotions">감정</button>
+          <button class="data-tab" type="button" data-data-tab="conditions">조건</button>
+          <button class="data-tab" type="button" data-data-tab="choice-groups">선택그룹</button>
+          <button class="data-tab" type="button" data-data-tab="evidence-categories">단서분류</button>
+          <button class="data-tab" type="button" data-data-tab="investigations">조사</button>
+          <button class="data-tab" type="button" data-data-tab="questions">질문</button>
+          <button class="data-tab" type="button" data-data-tab="state-descriptors">상태</button>
+          <button class="data-tab" type="button" data-data-tab="rules">룰</button>
         </div>
         <div id="panel-header" data-panel-tab="node">
           <input id="field-title" type="text" placeholder="씬 제목">
@@ -78,7 +89,9 @@
 
         <div class="panel-section" data-panel-tab="node">
           <div class="section-label">조사 연결</div>
-          <input id="field-investigation-id" type="text" placeholder="InvestigationID (예: InvestigationCafe01)">
+          <select id="field-investigation-id">
+            <option value="">(none)</option>
+          </select>
         </div>
 
         <div class="panel-section" data-panel-tab="node">
@@ -167,64 +180,64 @@
           <div id="evidence-list"></div>
         </div>
 
-        <div class="panel-section" data-panel-tab="character">
-          <div class="section-label">Characters
+        <div class="panel-section" data-panel-tab="data" data-data-tab="characters">
+          <div class="section-label">캐릭터
             <button id="btn-add-character" class="small">+</button>
           </div>
           <div id="character-list"></div>
         </div>
 
-        <div class="panel-section" data-panel-tab="character">
-          <div class="section-label">CharacterEmotions
+        <div class="panel-section" data-panel-tab="data" data-data-tab="character-emotions">
+          <div class="section-label">감정 이미지
             <button id="btn-add-character-emotion" class="small">+</button>
           </div>
           <div id="character-emotion-list"></div>
         </div>
 
-        <div class="panel-section" data-panel-tab="character">
-          <div class="section-label">Conditions
+        <div class="panel-section" data-panel-tab="data" data-data-tab="conditions">
+          <div class="section-label">조건
             <button id="btn-add-condition" class="small">+</button>
           </div>
           <div id="condition-list"></div>
         </div>
 
-        <div class="panel-section" data-panel-tab="character">
-          <div class="section-label">ChoiceGroups
+        <div class="panel-section" data-panel-tab="data" data-data-tab="choice-groups">
+          <div class="section-label">선택 그룹
             <button id="btn-add-choice-group" class="small">+</button>
           </div>
           <div id="choice-group-list"></div>
         </div>
 
-        <div class="panel-section" data-panel-tab="character">
-          <div class="section-label">EvidenceCategories
+        <div class="panel-section" data-panel-tab="data" data-data-tab="evidence-categories">
+          <div class="section-label">단서 분류
             <button id="btn-add-evidence-category" class="small">+</button>
           </div>
           <div id="evidence-category-list"></div>
         </div>
 
-        <div class="panel-section" data-panel-tab="character">
-          <div class="section-label">Investigations
+        <div class="panel-section" data-panel-tab="data" data-data-tab="investigations">
+          <div class="section-label">조사
             <button id="btn-add-investigation" class="small">+</button>
           </div>
           <div id="investigation-list"></div>
         </div>
 
-        <div class="panel-section" data-panel-tab="character">
-          <div class="section-label">Questions
+        <div class="panel-section" data-panel-tab="data" data-data-tab="questions">
+          <div class="section-label">질문
             <button id="btn-add-question" class="small">+</button>
           </div>
           <div id="question-list"></div>
         </div>
 
-        <div class="panel-section" data-panel-tab="character">
-          <div class="section-label">StateDescriptors
+        <div class="panel-section" data-panel-tab="data" data-data-tab="state-descriptors">
+          <div class="section-label">상태 설명
             <button id="btn-add-state-descriptor" class="small">+</button>
           </div>
           <div id="state-descriptor-list"></div>
         </div>
 
-        <div class="panel-section" data-panel-tab="character">
-          <div class="section-label">Rules
+        <div class="panel-section" data-panel-tab="data" data-data-tab="rules">
+          <div class="section-label">룰
             <button id="btn-add-rule" class="small">+</button>
           </div>
           <div id="rule-list"></div>
@@ -237,7 +250,7 @@
           <div id="validation-list" class="validation-list"></div>
         </div>
 
-        <div class="panel-section">
+        <div class="panel-section" data-panel-tab="node">
           <div class="section-label">준대량 편집</div>
           <label><span>필터된 씬 배경 일괄 변경</span>
             <input id="field-batch-background" type="text" placeholder="assets/bg/..."></label>
@@ -273,6 +286,7 @@
     </div>
   </div>
 
+  <script src="editor-data-ui.js"></script>
   <script src="editor.js"></script>
 </body>
 </html>
