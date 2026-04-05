@@ -1,8 +1,10 @@
 /* ── 대화창 ── */
 #dialogue-box {
   position: absolute;
-  bottom: 0; left: 16px; right: 16px;
-  height: 180px;
+  bottom: var(--safe-bottom);
+  left: var(--safe-side);
+  right: var(--safe-side);
+  height: var(--dialogue-height);
   background: 
     linear-gradient(180deg, rgba(12, 14, 18, 0.78) 0%, rgba(8, 5, 3, 0.88) 100%);
   border-top: 2px solid var(--gold);
@@ -13,7 +15,7 @@
   user-select: none;
   box-shadow: 0 -15px 45px rgba(0, 0, 0, 0.5);
   backdrop-filter: var(--panel-blur);
-  margin-bottom: 8px; /* 바닥에서 살짝 띄움 */
+  margin-bottom: 0;
 }
 
 #dialogue-box::before {
@@ -163,10 +165,11 @@
 /* ── 선택지 박스 ── */
 #choice-box {
   position: absolute;
-  bottom: 200px; left: 50%;
+  bottom: calc(var(--safe-bottom) + var(--dialogue-height) + var(--choice-gap));
+  left: 50%;
   transform: translateX(-50%);
   width: 580px;
-  max-width: 90%;
+  max-width: calc(100% - var(--safe-side-double));
   z-index: 15;
 }
 

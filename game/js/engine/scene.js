@@ -61,6 +61,37 @@ const Scene = (() => {
     UIManager.updateHUD(scene, _hudContext);
   }
 
+  function triggerEnding(delayMs = 1500) {
+    setTimeout(() => document.dispatchEvent(new Event('game:ending')), delayMs);
+  }
+
+  function loadResolvedNext(scene) {
+    const nextSceneId = resolveNextScene(scene);
+    if (nextSceneId) {
+      Scene.load(nextSceneId);
+      return;
+    }
+    triggerEnding();
+  }
+
+  function hasPriorityMode(scene) {
+    return (scene.priority_budget || 0) > 0 && (scene.choices || []).some(choice => choice.priority_cost != null);
+  }
+
+  function playContainerTransition(durationMs, onDone) {
+    const container = document.getElementById('game-container');
+    if (!container) {
+      onDone();
+      return;
+    }
+    container.style.transition = `opacity ${durationMs / 1000}s`;
+    container.style.opacity = '0';
+    setTimeout(() => {
+      container.style.opacity = '1';
+      onDone();
+    }, durationMs);
+  }
+
   function resolveNextScene(scene) {
     const branches = scene.branches || [];
     for (const branch of branches) {
@@ -92,26 +123,15 @@ const Scene = (() => {
 
     function afterDialogue() {
       Evidence.collectOnClick(scene);
-
-      const priorityBudget = scene.priority_budget || 0;
       const choices = scene.choices || [];
 
-      if (priorityBudget > 0 && choices.some(c => c.priority_cost != null)) {
-        // 조사 우선순위 모드
+      if (hasPriorityMode(scene)) {
         const afterLines = scene.priority_after_dialogues || [];
         Choice.showPriority(scene, () => {
-          const goNext = () => {
-            const next = resolveNextScene(scene);
-            if (next) {
-              Scene.load(next);
-            } else {
-              setTimeout(() => document.dispatchEvent(new Event('game:ending')), 1500);
-            }
-          };
           if (afterLines.length > 0) {
-            Dialogue.start(afterLines, goNext, null);
+            Dialogue.start(afterLines, () => loadResolvedNext(scene), null);
           } else {
-            goNext();
+            loadResolvedNext(scene);
           }
         });
       } else if (choices.length > 0) {
@@ -121,22 +141,13 @@ const Scene = (() => {
           if (nextScene) {
             Scene.load(nextScene, nextDialogue);
           } else if (nextDialogue) {
-            // 같은 씬 내 특정 대사로 점프
             Dialogue.start(scene.dialogues || [], afterDialogue, nextDialogue);
           } else {
-            Scene.load(resolveNextScene(scene));
+            loadResolvedNext(scene);
           }
         });
       } else {
-        const next = resolveNextScene(scene);
-        if (next) {
-          Scene.load(next);
-        } else {
-          // 엔딩: 저장 초기화 후 타이틀 복귀
-          setTimeout(() => {
-            document.dispatchEvent(new Event('game:ending'));
-          }, 1500);
-        }
+        loadResolvedNext(scene);
       }
     }
 
@@ -160,24 +171,15 @@ const Scene = (() => {
         return;
       }
 
-      const container = document.getElementById('game-container');
       const prevChapter = State.chapter;
 
       if (scene.chapter && scene.chapter !== prevChapter) {
         State.chapter = scene.chapter;
-        container.style.transition = 'opacity 0.5s';
-        container.style.opacity = '0';
-        setTimeout(() => {
-          container.style.opacity = '1';
+        playContainerTransition(500, () => {
           showChapterCard(scene.chapter, scene.title, () => runScene(scene, fromLabel, restoreProgress));
-        }, 500);
+        });
       } else {
-        container.style.transition = 'opacity 0.35s';
-        container.style.opacity = '0';
-        setTimeout(() => {
-          container.style.opacity = '1';
-          runScene(scene, fromLabel, restoreProgress);
-        }, 350);
+        playContainerTransition(350, () => runScene(scene, fromLabel, restoreProgress));
       }
     },
 

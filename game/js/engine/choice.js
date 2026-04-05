@@ -1,4 +1,6 @@
 const Choice = (() => {
+  const PICK_DELAY_MS = 180;
+
   function describeChoiceImpact(choice, isPriority = false) {
     if (!choice) return '선택의 파장이 남습니다.';
     const key = choice.flag_key || '';
@@ -33,22 +35,52 @@ const Choice = (() => {
     return 'choice-decision';
   }
 
+  function applyChoiceFlag(choice) {
+    if (choice?.flag_key) {
+      State.setFlag(choice.flag_key, choice.flag_value ?? true);
+    }
+  }
+
+  function showChoiceImpact(choice, isPriority = false) {
+    if (typeof UIManager?.showToast !== 'function' || !choice) return;
+    UIManager.showToast(`선택: ${choice.text}\n${describeChoiceImpact(choice, isPriority)}`, 'toast-impact');
+  }
+
+  function finishChoice(callback, picked) {
+    setTimeout(() => {
+      UIManager.setChoiceBoxVisible(false);
+      if (callback) callback(picked);
+    }, PICK_DELAY_MS);
+  }
+
+  function mapChoices(choices, isPriority = false) {
+    return (choices || []).map(choice => ({
+      ...choice,
+      type: getChoiceType(choice, isPriority),
+    }));
+  }
+
+  function getPriorityMeta(scene, budget, spent) {
+    const remaining = Math.max(0, budget - spent);
+    const title = scene.priority_title || scene.title || '조사 장면';
+    return {
+      kicker: '조사 중',
+      title,
+      hint: scene.priority_hint || '남은 조사 기회 안에서 무엇을 먼저 확인할지 정하세요.',
+      indicator: `남은 조사 기회  ${remaining} / ${budget}`,
+      hudText: `${title} · ${remaining} / ${budget}`,
+    };
+  }
+
   return {
     show(choices, onChoose) {
       UIManager.setDialogueBoxVisible(false);
-      const mappedChoices = choices.map(c => ({ ...c, type: getChoiceType(c) }));
+      const mappedChoices = mapChoices(choices);
       
       UIManager.renderChoiceList(mappedChoices, (picked) => {
-        if (picked.flag_key) {
-          State.setFlag(picked.flag_key, picked.flag_value ?? true);
-        }
-        if (typeof UIManager?.showToast === 'function') {
-          UIManager.showToast(`선택: ${picked.text}\n${describeChoiceImpact(picked)}`, 'toast-impact');
-        }
-        setTimeout(() => {
-          UIManager.setChoiceBoxVisible(false);
-          if (onChoose) onChoose(picked);
-        }, 180);
+        applyChoiceFlag(picked);
+        showChoiceImpact(picked);
+        finishChoice(onChoose, picked);
       });
 
       UIManager.setChoiceBoxVisible(true);
@@ -56,7 +88,7 @@ const Choice = (() => {
 
     showPriority(scene, onDone) {
       UIManager.setDialogueBoxVisible(false);
-      const choices = (scene.choices || []).map(c => ({ ...c, type: getChoiceType(c, true) }));
+      const choices = mapChoices(scene.choices, true);
       const budget = scene.priority_budget || 0;
       const priorityDialogues = scene.priority_dialogues || {};
       let spent = 0;
@@ -73,26 +105,17 @@ const Choice = (() => {
           return;
         }
 
-        const meta = {
-          kicker: '조사 중',
-          title: scene.priority_title || scene.title || '조사 장면',
-          hint: scene.priority_hint || '남은 조사 기회 안에서 무엇을 먼저 확인할지 정하세요.',
-          indicator: `남은 조사 기회  ${budget - spent} / ${budget}`,
-        };
+        const meta = getPriorityMeta(scene, budget, spent);
 
         UIManager.updateHUD(scene, {
           mode: 'priority',
-          kicker: '조사 중',
-          text: `${meta.title} · ${budget - spent} / ${budget}`,
+          kicker: meta.kicker,
+          text: meta.hudText,
         });
 
         UIManager.renderChoiceList(remaining, (choice) => {
-          if (choice.flag_key) {
-            State.setFlag(choice.flag_key, choice.flag_value ?? true);
-          }
-          if (typeof UIManager?.showToast === 'function') {
-            UIManager.showToast(`선택: ${choice.text}\n${describeChoiceImpact(choice, true)}`, 'toast-impact');
-          }
+          applyChoiceFlag(choice);
+          showChoiceImpact(choice, true);
           pickedSet.add(choice.order);
           spent += choice.priority_cost != null ? choice.priority_cost : 1;
           
@@ -104,7 +127,7 @@ const Choice = (() => {
             } else {
               render();
             }
-          }, 180);
+          }, PICK_DELAY_MS);
         }, meta);
 
         UIManager.setChoiceBoxVisible(true);

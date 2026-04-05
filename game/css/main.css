@@ -20,10 +20,20 @@
   --font-main:  'Noto Serif KR', 'Nanum Myeongjo', Georgia, serif;
   --font-ui:    'Noto Sans KR', 'Malgun Gothic', sans-serif;
   --panel-blur: blur(12px);
+  --safe-top: 16px;
+  --safe-side: 16px;
+  --safe-side-double: 32px;
+  --safe-bottom: 16px;
+  --dialogue-height: 188px;
+  --dialogue-offset: 0px;
+  --choice-gap: 18px;
+  --top-row-height: 44px;
+  --panel-gap: 12px;
 }
 
 html, body {
-  width: 100%; height: 100%;
+  width: 100%;
+  height: 100%;
   background: #000;
   overflow: hidden;
   font-family: var(--font-main);
@@ -32,15 +42,19 @@ html, body {
 /* ── 게임 컨테이너 ── */
 #game-container {
   position: relative;
-  width: 100vw; height: 100vh;
-  max-width: 1280px; max-height: 720px;
-  margin: auto;
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
   overflow: hidden;
   background: var(--bg-dark);
+  isolation: isolate;
 }
 
-/* 전체화면 중앙 정렬 */
-body { display: flex; align-items: center; justify-content: center; }
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
 
 /* ── 배경 레이어 ── */
 #bg-layer {
@@ -72,11 +86,11 @@ body { display: flex; align-items: center; justify-content: center; }
 
 #investigation-hud {
   position: absolute;
-  top: 24px;
-  left: 72px;
+  top: calc(var(--safe-top) + 8px);
+  left: calc(var(--safe-side) + 56px);
   z-index: 21;
   min-width: 280px;
-  max-width: min(440px, calc(100% - 160px));
+  max-width: min(440px, calc(100% - var(--safe-side-double) - 128px));
   padding: 12px 18px;
   border-left: 2px solid var(--gold);
   background: 
@@ -171,7 +185,7 @@ body { display: flex; align-items: center; justify-content: center; }
 
 #standing-stage {
   position: absolute;
-  inset: 0 0 160px 0;
+  inset: 0 0 calc(var(--dialogue-height) + var(--safe-bottom) + 12px) 0;
   z-index: 8;
   pointer-events: none;
 }
@@ -631,11 +645,11 @@ body { display: flex; align-items: center; justify-content: center; }
 
 #scene-banner {
   position: absolute;
-  top: 72px;
-  left: 20px;
+  top: calc(var(--safe-top) + var(--top-row-height) + var(--panel-gap));
+  left: var(--safe-side);
   z-index: 24;
   min-width: 240px;
-  max-width: min(420px, calc(100% - 40px));
+  max-width: min(420px, calc(100% - var(--safe-side-double) - 24px));
   padding: 14px 20px;
   border-left: 3px solid var(--gold);
   background: var(--bg-glass);
@@ -672,10 +686,10 @@ body { display: flex; align-items: center; justify-content: center; }
 
 #scene-goal {
   position: absolute;
-  top: 72px;
-  right: 20px;
+  top: calc(var(--safe-top) + var(--top-row-height) + var(--panel-gap));
+  right: var(--safe-side);
   z-index: 24;
-  width: min(340px, calc(100% - 40px));
+  width: min(360px, calc(100% - var(--safe-side-double) - 24px));
   padding: 14px 20px;
   border-right: 3px solid var(--gold);
   background: var(--bg-glass);
@@ -714,6 +728,9 @@ body { display: flex; align-items: center; justify-content: center; }
 
 /* ── 상단 메뉴 ── */
 #top-menu {
+  position: absolute;
+  top: var(--safe-top);
+  right: var(--safe-side);
   display: flex; gap: 8px;
   z-index: 20;
 }
@@ -734,7 +751,7 @@ body { display: flex; align-items: center; justify-content: center; }
 
 /* ── 메모 버튼 ── */
 #memo-btn {
-  position: absolute; top: 16px; left: 16px;
+  position: absolute; top: var(--safe-top); left: var(--safe-side);
   background: var(--bg-glass);
   border: 1px solid var(--border);
   color: var(--gold);
@@ -789,8 +806,11 @@ body { display: flex; align-items: center; justify-content: center; }
 
 /* ── 메모 패널 ── */
 #memo-panel {
-  position: absolute; top: 64px; left: 16px;
-  width: 320px; max-height: 420px;
+  position: absolute;
+  top: calc(var(--safe-top) + var(--top-row-height) + 4px);
+  left: var(--safe-side);
+  width: min(360px, calc(100% - 32px));
+  max-height: min(500px, calc(100% - var(--safe-top) - var(--dialogue-height) - var(--safe-bottom) - 72px));
   display: flex;
   flex-direction: column;
   background: linear-gradient(180deg, rgba(14, 11, 8, 0.97) 0%, rgba(8, 6, 4, 0.95) 100%);
@@ -1154,7 +1174,9 @@ body { display: flex; align-items: center; justify-content: center; }
 
 /* ── 시스템 토스트 ── */
 #system-toast {
-  position: absolute; top: 60px; right: 16px;
+  position: absolute;
+  top: calc(var(--safe-top) + var(--top-row-height) + 4px);
+  right: var(--safe-side);
   background: var(--bg-panel);
   border: 1px solid var(--border);
   color: var(--text-main);
@@ -1289,45 +1311,155 @@ body { display: flex; align-items: center; justify-content: center; }
   color: var(--text-dim);
 }
 
-@media (max-width: 960px) {
+/* ── 앵커 우선순위 룰 ──
+   1. 대화창/선택지는 항상 유지
+   2. HUD와 수첩은 축소/재배치
+   3. 씬 목표 카드는 먼저 줄이고, 더 좁으면 숨김
+   4. 스탠딩은 마지막에 축소
+*/
+@media (min-aspect-ratio: 19/9) {
+  :root {
+    --safe-side: 24px;
+    --safe-side-double: 48px;
+  }
+
   #investigation-hud {
-    top: 64px;
-    left: 16px;
+    max-width: 400px;
+  }
+
+  #scene-banner {
+    max-width: min(460px, calc(100% - var(--safe-side-double) - 56px));
+  }
+
+  #scene-goal {
+    width: min(380px, calc(100% - var(--safe-side-double) - 56px));
+  }
+
+  #memo-panel {
+    width: min(380px, calc(100% - var(--safe-side-double)));
+    max-height: min(540px, calc(100% - var(--safe-top) - var(--dialogue-height) - var(--safe-bottom) - 64px));
+  }
+
+  .standing-slot {
+    width: 28%;
+    height: min(82vh, 620px);
+  }
+
+  .standing-slot[data-slot="Left"] {
+    left: 4%;
+  }
+
+  .standing-slot[data-slot="Right"] {
+    right: 4%;
+  }
+}
+
+@media (max-height: 860px) {
+  :root {
+    --dialogue-height: 176px;
+    --choice-gap: 14px;
+  }
+
+  #investigation-hud {
+    padding: 10px 14px;
+    min-width: 0;
+  }
+
+  #memo-panel {
+    max-height: min(400px, calc(100% - var(--safe-top) - var(--dialogue-height) - var(--safe-bottom) - 56px));
+  }
+
+  #scene-banner,
+  #scene-goal {
+    top: calc(var(--safe-top) + var(--top-row-height) + 8px);
+  }
+
+  #scene-goal {
+    width: min(300px, calc(100% - var(--safe-side-double) - 24px));
+  }
+
+  .standing-slot {
+    height: min(68vh, 500px);
+  }
+}
+
+@media (max-height: 760px) {
+  :root {
+    --dialogue-height: 164px;
+    --choice-gap: 10px;
+  }
+
+  #investigation-hud {
+    padding: 9px 12px;
+    max-width: min(360px, calc(100% - var(--safe-side-double) - 72px));
+  }
+
+  #memo-panel {
+    width: min(320px, calc(100% - var(--safe-side-double)));
+    max-height: min(320px, calc(100% - var(--safe-top) - var(--dialogue-height) - var(--safe-bottom) - 44px));
+  }
+
+  #scene-goal {
+    display: none;
+  }
+
+  #scene-banner {
+    max-width: min(320px, calc(100% - var(--safe-side-double)));
+  }
+
+  .standing-slot {
+    height: min(58vh, 380px);
+  }
+}
+
+@media (max-width: 960px) {
+  :root {
+    --safe-top: 16px;
+    --safe-side: 16px;
+    --safe-side-double: 32px;
+    --safe-bottom: 14px;
+    --dialogue-height: 188px;
+  }
+
+  #investigation-hud {
+    top: calc(var(--safe-top) + var(--top-row-height) + var(--panel-gap));
+    left: var(--safe-side);
     max-width: calc(100% - 32px);
   }
 
   #scene-banner,
   #scene-goal {
     position: absolute;
-    left: 16px;
-    right: 16px;
+    left: var(--safe-side);
+    right: var(--safe-side);
     max-width: none;
     width: auto;
   }
 
   #scene-banner {
-    top: 150px;
+    top: calc(var(--safe-top) + var(--top-row-height) + 88px);
   }
 
   #scene-goal {
-    top: 220px;
-  }
-
-  #choice-box {
-    width: min(620px, calc(100% - 28px));
+    top: calc(var(--safe-top) + var(--top-row-height) + 158px);
   }
 }
 
 @media (max-width: 720px) {
-  #game-container {
-    max-width: none;
-    max-height: none;
+  :root {
+    --safe-top: 12px;
+    --safe-side: 12px;
+    --safe-side-double: 24px;
+    --safe-bottom: 12px;
+    --dialogue-height: 180px;
+    --top-row-height: 44px;
+    --panel-gap: 10px;
   }
 
   #investigation-hud {
-    top: 62px;
-    left: 12px;
-    right: 12px;
+    top: calc(var(--safe-top) + var(--top-row-height) + 6px);
+    left: var(--safe-side);
+    right: var(--safe-side);
     min-width: 0;
     max-width: none;
     padding: 9px 12px;
@@ -1344,10 +1476,10 @@ body { display: flex; align-items: center; justify-content: center; }
   }
 
   #memo-panel {
-    top: 62px;
-    left: 12px;
-    width: min(340px, calc(100% - 24px));
-    max-height: min(420px, calc(100% - 88px));
+    top: calc(var(--safe-top) + var(--top-row-height) + 6px);
+    left: var(--safe-side);
+    width: min(340px, calc(100% - var(--safe-side-double)));
+    max-height: min(420px, calc(100% - var(--safe-top) - var(--dialogue-height) - var(--safe-bottom) - 64px));
   }
 
   #memo-tabs {
@@ -1355,25 +1487,25 @@ body { display: flex; align-items: center; justify-content: center; }
   }
 
   #top-menu {
-    top: 12px;
-    right: 12px;
+    top: var(--safe-top);
+    right: var(--safe-side);
   }
 
   #memo-btn {
-    top: 12px;
-    left: 12px;
+    top: var(--safe-top);
+    left: var(--safe-side);
   }
 
   #scene-banner {
-    top: 174px;
+    top: calc(var(--safe-top) + var(--top-row-height) + 100px);
   }
 
   #scene-goal {
-    top: 252px;
+    top: calc(var(--safe-top) + var(--top-row-height) + 178px);
   }
 
   #dialogue-box {
-    height: 180px;
+    height: var(--dialogue-height);
   }
 
   #portrait-wrap {
@@ -1444,12 +1576,5 @@ body { display: flex; align-items: center; justify-content: center; }
 
   .title-btn {
     max-width: 100%;
-  }
-
-  #scene-banner {
-    top: 58px;
-    left: 14px;
-    right: 14px;
-    max-width: none;
   }
 }
