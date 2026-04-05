@@ -146,6 +146,39 @@ def validate_dialogue_character_refs(scene_id, scene, data, issues):
                 )
 
 
+def validate_questions(data, issues):
+    questions = data.get("questions", []) or []
+    question_ids = [question.get("question_id") for question in questions if question.get("question_id")]
+    duplicates = find_duplicates(question_ids)
+    for dup in duplicates:
+        issues.append(f"[Duplicate.question_id] {dup}")
+
+    for question in questions:
+        if not question.get("question_id"):
+            issues.append("[Question.question_id] missing QuestionID")
+        if not question.get("title"):
+            issues.append(f"[Question.title] {question.get('question_id') or '(unknown)'} missing Title")
+
+
+def validate_state_descriptors(data, issues):
+    descriptors = data.get("state_descriptors", []) or []
+    descriptor_ids = [descriptor.get("descriptor_id") for descriptor in descriptors if descriptor.get("descriptor_id")]
+    duplicates = find_duplicates(descriptor_ids)
+    for dup in duplicates:
+        issues.append(f"[Duplicate.descriptor_id] {dup}")
+
+    for descriptor in descriptors:
+        descriptor_id = descriptor.get("descriptor_id") or "(unknown)"
+        if not descriptor.get("target_flag_id"):
+            issues.append(f"[StateDescriptor.target_flag_id] {descriptor_id} missing TargetFlagID")
+        if descriptor.get("min_value") is None:
+            issues.append(f"[StateDescriptor.min_value] {descriptor_id} missing MinValue")
+        if descriptor.get("max_value") is None:
+            issues.append(f"[StateDescriptor.max_value] {descriptor_id} missing MaxValue")
+        if not descriptor.get("label"):
+            issues.append(f"[StateDescriptor.label] {descriptor_id} missing Label")
+
+
 def main():
     args = parse_args()
     input_path = os.path.abspath(args.input)
@@ -173,6 +206,8 @@ def main():
 
     validate_evidence_ids(scenes, issues)
     validate_characters(data, issues)
+    validate_questions(data, issues)
+    validate_state_descriptors(data, issues)
 
     print(f"검수 대상: {input_path}")
     print(f"씬 수: {len(scenes)}")

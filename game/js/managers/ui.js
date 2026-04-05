@@ -344,6 +344,88 @@ const UIManager = (() => {
     }).join('');
   }
 
+  function renderNotebook(data, activeTab, onTabChange) {
+    const list = $('memo-list');
+    const meta = $('memo-meta');
+    const tabButtons = Array.from(document.querySelectorAll('#memo-tabs .memo-tab'));
+    if (!list) return;
+
+    if (meta) {
+      meta.textContent = data?.metaText || '';
+    }
+
+    tabButtons.forEach(btn => {
+      const isActive = btn.dataset.tab === activeTab;
+      btn.classList.toggle('is-active', isActive);
+      btn.onclick = () => {
+        if (!isActive && onTabChange) onTabChange(btn.dataset.tab);
+      };
+    });
+
+    if (activeTab === 'status') {
+      const cards = (data?.statusCards || []).map(card => `
+        <div class="status-card">
+          <div class="status-label">${card.label}</div>
+          <div class="status-value">${card.value}</div>
+          <div class="status-detail">${card.detail || ''}</div>
+        </div>
+      `).join('');
+
+      const goalHtml = data?.goal?.text ? `
+        <div class="notebook-goal">
+          <div class="notebook-goal-kicker">${data.goal.kicker || '현재 목표'}</div>
+          <div class="notebook-goal-text">${data.goal.text}</div>
+        </div>
+      ` : '';
+
+      list.innerHTML = `
+        <section class="notebook-pane">
+          <div class="memo-section-title">현재 상태</div>
+          <div class="status-grid">${cards}</div>
+          ${goalHtml}
+        </section>
+      `;
+      return;
+    }
+
+    if (activeTab === 'characters') {
+      const cards = (data?.characters || []).map(character => `
+        <article class="character-card">
+          <div class="character-card-header">
+            <div class="character-name">${character.name}</div>
+            <div class="character-role">${character.role}</div>
+          </div>
+          <div class="character-state">${character.state}</div>
+          <div class="character-facts">
+            ${(character.facts || []).map(fact => `<div class="character-fact">${fact}</div>`).join('')}
+          </div>
+        </article>
+      `).join('');
+
+      list.innerHTML = cards
+        ? `<section class="notebook-pane"><div class="memo-section-title">관계 인물</div><div class="character-grid">${cards}</div></section>`
+        : '<div class="memo-empty">정리된 인물 정보가 없습니다.</div>';
+      return;
+    }
+
+    if (activeTab === 'questions') {
+      const questions = (data?.questions || []).map(item => `
+        <article class="question-card">
+          <div class="question-title">${item.title}</div>
+          <div class="question-state">${item.state}</div>
+          <div class="question-detail">${item.detail}</div>
+        </article>
+      `).join('');
+
+      list.innerHTML = questions
+        ? `<section class="notebook-pane"><div class="memo-section-title">남은 질문</div><div class="question-list">${questions}</div></section>`
+        : '<div class="memo-empty">현재 정리된 질문이 없습니다.</div>';
+      return;
+    }
+
+    renderMemo(data?.evidenceGroups || []);
+  }
+
   return {
     init,
     updateHUD,
@@ -362,6 +444,7 @@ const UIManager = (() => {
     renderSaveSlotList,
     updateMemoBadge,
     renderMemo,
+    renderNotebook,
     showChapterCard
   };
 })();

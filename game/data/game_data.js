@@ -5,25 +5,37 @@ window.GAME_DATA = {
       "id": "Yuu",
       "display_name": "유웅룡",
       "default_emotion_type": "Neutral",
-      "default_image_path": "assets/portraits/yuu.jpeg"
+      "default_image_path": "assets/portraits/yuu.jpeg",
+      "role_text": "기록자",
+      "notebook_summary1": "법정에서 시작된 실종 사건을 끝까지 물고 늘어지는 기자.",
+      "notebook_summary2": "기록과 은폐의 경계에서 사건을 붙들고 있다."
     },
     "Songsoon": {
       "id": "Songsoon",
       "display_name": "송순",
       "default_emotion_type": "Uneasy",
-      "default_image_path": "assets/portraits/songsoon.jpeg"
+      "default_image_path": "assets/portraits/songsoon.jpeg",
+      "role_text": "증언자",
+      "notebook_summary1": "낙원 안쪽 사정을 알고 있지만 쉽게 입을 열지 않는다.",
+      "notebook_summary2": "신뢰를 얻을수록 더 깊은 증언에 접근할 수 있다."
     },
     "Ipangyu": {
       "id": "Ipangyu",
       "display_name": "이판규",
       "default_emotion_type": "Crazy",
-      "default_image_path": "assets/portraits/pan_crazy.png"
+      "default_image_path": "assets/portraits/pan_crazy.png",
+      "role_text": "문턱의 죄수",
+      "notebook_summary1": "광기와 교리 사이를 오가며 사건의 단어를 흘리는 인물.",
+      "notebook_summary2": "헛소리처럼 들리지만 사건의 방향을 먼저 암시한다."
     },
     "Editor": {
       "id": "Editor",
       "display_name": "편집장",
       "default_emotion_type": "Angry",
-      "default_image_path": "assets/portraits/editor.jpeg"
+      "default_image_path": "assets/portraits/editor.jpeg",
+      "role_text": "기록의 문지기",
+      "notebook_summary1": "무엇이 기사로 남고 무엇이 묻히는지 결정하는 편집장.",
+      "notebook_summary2": "바깥에 흔적을 남길지 말지의 축과 연결된다."
     },
     "Judge": {
       "id": "Judge",
@@ -71,13 +83,19 @@ window.GAME_DATA = {
       "id": "Okryeon",
       "display_name": "옥련",
       "default_emotion_type": "Afraid",
-      "default_image_path": "assets/portraits/kum_fixed.png"
+      "default_image_path": "assets/portraits/kum_fixed.png",
+      "role_text": "생존자",
+      "notebook_summary1": "낙원에서 벌어진 일을 견디고 살아남은 여급.",
+      "notebook_summary2": "압박보다 보호에 가까운 태도에서 더 많은 진실이 새어 나온다."
     },
     "Haesim": {
       "id": "Haesim",
       "display_name": "이해심",
       "default_emotion_type": "Trance",
-      "default_image_path": "assets/portraits/haesim.jpeg"
+      "default_image_path": "assets/portraits/haesim.jpeg",
+      "role_text": "의식의 중심",
+      "notebook_summary1": "공명과 의식의 중심축에 선 인물.",
+      "notebook_summary2": "신념인지 광기인지 분간하기 어려운 확신을 가진다."
     },
     "Cheonyonghae": {
       "id": "Cheonyonghae",
@@ -89,7 +107,10 @@ window.GAME_DATA = {
       "id": "Songgeum",
       "display_name": "송금",
       "default_emotion_type": "Trance",
-      "default_image_path": "assets/portraits/songgeum.jpeg"
+      "default_image_path": "assets/portraits/songgeum.jpeg",
+      "role_text": "실종자",
+      "notebook_summary1": "사건의 핵심에서 사라진 여급.",
+      "notebook_summary2": "사람들이 입을 다무는 이유가 이 인물과 맞물려 있다."
     }
   },
   "character_emotions": {
@@ -153,6 +174,125 @@ window.GAME_DATA = {
       "Trance": "assets/portraits/songgeum.jpeg"
     }
   },
+  "questions": [
+    {
+      "question_id": "QIpangyuCall",
+      "title": "이판규는 누구에게 불려갔는가",
+      "detail": "광기처럼 보이는 말들이 실제로는 사건의 중심을 향한 반응일 수 있다.",
+      "sort_order": 10,
+      "category": "Witness",
+      "visible_rule_id": "QR_IpangyuSeen",
+      "state_rule_id": "QS_IpangyuCall"
+    },
+    {
+      "question_id": "QSonggeumMissing",
+      "title": "송금은 왜 사라졌는가",
+      "detail": "송금이 자발적으로 사라진 것인지, 의식의 일부로 지워진 것인지가 핵심이다.",
+      "sort_order": 20,
+      "category": "Missing",
+      "visible_rule_id": "QR_SonggeumOpen",
+      "state_rule_id": "QS_SonggeumMissing"
+    },
+    {
+      "question_id": "QRitualLead",
+      "title": "낙원의 의식은 누가 주도했는가",
+      "detail": "무녀, 악보, 기록, 기사 사이를 연결해 의식의 실제 주체를 좁혀야 한다.",
+      "sort_order": 30,
+      "category": "Ritual",
+      "visible_rule_id": "QR_RitualOpen",
+      "state_rule_id": "QS_RitualLead"
+    }
+  ],
+  "state_descriptors": [
+    {
+      "descriptor_id": "SD_Resonance_0",
+      "target_flag_id": "ResonanceLevel",
+      "min_value": 0,
+      "max_value": 0,
+      "label": "안정",
+      "detail": "아직은 현실 감각이 우세한 상태입니다."
+    },
+    {
+      "descriptor_id": "SD_Resonance_1",
+      "target_flag_id": "ResonanceLevel",
+      "min_value": 1,
+      "max_value": 1,
+      "label": "전조",
+      "detail": "조사 과정 곳곳에서 공명의 낌새가 드러납니다."
+    },
+    {
+      "descriptor_id": "SD_Resonance_2",
+      "target_flag_id": "ResonanceLevel",
+      "min_value": 2,
+      "max_value": 2,
+      "label": "심화",
+      "detail": "위험을 감수한 만큼 비현실의 결이 짙어졌습니다."
+    },
+    {
+      "descriptor_id": "SD_Resonance_3",
+      "target_flag_id": "ResonanceLevel",
+      "min_value": 3,
+      "max_value": 99,
+      "label": "침식",
+      "detail": "현실과 공명의 경계가 크게 흔들리고 있습니다."
+    },
+    {
+      "descriptor_id": "SD_Trust_0",
+      "target_flag_id": "SongsoonTrust",
+      "min_value": 0,
+      "max_value": 0,
+      "label": "경계",
+      "detail": "섣부른 추궁은 관계를 닫아버릴 가능성이 큽니다."
+    },
+    {
+      "descriptor_id": "SD_Trust_1",
+      "target_flag_id": "SongsoonTrust",
+      "min_value": 1,
+      "max_value": 1,
+      "label": "동행",
+      "detail": "경계는 남아 있지만 함께 움직일 정도의 틈은 생겼습니다."
+    },
+    {
+      "descriptor_id": "SD_Trust_2",
+      "target_flag_id": "SongsoonTrust",
+      "min_value": 2,
+      "max_value": 99,
+      "label": "신뢰",
+      "detail": "송순이 등을 돌리지 않고 같은 방향을 보고 있습니다."
+    },
+    {
+      "descriptor_id": "SD_Investigation_0",
+      "target_flag_id": "InvestigationProgress",
+      "min_value": 0,
+      "max_value": 0,
+      "label": "초기",
+      "detail": "아직 증언과 단서가 충분히 엮이지 않은 상태입니다."
+    },
+    {
+      "descriptor_id": "SD_Investigation_1",
+      "target_flag_id": "InvestigationProgress",
+      "min_value": 1,
+      "max_value": 1,
+      "label": "추적",
+      "detail": "사건의 외곽선을 따라가며 주요 흔적을 모으는 단계입니다."
+    },
+    {
+      "descriptor_id": "SD_Investigation_2",
+      "target_flag_id": "InvestigationProgress",
+      "min_value": 2,
+      "max_value": 3,
+      "label": "접근",
+      "detail": "단서가 서로 이어지기 시작했고 질문의 결이 또렷해졌습니다."
+    },
+    {
+      "descriptor_id": "SD_Investigation_4",
+      "target_flag_id": "InvestigationProgress",
+      "min_value": 4,
+      "max_value": 99,
+      "label": "심층",
+      "detail": "표면을 지나 사건의 구조와 의식을 함께 추적하는 단계입니다."
+    }
+  ],
   "scenes": {
     "ch1_court": {
       "id": "ch1_court",

@@ -20,7 +20,7 @@
 
   // ── 상태 ──────────────────────────────────────────────
   const state = {
-    data: { first_scene: '', characters: {}, character_emotions: {}, scenes: {} },
+    data: { first_scene: '', characters: {}, character_emotions: {}, questions: [], state_descriptors: [], scenes: {} },
     layout: {},       // { sceneId: { x, y } }
     selectedId: null,
     selectedIds: new Set(),
@@ -65,6 +65,8 @@
     els.fieldChapter = $('field-chapter');
     els.fieldMusic   = $('field-music');
     els.fieldEffect  = $('field-effect');
+    els.fieldGoalKicker = $('field-goal-kicker');
+    els.fieldGoalText = $('field-goal-text');
     els.fieldPriorityBudget = $('field-priority-budget');
     els.fieldPriorityDialogues = $('field-priority-dialogues');
     els.btnApplyPriorityDialogues = $('btn-apply-priority-dialogues');
@@ -75,6 +77,8 @@
     els.evidenceList = $('evidence-list');
     els.characterList = $('character-list');
     els.characterEmotionList = $('character-emotion-list');
+    els.questionList = $('question-list');
+    els.stateDescriptorList = $('state-descriptor-list');
     els.analysisSummary = $('analysis-summary');
     els.validationSummary = $('validation-summary');
     els.validationList = $('validation-list');
@@ -288,9 +292,11 @@
 
   function restoreSnapshot(snapshot) {
     const parsed = JSON.parse(snapshot);
-    state.data = parsed.data || { first_scene: '', characters: {}, character_emotions: {}, scenes: {} };
+    state.data = parsed.data || { first_scene: '', characters: {}, character_emotions: {}, questions: [], state_descriptors: [], scenes: {} };
     if (!state.data.characters) state.data.characters = {};
     if (!state.data.character_emotions) state.data.character_emotions = {};
+    if (!Array.isArray(state.data.questions)) state.data.questions = [];
+    if (!Array.isArray(state.data.state_descriptors)) state.data.state_descriptors = [];
     if (!state.data.scenes) state.data.scenes = {};
     state.layout = parsed.layout || {};
   }
@@ -834,6 +840,8 @@
     const hasScene = Boolean(id && state.data.scenes[id]);
     renderCharacterList();
     renderCharacterEmotionList();
+    renderQuestionList();
+    renderStateDescriptorList();
 
     if (state.panelTab === 'character') {
       els.panelEmpty.classList.add('hidden');
@@ -862,6 +870,8 @@
     els.fieldChapter.value = scene.chapter ?? '';
     els.fieldMusic.value = scene.music || '';
     els.fieldEffect.value = scene.effect || '';
+    els.fieldGoalKicker.value = scene.goal_kicker || '';
+    els.fieldGoalText.value = scene.goal_text || '';
     els.fieldPriorityBudget.value = scene.priority_budget ?? '';
     els.fieldPriorityDialogues.value = scene.priority_dialogues
       ? JSON.stringify(scene.priority_dialogues, null, 2)
@@ -1392,6 +1402,12 @@
           <textarea data-field="description">${escapeHtml(e.description || '')}</textarea></label>
         <label><span>이미지</span>
           <input data-field="image" value="${escapeAttr(e.image || '')}"></label>
+        <label><span>카테고리 ID</span>
+          <input data-field="category_id" value="${escapeAttr(e.category_id || '')}" placeholder="예: ritual"></label>
+        <label><span>카테고리명</span>
+          <input data-field="category_title" value="${escapeAttr(e.category_title || '')}" placeholder="예: 의례와 공명"></label>
+        <label><span>카테고리 설명</span>
+          <input data-field="category_hint" value="${escapeAttr(e.category_hint || '')}" placeholder="예: 문, 무녀, 감응과 연결된 흔적"></label>
         <label><span>트리거</span>
           <select data-field="trigger">
             <option value="auto"${(e.trigger || 'auto') === 'auto' ? ' selected' : ''}>auto</option>
@@ -1423,6 +1439,9 @@
       DisplayName: character?.display_name || '',
       DefaultEmotionType: character?.default_emotion_type || '',
       DefaultImagePath: character?.default_image_path || '',
+      RoleText: character?.role_text || '',
+      NotebookSummary1: character?.notebook_summary1 || '',
+      NotebookSummary2: character?.notebook_summary2 || '',
     }));
   }
 
@@ -1438,6 +1457,29 @@
       });
     });
     return rows;
+  }
+
+  function getQuestionRows() {
+    return (state.data.questions || []).map(question => ({
+      QuestionID: question?.question_id || '',
+      Title: question?.title || '',
+      Detail: question?.detail || '',
+      SortOrder: question?.sort_order ?? '',
+      Category: question?.category || '',
+      VisibleRuleID: question?.visible_rule_id || '',
+      StateRuleID: question?.state_rule_id || '',
+    }));
+  }
+
+  function getStateDescriptorRows() {
+    return (state.data.state_descriptors || []).map(descriptor => ({
+      DescriptorID: descriptor?.descriptor_id || '',
+      TargetFlagID: descriptor?.target_flag_id || '',
+      MinValue: descriptor?.min_value ?? '',
+      MaxValue: descriptor?.max_value ?? '',
+      Label: descriptor?.label || '',
+      Detail: descriptor?.detail || '',
+    }));
   }
 
   function syncCharacterEmotionBuckets() {
@@ -1510,6 +1552,12 @@
           <input data-field="DefaultEmotionType" value="${escapeAttr(row.DefaultEmotionType || '')}" placeholder="예: Neutral"></label>
         <label><span>DefaultImagePath</span>
           <input data-field="DefaultImagePath" value="${escapeAttr(row.DefaultImagePath || '')}" placeholder="assets/standing/..."></label>
+        <label><span>RoleText</span>
+          <input data-field="RoleText" value="${escapeAttr(row.RoleText || '')}" placeholder="예: 증언자"></label>
+        <label><span>NotebookSummary1</span>
+          <textarea data-field="NotebookSummary1" rows="2">${escapeHtml(row.NotebookSummary1 || '')}</textarea></label>
+        <label><span>NotebookSummary2</span>
+          <textarea data-field="NotebookSummary2" rows="2">${escapeHtml(row.NotebookSummary2 || '')}</textarea></label>
       `,
       () => {
         const characterId = `Character${rows.length + 1}`;
@@ -1519,6 +1567,9 @@
           display_name: '',
           default_emotion_type: 'Neutral',
           default_image_path: '',
+          role_text: '',
+          notebook_summary1: '',
+          notebook_summary2: '',
         };
         afterChange();
       },
@@ -1544,6 +1595,9 @@
             display_name: '',
             default_emotion_type: '',
             default_image_path: '',
+            role_text: '',
+            notebook_summary1: '',
+            notebook_summary2: '',
           };
         }
 
@@ -1564,6 +1618,9 @@
           if (field === 'DisplayName') target.display_name = value || '';
           if (field === 'DefaultEmotionType') target.default_emotion_type = value || '';
           if (field === 'DefaultImagePath') target.default_image_path = value || '';
+          if (field === 'RoleText') target.role_text = value || '';
+          if (field === 'NotebookSummary1') target.notebook_summary1 = value || '';
+          if (field === 'NotebookSummary2') target.notebook_summary2 = value || '';
         }
 
         markDirty();
@@ -1650,6 +1707,103 @@
     els.characterEmotionList.appendChild(cards);
   }
 
+  function renderQuestionList() {
+    els.questionList.innerHTML = '';
+    const rows = getQuestionRows();
+
+    const cards = makeCard(
+      'Question', rows,
+      (row) => `
+        <label><span>QuestionID</span>
+          <input data-field="QuestionID" value="${escapeAttr(row.QuestionID || '')}" placeholder="예: QSonggeumMissing"></label>
+        <label><span>Title</span>
+          <input data-field="Title" value="${escapeAttr(row.Title || '')}" placeholder="질문 제목"></label>
+        <label><span>Detail</span>
+          <textarea data-field="Detail" rows="3">${escapeHtml(row.Detail || '')}</textarea></label>
+        <label><span>SortOrder</span>
+          <input data-field="SortOrder" type="number" min="0" step="1" value="${escapeAttr(row.SortOrder != null ? String(row.SortOrder) : '')}"></label>
+        <label><span>Category</span>
+          <input data-field="Category" value="${escapeAttr(row.Category || '')}" placeholder="예: Missing"></label>
+        <label><span>VisibleRuleID</span>
+          <input data-field="VisibleRuleID" value="${escapeAttr(row.VisibleRuleID || '')}" placeholder="예: QR_SonggeumOpen"></label>
+        <label><span>StateRuleID</span>
+          <input data-field="StateRuleID" value="${escapeAttr(row.StateRuleID || '')}" placeholder="예: QS_SonggeumMissing"></label>
+      `,
+      () => {
+        state.data.questions = state.data.questions || [];
+        state.data.questions.push(newQuestion());
+        afterChange();
+      },
+      (i) => {
+        state.data.questions.splice(i, 1);
+        afterChange();
+      },
+      (i) => { if (swap(state.data.questions, i - 1, i)) afterChange(); },
+      (i) => { if (swap(state.data.questions, i, i + 1)) afterChange(); },
+      (row, field, value) => {
+        const target = state.data.questions.find(question => (question.question_id || '') === row.QuestionID) || state.data.questions.find((_, idx) => rows[idx] === row);
+        if (!target) return;
+        if (field === 'QuestionID') target.question_id = value || '';
+        if (field === 'Title') target.title = value || '';
+        if (field === 'Detail') target.detail = value || '';
+        if (field === 'SortOrder') target.sort_order = value === '' ? null : Number.parseInt(value, 10);
+        if (field === 'Category') target.category = value || '';
+        if (field === 'VisibleRuleID') target.visible_rule_id = value || '';
+        if (field === 'StateRuleID') target.state_rule_id = value || '';
+        markDirty();
+      }
+    );
+
+    els.questionList.appendChild(cards);
+  }
+
+  function renderStateDescriptorList() {
+    els.stateDescriptorList.innerHTML = '';
+    const rows = getStateDescriptorRows();
+
+    const cards = makeCard(
+      'StateDescriptor', rows,
+      (row) => `
+        <label><span>DescriptorID</span>
+          <input data-field="DescriptorID" value="${escapeAttr(row.DescriptorID || '')}" placeholder="예: SD_Resonance_0"></label>
+        <label><span>TargetFlagID</span>
+          <input data-field="TargetFlagID" value="${escapeAttr(row.TargetFlagID || '')}" placeholder="예: ResonanceLevel"></label>
+        <label><span>MinValue</span>
+          <input data-field="MinValue" type="number" step="1" value="${escapeAttr(row.MinValue != null ? String(row.MinValue) : '')}"></label>
+        <label><span>MaxValue</span>
+          <input data-field="MaxValue" type="number" step="1" value="${escapeAttr(row.MaxValue != null ? String(row.MaxValue) : '')}"></label>
+        <label><span>Label</span>
+          <input data-field="Label" value="${escapeAttr(row.Label || '')}" placeholder="예: 전조"></label>
+        <label><span>Detail</span>
+          <textarea data-field="Detail" rows="3">${escapeHtml(row.Detail || '')}</textarea></label>
+      `,
+      () => {
+        state.data.state_descriptors = state.data.state_descriptors || [];
+        state.data.state_descriptors.push(newStateDescriptor());
+        afterChange();
+      },
+      (i) => {
+        state.data.state_descriptors.splice(i, 1);
+        afterChange();
+      },
+      (i) => { if (swap(state.data.state_descriptors, i - 1, i)) afterChange(); },
+      (i) => { if (swap(state.data.state_descriptors, i, i + 1)) afterChange(); },
+      (row, field, value) => {
+        const target = state.data.state_descriptors.find(descriptor => (descriptor.descriptor_id || '') === row.DescriptorID) || state.data.state_descriptors.find((_, idx) => rows[idx] === row);
+        if (!target) return;
+        if (field === 'DescriptorID') target.descriptor_id = value || '';
+        if (field === 'TargetFlagID') target.target_flag_id = value || '';
+        if (field === 'MinValue') target.min_value = value === '' ? null : Number(value);
+        if (field === 'MaxValue') target.max_value = value === '' ? null : Number(value);
+        if (field === 'Label') target.label = value || '';
+        if (field === 'Detail') target.detail = value || '';
+        markDirty();
+      }
+    );
+
+    els.stateDescriptorList.appendChild(cards);
+  }
+
   function afterChange() {
     markDirty();
     render();
@@ -1667,17 +1821,24 @@
     return { flag_key: '', flag_value: '', next_scene: '' };
   }
   function newEvidence() {
-    return { evidence_id: '', trigger: 'auto', name: '', description: '', image: '' };
+    return { evidence_id: '', trigger: 'auto', name: '', description: '', image: '', category_id: '', category_title: '', category_hint: '' };
   }
   function newCharacter() {
-    return { CharacterID: '', DisplayName: '', DefaultEmotionType: 'Neutral', DefaultImagePath: '' };
+    return { CharacterID: '', DisplayName: '', DefaultEmotionType: 'Neutral', DefaultImagePath: '', RoleText: '', NotebookSummary1: '', NotebookSummary2: '' };
   }
   function newCharacterEmotion() {
     return { CharacterID: '', EmotionType: 'Neutral', ImagePath: '' };
   }
+  function newQuestion() {
+    return { question_id: '', title: '', detail: '', sort_order: null, category: '', visible_rule_id: '', state_rule_id: '' };
+  }
+  function newStateDescriptor() {
+    return { descriptor_id: '', target_flag_id: '', min_value: 0, max_value: 0, label: '', detail: '' };
+  }
   function newScene(id) {
     return {
       id, chapter: null, title: id, background: null, music: null, effect: null, next_scene: null,
+      goal_kicker: null, goal_text: null,
       priority_budget: null, priority_dialogues: {}, priority_after_dialogues: [],
       branches: [], dialogues: [], choices: [], evidence: []
     };
@@ -1775,6 +1936,9 @@
       name: evidence.name || '',
       description: evidence.description || '',
       image: evidence.image || null,
+      category_id: evidence.category_id || null,
+      category_title: evidence.category_title || null,
+      category_hint: evidence.category_hint || null,
     }));
 
     const result = {
@@ -1784,6 +1948,8 @@
       background: scene.background || null,
       music: scene.music || null,
       effect: scene.effect || null,
+      goal_kicker: scene.goal_kicker || null,
+      goal_text: scene.goal_text || null,
       next_scene: scene.next_scene || null,
       dialogues: normalizedDialogues,
       choices: normalizedChoices,
@@ -1817,6 +1983,8 @@
       first_scene: firstScene,
       characters: state.data.characters || {},
       character_emotions: state.data.character_emotions || {},
+      questions: state.data.questions || [],
+      state_descriptors: state.data.state_descriptors || [],
       scenes: normalizedScenes,
     };
   }
@@ -2366,6 +2534,8 @@
       state.data = window.GAME_DATA;
       if (!state.data.characters) state.data.characters = {};
       if (!state.data.character_emotions) state.data.character_emotions = {};
+      if (!Array.isArray(state.data.questions)) state.data.questions = [];
+      if (!Array.isArray(state.data.state_descriptors)) state.data.state_descriptors = [];
       if (!state.data.scenes) state.data.scenes = {};
       state.layout = {};
       state.history = [];
@@ -2556,6 +2726,28 @@
       state.data.character_emotions[row.CharacterID][emotionType] = row.ImagePath;
       afterChange();
     });
+    $('btn-add-question').addEventListener('click', () => {
+      pushHistory();
+      state.data.questions = state.data.questions || [];
+      const row = newQuestion();
+      let suffix = state.data.questions.length + 1;
+      do {
+        row.question_id = `Question${suffix++}`;
+      } while (state.data.questions.some(question => question.question_id === row.question_id));
+      state.data.questions.push(row);
+      afterChange();
+    });
+    $('btn-add-state-descriptor').addEventListener('click', () => {
+      pushHistory();
+      state.data.state_descriptors = state.data.state_descriptors || [];
+      const row = newStateDescriptor();
+      let suffix = state.data.state_descriptors.length + 1;
+      do {
+        row.descriptor_id = `Descriptor${suffix++}`;
+      } while (state.data.state_descriptors.some(descriptor => descriptor.descriptor_id === row.descriptor_id));
+      state.data.state_descriptors.push(row);
+      afterChange();
+    });
 
     // 패널 필드
     els.fieldTitle.addEventListener('input', () => {
@@ -2591,6 +2783,20 @@
       const scene = state.data.scenes[state.selectedId];
       if (!scene) return;
       scene.effect = els.fieldEffect.value || null;
+      markDirty();
+      refreshMetaViews();
+    });
+    els.fieldGoalKicker.addEventListener('input', () => {
+      const scene = state.data.scenes[state.selectedId];
+      if (!scene) return;
+      scene.goal_kicker = els.fieldGoalKicker.value || null;
+      markDirty();
+      refreshMetaViews();
+    });
+    els.fieldGoalText.addEventListener('input', () => {
+      const scene = state.data.scenes[state.selectedId];
+      if (!scene) return;
+      scene.goal_text = els.fieldGoalText.value || null;
       markDirty();
       refreshMetaViews();
     });
@@ -2672,6 +2878,8 @@
     els.fieldChapter.addEventListener('focus', pushHistory);
     els.fieldMusic.addEventListener('focus', pushHistory);
     els.fieldEffect.addEventListener('focus', pushHistory);
+    els.fieldGoalKicker.addEventListener('focus', pushHistory);
+    els.fieldGoalText.addEventListener('focus', pushHistory);
     els.fieldPriorityBudget.addEventListener('focus', pushHistory);
     els.fieldSceneId.addEventListener('focus', pushHistory);
 

@@ -10,13 +10,15 @@ Excel → game_data.js 변환 스크립트
   서버 없이 index.html을 파일로 열어도 동작함
 
 Excel 컬럼 규칙 (PascalCase):
-  SceneTable / Scenes        : SceneID, Chapter, Title, Background, Music, NextScene, Effect
+  SceneTable / Scenes        : SceneID, Chapter, Title, Background, Music, NextScene, Effect, GoalKicker, GoalText
   DialogTable / Dialogues    : SceneID, Order, Label, Speaker, SpeakerID, EmotionType, StandingSlot, FocusType, EnterMotion, ExitMotion, IdleMotion, FxType, Text, Style, Portrait, ConditionKey, ConditionValue
   ChoiceTable / Choices      : SceneID, Order, Text, FlagKey, FlagValue, NextScene, NextDialogue
   BranchTable / Branches     : SceneID, Order, FlagKey, FlagValue, NextScene
-  EvidenceTable / Evidence   : EvidenceID, SceneId, Trigger, Name, Description, Image
-  CharacterTable / Characters: CharacterID, DisplayName, DefaultEmotionType, DefaultImagePath
+  EvidenceTable / Evidence   : EvidenceID, SceneId, Trigger, Name, Description, Image, CategoryID, CategoryTitle, CategoryHint
+  CharacterTable / Characters: CharacterID, DisplayName, DefaultEmotionType, DefaultImagePath, RoleText, NotebookSummary1, NotebookSummary2
   CharacterEmotionTable / CharacterEmotions : CharacterID, EmotionType, ImagePath
+  QuestionTable / Questions : QuestionID, Title, Detail, SortOrder, Category, VisibleRuleID, StateRuleID
+  StateDescriptorTable / StateDescriptors : DescriptorID, TargetFlagID, MinValue, MaxValue, Label, Detail
 
 무시 규칙:
   시트명이 $로 시작하면 export 대상에서 제외
@@ -89,6 +91,8 @@ def build_game_data(wb):
     evidence_raw = read_sheet(resolve_sheet(wb, "EvidenceTable", "Evidence"))
     characters_raw = read_sheet(resolve_sheet(wb, "CharacterTable", "Characters")) if "CharacterTable" in wb.sheetnames or "Characters" in wb.sheetnames else []
     character_emotions_raw = read_sheet(resolve_sheet(wb, "CharacterEmotionTable", "CharacterEmotions")) if "CharacterEmotionTable" in wb.sheetnames or "CharacterEmotions" in wb.sheetnames else []
+    questions_raw = read_sheet(resolve_sheet(wb, "QuestionTable", "Questions")) if "QuestionTable" in wb.sheetnames or "Questions" in wb.sheetnames else []
+    state_descriptors_raw = read_sheet(resolve_sheet(wb, "StateDescriptorTable", "StateDescriptors")) if "StateDescriptorTable" in wb.sheetnames or "StateDescriptors" in wb.sheetnames else []
 
     # SceneID 기준으로 씬 딕셔너리 구성
     scenes = {}
@@ -102,6 +106,8 @@ def build_game_data(wb):
             "music":      s.get("Music"),
             "next_scene": s.get("NextScene"),
             "effect":     s.get("Effect"),
+            "goal_kicker": s.get("GoalKicker"),
+            "goal_text":  s.get("GoalText"),
             "branches":   [],
             "dialogues":  [],
             "choices":    [],
@@ -183,6 +189,9 @@ def build_game_data(wb):
                 "name":        e.get("Name") or "",
                 "description": e.get("Description") or "",
                 "image":       e.get("Image"),
+                "category_id": e.get("CategoryID"),
+                "category_title": e.get("CategoryTitle"),
+                "category_hint": e.get("CategoryHint"),
             })
 
     characters = {}
@@ -195,6 +204,9 @@ def build_game_data(wb):
             "display_name": c.get("DisplayName") or character_id,
             "default_emotion_type": c.get("DefaultEmotionType") or "Neutral",
             "default_image_path": c.get("DefaultImagePath"),
+            "role_text": c.get("RoleText"),
+            "notebook_summary1": c.get("NotebookSummary1"),
+            "notebook_summary2": c.get("NotebookSummary2"),
         }
 
     character_emotions = {}
@@ -210,10 +222,41 @@ def build_game_data(wb):
 
     first_scene = scenes_raw[0]["SceneID"] if scenes_raw else None
 
+    questions = []
+    for q in questions_raw:
+        question_id = q.get("QuestionID")
+        if not question_id:
+            continue
+        questions.append({
+            "question_id": question_id,
+            "title": q.get("Title") or "",
+            "detail": q.get("Detail") or "",
+            "sort_order": q.get("SortOrder"),
+            "category": q.get("Category"),
+            "visible_rule_id": q.get("VisibleRuleID"),
+            "state_rule_id": q.get("StateRuleID"),
+        })
+
+    state_descriptors = []
+    for row in state_descriptors_raw:
+        descriptor_id = row.get("DescriptorID")
+        if not descriptor_id:
+            continue
+        state_descriptors.append({
+            "descriptor_id": descriptor_id,
+            "target_flag_id": row.get("TargetFlagID"),
+            "min_value": row.get("MinValue"),
+            "max_value": row.get("MaxValue"),
+            "label": row.get("Label") or "",
+            "detail": row.get("Detail") or "",
+        })
+
     return {
         "first_scene": first_scene,
         "characters": characters,
         "character_emotions": character_emotions,
+        "questions": questions,
+        "state_descriptors": state_descriptors,
         "scenes": scenes,
     }
 

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>경성뎐 : 여급 실종사건</title>
-  <link rel="stylesheet" href="css/main.css?v=10">
+  <link rel="stylesheet" href="css/main.css?v=12">
   <link rel="stylesheet" href="css/dialogue.css?v=9">
   <link rel="stylesheet" href="css/effects.css?v=9">
 </head>
@@ -114,20 +114,26 @@
     <div id="choice-list"></div>
   </div>
 
-  <!-- ── 메모장 (단서) 버튼 ── -->
-  <button id="memo-btn" title="단서 메모장">
+  <!-- ── 조사 수첩 버튼 ── -->
+  <button id="memo-btn" title="조사 수첩">
     <span class="memo-btn-icon">📋</span>
     <span id="memo-badge" class="hidden" aria-hidden="true"></span>
   </button>
 
-  <!-- ── 메모장 패널 ── -->
+  <!-- ── 조사 수첩 패널 ── -->
   <div id="memo-panel" class="hidden">
     <div id="memo-header">
       <div>
-        <div>단서 메모장</div>
+        <div>조사 수첩</div>
         <div id="memo-meta"></div>
       </div>
       <button id="memo-close">✕</button>
+    </div>
+    <div id="memo-tabs">
+      <button class="memo-tab is-active" data-tab="status">상태</button>
+      <button class="memo-tab" data-tab="characters">인물</button>
+      <button class="memo-tab" data-tab="evidence">단서</button>
+      <button class="memo-tab" data-tab="questions">질문</button>
     </div>
     <div id="memo-list"></div>
   </div>
@@ -165,13 +171,13 @@
 <script src="js/core/engine.js?v=10"></script>
 <script src="js/managers/effects.js?v=10"></script>
 <script src="js/managers/audio.js?v=10"></script>
-<script src="js/managers/ui.js?v=10"></script>
+<script src="js/managers/ui.js?v=12"></script>
 <script src="js/managers/input.js?v=10"></script>
 
 <!-- 엔진 모듈 -->
 <script src="js/engine/state.js?v=10"></script>
 <script src="js/engine/save.js?v=11"></script>
-<script src="js/engine/evidence.js?v=10"></script>
+<script src="js/engine/evidence.js?v=14"></script>
 <script src="js/engine/dialogue.js?v=10"></script>
 <script src="js/engine/choice.js?v=10"></script>
 <script src="js/engine/scene.js?v=10"></script>

@@ -18,6 +18,8 @@
 | `Music` | string | | BGM 상대경로. ex) `assets/sfx/ambient.mp3` |
 | `Effect` | string/int | | 씬 진입 시 이펙트. 값: `flicker`(1) / `resonance`(2) / `shake`(3) / `blood`(4) |
 | `NextScene` | string | | 대화 종료 후 기본으로 이동할 SceneID. 없으면 씬 종료. |
+| `GoalKicker` | string | | 조사 수첩 / HUD 목표 머리말. ex) `현재 목표` |
+| `GoalText` | string | | 현재 씬에서 붙들어야 할 목표 문장 |
 
 **관계:** `SceneID` ← DialogTable, ChoiceTable, EvidenceTable, BranchTable 가 모두 참조.
 
@@ -137,6 +139,9 @@ Dialogue 종료 → Branch 목록을 Order 순으로 순회
 | `Name` | string | ✅ | 단서 이름. 메모장에 표시. |
 | `Description` | string | | 단서 설명. 메모장 상세. |
 | `Image` | string | | 단서 이미지 상대경로. ex) `assets/items/note.png` |
+| `CategoryID` | string | | 단서 분류 ID. ex) `ritual`, `record`, `trace` |
+| `CategoryTitle` | string | | 단서 탭에 표시할 카테고리명 |
+| `CategoryHint` | string | | 단서 탭에 표시할 카테고리 설명 |
 
 ---
 
@@ -217,6 +222,9 @@ assets/ev/          ← 미사용 (ev 폴더는 현재 연결 안 됨)
 | `DisplayName` | string | ✅ | 화면 출력 이름. ex) `유웅룡` |
 | `DefaultEmotionType` | string | ✅ | 기본 감정 타입. ex) `Neutral` |
 | `DefaultImagePath` | string | | 기본 이미지 경로. ex) `assets/portraits/yuu.jpeg` |
+| `RoleText` | string | | 조사 수첩 인물 탭 역할명. ex) `증언자` |
+| `NotebookSummary1` | string | | 조사 수첩 인물 탭 요약 1줄 |
+| `NotebookSummary2` | string | | 조사 수첩 인물 탭 요약 2줄 |
 
 ---
 
@@ -235,3 +243,99 @@ assets/ev/          ← 미사용 (ev 폴더는 현재 연결 안 됨)
 - 모든 캐릭터는 최소 `Neutral` 또는 기본 감정 1개 필수
 
 상세 스키마 계획: [CHARACTER_SCHEMA_AND_EDITING_PLAN.md](/G:/GSD/content/docs/system/core/CHARACTER_SCHEMA_AND_EDITING_PLAN.md)
+
+---
+
+## 8. QuestionTable
+
+조사 수첩의 질문 탭과 추리 퍼즐 확장용 질문 메타 데이터.
+
+| 컬럼 | 타입 | 필수 | 설명 |
+|------|------|------|------|
+| `QuestionID` | string | ✅ | 질문 고유 ID. ex) `QSonggeumMissing` |
+| `Title` | string | ✅ | 질문 제목 |
+| `Detail` | string | ✅ | 질문 설명 |
+| `SortOrder` | int | | 정렬 순서 |
+| `Category` | string | | 질문 분류. ex) `Missing`, `Ritual`, `Witness` |
+| `VisibleRuleID` | string | | 질문 노출 규칙 ID |
+| `StateRuleID` | string | | 질문 상태 문구 규칙 ID |
+
+---
+
+## 9. StateDescriptorTable
+
+플래그 수치나 관계 상태를 UI 문구로 해석하는 상태 치환 테이블.
+
+| 컬럼 | 타입 | 필수 | 설명 |
+|------|------|------|------|
+| `DescriptorID` | string | ✅ | 상태 해석 규칙 ID |
+| `TargetFlagID` | string | ✅ | 대상 플래그 ID. ex) `ResonanceLevel` |
+| `MinValue` | number | ✅ | 최소값 포함 |
+| `MaxValue` | number | ✅ | 최대값 포함 |
+| `Label` | string | ✅ | 상태명. ex) `전조` |
+| `Detail` | string | | 상태 설명 |
+
+---
+
+## 신규 구조 기준 메모
+
+현재 명세에는 구형 호환 필드와 신규 구조 필드가 함께 존재한다.
+
+신규 기준은 다음과 같다.
+
+- 화자 기준: `SpeakerID`
+- 감정 이미지 기준: `SpeakerID + EmotionType -> CharacterEmotionTable`
+- 조건 기준: `ConditionFlagID`
+- 선택지 기록 기준: `FlagID`
+- 분기 기준: `FlagID`
+
+즉 아래 필드는 점차 deprecated 대상으로 본다.
+
+- `DialogTable.Speaker`
+- `DialogTable.Portrait`
+- `DialogTable.ConditionKey`
+- `ChoiceTable.FlagKey`
+- `BranchTable.FlagKey`
+
+### FlagTable 제안
+
+상태 변수 정의용 테이블을 별도로 둔다.
+
+| 컬럼 | 타입 | 필수 | 설명 |
+|------|------|------|------|
+| `FlagID` | string | ✅ | 플래그 고유 ID |
+| `DisplayName` | string | ✅ | 기획/에디터 표시명 |
+| `Description` | string | | 의미 설명 |
+| `ValueType` | string | ✅ | `Boolean` / `Number` / `String` |
+| `DefaultValue` | string | | 기본값 |
+| `Category` | string | | `Relationship` / `Investigation` / `Resonance` / `Route` / `Ending` / `Evidence` / `System` |
+
+예시:
+
+| FlagID | DisplayName | ValueType | DefaultValue | Category |
+|--------|-------------|-----------|--------------|----------|
+| `SongsoonTrust` | 송순 신뢰 | `Number` | `0` | `Relationship` |
+| `TrustedSongsoon` | 송순을 믿음 | `Boolean` | `false` | `Relationship` |
+| `CalledEditor` | 편집장 연락 | `Boolean` | `false` | `Route` |
+
+### DialogTable 신규 권장형
+
+신규 데이터는 아래를 우선 사용한다.
+
+- `SpeakerID`
+- `EmotionType`
+- `StandingSlot`
+- `FocusType`
+- `EnterMotion`
+- `ExitMotion`
+- `IdleMotion`
+- `FxType`
+- `Text`
+- `Style`
+- `ConditionFlagID`
+- `ConditionValue`
+
+상세 계획:
+
+- [FLAG_TABLE_및_DIALOG_중복제거_계획.md](/G:/GSD/content/docs/system/core/FLAG_TABLE_및_DIALOG_중복제거_계획.md)
+- [하드코딩_데이터_마이그레이션_계획.md](/G:/GSD/content/docs/system/core/하드코딩_데이터_마이그레이션_계획.md)

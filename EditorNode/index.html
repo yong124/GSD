@@ -71,6 +71,12 @@
         </div>
 
         <div class="panel-section" data-panel-tab="node">
+          <div class="section-label">씬 목표</div>
+          <input id="field-goal-kicker" type="text" placeholder="예: 현재 목표">
+          <textarea id="field-goal-text" rows="3" placeholder="이 씬에서 플레이어가 붙들어야 할 목표 문장"></textarea>
+        </div>
+
+        <div class="panel-section" data-panel-tab="node">
           <div class="section-label">조사 예산 (priority_budget)
             <span class="section-hint">0이면 일반 선택지 모드</span>
           </div>
@@ -162,6 +168,20 @@
             <button id="btn-add-character-emotion" class="small">+</button>
           </div>
           <div id="character-emotion-list"></div>
+        </div>
+
+        <div class="panel-section" data-panel-tab="character">
+          <div class="section-label">Questions
+            <button id="btn-add-question" class="small">+</button>
+          </div>
+          <div id="question-list"></div>
+        </div>
+
+        <div class="panel-section" data-panel-tab="character">
+          <div class="section-label">StateDescriptors
+            <button id="btn-add-state-descriptor" class="small">+</button>
+          </div>
+          <div id="state-descriptor-list"></div>
         </div>
 
         <div class="panel-section" data-panel-tab="node">

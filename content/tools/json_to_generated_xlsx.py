@@ -26,7 +26,7 @@ DEFAULT_OUTPUT = os.path.join(os.path.dirname(__file__), "../generated/script.ge
 
 SHEET_DEFS = {
     "SceneTable": {
-        "headers": ["SceneID", "Chapter", "Title", "Background", "Music", "NextScene", "Effect"],
+        "headers": ["SceneID", "Chapter", "Title", "Background", "Music", "NextScene", "Effect", "GoalKicker", "GoalText"],
     },
     "DialogTable": {
         "headers": ["SceneID", "Order", "Speaker", "SpeakerID", "EmotionType", "StandingSlot", "FocusType", "EnterMotion", "ExitMotion", "IdleMotion", "FxType", "Text", "Style", "Portrait", "ConditionKey", "ConditionValue", "Label"],
@@ -38,13 +38,19 @@ SHEET_DEFS = {
         "headers": ["SceneID", "FlagKey", "FlagValue", "NextScene", "Order"],
     },
     "EvidenceTable": {
-        "headers": ["EvidenceID", "SceneId", "Trigger", "Name", "Description", "Image"],
+        "headers": ["EvidenceID", "SceneId", "Trigger", "Name", "Description", "Image", "CategoryID", "CategoryTitle", "CategoryHint"],
     },
     "CharacterTable": {
-        "headers": ["CharacterID", "DisplayName", "DefaultEmotionType", "DefaultImagePath"],
+        "headers": ["CharacterID", "DisplayName", "DefaultEmotionType", "DefaultImagePath", "RoleText", "NotebookSummary1", "NotebookSummary2"],
     },
     "CharacterEmotionTable": {
         "headers": ["CharacterID", "EmotionType", "ImagePath"],
+    },
+    "QuestionTable": {
+        "headers": ["QuestionID", "Title", "Detail", "SortOrder", "Category", "VisibleRuleID", "StateRuleID"],
+    },
+    "StateDescriptorTable": {
+        "headers": ["DescriptorID", "TargetFlagID", "MinValue", "MaxValue", "Label", "Detail"],
     },
 }
 
@@ -109,6 +115,8 @@ def build_scene_rows(data):
             "Music": scene.get("music"),
             "NextScene": scene.get("next_scene"),
             "Effect": scene.get("effect"),
+            "GoalKicker": scene.get("goal_kicker"),
+            "GoalText": scene.get("goal_text"),
         })
     return rows
 
@@ -189,6 +197,9 @@ def build_evidence_rows(data):
                 "Name": ev.get("name"),
                 "Description": ev.get("description"),
                 "Image": ev.get("image"),
+                "CategoryID": ev.get("category_id"),
+                "CategoryTitle": ev.get("category_title"),
+                "CategoryHint": ev.get("category_hint"),
             })
     rows.sort(key=lambda x: ((x.get("SceneId") or ""), (x.get("EvidenceID") or "")))
     return rows
@@ -204,6 +215,9 @@ def build_character_rows(data):
             "DisplayName": character.get("display_name"),
             "DefaultEmotionType": character.get("default_emotion_type"),
             "DefaultImagePath": character.get("default_image_path"),
+            "RoleText": character.get("role_text"),
+            "NotebookSummary1": character.get("notebook_summary1"),
+            "NotebookSummary2": character.get("notebook_summary2"),
         })
     return rows
 
@@ -222,6 +236,37 @@ def build_character_emotion_rows(data):
     return rows
 
 
+def build_question_rows(data):
+    rows = []
+    for question in data.get("questions", []) or []:
+        rows.append({
+            "QuestionID": question.get("question_id"),
+            "Title": question.get("title"),
+            "Detail": question.get("detail"),
+            "SortOrder": question.get("sort_order"),
+            "Category": question.get("category"),
+            "VisibleRuleID": question.get("visible_rule_id"),
+            "StateRuleID": question.get("state_rule_id"),
+        })
+    rows.sort(key=lambda x: ((x.get("SortOrder") or 0), (x.get("QuestionID") or "")))
+    return rows
+
+
+def build_state_descriptor_rows(data):
+    rows = []
+    for descriptor in data.get("state_descriptors", []) or []:
+        rows.append({
+            "DescriptorID": descriptor.get("descriptor_id"),
+            "TargetFlagID": descriptor.get("target_flag_id"),
+            "MinValue": descriptor.get("min_value"),
+            "MaxValue": descriptor.get("max_value"),
+            "Label": descriptor.get("label"),
+            "Detail": descriptor.get("detail"),
+        })
+    rows.sort(key=lambda x: (x.get("TargetFlagID") or "", x.get("MinValue") if x.get("MinValue") is not None else 0, x.get("DescriptorID") or ""))
+    return rows
+
+
 def build_sheet_rows(data):
     return {
         "SceneTable": build_scene_rows(data),
@@ -231,6 +276,8 @@ def build_sheet_rows(data):
         "EvidenceTable": build_evidence_rows(data),
         "CharacterTable": build_character_rows(data),
         "CharacterEmotionTable": build_character_emotion_rows(data),
+        "QuestionTable": build_question_rows(data),
+        "StateDescriptorTable": build_state_descriptor_rows(data),
     }
 
 
