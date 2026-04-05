@@ -277,6 +277,30 @@ assets/ev/          ← 미사용 (ev 폴더는 현재 연결 안 됨)
 
 ---
 
+## 10. RuleTable
+
+질문 노출/상태 문구처럼 조건 해석이 필요한 메타 데이터를 공통 규칙으로 관리하는 테이블.
+
+| 컬럼 | 타입 | 필수 | 설명 |
+|------|------|------|------|
+| `RuleRowID` | string | ✅ | 규칙 행 고유 ID |
+| `RuleID` | string | ✅ | 질문이나 UI가 참조하는 규칙 묶음 ID |
+| `RuleKind` | string | ✅ | `Visible` / `State` |
+| `FactType` | string | ✅ | `RevealedCharacter` / `HasEvidence` / `SceneProgressIndex` / `FlagValue` |
+| `FactKey` | string | | 검사 대상 키. 예: `Ipangyu`, `EvDiary`, `ReadRitualScore` |
+| `Operator` | string | ✅ | `Equals` / `Gte` |
+| `Value` | string/number/bool | | 비교할 값 |
+| `ResultValue` | string | | `State` 규칙일 때 반환할 상태 문구 |
+| `Priority` | int | | 같은 `RuleID` 안에서 평가 순서 |
+
+운영 기준:
+
+- `Visible` 규칙은 같은 `RuleID` 행들 중 하나라도 만족하면 노출
+- `State` 규칙은 `Priority` 순으로 검사해 처음 만족한 행의 `ResultValue`를 사용
+- 현재는 질문 탭의 `VisibleRuleID`, `StateRuleID` 연결에 우선 사용
+
+---
+
 ## 신규 구조 기준 메모
 
 현재 명세에는 구형 호환 필드와 신규 구조 필드가 함께 존재한다.

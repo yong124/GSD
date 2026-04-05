@@ -17,10 +17,13 @@
   const EXIT_MOTION_OPTIONS = ['None', 'FadeOut', 'SlideOutLeft', 'SlideOutRight'];
   const IDLE_MOTION_OPTIONS = ['None', 'Tremble', 'ShakeLight', 'ShakeHard'];
   const FX_TYPE_OPTIONS = ['None', 'Fog', 'BlueTrace', 'BloodSmear', 'Flicker', 'RitualGlow'];
+  const RULE_KIND_OPTIONS = ['Visible', 'State'];
+  const RULE_FACT_TYPE_OPTIONS = ['RevealedCharacter', 'HasEvidence', 'SceneProgressIndex', 'FlagValue'];
+  const RULE_OPERATOR_OPTIONS = ['Equals', 'Gte'];
 
   // ── 상태 ──────────────────────────────────────────────
   const state = {
-    data: { first_scene: '', characters: {}, character_emotions: {}, questions: [], state_descriptors: [], scenes: {} },
+    data: { first_scene: '', characters: {}, character_emotions: {}, questions: [], state_descriptors: [], rules: [], scenes: {} },
     layout: {},       // { sceneId: { x, y } }
     selectedId: null,
     selectedIds: new Set(),
@@ -79,6 +82,7 @@
     els.characterEmotionList = $('character-emotion-list');
     els.questionList = $('question-list');
     els.stateDescriptorList = $('state-descriptor-list');
+    els.ruleList = $('rule-list');
     els.analysisSummary = $('analysis-summary');
     els.validationSummary = $('validation-summary');
     els.validationList = $('validation-list');
@@ -292,11 +296,12 @@
 
   function restoreSnapshot(snapshot) {
     const parsed = JSON.parse(snapshot);
-    state.data = parsed.data || { first_scene: '', characters: {}, character_emotions: {}, questions: [], state_descriptors: [], scenes: {} };
+    state.data = parsed.data || { first_scene: '', characters: {}, character_emotions: {}, questions: [], state_descriptors: [], rules: [], scenes: {} };
     if (!state.data.characters) state.data.characters = {};
     if (!state.data.character_emotions) state.data.character_emotions = {};
     if (!Array.isArray(state.data.questions)) state.data.questions = [];
     if (!Array.isArray(state.data.state_descriptors)) state.data.state_descriptors = [];
+    if (!Array.isArray(state.data.rules)) state.data.rules = [];
     if (!state.data.scenes) state.data.scenes = {};
     state.layout = parsed.layout || {};
   }
@@ -842,6 +847,7 @@
     renderCharacterEmotionList();
     renderQuestionList();
     renderStateDescriptorList();
+    renderRuleList();
 
     if (state.panelTab === 'character') {
       els.panelEmpty.classList.add('hidden');
@@ -1482,6 +1488,20 @@
     }));
   }
 
+  function getRuleRows() {
+    return (state.data.rules || []).map(rule => ({
+      RuleRowID: rule?.rule_row_id || '',
+      RuleID: rule?.rule_id || '',
+      RuleKind: rule?.rule_kind || '',
+      FactType: rule?.fact_type || '',
+      FactKey: rule?.fact_key || '',
+      Operator: rule?.operator || '',
+      Value: rule?.value ?? '',
+      ResultValue: rule?.result_value || '',
+      Priority: rule?.priority ?? '',
+    }));
+  }
+
   function syncCharacterEmotionBuckets() {
     Object.keys(state.data.character_emotions || {}).forEach(characterId => {
       if (!state.data.characters?.[characterId] && Object.keys(state.data.character_emotions[characterId] || {}).length === 0) {
@@ -1804,6 +1824,68 @@
     els.stateDescriptorList.appendChild(cards);
   }
 
+  function renderRuleList() {
+    els.ruleList.innerHTML = '';
+    const rows = getRuleRows();
+
+    const cards = makeCard(
+      'Rule', rows,
+      (row) => `
+        <label><span>RuleRowID</span>
+          <input data-field="RuleRowID" value="${escapeAttr(row.RuleRowID || '')}" placeholder="예: RR_QSonggeum_01"></label>
+        <label><span>RuleID</span>
+          <input data-field="RuleID" value="${escapeAttr(row.RuleID || '')}" placeholder="예: QR_SonggeumOpen"></label>
+        <label><span>RuleKind</span>
+          <input data-field="RuleKind" value="${escapeAttr(row.RuleKind || '')}" placeholder="Visible / State"></label>
+        <label><span>FactType</span>
+          <input data-field="FactType" value="${escapeAttr(row.FactType || '')}" placeholder="예: HasEvidence"></label>
+        <label><span>FactKey</span>
+          <input data-field="FactKey" value="${escapeAttr(row.FactKey || '')}" placeholder="예: EvDiary"></label>
+        <label><span>Operator</span>
+          <input data-field="Operator" value="${escapeAttr(row.Operator || '')}" placeholder="Equals / Gte"></label>
+        <label><span>Value</span>
+          <input data-field="Value" value="${escapeAttr(row.Value != null ? String(row.Value) : '')}" placeholder="예: true 또는 1"></label>
+        <label><span>ResultValue</span>
+          <input data-field="ResultValue" value="${escapeAttr(row.ResultValue || '')}" placeholder="State 규칙 결과"></label>
+        <label><span>Priority</span>
+          <input data-field="Priority" type="number" step="1" value="${escapeAttr(row.Priority != null ? String(row.Priority) : '')}"></label>
+      `,
+      () => {
+        state.data.rules = state.data.rules || [];
+        state.data.rules.push(newRule());
+        afterChange();
+      },
+      (i) => {
+        state.data.rules.splice(i, 1);
+        afterChange();
+      },
+      (i) => { if (swap(state.data.rules, i - 1, i)) afterChange(); },
+      (i) => { if (swap(state.data.rules, i, i + 1)) afterChange(); },
+      (row, field, value) => {
+        const target = state.data.rules.find(rule => (rule.rule_row_id || '') === row.RuleRowID) || state.data.rules.find((_, idx) => rows[idx] === row);
+        if (!target) return;
+        if (field === 'RuleRowID') target.rule_row_id = value || '';
+        if (field === 'RuleID') target.rule_id = value || '';
+        if (field === 'RuleKind') target.rule_kind = value || '';
+        if (field === 'FactType') target.fact_type = value || '';
+        if (field === 'FactKey') target.fact_key = value || '';
+        if (field === 'Operator') target.operator = value || '';
+        if (field === 'Value') target.value = value === '' ? null : value;
+        if (field === 'ResultValue') target.result_value = value || '';
+        if (field === 'Priority') target.priority = value === '' ? null : Number.parseInt(value, 10);
+        markDirty();
+      }
+    );
+
+    replaceEnumInputs(cards, [
+      { field: 'RuleKind', options: RULE_KIND_OPTIONS, includeBlank: false },
+      { field: 'FactType', options: RULE_FACT_TYPE_OPTIONS, includeBlank: false },
+      { field: 'Operator', options: RULE_OPERATOR_OPTIONS, includeBlank: false },
+    ]);
+
+    els.ruleList.appendChild(cards);
+  }
+
   function afterChange() {
     markDirty();
     render();
@@ -1834,6 +1916,9 @@
   }
   function newStateDescriptor() {
     return { descriptor_id: '', target_flag_id: '', min_value: 0, max_value: 0, label: '', detail: '' };
+  }
+  function newRule() {
+    return { rule_row_id: '', rule_id: '', rule_kind: 'Visible', fact_type: 'FlagValue', fact_key: '', operator: 'Equals', value: '', result_value: '', priority: 0 };
   }
   function newScene(id) {
     return {
@@ -1985,6 +2070,7 @@
       character_emotions: state.data.character_emotions || {},
       questions: state.data.questions || [],
       state_descriptors: state.data.state_descriptors || [],
+      rules: state.data.rules || [],
       scenes: normalizedScenes,
     };
   }
@@ -2536,6 +2622,7 @@
       if (!state.data.character_emotions) state.data.character_emotions = {};
       if (!Array.isArray(state.data.questions)) state.data.questions = [];
       if (!Array.isArray(state.data.state_descriptors)) state.data.state_descriptors = [];
+      if (!Array.isArray(state.data.rules)) state.data.rules = [];
       if (!state.data.scenes) state.data.scenes = {};
       state.layout = {};
       state.history = [];
@@ -2746,6 +2833,17 @@
         row.descriptor_id = `Descriptor${suffix++}`;
       } while (state.data.state_descriptors.some(descriptor => descriptor.descriptor_id === row.descriptor_id));
       state.data.state_descriptors.push(row);
+      afterChange();
+    });
+    $('btn-add-rule').addEventListener('click', () => {
+      pushHistory();
+      state.data.rules = state.data.rules || [];
+      const row = newRule();
+      let suffix = state.data.rules.length + 1;
+      do {
+        row.rule_row_id = `RuleRow${suffix++}`;
+      } while (state.data.rules.some(rule => rule.rule_row_id === row.rule_row_id));
+      state.data.rules.push(row);
       afterChange();
     });
 

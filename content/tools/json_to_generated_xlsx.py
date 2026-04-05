@@ -52,6 +52,9 @@ SHEET_DEFS = {
     "StateDescriptorTable": {
         "headers": ["DescriptorID", "TargetFlagID", "MinValue", "MaxValue", "Label", "Detail"],
     },
+    "RuleTable": {
+        "headers": ["RuleRowID", "RuleID", "RuleKind", "FactType", "FactKey", "Operator", "Value", "ResultValue", "Priority"],
+    },
 }
 
 
@@ -267,6 +270,24 @@ def build_state_descriptor_rows(data):
     return rows
 
 
+def build_rule_rows(data):
+    rows = []
+    for rule in data.get("rules", []) or []:
+        rows.append({
+            "RuleRowID": rule.get("rule_row_id"),
+            "RuleID": rule.get("rule_id"),
+            "RuleKind": rule.get("rule_kind"),
+            "FactType": rule.get("fact_type"),
+            "FactKey": rule.get("fact_key"),
+            "Operator": rule.get("operator"),
+            "Value": rule.get("value"),
+            "ResultValue": rule.get("result_value"),
+            "Priority": rule.get("priority"),
+        })
+    rows.sort(key=lambda x: ((x.get("RuleID") or ""), (x.get("Priority") if x.get("Priority") is not None else 0), (x.get("RuleRowID") or "")))
+    return rows
+
+
 def build_sheet_rows(data):
     return {
         "SceneTable": build_scene_rows(data),
@@ -278,6 +299,7 @@ def build_sheet_rows(data):
         "CharacterEmotionTable": build_character_emotion_rows(data),
         "QuestionTable": build_question_rows(data),
         "StateDescriptorTable": build_state_descriptor_rows(data),
+        "RuleTable": build_rule_rows(data),
     }
 
 

@@ -19,6 +19,7 @@ Excel 컬럼 규칙 (PascalCase):
   CharacterEmotionTable / CharacterEmotions : CharacterID, EmotionType, ImagePath
   QuestionTable / Questions : QuestionID, Title, Detail, SortOrder, Category, VisibleRuleID, StateRuleID
   StateDescriptorTable / StateDescriptors : DescriptorID, TargetFlagID, MinValue, MaxValue, Label, Detail
+  RuleTable / Rules : RuleRowID, RuleID, RuleKind, FactType, FactKey, Operator, Value, ResultValue, Priority
 
 무시 규칙:
   시트명이 $로 시작하면 export 대상에서 제외
@@ -93,6 +94,7 @@ def build_game_data(wb):
     character_emotions_raw = read_sheet(resolve_sheet(wb, "CharacterEmotionTable", "CharacterEmotions")) if "CharacterEmotionTable" in wb.sheetnames or "CharacterEmotions" in wb.sheetnames else []
     questions_raw = read_sheet(resolve_sheet(wb, "QuestionTable", "Questions")) if "QuestionTable" in wb.sheetnames or "Questions" in wb.sheetnames else []
     state_descriptors_raw = read_sheet(resolve_sheet(wb, "StateDescriptorTable", "StateDescriptors")) if "StateDescriptorTable" in wb.sheetnames or "StateDescriptors" in wb.sheetnames else []
+    rules_raw = read_sheet(resolve_sheet(wb, "RuleTable", "Rules")) if "RuleTable" in wb.sheetnames or "Rules" in wb.sheetnames else []
 
     # SceneID 기준으로 씬 딕셔너리 구성
     scenes = {}
@@ -251,12 +253,30 @@ def build_game_data(wb):
             "detail": row.get("Detail") or "",
         })
 
+    rules = []
+    for row in rules_raw:
+        rule_row_id = row.get("RuleRowID")
+        if not rule_row_id:
+            continue
+        rules.append({
+            "rule_row_id": rule_row_id,
+            "rule_id": row.get("RuleID"),
+            "rule_kind": row.get("RuleKind"),
+            "fact_type": row.get("FactType"),
+            "fact_key": row.get("FactKey"),
+            "operator": row.get("Operator"),
+            "value": row.get("Value"),
+            "result_value": row.get("ResultValue"),
+            "priority": row.get("Priority"),
+        })
+
     return {
         "first_scene": first_scene,
         "characters": characters,
         "character_emotions": character_emotions,
         "questions": questions,
         "state_descriptors": state_descriptors,
+        "rules": rules,
         "scenes": scenes,
     }
 

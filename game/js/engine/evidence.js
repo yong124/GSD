@@ -3,79 +3,12 @@ const Evidence = (() => {
   let _seenEvidence = new Set();
   let _activeTab = 'status';
 
-  const CHARACTER_NOTES = {
-    Yuu: {
-      role: '기록자',
-      facts: [
-        '법정에서 시작된 실종 사건을 끝까지 물고 늘어지는 기자.',
-        '기록과 은폐의 경계에서 사건을 붙들고 있다.'
-      ]
-    },
-    Songsoon: {
-      role: '증언자',
-      facts: [
-        '낙원 안쪽 사정을 알고 있지만 쉽게 입을 열지 않는다.',
-        '신뢰를 얻을수록 더 깊은 증언에 접근할 수 있다.'
-      ]
-    },
-    Ipangyu: {
-      role: '문턱의 죄수',
-      facts: [
-        '광기와 교리 사이를 오가며 사건의 단어를 흘리는 인물.',
-        '헛소리처럼 들리지만 사건의 방향을 먼저 암시한다.'
-      ]
-    },
-    Okryeon: {
-      role: '생존자',
-      facts: [
-        '낙원에서 벌어진 일을 견디고 살아남은 여급.',
-        '압박보다 보호에 가까운 태도에서 더 많은 진실이 새어 나온다.'
-      ]
-    },
-    Haesim: {
-      role: '의식의 중심',
-      facts: [
-        '공명과 의식의 중심축에 선 인물.',
-        '신념인지 광기인지 분간하기 어려운 확신을 가진다.'
-      ]
-    },
-    Songgeum: {
-      role: '실종자',
-      facts: [
-        '사건의 핵심에서 사라진 여급.',
-        '사람들이 입을 다무는 이유가 이 인물과 맞물려 있다.'
-      ]
-    },
-    Editor: {
-      role: '기록의 문지기',
-      facts: [
-        '무엇이 기사로 남고 무엇이 묻히는지 결정하는 편집장.',
-        '바깥에 흔적을 남길지 말지의 축과 연결된다.'
-      ]
-    }
-  };
-
   function getEvidenceCategory(ev) {
-    if (ev?.category_id || ev?.category_title || ev?.category_hint) {
-      return {
-        key: ev.category_id || 'trace',
-        title: ev.category_title || '현장 물증',
-        hint: ev.category_hint || '현장에서 직접 붙잡은 흔적',
-      };
-    }
-
-    const id = ev?.evidence_id || '';
-    const name = ev?.name || '';
-    const desc = ev?.description || '';
-    const text = `${id} ${name} ${desc}`;
-
-    if (/Ritual|Mask|Hanbok|Diary|Score|Note|의례|무녀|감응|문/.test(text)) {
-      return { key: 'ritual', title: '의례와 공명', hint: '문, 무녀, 감응과 연결된 흔적' };
-    }
-    if (/OldArticles|기사|기록|일기|편집장/.test(text)) {
-      return { key: 'record', title: '기록과 기사', hint: '지워졌거나 남겨진 문장들' };
-    }
-    return { key: 'trace', title: '현장 물증', hint: '현장에서 직접 붙잡은 흔적' };
+    return {
+      key: ev?.category_id || 'trace',
+      title: ev?.category_title || '현장 물증',
+      hint: ev?.category_hint || '현장에서 직접 붙잡은 흔적',
+    };
   }
 
   function updateBadge() {
@@ -172,30 +105,67 @@ const Evidence = (() => {
     });
   }
 
-  function evaluateQuestionVisible(ruleId, context) {
-    switch (ruleId) {
-      case 'QR_IpangyuSeen':
-        return context.revealedCharacters.has('Ipangyu');
-      case 'QR_SonggeumOpen':
-        return context.hasDiary || context.hasOldArticles || context.sceneProgressIndex >= 24 || context.revealedCharacters.has('Songgeum');
-      case 'QR_RitualOpen':
-        return context.readRitualScore >= 1 || context.revealedCharacters.has('Haesim') || context.sceneProgressIndex >= 31;
+  function parseRuleValue(value) {
+    if (value === null || value === undefined) return null;
+    if (typeof value === 'boolean' || typeof value === 'number') return value;
+    const text = String(value).trim();
+    if (text === '') return null;
+    if (text === 'true') return true;
+    if (text === 'false') return false;
+    const numeric = Number(text);
+    return Number.isNaN(numeric) ? text : numeric;
+  }
+
+  function getRuleFactValue(rule, context) {
+    const factType = rule?.fact_type;
+    const factKey = rule?.fact_key;
+    switch (factType) {
+      case 'RevealedCharacter':
+        return context.revealedCharacters.has(factKey);
+      case 'HasEvidence':
+        return State.getFlag(`HasEvidence_${factKey}`) === true;
+      case 'SceneProgressIndex':
+        return context.sceneProgressIndex;
+      case 'FlagValue':
+        return Number(State.getFlag(factKey) ?? 0);
       default:
-        return true;
+        return null;
     }
   }
 
-  function evaluateQuestionState(ruleId, context) {
-    switch (ruleId) {
-      case 'QS_IpangyuCall':
-        return context.resonanceLevel >= 1 ? '공명 전조 확인' : '불명';
-      case 'QS_SonggeumMissing':
-        return context.hasDiary ? '단서 확보' : '추적 중';
-      case 'QS_RitualLead':
-        return context.readRitualScore >= 1 ? '의식 구조 접근' : '추적 중';
-      default:
-        return '추적 중';
+  function compareRuleValue(actualValue, operator, expectedValue) {
+    if (operator === 'Gte') {
+      return Number(actualValue) >= Number(expectedValue);
     }
+    return actualValue === expectedValue;
+  }
+
+  function getRulesById(ruleId) {
+    return (Engine.data?.rules || [])
+      .filter(rule => rule?.rule_id === ruleId)
+      .slice()
+      .sort((a, b) => Number(a?.priority || 0) - Number(b?.priority || 0));
+  }
+
+  function evaluateQuestionVisible(ruleId, context) {
+    const rules = getRulesById(ruleId);
+    if (rules.length === 0) return true;
+    return rules.some(rule => compareRuleValue(
+      getRuleFactValue(rule, context),
+      rule.operator,
+      parseRuleValue(rule.value)
+    ));
+  }
+
+  function evaluateQuestionState(ruleId, context) {
+    const rules = getRulesById(ruleId);
+    if (rules.length === 0) return '추적 중';
+    const matched = rules.find(rule => compareRuleValue(
+      getRuleFactValue(rule, context),
+      rule.operator,
+      parseRuleValue(rule.value)
+    ));
+    return matched?.result_value || '추적 중';
   }
 
   function getStatusCards() {
@@ -221,7 +191,6 @@ const Evidence = (() => {
   function isNotebookCharacter(characterId) {
     const character = Engine.data?.characters?.[characterId] || {};
     return Boolean(
-      CHARACTER_NOTES[characterId] ||
       character.role_text ||
       character.notebook_summary1 ||
       character.notebook_summary2
@@ -260,19 +229,18 @@ const Evidence = (() => {
 
     return revealedIds.map(characterId => {
       const character = Engine.data?.characters?.[characterId] || {};
-      const note = CHARACTER_NOTES[characterId] || {};
       const facts = [
         character.notebook_summary1,
         character.notebook_summary2,
       ].filter(Boolean);
 
-      if (!note) return null;
+      if (!character.role_text && facts.length === 0) return null;
       const displayName = character.display_name || characterId;
       return {
         name: displayName,
-        role: character.role_text || note.role || '',
+        role: character.role_text || '',
         state: getCharacterState(characterId),
-        facts: facts.length > 0 ? facts : (note.facts || [])
+        facts
       };
     }).filter(Boolean);
   }
@@ -287,17 +255,9 @@ const Evidence = (() => {
   function getQuestionEntries() {
     const revealedCharacters = new Set(getRevealedCharacterIds());
     const sceneProgressIndex = getSceneProgressIndex();
-    const hasDiary = State.getFlag('HasEvidence_EvDiary') === true;
-    const hasOldArticles = State.getFlag('HasEvidence_EvOldArticles') === true;
-    const readRitualScore = Number(State.getFlag('ReadRitualScore') || 0);
-    const resonanceLevel = Number(State.getFlag('ResonanceLevel') || 0);
     const context = {
       revealedCharacters,
       sceneProgressIndex,
-      hasDiary,
-      hasOldArticles,
-      readRitualScore,
-      resonanceLevel,
     };
 
     const dataQuestions = (Engine.data?.questions || []).slice().sort((a, b) => Number(a?.sort_order || 0) - Number(b?.sort_order || 0));
@@ -312,27 +272,7 @@ const Evidence = (() => {
         };
       });
     }
-
-    return [
-      {
-        title: '이판규는 누구에게 불려갔는가',
-        state: resonanceLevel >= 1 ? '공명 전조 확인' : '불명',
-        detail: '광기처럼 보이는 말들이 실제로는 사건의 중심을 향한 반응일 수 있습니다.',
-        isVisible: revealedCharacters.has('Ipangyu')
-      },
-      {
-        title: '송금은 왜 사라졌는가',
-        state: hasDiary ? '단서 확보' : '추적 중',
-        detail: '송금이 자발적으로 사라진 것인지, 의식의 일부로 지워진 것인지가 핵심입니다.',
-        isVisible: hasDiary || hasOldArticles || sceneProgressIndex >= 24 || revealedCharacters.has('Songgeum')
-      },
-      {
-        title: '낙원의 의식은 누가 주도했는가',
-        state: readRitualScore >= 1 ? '의식 구조 접근' : '추적 중',
-        detail: '무녀, 악보, 기록, 기사 사이를 연결해 의식의 실제 주체를 좁혀야 합니다.',
-        isVisible: readRitualScore >= 1 || revealedCharacters.has('Haesim') || sceneProgressIndex >= 31
-      }
-    ].filter(item => item.isVisible);
+    return [];
   }
 
   function renderNotebook() {

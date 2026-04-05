@@ -101,7 +101,10 @@ window.GAME_DATA = {
       "id": "Cheonyonghae",
       "display_name": "천용해",
       "default_emotion_type": "Neutral",
-      "default_image_path": null
+      "default_image_path": null,
+      "role_text": "문턱의 인도자",
+      "notebook_summary1": "의식이 가장 깊어지는 지점에서 모습을 드러내는 인물.",
+      "notebook_summary2": "사람을 데려가는 쪽인지, 이미 건너간 쪽인지 끝내 분간하기 어렵다."
     },
     "Songgeum": {
       "id": "Songgeum",
@@ -291,6 +294,129 @@ window.GAME_DATA = {
       "max_value": 99,
       "label": "심층",
       "detail": "표면을 지나 사건의 구조와 의식을 함께 추적하는 단계입니다."
+    }
+  ],
+  "rules": [
+    {
+      "rule_row_id": "RR_QIpangyuSeen_01",
+      "rule_id": "QR_IpangyuSeen",
+      "rule_kind": "Visible",
+      "fact_type": "RevealedCharacter",
+      "fact_key": "Ipangyu",
+      "operator": "Equals",
+      "value": true,
+      "result_value": "",
+      "priority": 10
+    },
+    {
+      "rule_row_id": "RR_QSonggeumOpen_01",
+      "rule_id": "QR_SonggeumOpen",
+      "rule_kind": "Visible",
+      "fact_type": "HasEvidence",
+      "fact_key": "EvDiary",
+      "operator": "Equals",
+      "value": true,
+      "result_value": "",
+      "priority": 10
+    },
+    {
+      "rule_row_id": "RR_QSonggeumOpen_02",
+      "rule_id": "QR_SonggeumOpen",
+      "rule_kind": "Visible",
+      "fact_type": "HasEvidence",
+      "fact_key": "EvOldArticles",
+      "operator": "Equals",
+      "value": true,
+      "result_value": "",
+      "priority": 20
+    },
+    {
+      "rule_row_id": "RR_QSonggeumOpen_03",
+      "rule_id": "QR_SonggeumOpen",
+      "rule_kind": "Visible",
+      "fact_type": "SceneProgressIndex",
+      "fact_key": "",
+      "operator": "Gte",
+      "value": 24,
+      "result_value": "",
+      "priority": 30
+    },
+    {
+      "rule_row_id": "RR_QSonggeumOpen_04",
+      "rule_id": "QR_SonggeumOpen",
+      "rule_kind": "Visible",
+      "fact_type": "RevealedCharacter",
+      "fact_key": "Songgeum",
+      "operator": "Equals",
+      "value": true,
+      "result_value": "",
+      "priority": 40
+    },
+    {
+      "rule_row_id": "RR_QRitualOpen_01",
+      "rule_id": "QR_RitualOpen",
+      "rule_kind": "Visible",
+      "fact_type": "FlagValue",
+      "fact_key": "ReadRitualScore",
+      "operator": "Gte",
+      "value": 1,
+      "result_value": "",
+      "priority": 10
+    },
+    {
+      "rule_row_id": "RR_QRitualOpen_02",
+      "rule_id": "QR_RitualOpen",
+      "rule_kind": "Visible",
+      "fact_type": "RevealedCharacter",
+      "fact_key": "Haesim",
+      "operator": "Equals",
+      "value": true,
+      "result_value": "",
+      "priority": 20
+    },
+    {
+      "rule_row_id": "RR_QRitualOpen_03",
+      "rule_id": "QR_RitualOpen",
+      "rule_kind": "Visible",
+      "fact_type": "SceneProgressIndex",
+      "fact_key": "",
+      "operator": "Gte",
+      "value": 31,
+      "result_value": "",
+      "priority": 30
+    },
+    {
+      "rule_row_id": "RR_QIpangyuState_01",
+      "rule_id": "QS_IpangyuCall",
+      "rule_kind": "State",
+      "fact_type": "FlagValue",
+      "fact_key": "ResonanceLevel",
+      "operator": "Gte",
+      "value": 1,
+      "result_value": "공명 전조 확인",
+      "priority": 10
+    },
+    {
+      "rule_row_id": "RR_QSonggeumState_01",
+      "rule_id": "QS_SonggeumMissing",
+      "rule_kind": "State",
+      "fact_type": "HasEvidence",
+      "fact_key": "EvDiary",
+      "operator": "Equals",
+      "value": true,
+      "result_value": "단서 확보",
+      "priority": 10
+    },
+    {
+      "rule_row_id": "RR_QRitualState_01",
+      "rule_id": "QS_RitualLead",
+      "rule_kind": "State",
+      "fact_type": "FlagValue",
+      "fact_key": "ReadRitualScore",
+      "operator": "Gte",
+      "value": 1,
+      "result_value": "의식 구조 접근",
+      "priority": 10
     }
   ],
   "scenes": {
@@ -1268,14 +1394,20 @@ window.GAME_DATA = {
           "trigger": 1,
           "name": "붉은 쪽지",
           "description": "이판규의 손에서 발견된 쪽지. '토요일, 낙원. 그녀가 노래하면 문은 열린다.'",
-          "image": "assets/items/note.png"
+          "image": "assets/items/note.png",
+          "category_id": "record",
+          "category_title": "기록과 기사",
+          "category_hint": "남겨진 문장과 호출의 흔적"
         },
         {
           "evidence_id": "EvBlueCloth",
           "trigger": 1,
           "name": "푸른 흔적",
           "description": "이판규의 시신 주변과 철골 표면에서 발견된 푸른 점액성 흔적. 단순한 부패 흔적으로 보기 어렵다.",
-          "image": "assets/ev/bluecloth.jpeg"
+          "image": "assets/ev/bluecloth.jpeg",
+          "category_id": "trace",
+          "category_title": "현장 물증",
+          "category_hint": "현장에서 직접 붙잡은 흔적"
         }
       ]
     },
@@ -1894,7 +2026,10 @@ window.GAME_DATA = {
           "trigger": 2,
           "name": "감응 악보",
           "description": "주문이 음표 사이에 숨겨진 기묘한 악보. 유웅룡에게만 이명과 고통을 유발한다.",
-          "image": "assets/items/scores.png"
+          "image": "assets/items/scores.png",
+          "category_id": "ritual",
+          "category_title": "의례와 공명",
+          "category_hint": "문, 무녀, 감응과 연결된 흔적"
         }
       ]
     },
@@ -2392,21 +2527,30 @@ window.GAME_DATA = {
           "trigger": 1,
           "name": "청색 비단 한복",
           "description": "송금의 방에서 발견된 의례용 한복. 소매 안쪽에 바느질 자국과 작은 상처 자국들.",
-          "image": "assets/items/hanbok.png"
+          "image": "assets/items/hanbok.png",
+          "category_id": "ritual",
+          "category_title": "의례와 공명",
+          "category_hint": "문, 무녀, 감응과 연결된 흔적"
         },
         {
           "evidence_id": "EvMask",
           "trigger": 1,
           "name": "오징어 가면",
           "description": "눈 구멍이 네 개 달린 기괴한 가면. 청의동자의 눈 네 개를 상징한다.",
-          "image": "assets/items/mask.png"
+          "image": "assets/items/mask.png",
+          "category_id": "ritual",
+          "category_title": "의례와 공명",
+          "category_hint": "문, 무녀, 감응과 연결된 흔적"
         },
         {
           "evidence_id": "EvDiary",
           "trigger": 2,
           "name": "숨겨진 일기장",
           "description": "송금의 일기장. '청의의 무녀', '노래가 곧 감응', '문 앞에서 노래를 부를 것'.",
-          "image": "assets/items/diary.png"
+          "image": "assets/items/diary.png",
+          "category_id": "record",
+          "category_title": "기록과 기사",
+          "category_hint": "지워졌거나 남겨진 문장들"
         }
       ],
       "priority_budget": 2,
@@ -2889,7 +3033,10 @@ window.GAME_DATA = {
           "trigger": 1,
           "name": "1924년 기사 뭉치",
           "description": "과거에 발생한 유사 사건의 기록. 편집장이 직접 작성했다. 일부 문장이 삭제되어 있다.",
-          "image": "assets/items/records.png"
+          "image": "assets/items/records.png",
+          "category_id": "record",
+          "category_title": "기록과 기사",
+          "category_hint": "지워졌거나 남겨진 문장들"
         }
       ]
     },
@@ -4498,7 +4645,10 @@ window.GAME_DATA = {
           "trigger": 1,
           "name": "의례실 종이",
           "description": "'그릇은 셋. 둘은 쓰였고 하나가 남았다.' 마지막 무녀가 아직 남아 있다는 증거.",
-          "image": null
+          "image": null,
+          "category_id": "ritual",
+          "category_title": "의례와 공명",
+          "category_hint": "문, 무녀, 감응과 연결된 흔적"
         }
       ]
     },

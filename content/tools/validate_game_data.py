@@ -148,6 +148,7 @@ def validate_dialogue_character_refs(scene_id, scene, data, issues):
 
 def validate_questions(data, issues):
     questions = data.get("questions", []) or []
+    known_rule_ids = {rule.get("rule_id") for rule in (data.get("rules", []) or []) if rule.get("rule_id")}
     question_ids = [question.get("question_id") for question in questions if question.get("question_id")]
     duplicates = find_duplicates(question_ids)
     for dup in duplicates:
@@ -158,6 +159,12 @@ def validate_questions(data, issues):
             issues.append("[Question.question_id] missing QuestionID")
         if not question.get("title"):
             issues.append(f"[Question.title] {question.get('question_id') or '(unknown)'} missing Title")
+        visible_rule_id = question.get("visible_rule_id")
+        state_rule_id = question.get("state_rule_id")
+        if visible_rule_id and visible_rule_id not in known_rule_ids:
+            issues.append(f"[Question.visible_rule_id] {question.get('question_id') or '(unknown)'} -> {visible_rule_id} (missing RuleID)")
+        if state_rule_id and state_rule_id not in known_rule_ids:
+            issues.append(f"[Question.state_rule_id] {question.get('question_id') or '(unknown)'} -> {state_rule_id} (missing RuleID)")
 
 
 def validate_state_descriptors(data, issues):
@@ -177,6 +184,25 @@ def validate_state_descriptors(data, issues):
             issues.append(f"[StateDescriptor.max_value] {descriptor_id} missing MaxValue")
         if not descriptor.get("label"):
             issues.append(f"[StateDescriptor.label] {descriptor_id} missing Label")
+
+
+def validate_rules(data, issues):
+    rules = data.get("rules", []) or []
+    rule_row_ids = [rule.get("rule_row_id") for rule in rules if rule.get("rule_row_id")]
+    duplicates = find_duplicates(rule_row_ids)
+    for dup in duplicates:
+        issues.append(f"[Duplicate.rule_row_id] {dup}")
+
+    for rule in rules:
+        rule_row_id = rule.get("rule_row_id") or "(unknown)"
+        if not rule.get("rule_id"):
+            issues.append(f"[Rule.rule_id] {rule_row_id} missing RuleID")
+        if not rule.get("rule_kind"):
+            issues.append(f"[Rule.rule_kind] {rule_row_id} missing RuleKind")
+        if not rule.get("fact_type"):
+            issues.append(f"[Rule.fact_type] {rule_row_id} missing FactType")
+        if not rule.get("operator"):
+            issues.append(f"[Rule.operator] {rule_row_id} missing Operator")
 
 
 def main():
@@ -208,6 +234,7 @@ def main():
     validate_characters(data, issues)
     validate_questions(data, issues)
     validate_state_descriptors(data, issues)
+    validate_rules(data, issues)
 
     print(f"검수 대상: {input_path}")
     print(f"씬 수: {len(scenes)}")
