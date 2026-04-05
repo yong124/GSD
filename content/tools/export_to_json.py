@@ -17,7 +17,7 @@ Excel 컬럼 규칙 (PascalCase):
   EvidenceTable / Evidence   : EvidenceID, SceneId, Trigger, Name, Description, Image, CategoryID, CategoryTitle, CategoryHint
   CharacterTable / Characters: CharacterID, DisplayName, DefaultEmotionType, DefaultImagePath, RoleText, NotebookSummary1, NotebookSummary2
   CharacterEmotionTable / CharacterEmotions : CharacterID, EmotionType, ImagePath
-  QuestionTable / Questions : QuestionID, Title, Detail, SortOrder, Category, VisibleRuleID, StateRuleID, RelatedEvidenceIDs, SolutionEvidenceID, SolutionEvidenceIDs, SolutionMode, SolvedFlagID, ResolvedDetail, SuccessToast, FailureToast, RewardFlagID, RewardValue, RewardMode
+  QuestionTable / Questions : QuestionID, Title, Detail, SortOrder, Category, VisibleRuleID, StateRuleID, RelatedEvidenceIDs, SolutionEvidenceIDs, SolutionMode, SolvedFlagID, ResolvedDetail, SuccessToast, FailureToast, RewardFlagID, RewardValue, RewardMode
   StateDescriptorTable / StateDescriptors : DescriptorID, TargetFlagID, MinValue, MaxValue, Label, Detail
   RuleTable / Rules : RuleRowID, RuleID, RuleKind, FactType, FactKey, Operator, Value, ResultValue, Priority
 
@@ -238,7 +238,6 @@ def build_game_data(wb):
             "visible_rule_id": q.get("VisibleRuleID"),
             "state_rule_id": q.get("StateRuleID"),
             "related_evidence_ids": [part.strip() for part in str(q.get("RelatedEvidenceIDs") or "").split(",") if part and part.strip()],
-            "solution_evidence_id": q.get("SolutionEvidenceID") or "",
             "solution_evidence_ids": [part.strip() for part in str(q.get("SolutionEvidenceIDs") or "").split(",") if part and part.strip()],
             "solution_mode": q.get("SolutionMode") or "",
             "solved_flag_id": q.get("SolvedFlagID") or "",

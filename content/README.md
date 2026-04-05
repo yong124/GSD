@@ -5,7 +5,6 @@
 - `data/`
   - 실제 원본 데이터
   - `script.xlsx`
-  - `script 백업.xlsx`
 - `generated/`
   - 복붙용 생성 산출물
   - `script.generated.xlsx`

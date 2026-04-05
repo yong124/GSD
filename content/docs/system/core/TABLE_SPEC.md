@@ -242,7 +242,7 @@ assets/ev/          ← 미사용 (ev 폴더는 현재 연결 안 됨)
 - `CharacterID + EmotionType` 조합은 유일해야 함
 - 모든 캐릭터는 최소 `Neutral` 또는 기본 감정 1개 필수
 
-상세 스키마 계획: [CHARACTER_SCHEMA_AND_EDITING_PLAN.md](/G:/GSD/content/docs/system/core/CHARACTER_SCHEMA_AND_EDITING_PLAN.md)
+상세 스키마 기준: [DATA_STRUCTURE.md](/G:/GSD/content/docs/system/core/DATA_STRUCTURE.md)
 
 ---
 
@@ -361,5 +361,4 @@ assets/ev/          ← 미사용 (ev 폴더는 현재 연결 안 됨)
 
 상세 계획:
 
-- [FLAG_TABLE_및_DIALOG_중복제거_계획.md](/G:/GSD/content/docs/system/core/FLAG_TABLE_및_DIALOG_중복제거_계획.md)
-- [하드코딩_데이터_마이그레이션_계획.md](/G:/GSD/content/docs/system/core/하드코딩_데이터_마이그레이션_계획.md)
+- [DATA_STRUCTURE.md](/G:/GSD/content/docs/system/core/DATA_STRUCTURE.md)

@@ -6,6 +6,14 @@ const Dialogue = (() => {
   let _timer = null;
   let _stageState = { Left: null, Center: null, Right: null };
 
+  function passesCondition(line) {
+    const condition = line?.condition;
+    if (!condition?.flag_key) return true;
+    const actual = State.getFlag(condition.flag_key);
+    const expectedValues = Array.isArray(condition.flag_value) ? condition.flag_value : [condition.flag_value];
+    return expectedValues.includes(actual);
+  }
+
   function getCharacterName(line) {
     if (line.style === 'narration') return '';
     return line.speaker || Engine.data?.characters?.[line.speaker_id]?.display_name || '';
@@ -120,7 +128,7 @@ const Dialogue = (() => {
     },
 
     start(lines, onDone, fromLabel, restoreProgress = false) {
-      _lines = lines;
+      _lines = (lines || []).filter(passesCondition);
       
       if (fromLabel) {
         const idx = _lines.findIndex(l => l.label === fromLabel);

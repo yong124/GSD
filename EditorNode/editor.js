@@ -1475,7 +1475,6 @@
       VisibleRuleID: question?.visible_rule_id || '',
       StateRuleID: question?.state_rule_id || '',
       RelatedEvidenceIDs: Array.isArray(question?.related_evidence_ids) ? question.related_evidence_ids.join(', ') : '',
-      SolutionEvidenceID: question?.solution_evidence_id || '',
       SolutionEvidenceIDs: Array.isArray(question?.solution_evidence_ids) ? question.solution_evidence_ids.join(', ') : '',
       SolutionMode: question?.solution_mode || '',
       SolvedFlagID: question?.solved_flag_id || '',
@@ -1761,8 +1760,6 @@
             <input data-field="StateRuleID" value="${escapeAttr(row.StateRuleID || '')}" placeholder="예: QS_SonggeumMissing"></label>
           <label><span>RelatedEvidenceIDs</span>
             <input data-field="RelatedEvidenceIDs" value="${escapeAttr(row.RelatedEvidenceIDs || '')}" placeholder="예: EvDiary, EvOldArticles"></label>
-          <label><span>SolutionEvidenceID</span>
-            <input data-field="SolutionEvidenceID" value="${escapeAttr(row.SolutionEvidenceID || '')}" placeholder="예: EvDiary"></label>
           <label><span>SolutionEvidenceIDs</span>
             <input data-field="SolutionEvidenceIDs" value="${escapeAttr(row.SolutionEvidenceIDs || '')}" placeholder="예: EvRitualScore, EvRitualNote"></label>
           <label><span>SolutionMode</span>
@@ -1804,7 +1801,6 @@
           if (field === 'VisibleRuleID') target.visible_rule_id = value || '';
           if (field === 'StateRuleID') target.state_rule_id = value || '';
           if (field === 'RelatedEvidenceIDs') target.related_evidence_ids = String(value || '').split(',').map(part => part.trim()).filter(Boolean);
-          if (field === 'SolutionEvidenceID') target.solution_evidence_id = value || '';
           if (field === 'SolutionEvidenceIDs') target.solution_evidence_ids = String(value || '').split(',').map(part => part.trim()).filter(Boolean);
           if (field === 'SolutionMode') target.solution_mode = value || '';
           if (field === 'SolvedFlagID') target.solved_flag_id = value || '';
@@ -1965,7 +1961,6 @@
       visible_rule_id: '',
       state_rule_id: '',
       related_evidence_ids: [],
-      solution_evidence_id: '',
       solution_evidence_ids: [],
       solution_mode: '',
       solved_flag_id: '',

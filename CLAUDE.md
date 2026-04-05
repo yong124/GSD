@@ -1,113 +1,108 @@
-# 경성뎐: 여급 실종사건 — 프로젝트 가이드
+﻿# 寃쎌꽦?? ?ш툒 ?ㅼ쥌?ш굔 ???꾨줈?앺듃 媛?대뱶
 
-## 프로젝트 구조
+## ?꾨줈?앺듃 援ъ“
 
 ```text
 G:/GSD/
-├── game/                              # 실제 플레이어용 게임
-│   ├── index.html
-│   ├── css/
-│   ├── js/
-│   │   └── engine/
-│   ├── data/
-│   │   ├── game_data.js               # 런타임 데이터
-│   │   └── prompts.md                 # 에셋 생성 프롬프트
-│   └── assets/
-│       ├── bg/
-│       ├── portraits/
-│       ├── items/
-│       ├── ev/
-│       └── sfx/
-├── EditorNode/                        # 메인 노드형 에디터
-│   ├── index.html
-│   ├── editor.js
-│   └── editor.css
-├── content/
-│   ├── data/
-│   │   ├── script.xlsx
-│   │   └── script 백업.xlsx
-│   ├── generated/
-│   │   ├── script.generated.xlsx
-│   │   └── script.generated_delimited/
-│   ├── tools/
-│   │   ├── export_to_json.py
-│   │   ├── json_to_generated_xlsx.py
-│   │   └── run_export.bat
-│   ├── docs/
-│   │   ├── editor/
-│   │   ├── portfolio/
-│   │   └── system/
-│   │       ├── core/
-│   │       ├── scenario/
-│   │       ├── writing/
-│   │       └── characters/
-│   └── archive/
-└── 경성뎐_GDD_v1.docx
+?쒋?? game/                              # ?ㅼ젣 ?뚮젅?댁뼱??寃뚯엫
+??  ?쒋?? index.html
+??  ?쒋?? css/
+??  ?쒋?? js/
+??  ??  ?붴?? engine/
+??  ?쒋?? data/
+??  ??  ?쒋?? game_data.js               # ?고????곗씠????  ??  ?붴?? prompts.md                 # ?먯뀑 ?앹꽦 ?꾨＼?꾪듃
+??  ?붴?? assets/
+??      ?쒋?? bg/
+??      ?쒋?? portraits/
+??      ?쒋?? items/
+??      ?쒋?? ev/
+??      ?붴?? sfx/
+?쒋?? EditorNode/                        # 硫붿씤 ?몃뱶???먮뵒????  ?쒋?? index.html
+??  ?쒋?? editor.js
+??  ?붴?? editor.css
+?쒋?? content/
+??  ?쒋?? data/
+??  ??  ?쒋?? script.xlsx
+??  ?쒋?? generated/
+??  ??  ?쒋?? script.generated.xlsx
+??  ??  ?붴?? script.generated_delimited/
+??  ?쒋?? tools/
+??  ??  ?쒋?? export_to_json.py
+??  ??  ?쒋?? json_to_generated_xlsx.py
+??  ??  ?붴?? run_export.bat
+??  ?쒋?? docs/
+??  ??  ?쒋?? editor/
+??  ??  ?쒋?? portfolio/
+??  ??  ?붴?? system/
+??  ??      ?쒋?? core/
+??  ??      ?쒋?? scenario/
+??  ??      ?쒋?? writing/
+??  ??      ?붴?? characters/
+??  ?붴?? archive/
+?붴?? 寃쎌꽦??GDD_v1.docx
 ```
 
 ---
 
-## 현재 운영 기준
+## ?꾩옱 ?댁쁺 湲곗?
 
-- 메인 편집 도구: `EditorNode/`
-- 원본 테이블: `content/data/script.xlsx`
-- 런타임 데이터: `game/data/game_data.js`
-- xlsx → game_data 변환: `content/tools/export_to_json.py`
-- game_data → generated xlsx 변환: `content/tools/json_to_generated_xlsx.py`
+- 硫붿씤 ?몄쭛 ?꾧뎄: `EditorNode/`
+- ?먮낯 ?뚯씠釉? `content/data/script.xlsx`
+- ?고????곗씠?? `game/data/game_data.js`
+- xlsx ??game_data 蹂?? `content/tools/export_to_json.py`
+- game_data ??generated xlsx 蹂?? `content/tools/json_to_generated_xlsx.py`
 
-현재 운영 방향은 다음과 같다.
+?꾩옱 ?댁쁺 諛⑺뼢? ?ㅼ쓬怨?媛숇떎.
 
 ```text
-EditorNode ↔ game_data ↔ xlsx → 게임 런타임
-```
+EditorNode ??game_data ??xlsx ??寃뚯엫 ?고???```
 
-즉, 현재 실무상 메인 작업은 `EditorNode`와 `game_data` 중심으로 진행하고,
-`script.xlsx`는 원본 테이블이지만 실제 운영에선 `대량 수정 / 검수 / 공유용 포맷`에 더 가깝게 함께 운용한다.
-
----
-
-## 데이터 수정 원칙
-
-### 기본 원칙
-
-- 구조 편집과 일반 데이터 수정은 `EditorNode`를 우선한다.
-- 테이블 검수, 대량 편집, 복붙 작업은 `script.xlsx`와 generated xlsx를 사용한다.
-- generated 파일은 원본이 아니라 보조 산출물이다.
-- 현재 빠른 서사/연출 반복 작업은 `game_data.js` 직접 수정도 적극 허용한다.
-
-### game_data.js 직접 수정 원칙
-
-- 원칙적으로 `game_data.js`는 런타임 반영 파일이다.
-- 다만 현재 프로젝트는 시나리오 밀도 조정, 캐릭터성 보강, 관계 아크 반영처럼 **빠른 서사 반복 작업**이 필요하므로, 이 경우 `game_data.js`를 직접 수정할 수 있다.
-- 직접 수정 후에는 필요 시 generated xlsx를 다시 뽑아 `script.xlsx` 검수 흐름으로 되돌린다.
-- `export_to_json.py`를 다시 실행하면 `game_data.js`가 덮어써질 수 있으므로, 어떤 파일을 기준으로 작업 중인지 항상 의식한다.
-
-### 최근 운영상 추가된 원칙
-
-- 한국어 데이터 대량 수정은 가능하면 `apply_patch` 위주로 한다.
-- PowerShell / shell 경유 문자열 삽입은 실제 `???` 손상을 만들 수 있으므로 주의한다.
-- 브라우저용 `JS/CSS`를 수정했는데 반영이 안 보이면, 먼저 `index.html`의 리소스 버전 쿼리(`?v=`)를 함께 올렸는지 확인한다.
-- 타이틀 / 저장 / 패널 흐름처럼 브라우저 캐시 영향이 큰 구간은 코드 수정 후 버전 갱신을 기본 습관으로 둔다.
+利? ?꾩옱 ?ㅻТ??硫붿씤 ?묒뾽? `EditorNode`? `game_data` 以묒떖?쇰줈 吏꾪뻾?섍퀬,
+`script.xlsx`???먮낯 ?뚯씠釉붿씠吏留??ㅼ젣 ?댁쁺?먯꽑 `????섏젙 / 寃??/ 怨듭쑀???щ㎎`????媛源앷쾶 ?④퍡 ?댁슜?쒕떎.
 
 ---
 
-## 실행 기준
+## ?곗씠???섏젙 ?먯튃
+
+### 湲곕낯 ?먯튃
+
+- 援ъ“ ?몄쭛怨??쇰컲 ?곗씠???섏젙? `EditorNode`瑜??곗꽑?쒕떎.
+- ?뚯씠釉?寃?? ????몄쭛, 蹂듬텤 ?묒뾽? `script.xlsx`? generated xlsx瑜??ъ슜?쒕떎.
+- generated ?뚯씪? ?먮낯???꾨땲??蹂댁“ ?곗텧臾쇱씠??
+- ?꾩옱 鍮좊Ⅸ ?쒖궗/?곗텧 諛섎났 ?묒뾽? `game_data.js` 吏곸젒 ?섏젙???곴레 ?덉슜?쒕떎.
+
+### game_data.js 吏곸젒 ?섏젙 ?먯튃
+
+- ?먯튃?곸쑝濡?`game_data.js`???고???諛섏쁺 ?뚯씪?대떎.
+- ?ㅻ쭔 ?꾩옱 ?꾨줈?앺듃???쒕굹由ъ삤 諛??議곗젙, 罹먮┃?곗꽦 蹂닿컯, 愿怨??꾪겕 諛섏쁺泥섎읆 **鍮좊Ⅸ ?쒖궗 諛섎났 ?묒뾽**???꾩슂?섎?濡? ??寃쎌슦 `game_data.js`瑜?吏곸젒 ?섏젙?????덈떎.
+- 吏곸젒 ?섏젙 ?꾩뿉???꾩슂 ??generated xlsx瑜??ㅼ떆 戮묒븘 `script.xlsx` 寃???먮쫫?쇰줈 ?섎룎由곕떎.
+- `export_to_json.py`瑜??ㅼ떆 ?ㅽ뻾?섎㈃ `game_data.js`媛 ??뼱?⑥쭏 ???덉쑝誘濡? ?대뼡 ?뚯씪??湲곗??쇰줈 ?묒뾽 以묒씤吏 ??긽 ?섏떇?쒕떎.
+
+### 理쒓렐 ?댁쁺??異붽????먯튃
+
+- ?쒓뎅???곗씠??????섏젙? 媛?ν븯硫?`apply_patch` ?꾩＜濡??쒕떎.
+- PowerShell / shell 寃쎌쑀 臾몄옄???쎌엯? ?ㅼ젣 `???` ?먯긽??留뚮뱾 ???덉쑝誘濡?二쇱쓽?쒕떎.
+- 釉뚮씪?곗???`JS/CSS`瑜??섏젙?덈뒗??諛섏쁺????蹂댁씠硫? 癒쇱? `index.html`??由ъ냼??踰꾩쟾 荑쇰━(`?v=`)瑜??④퍡 ?щ졇?붿? ?뺤씤?쒕떎.
+- ??댄? / ???/ ?⑤꼸 ?먮쫫泥섎읆 釉뚮씪?곗? 罹먯떆 ?곹뼢????援ш컙? 肄붾뱶 ?섏젙 ??踰꾩쟾 媛깆떊??湲곕낯 ?듦??쇰줈 ?붾떎.
+
+---
+
+## ?ㅽ뻾 湲곗?
 
 ```bash
-# 게임
+# 寃뚯엫
 python -m http.server 3900
 # http://localhost:3900/game/index.html
 
-# 노드형 에디터
-python -m http.server 3901
+# ?몃뱶???먮뵒??python -m http.server 3901
 # http://localhost:3901/EditorNode/index.html
 ```
 
 ---
 
-## 문서 읽기 우선순위
+## 臾몄꽌 ?쎄린 ?곗꽑?쒖쐞
 
-### 시스템 기준 문서
+### ?쒖뒪??湲곗? 臾몄꽌
 
 - `content/docs/system/core/WORLDVIEW_BIBLE.md`
 - `content/docs/system/core/DATA_STRUCTURE.md`
@@ -115,64 +110,64 @@ python -m http.server 3901
 - `content/docs/system/core/NARRATIVE_SYSTEM_DESIGN.md`
 - `content/docs/system/core/NARRATIVE_VARIABLE_SPEC.md`
 
-### 시나리오 기준 문서
+### ?쒕굹由ъ삤 湲곗? 臾몄꽌
 
 - `content/docs/system/scenario/SCENARIO_STORY_BIBLE.md`
 - `content/docs/system/scenario/SCENARIO_DENSITY_PRINCIPLES.md`
 
-### 문체 기준 문서
+### 臾몄껜 湲곗? 臾몄꽌
 
 - `content/docs/system/writing/DIALOGUE_PERIOD_TONE_GUIDE.md`
 
-### Claude 보조 기준
+### Claude 蹂댁“ 湲곗?
 
-- `.claude/rules/경성뎐_운영_규칙.md`
-- `.claude/references/작업_축_선택_가이드.md`
-- `.claude/references/검증_체크리스트.md`
+- `.claude/rules/寃쎌꽦???댁쁺_洹쒖튃.md`
+- `.claude/references/?묒뾽_異??좏깮_媛?대뱶.md`
+- `.claude/references/寃利?泥댄겕由ъ뒪??md`
 - `.claude/skills/gsd-data-polish/SKILL.md`
 - `.claude/skills/gsd-runtime-ui/SKILL.md`
 - `.claude/skills/gsd-priority-investigation/SKILL.md`
 - `.claude/skills/gsd-editornode-pipeline/SKILL.md`
 - `.claude/skills/gsd-release-checks/SKILL.md`
-- `.claude/commands/데이터-폴리시.md`
-- `.claude/commands/런타임-UI.md`
-- `.claude/commands/릴리즈-체크.md`
+- `.claude/commands/?곗씠???대━??md`
+- `.claude/commands/?고???UI.md`
+- `.claude/commands/由대━利?泥댄겕.md`
 
-### 캐릭터 기준 문서
+### 罹먮┃??湲곗? 臾몄꽌
 
 - `content/docs/system/characters/CHARACTER_ARCS_INDEX.md`
 - `content/docs/system/characters/REL_INDEX.md`
 
 ---
 
-## 서사 작성 기준
+## ?쒖궗 ?묒꽦 湲곗?
 
-- 배경은 `1930년대 경성`, `식민지 현실`, `기록과 삭제`, `사이비 종교`, `초자연 감응`이 겹친 구조다.
-- 유웅룡은 처음부터 따뜻한 기자가 아니라 `냉소적이고 비판적인 관찰자`에 가깝다.
-- 캐릭터 변화는 갑작스러운 개심보다 `균열`, `버팀`, `책임의 선택`으로 느껴져야 한다.
-- 선택지는 정보 버튼보다 `태도`, `관계`, `기록할 것과 덮을 것의 선택`처럼 읽혀야 한다.
-- 선택 후 바로 씬이 바뀌기보다, 가능하면 `반응 대화 -> 다음 전개` 구조를 우선 검토한다.
-- 분량을 늘리는 것보다 장면 밀도, 감정 회수, 반복 모티프의 누적을 우선한다.
-
----
-
-## 데이터 키 / 표기 기준
-
-- 시스템 변수와 플래그 키는 `PascalCase`를 사용한다.
-  - 예: `InvestigationScore`, `SongsoonTrust`, `ResonanceLevel`, `CalledEditor`
-- `SceneID`는 기존처럼 영문 소문자 + 언더스코어를 유지한다.
-  - 예: `ch4b_cafe_press`
-- 에셋 경로는 현재 실제 폴더 구조를 따른다.
-  - 배경: `assets/bg/...`
-  - 초상화: `assets/portraits/...`
-  - 단서 이미지: `assets/items/...` 또는 `assets/ev/...`
-  - 음악: `assets/sfx/...`
+- 諛곌꼍? `1930?꾨? 寃쎌꽦`, `?앸?吏 ?꾩떎`, `湲곕줉怨???젣`, `?ъ씠鍮?醫낃탳`, `珥덉옄??媛먯쓳`??寃뱀튇 援ъ“??
+- ?좎썒猷≪? 泥섏쓬遺???곕쑜??湲곗옄媛 ?꾨땲??`?됱냼?곸씠怨?鍮꾪뙋?곸씤 愿李곗옄`??媛源앸떎.
+- 罹먮┃??蹂?붾뒗 媛묒옉?ㅻ윭??媛쒖떖蹂대떎 `洹좎뿴`, `踰꾪?`, `梨낆엫???좏깮`?쇰줈 ?먭뺨?몄빞 ?쒕떎.
+- ?좏깮吏???뺣낫 踰꾪듉蹂대떎 `?쒕룄`, `愿怨?, `湲곕줉??寃껉낵 ??쓣 寃껋쓽 ?좏깮`泥섎읆 ?쏀????쒕떎.
+- ?좏깮 ??諛붾줈 ?ъ씠 諛붾뚭린蹂대떎, 媛?ν븯硫?`諛섏쓳 ???-> ?ㅼ쓬 ?꾧컻` 援ъ“瑜??곗꽑 寃?좏븳??
+- 遺꾨웾???섎━??寃껊낫???λ㈃ 諛?? 媛먯젙 ?뚯닔, 諛섎났 紐⑦떚?꾩쓽 ?꾩쟻???곗꽑?쒕떎.
 
 ---
 
-## 엔진 / 데이터 구조 요약
+## ?곗씠????/ ?쒓린 湲곗?
 
-`window.GAME_DATA`의 핵심 구조는 다음과 같다.
+- ?쒖뒪??蹂?섏? ?뚮옒洹??ㅻ뒗 `PascalCase`瑜??ъ슜?쒕떎.
+  - ?? `InvestigationScore`, `SongsoonTrust`, `ResonanceLevel`, `CalledEditor`
+- `SceneID`??湲곗〈泥섎읆 ?곷Ц ?뚮Ц??+ ?몃뜑?ㅼ퐫?대? ?좎??쒕떎.
+  - ?? `ch4b_cafe_press`
+- ?먯뀑 寃쎈줈???꾩옱 ?ㅼ젣 ?대뜑 援ъ“瑜??곕Ⅸ??
+  - 諛곌꼍: `assets/bg/...`
+  - 珥덉긽?? `assets/portraits/...`
+  - ?⑥꽌 ?대?吏: `assets/items/...` ?먮뒗 `assets/ev/...`
+  - ?뚯븙: `assets/sfx/...`
+
+---
+
+## ?붿쭊 / ?곗씠??援ъ“ ?붿빟
+
+`window.GAME_DATA`???듭떖 援ъ“???ㅼ쓬怨?媛숇떎.
 
 ```js
 window.GAME_DATA = {
@@ -200,8 +195,8 @@ window.GAME_DATA = {
         { order, flag_key, flag_value, next_scene }
       ],
       dialogues: [
-        // 필수: order, speaker, text, style, portrait, condition
-        // 선택: label, speaker_id, emotion_type, standing_slot, focus_type,
+        // ?꾩닔: order, speaker, text, style, portrait, condition
+        // ?좏깮: label, speaker_id, emotion_type, standing_slot, focus_type,
         //        enter_motion, exit_motion, idle_motion, fx_type
         { order, label, speaker, text, style, portrait, condition }
       ],
@@ -211,7 +206,7 @@ window.GAME_DATA = {
       evidence: [
         { evidence_id, trigger, name, description, image }
       ],
-      // 선택 확장
+      // ?좏깮 ?뺤옣
       priority_budget,
       priority_dialogues,
       priority_after_dialogues,
@@ -224,50 +219,46 @@ window.GAME_DATA = {
 }
 ```
 
-엔진 진행 흐름의 핵심은 아래다.
+?붿쭊 吏꾪뻾 ?먮쫫???듭떖? ?꾨옒??
 
 - `Scene.load(id)`
-- branch 확인
+- branch ?뺤씤
 - `Dialogue.start(lines)`
-- 대화 종료 후 evidence / choice 처리
-- 후속 `next_scene` 또는 branch 이동
+- ???醫낅즺 ??evidence / choice 泥섎━
+- ?꾩냽 `next_scene` ?먮뒗 branch ?대룞
 
-현재 추가로 존재하는 런타임 축:
+?꾩옱 異붽?濡?議댁옱?섎뒗 ?고???異?
 
-- `Character / CharacterEmotion` 기반 화자/이미지 참조
-- `StandingSlot / FocusType / Motion / Fx` 기반 스테이징
-- `priority_budget` 기반 조사 우선순위 선택 루프
-- `3슬롯 저장/불러오기`
-- HUD / 장면 목표 / 메모장 배지 / 선택 결과 토스트
-
+- `Character / CharacterEmotion` 湲곕컲 ?붿옄/?대?吏 李몄“
+- `StandingSlot / FocusType / Motion / Fx` 湲곕컲 ?ㅽ뀒?댁쭠
+- `priority_budget` 湲곕컲 議곗궗 ?곗꽑?쒖쐞 ?좏깮 猷⑦봽
+- `3?щ’ ???遺덈윭?ㅺ린`
+- HUD / ?λ㈃ 紐⑺몴 / 硫붾え??諛곗? / ?좏깮 寃곌낵 ?좎뒪??
 ---
 
-## 에디터 기준
+## ?먮뵒??湲곗?
 
-- 메인 편집 UI는 `EditorNode/` 하나로 본다.
-- 예전 카드형 `editor/`는 더 이상 운영 대상이 아니다.
-- `EditorNode`는 단순 뷰어가 아니라 아래를 함께 담당한다.
-  - 씬 구조 편집
-  - 대사 / 선택지 / 분기 / 단서 수정
-  - 캐릭터 / 감정 편집
-  - priority 조사 대사 편집
-  - 검색 / 필터
-  - 구조 검수
-  - 프리뷰
-  - generated xlsx 연동용 데이터 검토
-
+- 硫붿씤 ?몄쭛 UI??`EditorNode/` ?섎굹濡?蹂몃떎.
+- ?덉쟾 移대뱶??`editor/`?????댁긽 ?댁쁺 ??곸씠 ?꾨땲??
+- `EditorNode`???⑥닚 酉곗뼱媛 ?꾨땲???꾨옒瑜??④퍡 ?대떦?쒕떎.
+  - ??援ъ“ ?몄쭛
+  - ???/ ?좏깮吏 / 遺꾧린 / ?⑥꽌 ?섏젙
+  - 罹먮┃??/ 媛먯젙 ?몄쭛
+  - priority 議곗궗 ????몄쭛
+  - 寃??/ ?꾪꽣
+  - 援ъ“ 寃??  - ?꾨━酉?  - generated xlsx ?곕룞???곗씠??寃??
 ---
 
-## 한글 파일 확인 규칙
+## ?쒓? ?뚯씪 ?뺤씤 洹쒖튃
 
-터미널에서 한글이 깨져 보이면 **파일 손상으로 바로 판단하지 말고 먼저 환경 문제를 의심한다.**
+?곕??먯뿉???쒓???源⑥졇 蹂댁씠硫?**?뚯씪 ?먯긽?쇰줈 諛붾줈 ?먮떒?섏? 留먭퀬 癒쇱? ?섍꼍 臾몄젣瑜??섏떖?쒕떎.**
 
-PowerShell에서 한글 파일을 확인할 때는 아래 조합을 사용한다.
+PowerShell?먯꽌 ?쒓? ?뚯씪???뺤씤???뚮뒗 ?꾨옒 議고빀???ъ슜?쒕떎.
 
 ```powershell
 chcp 65001 > $null
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
-Get-Content '경로' -Encoding utf8
+Get-Content '寃쎈줈' -Encoding utf8
 ```
 
 ## Data-First Rule
@@ -287,15 +278,15 @@ Get-Content '경로' -Encoding utf8
 - Avoid adding authorable gameplay content only in `evidence.js`, `scene.js`, `ui.js`, or `editor.js` constants.
 - If structure changes, prefer updating `EditorNode -> pipeline -> game_data -> runtime -> validate/docs` in the same work round.
 
-한글이 깨져 보이는 경우에도, 실제 파일은 정상 UTF-8일 수 있다.
+?쒓???源⑥졇 蹂댁씠??寃쎌슦?먮룄, ?ㅼ젣 ?뚯씪? ?뺤긽 UTF-8?????덈떎.
 
 ---
 
-## 주의사항
+## 二쇱쓽?ы빆
 
-- `main.css`의 `@import`는 첫 줄에 와야 한다.
-- `game_data.js`와 `script.xlsx` 중 어느 쪽을 기준으로 작업 중인지 항상 명확히 한다.
-- generated xlsx는 복붙 / 검수용이지 장기 원본이 아니다.
-- 문서 구조가 이미 커졌기 때문에, 새 문서를 만들 때는 `core / scenario / writing / characters / editor / portfolio` 중 어디에 속하는지 먼저 결정한다.
-- 타이틀 버튼, 저장 패널, 메모장 패널처럼 입력 흐름에 걸리는 UI를 수정했으면 `새 게임 / 이어하기 / ESC / 단축키`까지 같이 본다.
-- 브라우저 QA가 막혀도, 임시 폴더나 캐시 폴더는 작업 후 정리한다.
+- `main.css`??`@import`??泥?以꾩뿉 ????쒕떎.
+- `game_data.js`? `script.xlsx` 以??대뒓 履쎌쓣 湲곗??쇰줈 ?묒뾽 以묒씤吏 ??긽 紐낇솗???쒕떎.
+- generated xlsx??蹂듬텤 / 寃?섏슜?댁? ?κ린 ?먮낯???꾨땲??
+- 臾몄꽌 援ъ“媛 ?대? 而ㅼ죱湲??뚮Ц?? ??臾몄꽌瑜?留뚮뱾 ?뚮뒗 `core / scenario / writing / characters / editor / portfolio` 以??대뵒???랁븯?붿? 癒쇱? 寃곗젙?쒕떎.
+- ??댄? 踰꾪듉, ????⑤꼸, 硫붾え???⑤꼸泥섎읆 ?낅젰 ?먮쫫??嫄몃━??UI瑜??섏젙?덉쑝硫?`??寃뚯엫 / ?댁뼱?섍린 / ESC / ?⑥텞??源뚯? 媛숈씠 蹂몃떎.
+- 釉뚮씪?곗? QA媛 留됲??? ?꾩떆 ?대뜑??罹먯떆 ?대뜑???묒뾽 ???뺣━?쒕떎.

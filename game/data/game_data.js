@@ -187,7 +187,7 @@ window.GAME_DATA = {
       "visible_rule_id": "QR_IpangyuSeen",
       "state_rule_id": "QS_IpangyuCall",
       "related_evidence_ids": ["EvNote", "EvBlueCloth", "EvRitualNote"],
-      "solution_evidence_id": "EvNote",
+      "solution_evidence_ids": ["EvNote"],
       "solved_flag_id": "QuestionSolved_QIpangyuCall",
       "resolved_detail": "붉은 쪽지는 이판규가 우연히 뛰쳐나간 것이 아니라, 낙원 쪽의 호출에 떠밀려 움직였다는 직접적인 흔적이다. 그의 광기는 불려간 자의 잔향에 가깝다.",
       "success_toast": "질문 정리: 이판규를 부른 흔적을 붙들었다.",
@@ -205,7 +205,7 @@ window.GAME_DATA = {
       "visible_rule_id": "QR_SonggeumOpen",
       "state_rule_id": "QS_SonggeumMissing",
       "related_evidence_ids": ["EvDiary", "EvBlueHanbok", "EvOldArticles"],
-      "solution_evidence_id": "EvDiary",
+      "solution_evidence_ids": ["EvDiary"],
       "solved_flag_id": "QuestionSolved_QSonggeumMissing",
       "resolved_detail": "숨겨진 일기장은 송금의 실종이 단순 도피가 아니라, 의례 속 역할로 밀려 들어간 소거였음을 보여준다. 사라짐은 계획된 순서의 일부다.",
       "success_toast": "질문 정리: 송금의 실종이 의례와 이어진다는 근거를 확보했다.",
@@ -223,7 +223,6 @@ window.GAME_DATA = {
       "visible_rule_id": "QR_RitualOpen",
       "state_rule_id": "QS_RitualLead",
       "related_evidence_ids": ["EvRitualScore", "EvOldArticles", "EvRitualNote", "EvMask"],
-      "solution_evidence_id": "EvRitualNote",
       "solution_evidence_ids": ["EvRitualScore", "EvRitualNote"],
       "solution_mode": "All",
       "solved_flag_id": "QuestionSolved_QRitualLead",
@@ -4994,6 +4993,17 @@ window.GAME_DATA = {
             "flag_key": "HasEvidence_EvRitualNote",
             "flag_value": true
           }
+        },
+        {
+          "order": 11,
+          "speaker": "",
+          "text": "병원, 폐공장, 자료실, 의례실에서 붙잡은 질문들이 이제야 한 줄로 선다. 끝내 다 푼 것은 아니어도, 무엇을 끊어야 하는지는 더 이상 흐리지 않다.",
+          "style": "narration",
+          "portrait": null,
+          "condition": {
+            "flag_key": "SolvedQuestionCount",
+            "flag_value": [2, 3]
+          }
         }
       ],
       "choices": [],
@@ -5431,6 +5441,17 @@ window.GAME_DATA = {
           "style": "narration",
           "portrait": null,
           "condition": null
+        },
+        {
+          "order": 2,
+          "speaker": "",
+          "text": "질문을 끝까지 붙들어 온 사람만이 보이는 결도 있다. 이판규를 부른 손, 송금을 밀어 넣은 순서, 의식을 떠받친 구조가 한꺼번에 겹치며, 이제는 망설임조차 변명으로 쓰기 어려워진다.",
+          "style": "narration",
+          "portrait": null,
+          "condition": {
+            "flag_key": "SolvedQuestionCount",
+            "flag_value": [2, 3]
+          }
         }
       ],
       "choices": [],
@@ -5488,30 +5509,36 @@ window.GAME_DATA = {
       "branches": [
         {
           "order": 1,
+          "flag_key": "SolvedQuestionCount",
+          "flag_value": [2, 3],
+          "next_scene": "ch6_ending_a"
+        },
+        {
+          "order": 2,
           "flag_key": "TrustedSongsoon",
           "flag_value": true,
           "next_scene": "ch6_ending_a"
         },
         {
-          "order": 2,
+          "order": 3,
           "flag_key": "SongsoonTrust",
           "flag_value": 2,
           "next_scene": "ch6_ending_a"
         },
         {
-          "order": 3,
+          "order": 4,
           "flag_key": "SongsoonTrust",
           "flag_value": 1,
           "next_scene": "ch6_ending_a"
         },
         {
-          "order": 4,
+          "order": 5,
           "flag_key": "OkryunPushed",
           "flag_value": true,
           "next_scene": "ch6_ending_a"
         },
         {
-          "order": 5,
+          "order": 6,
           "flag_key": "EndingAScore",
           "flag_value": 2,
           "next_scene": "ch6_ending_a"
@@ -5546,6 +5573,17 @@ window.GAME_DATA = {
           "condition": {
             "flag_key": "ResonanceLevel",
             "flag_value": 2
+          }
+        },
+        {
+          "order": 4,
+          "speaker": "",
+          "text": "붙들어 온 질문 셋 중 둘 이상이 이 순간에서 하나로 묶인다. 누구를 불렀는지, 누구를 밀어 넣었는지, 누가 판을 짰는지까지 알았기에 송순의 부름도 허공에 흩어지지 않는다.",
+          "style": "narration",
+          "portrait": null,
+          "condition": {
+            "flag_key": "SolvedQuestionCount",
+            "flag_value": [2, 3]
           }
         }
       ],
@@ -5619,18 +5657,24 @@ window.GAME_DATA = {
       "branches": [
         {
           "order": 1,
+          "flag_key": "SolvedQuestionCount",
+          "flag_value": [2, 3],
+          "next_scene": "ch6_ending_b"
+        },
+        {
+          "order": 2,
           "flag_key": "ReadRitualScore",
           "flag_value": true,
           "next_scene": "ch6_ending_b"
         },
         {
-          "order": 2,
+          "order": 3,
           "flag_key": "InvestigationScore",
           "flag_value": 3,
           "next_scene": "ch6_ending_b"
         },
         {
-          "order": 3,
+          "order": 4,
           "flag_key": "CalledEditor",
           "flag_value": false,
           "next_scene": "ch6_ending_b"
@@ -5665,6 +5709,17 @@ window.GAME_DATA = {
           "condition": {
             "flag_key": "ResonanceLevel",
             "flag_value": 2
+          }
+        },
+        {
+          "order": 4,
+          "speaker": "",
+          "text": "질문을 끝까지 밀고 와서야, 기록해야 할 문장의 순서도 달라진다. 이판규와 송금, 의식의 설계자까지 하나의 구조로 꿰어졌기에 이번 기록은 더는 단편 기사로 무너지지 않는다.",
+          "style": "narration",
+          "portrait": null,
+          "condition": {
+            "flag_key": "SolvedQuestionCount",
+            "flag_value": [2, 3]
           }
         }
       ],
@@ -5773,6 +5828,21 @@ window.GAME_DATA = {
           "speaker_id": "Songsoon",
           "emotion_type": "Uneasy",
           "standing_slot": "Left",
+          "focus_type": "Speaker"
+        },
+        {
+          "order": 9,
+          "speaker": "유웅룡",
+          "text": "그래도 이제는 압니다. 누가 사람을 불러냈고, 누구를 순서 안에 밀어 넣었는지. 이름을 되찾지 못해도, 책임의 결만큼은 흐리지 않겠습니다.",
+          "style": "thought",
+          "portrait": "assets/portraits/yuu.jpeg",
+          "condition": {
+            "flag_key": "SolvedQuestionCount",
+            "flag_value": [2, 3]
+          },
+          "speaker_id": "Yuu",
+          "emotion_type": "Tense",
+          "standing_slot": "Right",
           "focus_type": "Speaker"
         }
       ],
@@ -5884,6 +5954,21 @@ window.GAME_DATA = {
           "speaker_id": "Songsoon",
           "emotion_type": "Uneasy",
           "standing_slot": "Left",
+          "focus_type": "Speaker"
+        },
+        {
+          "order": 9,
+          "speaker": "유웅룡",
+          "text": "이번 기록엔 빈칸이 덜 남을 겁니다. 불려간 사람과 지워진 사람, 판을 짠 자의 이름까지 서로 이어졌으니, 적어도 누가 무엇을 덮으려 했는지는 똑똑히 남길 수 있습니다.",
+          "style": "thought",
+          "portrait": "assets/portraits/yuu.jpeg",
+          "condition": {
+            "flag_key": "SolvedQuestionCount",
+            "flag_value": [2, 3]
+          },
+          "speaker_id": "Yuu",
+          "emotion_type": "Tense",
+          "standing_slot": "Right",
           "focus_type": "Speaker"
         }
       ],
@@ -6008,6 +6093,17 @@ window.GAME_DATA = {
           "emotion_type": "Tense",
           "standing_slot": "Right",
           "focus_type": "Speaker"
+        },
+        {
+          "order": 11,
+          "speaker": "",
+          "text": "붙들었던 질문 대부분을 풀고도 이 밤이 이렇게 끝났다는 사실이 오히려 더 잔인하다. 답을 잃은 것이 아니라, 답을 알았는데도 사람을 다 구하지 못했다는 감각이 오래 남는다.",
+          "style": "narration",
+          "portrait": null,
+          "condition": {
+            "flag_key": "SolvedQuestionCount",
+            "flag_value": [2, 3]
+          }
         }
       ],
       "choices": [],
@@ -6058,13 +6154,24 @@ window.GAME_DATA = {
         {
           "order": 5,
           "speaker": "",
+          "text": "하지만 유웅룡의 수첩 안쪽에는 짧지 않은 이름과 문장들이 남는다. 불려간 자, 지워진 자, 판을 짠 자에 대한 메모는 기사보다 길고, 불에 타지 않은 질문처럼 끝내 접히지 않는다.",
+          "style": "narration",
+          "portrait": null,
+          "condition": {
+            "flag_key": "SolvedQuestionCount",
+            "flag_value": [2, 3]
+          }
+        },
+        {
+          "order": 6,
+          "speaker": "",
           "text": "문은 열렸다. 무엇이 나왔는지는 아무도 모른다. 그리고 아무도 묻지 않는다. 도시는 늘 그래왔듯, 감당 못 할 대답 앞에서 질문부터 접어버린다.",
           "style": "narration",
           "portrait": null,
           "condition": null
         },
         {
-          "order": 6,
+          "order": 7,
           "speaker": "",
           "text": "묻지 않는다는 건 모른다는 뜻이 아니다. 대답을 감당할 수 없어서 외면하는 쪽에 가깝다.",
           "style": "narration",
@@ -6072,7 +6179,7 @@ window.GAME_DATA = {
           "condition": null
         },
         {
-          "order": 7,
+          "order": 8,
           "speaker": "",
           "text": "그래도 어딘가엔 적힌 이름이 남는다. 누군가가 접지 않고 버틴 문장, 끝내 모른 체하지 않겠다고 버틴 사람 덕분에.",
           "style": "narration",
@@ -6083,7 +6190,7 @@ window.GAME_DATA = {
           }
         },
         {
-          "order": 8,
+          "order": 9,
           "speaker": "",
           "text": "그리고 어떤 밤은, 끝내 누군가의 말을 믿어 준 일 하나로 모양이 달라지기도 한다. 경성에선 그런 일이 기사보다 드물다.",
           "style": "narration",
@@ -6094,7 +6201,7 @@ window.GAME_DATA = {
           }
         },
         {
-          "order": 9,
+          "order": 10,
           "speaker": "",
           "text": "도시 한복판에서는 아무 일도 없었던 것처럼 전차 종이 울린다. 그러나 어떤 이름들은 한 번 적힌 뒤부터, 비록 신문에 나지 않아도 쉽게 다시 지워지지 않는다.",
           "style": "narration",
@@ -6105,7 +6212,7 @@ window.GAME_DATA = {
           }
         },
         {
-          "order": 10,
+          "order": 11,
           "speaker": "",
           "text": "그리고 아주 드문 밤이면, 바람결 어딘가에서 허밍이 짧게 스친다. 들은 사람만 잠깐 걸음을 늦춘다.",
           "style": "narration",

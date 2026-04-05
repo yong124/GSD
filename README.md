@@ -71,9 +71,9 @@ powershell -ExecutionPolicy Bypass -File G:\GSD\content\tools\run_browser_playte
 
 - `content/docs/system/core/DATA_STRUCTURE.md`
 - `content/docs/system/core/TABLE_SPEC.md`
-- `content/docs/system/core/CHARACTER_SCHEMA_AND_EDITING_PLAN.md`
-- `content/docs/system/core/GAMEPLAY_AND_CHARACTER_SYSTEM_PLAN.md`
-- `content/docs/system/core/조사_우선순위_시스템_계획.md`
+- `content/docs/system/core/DATA_STRUCTURE.md`
+- `content/docs/system/core/TABLE_SPEC.md`
+- `content/docs/system/core/브라우저_QA_실행_가이드.md`
 
 ## 작업 원칙
 

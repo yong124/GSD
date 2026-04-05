@@ -279,9 +279,9 @@ const Evidence = (() => {
         const ownedEvidence = relatedEvidence.filter(item => item.isOwned);
         const solvedFlagId = question.solved_flag_id || '';
         const isSolved = solvedFlagId ? State.getFlag(solvedFlagId) === true : false;
-        const solutionEvidenceIds = Array.isArray(question.solution_evidence_ids) && question.solution_evidence_ids.length > 0
-          ? question.solution_evidence_ids
-          : (question.solution_evidence_id ? [question.solution_evidence_id] : []);
+        const solutionEvidenceIds = Array.isArray(question.solution_evidence_ids)
+          ? question.solution_evidence_ids.filter(Boolean)
+          : [];
         return {
           questionId: question.question_id || '',
           title: question.title || '',
@@ -292,7 +292,6 @@ const Evidence = (() => {
           resolvedDetail: question.resolved_detail || '',
           successToast: question.success_toast || '',
           failureToast: question.failure_toast || '',
-          solutionEvidenceId: question.solution_evidence_id || '',
           solutionEvidenceIds,
           solutionMode: question.solution_mode || (solutionEvidenceIds.length > 1 ? 'All' : 'Any'),
           solvedFlagId,
@@ -317,6 +316,11 @@ const Evidence = (() => {
       return;
     }
     State.setFlag(question.rewardFlagId, question.rewardValue);
+  }
+
+  function incrementSolvedQuestionCount() {
+    const currentValue = Number(State.getFlag('SolvedQuestionCount') || 0);
+    State.setFlag('SolvedQuestionCount', currentValue + 1);
   }
 
   function toggleQuestionEvidence(questionId, evidenceId) {
@@ -367,6 +371,7 @@ const Evidence = (() => {
       if (question.solvedFlagId) {
         State.setFlag(question.solvedFlagId, true);
       }
+      incrementSolvedQuestionCount();
       applyQuestionReward(question);
       delete _selectedEvidenceByQuestion[questionId];
       UIManager.showToast(question.successToast || `질문 정리: ${question.title}`, 'impact');

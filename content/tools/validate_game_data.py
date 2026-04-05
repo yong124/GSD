@@ -184,13 +184,7 @@ def validate_questions(data, issues):
         for evidence_id in related_ids:
             if evidence_id not in evidence_ids:
                 issues.append(f"[Question.related_evidence_ids] {question.get('question_id') or '(unknown)'} -> {evidence_id} (missing EvidenceID)")
-        solution_evidence_id = question.get("solution_evidence_id")
         solution_evidence_ids = question.get("solution_evidence_ids") or []
-        if solution_evidence_id:
-            if solution_evidence_id not in evidence_ids:
-                issues.append(f"[Question.solution_evidence_id] {question.get('question_id') or '(unknown)'} -> {solution_evidence_id} (missing EvidenceID)")
-            if related_ids and solution_evidence_id not in related_ids:
-                issues.append(f"[Question.solution_evidence_id] {question.get('question_id') or '(unknown)'} solution must be included in related_evidence_ids")
         for evidence_id in solution_evidence_ids:
             if evidence_id not in evidence_ids:
                 issues.append(f"[Question.solution_evidence_ids] {question.get('question_id') or '(unknown)'} -> {evidence_id} (missing EvidenceID)")
