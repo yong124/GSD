@@ -157,10 +157,14 @@ const Scene = (() => {
         return getRevealedCharacterSet(context).has(targetId);
       case 'SceneProgressIndex':
         return context.sceneProgressIndex ?? Number(State.dialogueIndex || 0);
-      case 'InvestigationScore':
-        return Number(State.getFlag('InvestigationScore') || 0);
+      case 'ReadRitualScore':
+        return State.getFlag('ReadRitualScore');
       case 'ResonanceLevel':
         return Number(State.getFlag('ResonanceLevel') || 0);
+      case 'InvestigationScore':
+        return Number(State.getFlag('InvestigationScore') || 0);
+      case 'SongsoonTrust':
+        return Number(State.getFlag('SongsoonTrust') || 0);
       case 'StateValue':
         return State.getFlag(targetId);
       default:

@@ -27,9 +27,18 @@
 - `ChoiceSelected`
 - `RevealedCharacter`
 - `SceneProgressIndex`
-- `InvestigationScore`
+- `ReadRitualScore`
 - `ResonanceLevel`
+- `InvestigationScore`
+- `SongsoonTrust`
 - `StateValue`
+
+### EStateType
+
+- `ReadRitualScore`
+- `ResonanceLevel`
+- `InvestigationScore`
+- `SongsoonTrust`
 
 ---
 
@@ -122,6 +131,8 @@
 | `TrustCharacterID` | 신뢰도 대상 캐릭터 | `CharacterTable.CharacterID` |
 | `TrustValue` | 신뢰도 변화값 | - |
 | `ResonanceValue` | 공명도 변화값 | - |
+| `StateType` | 상태 변경 타입 | `EStateType` |
+| `StateValue` | 상태 변경 값 | - |
 
 ### ENextType
 
@@ -132,7 +143,7 @@
 ### 메모
 
 - 기존 `FlagKey`, `FlagValue`, `NextScene`, `NextDialogue`, `PriorityCost`, `ExtraFlags`는 레거시 대상이다.
-- 이번 구조에서는 선택 결과를 `EvidenceID / TrustValue / ResonanceValue / NextType / NextID`로 우선 표현한다.
+- 이번 구조에서는 선택 결과를 `EvidenceID / TrustValue / ResonanceValue / StateType / StateValue / NextType / NextID`로 표현한다.
 
 ---
 

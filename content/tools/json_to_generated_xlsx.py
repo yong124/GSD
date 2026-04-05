@@ -38,7 +38,7 @@ SHEET_DEFS = {
         "headers": ["ChoiceGroupID", "Type", "ConditionGroupID", "MaxSelectable"],
     },
     "ChoiceTable": {
-        "headers": ["ChoiceID", "ChoiceGroupID", "Order", "Text", "ConditionGroupID", "NextType", "NextID", "EvidenceID", "TrustCharacterID", "TrustValue", "ResonanceValue", "SceneID", "FlagKey", "FlagValue", "NextScene", "NextDialogue"],
+        "headers": ["ChoiceID", "ChoiceGroupID", "Order", "Text", "ConditionGroupID", "NextType", "NextID", "EvidenceID", "TrustCharacterID", "TrustValue", "ResonanceValue", "StateType", "StateValue", "SceneID", "NextScene", "NextDialogue"],
     },
     "BranchTable": {
         "headers": ["BranchID", "SceneID", "Order", "ConditionGroupID", "NextSceneID", "FlagKey", "FlagValue", "NextScene"],
@@ -215,9 +215,9 @@ def build_choice_rows(data):
                 "TrustCharacterID": choice.get("trust_character_id"),
                 "TrustValue": choice.get("trust_value"),
                 "ResonanceValue": choice.get("resonance_value"),
+                "StateType": choice.get("state_type"),
+                "StateValue": normalize_value(choice.get("state_value")),
                 "SceneID": scene_id,
-                "FlagKey": choice.get("flag_key"),
-                "FlagValue": normalize_value(choice.get("flag_value")),
                 "NextScene": choice.get("next_scene"),
                 "NextDialogue": choice.get("next_dialogue"),
             })

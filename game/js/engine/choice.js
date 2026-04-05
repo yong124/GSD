@@ -8,7 +8,7 @@ const Choice = (() => {
   function describeChoiceImpact(choice, isPriority = false) {
     if (!choice) return '선택의 파장이 남습니다.';
     const choiceId = getChoiceId(choice);
-    const key = choice.flag_key || '';
+    const stateType = choice.state_type || '';
     if (isPriority) return '조사 방향이 또렷해집니다.';
     if (choice.trust_character_id && Number(choice.trust_value || 0) !== 0) return '인물 사이의 거리가 달라집니다.';
     if (Number(choice.resonance_value || 0) !== 0) return '공명의 기색이 더 짙어집니다.';
@@ -31,25 +31,14 @@ const Choice = (() => {
         break;
     }
 
-    switch (key) {
+    switch (stateType) {
       case 'SongsoonTrust':
-      case 'TrustedSongsoon':
         return '송순과의 거리가 미세하게 달라집니다.';
       case 'InvestigationScore':
       case 'ReadRitualScore':
-      case 'FoundOldArticles':
-      case 'ExposedArchivePattern':
-      case 'MatchedRitualPattern':
         return '조사 감각이 한층 또렷해집니다.';
-      case 'ExposedTruthAtRitual':
-        return '마지막 대면의 기울기가 더 날카로워집니다.';
       case 'ResonanceLevel':
-      case 'TouchedRoomWall':
         return '공명의 기색이 더 짙어집니다.';
-      case 'CalledEditor':
-        return choice.flag_value ? '바깥에 남길 흔적을 만들었습니다.' : '둘만의 증언으로 끝까지 내려갑니다.';
-      case 'FinalChoice':
-        return '마지막 결단의 무게가 기울기 시작합니다.';
       default:
         return '선택의 파장이 조용히 남습니다.';
     }
@@ -62,23 +51,14 @@ const Choice = (() => {
     if (Number(choice?.resonance_value || 0) !== 0) return 'choice-risk';
     if (choice?.evidence_id) return 'choice-investigation';
     const choiceId = getChoiceId(choice);
-    if (['Ch4ALibraryTakeArticles', 'Ch4ALibraryNoteArticles', 'Ch4ALibraryExposeArchive'].includes(choiceId)) return 'choice-investigation';
+    if (['Ch2CafeAskManager', 'Ch2CafeAskWaitress', 'Ch2CafeAskObserver', 'Ch4ALibraryTakeArticles', 'Ch4ALibraryNoteArticles', 'Ch4ALibraryExposeArchive', 'Ch4BCafePress', 'Ch5RitualPresentMask'].includes(choiceId)) return 'choice-investigation';
+    if (['Ch3WarehouseTrustSongsoon', 'Ch3Room4ComfortSongsoon'].includes(choiceId)) return 'choice-relationship';
     if (['Ch6FinalAnswer', 'Ch6FinalBlock', 'Ch6FinalHesitate', 'Ch6FinalExpose'].includes(choiceId)) return 'choice-risk';
-    const key = choice?.flag_key || '';
-    if (['SongsoonTrust', 'TrustedSongsoon', 'OkryunPushed'].includes(key)) return 'choice-relationship';
-    if (['InvestigationScore', 'ReadRitualScore', 'FoundOldArticles', 'ExposedArchivePattern', 'MatchedRitualPattern'].includes(key)) return 'choice-investigation';
-    if (['ResonanceLevel', 'TouchedRoomWall', 'FinalChoice', 'ExposedTruthAtRitual'].includes(key)) return 'choice-risk';
+    const stateType = choice?.state_type || '';
+    if (['SongsoonTrust'].includes(stateType)) return 'choice-relationship';
+    if (['InvestigationScore', 'ReadRitualScore'].includes(stateType)) return 'choice-investigation';
+    if (['ResonanceLevel'].includes(stateType)) return 'choice-risk';
     return 'choice-decision';
-  }
-
-  function applyFlagSet(flag) {
-    if (!flag?.flag_key) return;
-    State.setFlag(flag.flag_key, flag.flag_value ?? true);
-  }
-
-  function applyChoiceFlag(choice) {
-    applyFlagSet(choice);
-    (choice?.extra_flags || []).forEach(applyFlagSet);
   }
 
   function applyChoiceEffects(choice, mode = 'normal') {
@@ -100,8 +80,9 @@ const Choice = (() => {
     if (choice?.evidence_id && mode !== 'evidence' && typeof Evidence?.collect === 'function') {
       Evidence.collect(choice.evidence_id);
     }
-
-    applyChoiceFlag(choice);
+    if (choice?.state_type) {
+      State.setFlag(choice.state_type, choice.state_value ?? true);
+    }
   }
 
   function showChoiceImpact(choice, isPriority = false) {

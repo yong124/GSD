@@ -198,30 +198,30 @@ window.GAME_DATA = {
     }
   ],
   "conditions": [
-    {
-      "condition_id": "Cond_Room4_ReadRitual_01",
-      "condition_group_id": "CG_Room4_ReadRitual",
-      "condition_type": "StateValue",
-      "condition_target_id": "ReadRitualScore",
-      "compare_type": "Equal",
-      "condition_value": true
-    },
-    {
-      "condition_id": "Cond_Room4_TrustedSongsoon_01",
-      "condition_group_id": "CG_Room4_TrustedSongsoon",
-      "condition_type": "StateValue",
-      "condition_target_id": "TrustedSongsoon",
-      "compare_type": "Equal",
-      "condition_value": true
-    },
-    {
-      "condition_id": "Cond_Library_Investigation_01",
-      "condition_group_id": "CG_Library_Investigation2",
-      "condition_type": "InvestigationScore",
-      "condition_target_id": "InvestigationScore",
-      "compare_type": "GreaterEqual",
-      "condition_value": 2
-    },
+      {
+        "condition_id": "Cond_Room4_ReadRitual_01",
+        "condition_group_id": "CG_Room4_ReadRitual",
+        "condition_type": "ReadRitualScore",
+        "condition_target_id": "ReadRitualScore",
+        "compare_type": "Equal",
+        "condition_value": true
+      },
+      {
+        "condition_id": "Cond_Room4_TrustedSongsoon_01",
+        "condition_group_id": "CG_Room4_TrustedSongsoon",
+        "condition_type": "ChoiceSelected",
+        "condition_target_id": "Ch3WarehouseTrustSongsoon|Ch3Room4ComfortSongsoon",
+        "compare_type": "Equal",
+        "condition_value": true
+      },
+      {
+        "condition_id": "Cond_Library_Investigation_01",
+        "condition_group_id": "CG_Library_Investigation2",
+        "condition_type": "InvestigationScore",
+        "condition_target_id": "InvestigationScore",
+        "compare_type": "GreaterEqual",
+        "condition_value": 2
+      },
     {
       "condition_id": "Cond_Library_BlueHanbok_01",
       "condition_group_id": "CG_Library_BlueHanbok",
@@ -278,30 +278,30 @@ window.GAME_DATA = {
         "compare_type": "Equal",
         "condition_value": true
       },
-    {
-      "condition_id": "Cond_Threshold_Resonance_01",
-      "condition_group_id": "CG_Threshold_Resonance2",
-      "condition_type": "ResonanceLevel",
-      "condition_target_id": "ResonanceLevel",
-      "compare_type": "GreaterEqual",
-      "condition_value": 2
-    },
-    {
-      "condition_id": "Cond_Threshold_TrustedSongsoon_01",
-      "condition_group_id": "CG_Threshold_TrustedSongsoon",
-      "condition_type": "StateValue",
-      "condition_target_id": "TrustedSongsoon",
-      "compare_type": "Equal",
-      "condition_value": true
-    },
-    {
-      "condition_id": "Cond_Threshold_Investigation_01",
-      "condition_group_id": "CG_Threshold_Investigation3",
-      "condition_type": "InvestigationScore",
-      "condition_target_id": "InvestigationScore",
-      "compare_type": "GreaterEqual",
-      "condition_value": 3
-    },
+      {
+        "condition_id": "Cond_Threshold_Resonance_01",
+        "condition_group_id": "CG_Threshold_Resonance2",
+        "condition_type": "ResonanceLevel",
+        "condition_target_id": "ResonanceLevel",
+        "compare_type": "GreaterEqual",
+        "condition_value": 2
+      },
+      {
+        "condition_id": "Cond_Threshold_TrustedSongsoon_01",
+        "condition_group_id": "CG_Threshold_TrustedSongsoon",
+        "condition_type": "ChoiceSelected",
+        "condition_target_id": "Ch3WarehouseTrustSongsoon|Ch3Room4ComfortSongsoon",
+        "compare_type": "Equal",
+        "condition_value": true
+      },
+      {
+        "condition_id": "Cond_Threshold_Investigation_01",
+        "condition_group_id": "CG_Threshold_Investigation3",
+        "condition_type": "InvestigationScore",
+        "condition_target_id": "InvestigationScore",
+        "compare_type": "GreaterEqual",
+        "condition_value": 3
+      },
       {
         "condition_id": "Cond_Threshold_CalledEditorFalse_01",
         "condition_group_id": "CG_Threshold_CalledEditorFalse",
@@ -326,14 +326,14 @@ window.GAME_DATA = {
       "compare_type": "Equal",
       "condition_value": [2, 3]
     },
-    {
-      "condition_id": "Cond_RitualScene_Resonance_01",
-      "condition_group_id": "CG_RitualScene_Resonance2",
-      "condition_type": "ResonanceLevel",
-      "condition_target_id": "ResonanceLevel",
-      "compare_type": "GreaterEqual",
-      "condition_value": 2
-    },
+      {
+        "condition_id": "Cond_RitualScene_Resonance_01",
+        "condition_group_id": "CG_RitualScene_Resonance2",
+        "condition_type": "ResonanceLevel",
+        "condition_target_id": "ResonanceLevel",
+        "compare_type": "GreaterEqual",
+        "condition_value": 2
+      },
     {
       "condition_id": "Cond_RitualScene_SolvedHigh_01",
       "condition_group_id": "CG_RitualScene_SolvedHigh",
@@ -398,14 +398,14 @@ window.GAME_DATA = {
       "compare_type": "Equal",
       "condition_value": true
     },
-    {
-      "condition_id": "Cond_Branch_MatchedPattern_01",
-      "condition_group_id": "CG_Branch_MatchedPattern",
-      "condition_type": "StateValue",
-      "condition_target_id": "MatchedRitualPattern",
-      "compare_type": "Equal",
-      "condition_value": true
-    },
+      {
+        "condition_id": "Cond_Branch_MatchedPattern_01",
+        "condition_group_id": "CG_Branch_MatchedPattern",
+        "condition_type": "ChoiceSelected",
+        "condition_target_id": "Ch5RitualPresentMask",
+        "compare_type": "Equal",
+        "condition_value": true
+      },
       {
         "condition_id": "Cond_Branch_FoundOldArticles_01",
         "condition_group_id": "CG_Branch_FoundOldArticles",
@@ -486,62 +486,62 @@ window.GAME_DATA = {
         "compare_type": "Equal",
         "condition_value": true
       },
-    {
-      "condition_id": "Cond_Descent_SongsoonTrust1_01",
-      "condition_group_id": "CG_Descent_SongsoonTrust1",
-      "condition_type": "Trust",
-      "condition_target_id": "Songsoon",
-      "compare_type": "GreaterEqual",
-      "condition_value": 1
-    },
-    {
-      "condition_id": "Cond_Branch_SongsoonTrust2_01",
-      "condition_group_id": "CG_Branch_SongsoonTrust2",
-      "condition_type": "Trust",
-      "condition_target_id": "Songsoon",
-      "compare_type": "GreaterEqual",
-      "condition_value": 2
-    },
-    {
-      "condition_id": "Cond_Branch_SongsoonTrust1_01",
-      "condition_group_id": "CG_Branch_SongsoonTrust1",
-      "condition_type": "Trust",
-      "condition_target_id": "Songsoon",
-      "compare_type": "GreaterEqual",
-      "condition_value": 1
-    },
-    {
-      "condition_id": "Cond_Branch_OkryunPushed_01",
-      "condition_group_id": "CG_Branch_OkryunPushed",
-      "condition_type": "StateValue",
-      "condition_target_id": "OkryunPushed",
-      "compare_type": "Equal",
-      "condition_value": true
-    },
-    {
-      "condition_id": "Cond_Branch_EndingAScore2_01",
-      "condition_group_id": "CG_Branch_EndingAScore2",
-      "condition_type": "StateValue",
-      "condition_target_id": "EndingAScore",
-      "compare_type": "GreaterEqual",
-      "condition_value": 2
-    },
-    {
-      "condition_id": "Cond_Branch_ReadRitual_01",
-      "condition_group_id": "CG_Branch_ReadRitual",
-      "condition_type": "StateValue",
-      "condition_target_id": "ReadRitualScore",
-      "compare_type": "Equal",
-      "condition_value": true
-    },
-    {
-      "condition_id": "Cond_Branch_Investigation3_01",
-      "condition_group_id": "CG_Branch_Investigation3",
-      "condition_type": "InvestigationScore",
-      "condition_target_id": "InvestigationScore",
-      "compare_type": "GreaterEqual",
-      "condition_value": 3
-    },
+      {
+        "condition_id": "Cond_Descent_SongsoonTrust1_01",
+        "condition_group_id": "CG_Descent_SongsoonTrust1",
+        "condition_type": "SongsoonTrust",
+        "condition_target_id": "SongsoonTrust",
+        "compare_type": "GreaterEqual",
+        "condition_value": 1
+      },
+      {
+        "condition_id": "Cond_Branch_SongsoonTrust2_01",
+        "condition_group_id": "CG_Branch_SongsoonTrust2",
+        "condition_type": "SongsoonTrust",
+        "condition_target_id": "SongsoonTrust",
+        "compare_type": "GreaterEqual",
+        "condition_value": 2
+      },
+      {
+        "condition_id": "Cond_Branch_SongsoonTrust1_01",
+        "condition_group_id": "CG_Branch_SongsoonTrust1",
+        "condition_type": "SongsoonTrust",
+        "condition_target_id": "SongsoonTrust",
+        "compare_type": "GreaterEqual",
+        "condition_value": 1
+      },
+      {
+        "condition_id": "Cond_Branch_OkryunPushed_01",
+        "condition_group_id": "CG_Branch_OkryunPushed",
+        "condition_type": "ChoiceSelected",
+        "condition_target_id": "Ch4BCafePress",
+        "compare_type": "Equal",
+        "condition_value": true
+      },
+      {
+        "condition_id": "Cond_Branch_EndingAScore2_01",
+        "condition_group_id": "CG_Branch_EndingAScore2",
+        "condition_type": "ChoiceSelected",
+        "condition_target_id": "Ch4BCafeHold",
+        "compare_type": "Equal",
+        "condition_value": true
+      },
+      {
+        "condition_id": "Cond_Branch_ReadRitual_01",
+        "condition_group_id": "CG_Branch_ReadRitual",
+        "condition_type": "ReadRitualScore",
+        "condition_target_id": "ReadRitualScore",
+        "compare_type": "Equal",
+        "condition_value": true
+      },
+      {
+        "condition_id": "Cond_Branch_Investigation3_01",
+        "condition_group_id": "CG_Branch_Investigation3",
+        "condition_type": "InvestigationScore",
+        "condition_target_id": "InvestigationScore",
+        "compare_type": "GreaterEqual",
+        "condition_value": 3
+      },
       {
         "condition_id": "Cond_Branch_CalledEditorFalse_01",
         "condition_group_id": "CG_Branch_CalledEditorFalse",
@@ -2090,37 +2090,34 @@ window.GAME_DATA = {
           "focus_type": "Speaker"
         }
       ],
-      "choices": [
-        {
-          "order": 1,
-          "choice_group_id": "ChoiceGroup_CafeInvestigation",
-          "text": "점장에게 더 캐묻는다",
-          "flag_key": "CafeInv_Mgr",
-          "flag_value": true,
-          "priority_cost": 1,
-          "next_type": "Dialog",
-          "next_id": "inv_mgr"
-        },
-        {
-          "order": 2,
-          "choice_group_id": "ChoiceGroup_CafeInvestigation",
-          "text": "지나치는 여급의 반응을 확인한다",
-          "flag_key": "CafeInv_Wtrs",
-          "flag_value": true,
-          "priority_cost": 1,
-          "next_type": "Dialog",
-          "next_id": "inv_wtrs"
-        },
-        {
-          "order": 3,
-          "choice_group_id": "ChoiceGroup_CafeInvestigation",
-          "text": "구석에 앉은 여자를 살핀다",
-          "flag_key": "CafeInv_Obs",
-          "flag_value": true,
-          "priority_cost": 1,
-          "next_type": "Dialog",
-          "next_id": "inv_obs"
-        }
+        "choices": [
+          {
+            "order": 1,
+            "choice_group_id": "ChoiceGroup_CafeInvestigation",
+            "choice_id": "Ch2CafeAskManager",
+            "text": "점장에게 더 캐묻는다",
+            "priority_cost": 1,
+            "next_type": "Dialog",
+            "next_id": "inv_mgr"
+          },
+          {
+            "order": 2,
+            "choice_group_id": "ChoiceGroup_CafeInvestigation",
+            "choice_id": "Ch2CafeAskWaitress",
+            "text": "지나치는 여급의 반응을 확인한다",
+            "priority_cost": 1,
+            "next_type": "Dialog",
+            "next_id": "inv_wtrs"
+          },
+          {
+            "order": 3,
+            "choice_group_id": "ChoiceGroup_CafeInvestigation",
+            "choice_id": "Ch2CafeAskObserver",
+            "text": "구석에 앉은 여자를 살핀다",
+            "priority_cost": 1,
+            "next_type": "Dialog",
+            "next_id": "inv_obs"
+          }
       ],
       "evidence": [],
       "priority_budget": 2,
@@ -2610,23 +2607,23 @@ window.GAME_DATA = {
           "focus_type": "Speaker"
         }
       ],
-      "choices": [
-        {
-          "order": 1,
-          "text": "관자놀이가 깨질 듯해도 악보를 끝까지 읽어 낸다.",
-          "flag_key": "ReadRitualScore",
-          "flag_value": true,
-          "next_type": "Scene",
-          "next_id": "ch3_score_read"
-        },
-        {
-          "order": 2,
-          "text": "악보보다 송순 씨의 귀와 숨결을 먼저 믿는다.",
-          "flag_key": "TrustedSongsoon",
-          "flag_value": true,
-          "next_type": "Scene",
-          "next_id": "ch3_score_trust"
-        }
+        "choices": [
+          {
+            "order": 1,
+            "choice_id": "Ch3WarehouseReadRitual",
+            "text": "관자놀이가 깨질 듯해도 악보를 끝까지 읽어 낸다.",
+            "state_type": "ReadRitualScore",
+            "state_value": 1,
+            "next_type": "Scene",
+            "next_id": "ch3_score_read"
+          },
+          {
+            "order": 2,
+            "choice_id": "Ch3WarehouseTrustSongsoon",
+            "text": "악보보다 송순 씨의 귀와 숨결을 먼저 믿는다.",
+            "next_type": "Scene",
+            "next_id": "ch3_score_trust"
+          }
       ],
       "evidence": [
         {
@@ -3089,37 +3086,38 @@ window.GAME_DATA = {
           "focus_type": "Speaker"
         }
       ],
-      "choices": [
-        {
-          "order": 1,
-          "choice_group_id": "ChoiceGroup_Room4Investigation",
-          "text": "위험을 감수하고 벽의 문양에 직접 손을 댄다.",
-          "flag_key": "ResonanceLevel",
-          "flag_value": 2,
-          "priority_cost": 1,
-          "next_type": "Dialog",
-          "next_id": "room4_touch"
-        },
-        {
-          "order": 2,
-          "choice_group_id": "ChoiceGroup_Room4Investigation",
-          "text": "공포보다 기록을 우선하고 일기장의 다음 장을 더 읽는다.",
-          "flag_key": "ReadRitualScore",
-          "flag_value": true,
-          "priority_cost": 1,
-          "next_type": "Dialog",
-          "next_id": "room4_record"
-        },
-        {
-          "order": 3,
-          "choice_group_id": "ChoiceGroup_Room4Investigation",
-          "text": "증거보다 먼저 송순에게 혼자 떠맡지 말자고 말한다.",
-          "flag_key": "TrustedSongsoon",
-          "flag_value": true,
-          "priority_cost": 1,
-          "next_type": "Dialog",
-          "next_id": "room4_comfort"
-        }
+        "choices": [
+          {
+            "order": 1,
+            "choice_group_id": "ChoiceGroup_Room4Investigation",
+            "choice_id": "Ch3Room4TouchWall",
+            "text": "위험을 감수하고 벽의 문양에 직접 손을 댄다.",
+            "state_type": "ResonanceLevel",
+            "state_value": 2,
+            "priority_cost": 1,
+            "next_type": "Dialog",
+            "next_id": "room4_touch"
+          },
+          {
+            "order": 2,
+            "choice_group_id": "ChoiceGroup_Room4Investigation",
+            "choice_id": "Ch3Room4ReadRecord",
+            "text": "공포보다 기록을 우선하고 일기장의 다음 장을 더 읽는다.",
+            "state_type": "ReadRitualScore",
+            "state_value": 1,
+            "priority_cost": 1,
+            "next_type": "Dialog",
+            "next_id": "room4_record"
+          },
+          {
+            "order": 3,
+            "choice_group_id": "ChoiceGroup_Room4Investigation",
+            "choice_id": "Ch3Room4ComfortSongsoon",
+            "text": "증거보다 먼저 송순에게 혼자 떠맡지 말자고 말한다.",
+            "priority_cost": 1,
+            "next_type": "Dialog",
+            "next_id": "room4_comfort"
+          }
       ],
       "evidence": [
         {
@@ -3660,25 +3658,27 @@ window.GAME_DATA = {
           }
         ]
       },
-      "evidence_choices": [
-        {
-          "order": 1,
-          "text": "숨겨진 일기장을 기사 옆에 펼쳐 놓는다.",
-          "evidence_id": "EvDiary",
-          "flag_key": "InvestigationScore",
-          "flag_value": 3,
-          "next_type": "Dialog",
-          "next_id": "present_diary"
-        },
-        {
-          "order": 2,
-          "text": "청색 한복의 결을 기사 기록과 대조한다.",
-          "evidence_id": "EvBlueHanbok",
-          "flag_key": "ReadRitualScore",
-          "flag_value": 1,
-          "next_type": "Dialog",
-          "next_id": "present_hanbok"
-        }
+        "evidence_choices": [
+          {
+            "order": 1,
+            "choice_id": "Ch4ALibraryPresentDiary",
+            "text": "숨겨진 일기장을 기사 옆에 펼쳐 놓는다.",
+            "evidence_id": "EvDiary",
+            "state_type": "InvestigationScore",
+            "state_value": 3,
+            "next_type": "Dialog",
+            "next_id": "present_diary"
+          },
+          {
+            "order": 2,
+            "choice_id": "Ch4ALibraryPresentHanbok",
+            "text": "청색 한복의 결을 기사 기록과 대조한다.",
+            "evidence_id": "EvBlueHanbok",
+            "state_type": "ReadRitualScore",
+            "state_value": 1,
+            "next_type": "Dialog",
+            "next_id": "present_hanbok"
+          }
       ],
         "choices": [
           {
@@ -3688,14 +3688,15 @@ window.GAME_DATA = {
             "next_type": "Scene",
             "next_id": "ch4a_articles_take"
           },
-        {
-          "order": 2,
-          "text": "핵심 문장만 수첩에 적고 넘어간다.",
-          "flag_key": "InvestigationScore",
-          "flag_value": 3,
-          "next_type": "Scene",
-          "next_id": "ch4a_articles_note"
-        },
+          {
+            "order": 2,
+            "choice_id": "Ch4ALibraryNoteArticles",
+            "text": "핵심 문장만 수첩에 적고 넘어간다.",
+            "state_type": "InvestigationScore",
+            "state_value": 3,
+            "next_type": "Scene",
+            "next_id": "ch4a_articles_note"
+          },
             {
               "order": 3,
               "choice_id": "Ch4ALibraryExposeArchive",
@@ -4068,23 +4069,21 @@ window.GAME_DATA = {
           "focus_type": "Speaker"
         }
       ],
-      "choices": [
-        {
-          "order": 1,
-          "text": "알겠어요. 더는 억지로 묻지 않을게요.",
-          "flag_key": "EndingAScore",
-          "flag_value": 2,
-          "next_type": "Scene",
-          "next_id": "ch4b_cafe_hold"
-        },
-        {
-          "order": 2,
-          "text": "조금만 더 말해줘요. 여기서 멈출 순 없어요.",
-          "flag_key": "OkryunPushed",
-          "flag_value": true,
-          "next_type": "Scene",
-          "next_id": "ch4b_cafe_press"
-        }
+        "choices": [
+          {
+            "order": 1,
+            "choice_id": "Ch4BCafeHold",
+            "text": "알겠어요. 더는 억지로 묻지 않을게요.",
+            "next_type": "Scene",
+            "next_id": "ch4b_cafe_hold"
+          },
+          {
+            "order": 2,
+            "choice_id": "Ch4BCafePress",
+            "text": "조금만 더 말해줘요. 여기서 멈출 순 없어요.",
+            "next_type": "Scene",
+            "next_id": "ch4b_cafe_press"
+          }
       ],
       "evidence": []
     },
@@ -4978,23 +4977,25 @@ window.GAME_DATA = {
           "focus_type": "Speaker"
         }
       ],
-      "choices": [
-        {
-          "order": 1,
-          "text": "허밍의 결을 끝까지 듣고, 문 안쪽 호흡을 짚어 본다.",
-          "flag_key": "ResonanceLevel",
-          "flag_value": 2,
-          "next_type": "Scene",
-          "next_id": "ch5_guarded_door_listen"
-        },
-        {
-          "order": 2,
-          "text": "송순과 숨을 고른 뒤, 함께 문을 민다.",
-          "flag_key": "SongsoonTrust",
-          "flag_value": 2,
-          "next_type": "Scene",
-          "next_id": "ch5_guarded_door_steady"
-        }
+        "choices": [
+          {
+            "order": 1,
+            "choice_id": "Ch5GuardedDoorListen",
+            "text": "허밍의 결을 끝까지 듣고, 문 안쪽 호흡을 짚어 본다.",
+            "state_type": "ResonanceLevel",
+            "state_value": 2,
+            "next_type": "Scene",
+            "next_id": "ch5_guarded_door_listen"
+          },
+          {
+            "order": 2,
+            "choice_id": "Ch5GuardedDoorSteady",
+            "text": "송순과 숨을 고른 뒤, 함께 문을 민다.",
+            "state_type": "SongsoonTrust",
+            "state_value": 2,
+            "next_type": "Scene",
+            "next_id": "ch5_guarded_door_steady"
+          }
       ],
       "evidence": []
     },
@@ -5384,41 +5385,38 @@ window.GAME_DATA = {
           }
         ]
       },
-      "evidence_choices": [
-        {
-          "order": 1,
-          "text": "의례실 종이를 제단 앞 문장과 맞대 본다.",
-          "evidence_id": "EvRitualNote",
-          "flag_key": "ReadRitualScore",
-          "flag_value": 2,
-          "next_type": "Dialog",
-          "next_id": "present_ritual_note"
-        },
-        {
-          "order": 2,
-          "text": "감응 악보를 지금 울리는 노래와 겹쳐 본다.",
-          "evidence_id": "EvRitualScore",
-          "flag_key": "ResonanceLevel",
-          "flag_value": 2,
-          "next_type": "Dialog",
-          "next_id": "present_ritual_score"
-        },
+        "evidence_choices": [
           {
-            "order": 3,
-            "text": "가면의 눈 배열을 제단 문양과 대조한다.",
-            "evidence_id": "EvMask",
-            "flag_key": "InvestigationScore",
-            "flag_value": 4,
-            "extra_flags": [
-              {
-                "flag_key": "MatchedRitualPattern",
-                "flag_value": true
-              }
-            ],
+            "order": 1,
+            "choice_id": "Ch5RitualPresentNote",
+            "text": "의례실 종이를 제단 앞 문장과 맞대 본다.",
+            "evidence_id": "EvRitualNote",
+            "state_type": "ReadRitualScore",
+            "state_value": 2,
             "next_type": "Dialog",
-            "next_id": "present_mask",
-            "condition_group_id": "CG_RitualRoom_QRitualAccident"
-        }
+            "next_id": "present_ritual_note"
+          },
+          {
+            "order": 2,
+            "choice_id": "Ch5RitualPresentScore",
+            "text": "감응 악보를 지금 울리는 노래와 겹쳐 본다.",
+            "evidence_id": "EvRitualScore",
+            "state_type": "ResonanceLevel",
+            "state_value": 2,
+            "next_type": "Dialog",
+            "next_id": "present_ritual_score"
+          },
+            {
+              "order": 3,
+              "choice_id": "Ch5RitualPresentMask",
+              "text": "가면의 눈 배열을 제단 문양과 대조한다.",
+              "evidence_id": "EvMask",
+              "state_type": "InvestigationScore",
+              "state_value": 4,
+              "next_type": "Dialog",
+              "next_id": "present_mask",
+              "condition_group_id": "CG_RitualRoom_QRitualAccident"
+            }
       ],
       "choices": [],
       "evidence": [
