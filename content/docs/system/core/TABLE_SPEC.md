@@ -1,364 +1,261 @@
-# 경성뎐 : 여급 실종사건 — 데이터 테이블 명세
+# 경성뎐 데이터 테이블 명세
 
-> `content/data/script.xlsx` 기준. `content/tools/export_to_json.py` 가 이 명세대로 읽어 `game_data.js` 를 생성한다.
-> 컬럼명이 `$` 로 시작하면 export 제외. 시트명이 `$` 로 시작하면 시트 전체 제외.
-
----
-
-## 1. SceneTable
-
-씬(장면) 단위 메타 정보.
-
-| 컬럼 | 타입 | 필수 | 설명 |
-|------|------|------|------|
-| `SceneID` | string | ✅ | 씬 고유 식별자. 영문 소문자+언더스코어 권장. ex) `ch1_court` |
-| `Chapter` | int | | 챕터 번호. 챕터 카드 표시 기준. |
-| `Title` | string | | 씬 제목. 챕터 카드 및 에디터 표시용. |
-| `Background` | string | | 배경 이미지 상대경로. ex) `assets/bg/court.jpeg` |
-| `Music` | string | | BGM 상대경로. ex) `assets/sfx/ambient.mp3` |
-| `Effect` | string/int | | 씬 진입 시 이펙트. 값: `flicker`(1) / `resonance`(2) / `shake`(3) / `blood`(4) |
-| `NextScene` | string | | 대화 종료 후 기본으로 이동할 SceneID. 없으면 씬 종료. |
-| `GoalKicker` | string | | 조사 수첩 / HUD 목표 머리말. ex) `현재 목표` |
-| `GoalText` | string | | 현재 씬에서 붙들어야 할 목표 문장 |
-
-**관계:** `SceneID` ← DialogTable, ChoiceTable, EvidenceTable, BranchTable 가 모두 참조.
+> 현재 구조 전환 기준 문서.
+> `Question / Rule / StateDescriptor`는 이번 전환 라운드에서 테이블 원본이 아니라 런타임 하드코딩 영역으로 유지한다.
 
 ---
 
-## 2. DialogTable
+## 1. ConditionTable
 
-씬에 속한 대사 라인. 한 씬에 여러 줄.
+게임 내 표시/분기 조건을 공통으로 정의한다.
 
-| 컬럼 | 타입 | 필수 | 설명 |
-|------|------|------|------|
-| `SceneID` | string | ✅ | 소속 씬. SceneTable.SceneID 참조. |
-| `Order` | int | ✅ | 씬 내 표시 순서. 오름차순 정렬. |
-| `Label` | string | | 대사 지점 식별 라벨. 같은 씬 내 점프 기준. ex) `after_push` |
-| `Speaker` | string | | 화자 이름. 비어있으면 내레이션 처리. |
-| `SpeakerID` | string | | CharacterTable.CharacterID 참조. 있으면 캐릭터 데이터 우선 사용. |
-| `EmotionType` | string | | 이 대사 시점의 감정 상태. CharacterEmotionTable 참조. |
-| `StandingSlot` | string | | 스탠딩 위치. `Left` / `Center` / `Right` |
-| `FocusType` | string | | 포커스 타입. `Speaker` / `None` / `Dual` |
-| `EnterMotion` | string | | 등장 모션. `None` / `FadeIn` / `SlideLeft` / `SlideRight` |
-| `ExitMotion` | string | | 퇴장 모션. `None` / `FadeOut` / `SlideOutLeft` / `SlideOutRight` |
-| `IdleMotion` | string | | 유지 모션. `None` / `Tremble` / `ShakeLight` / `ShakeHard` |
-| `FxType` | string | | 대사 순간 FX. `None` / `Fog` / `BlueTrace` / `BloodSmear` / `Flicker` / `RitualGlow` |
-| `Text` | string | ✅ | 대사 본문. |
-| `Style` | string | | 대사 스타일. 기본값: `normal`. 아래 Style 목록 참조. |
-| `Portrait` | string | | 초상화 이미지 상대경로. ex) `assets/portraits/yuu.jpeg` |
-| `ConditionKey` | string | | 조건부 대사: 이 플래그 키가 조건값과 일치할 때만 표시. |
-| `ConditionValue` | string | | 조건부 대사: ConditionKey 와 함께 사용. |
+같은 `ConditionGroupID`를 가진 행은 모두 만족해야 한다.
 
-> `SpeakerID` / `EmotionType` 등 확장 컬럼은 없으면 export 시 생략된다. 기존 `Speaker` / `Portrait` 기반과 공존 가능.
+| 컬럼 | 설명 | 참조 |
+| --- | --- | --- |
+| `ConditionID` | 조건 고유 ID | - |
+| `ConditionGroupID` | AND 조건 묶음 ID | - |
+| `ConditionType` | 검사 타입 | `EConditionType` |
+| `ConditionTargetID` | 검사 대상 ID | 타입별 참조 |
+| `CompareType` | 비교 방식 | `ECompareType` |
+| `ConditionValue` | 비교값 | - |
 
-**Style 목록:**
+### ConditionType
 
-| 값 | 용도 | 시각 효과 |
-|----|------|----------|
-| `normal` | 일반 대사 | 기본 |
-| `narration` | 내레이션/지문 | 이탤릭, 청색 |
-| `thought` | 내면 독백 | 이탤릭, 흐린 색 |
-| `crazy` | 광기 상태 | 붉은 색 |
-| `scared` | 겁에 질린 상태 | 이탤릭, 회색 |
-| `magic` | 세뇌/감응 상태 | 청록색, letter-spacing |
-
-**ConditionKey / ConditionValue 동작:**
-
-```
-ConditionKey=editor_rel, ConditionValue=1
-→ State.flags["editor_rel"] === 1 일 때만 이 대사 표시
-→ 두 컬럼 모두 비어있으면 항상 표시 (condition: null)
-```
+- `Trust`
+- `EvidenceOwned`
+- `RevealedCharacter`
+- `SceneProgressIndex`
+- `InvestigationScore`
+- `ResonanceLevel`
+- `StateValue`
 
 ---
 
-## 3. ChoiceTable
+## 2. SceneTable
 
-씬 종료 시 표시되는 선택지. 한 씬에 여러 개.
+씬의 메타 정보만 정의한다.
 
-| 컬럼 | 타입 | 필수 | 설명 |
-|------|------|------|------|
-| `SceneID` | string | ✅ | 소속 씬. SceneTable.SceneID 참조. |
-| `Order` | int | ✅ | 선택지 표시 순서. |
-| `Text` | string | ✅ | 선택지 버튼에 표시될 텍스트. |
-| `NextScene` | string | | 선택 시 이동할 SceneID. |
-| `NextDialogue` | string | | 같은 씬 내 이동할 대사 라벨. DialogTable.Label 참조. |
-| `FlagKey` | string | | 선택 시 기록할 플래그 키. |
-| `FlagValue` | string | | FlagKey 에 저장할 값. 비면 `true`. |
+| 컬럼 | 설명 |
+| --- | --- |
+| `SceneID` | 씬 고유 ID |
+| `Chapter` | 챕터 번호 |
+| `Title` | 씬 제목 |
+| `Background` | 배경 경로 |
+| `Music` | BGM 경로 |
+| `Effect` | 씬 진입 효과 |
+| `GoalKicker` | 목표 UI 머리말 |
+| `GoalText` | 목표 문장 |
+| `EvidencePromptTitle` | 증거 제시 UI 제목 |
+| `EvidencePromptHint` | 증거 제시 UI 안내 문구 |
 
-**동작:**
+### 메모
 
-```
-플레이어가 선택 → FlagKey에 FlagValue 기록
-  → NextScene이 있으면 해당 씬으로 이동
-  → NextDialogue가 있으면 현재 씬 내 해당 Label로 점프
-  → 둘 다 없으면 씬의 기본 NextScene 사용
-선택지가 하나도 없으면 → Dialogue 종료 후 씬의 NextScene으로 자동 이동
-```
+- 기본 이동은 `SceneTable`이 아니라 `BranchTable`에서 처리한다.
+- 조사 메타는 `InvestigationTable`로 분리한다.
 
 ---
 
-## 4. BranchTable
+## 3. DialogTable
 
-씬 전환 시 플래그 조건에 따라 NextScene을 분기. 위에서부터 순서대로 평가하며 처음 매칭되는 항목 사용.
+씬 안의 순차 대사 노드.
 
-| 컬럼 | 타입 | 필수 | 설명 |
-|------|------|------|------|
-| `SceneID` | string | ✅ | 소속 씬. SceneTable.SceneID 참조. |
-| `Order` | int | ✅ | 평가 우선순위. 낮을수록 먼저 평가. |
-| `FlagKey` | string | ✅ | 검사할 플래그 키. |
-| `FlagValue` | string | ✅ | 일치 여부를 검사할 값. |
-| `NextScene` | string | ✅ | 조건 일치 시 이동할 SceneID. |
+| 컬럼 | 설명 | 참조 |
+| --- | --- | --- |
+| `DialogID` | 대사 고유 ID | - |
+| `SceneID` | 소속 씬 | `SceneTable.SceneID` |
+| `Order` | 씬 내 기본 순서 | - |
+| `CharacterID` | 화자 캐릭터 | `CharacterTable.CharacterID` |
+| `EmotionType` | 감정 타입 | `CharacterEmotionTable` |
+| `StandingSlot` | 스탠딩 위치 | `EStandingSlot` |
+| `FocusType` | 포커스 타입 | `EFocusType` |
+| `EnterMotion` | 등장 모션 | enum |
+| `ExitMotion` | 퇴장 모션 | enum |
+| `IdleMotion` | 유지 모션 | enum |
+| `FxType` | 순간 FX | enum |
+| `Text` | 대사 본문 | - |
+| `Style` | 대사 스타일 | `EDialogStyle` |
+| `ConditionGroupID` | 대사 표시 조건 | `ConditionTable.ConditionGroupID` |
+| `ChoiceGroupID` | 이 시점에 호출할 선택지 그룹 | `ChoiceGroupTable.ChoiceGroupID` |
+| `NextDialogID` | 강제 연결할 다음 대사 | `DialogTable.DialogID` |
 
-**동작:**
+### 메모
 
-```
-Dialogue 종료 → Branch 목록을 Order 순으로 순회
-→ State.flags[FlagKey] === FlagValue 이면 해당 NextScene으로 이동
-→ 일치하는 Branch 없으면 씬의 기본 NextScene 사용
-```
-
-**예시:**
-
-| SceneID | Order | FlagKey | FlagValue | NextScene |
-|---------|-------|---------|-----------|-----------|
-| ch6_ritual_scene | 1 | ending_a_score | 2 | ch6_epilogue_truth |
-| ch6_ritual_scene | 2 | called_editor | true | ch6_epilogue_editor |
-
----
-
-## 5. EvidenceTable
-
-씬에서 수집 가능한 단서.
-
-| 컬럼 | 타입 | 필수 | 설명 |
-|------|------|------|------|
-| `EvidenceID` | string | ✅ | 단서 고유 식별자. ex) `ev_note` |
-| `SceneId` | string | ✅ | 소속 씬. SceneTable.SceneID 참조. (소문자 d 주의) |
-| `Trigger` | string/int | | 수집 조건. `auto`(1): 씬 진입 시 자동. `click`(2): 대화 완독 시. |
-| `Name` | string | ✅ | 단서 이름. 메모장에 표시. |
-| `Description` | string | | 단서 설명. 메모장 상세. |
-| `Image` | string | | 단서 이미지 상대경로. ex) `assets/items/note.png` |
-| `CategoryID` | string | | 단서 분류 ID. ex) `ritual`, `record`, `trace` |
-| `CategoryTitle` | string | | 단서 탭에 표시할 카테고리명 |
-| `CategoryHint` | string | | 단서 탭에 표시할 카테고리 설명 |
+- 기존 `Label`, `ConditionKey`, `ConditionValue`, `Speaker`, `Portrait`는 레거시 대상이다.
 
 ---
 
-## 관계 다이어그램
+## 4. ChoiceGroupTable
 
-```
-SCENE (SceneTable)
-  │
-  ├─── 1:N ──▶ DIALOGUE   (DialogTable)   .SceneID → SCENE.SceneID
-  │                │
-  │                └── condition: ConditionKey + ConditionValue
-  │                    → State.flags 에서 읽음
-  │
-  ├─── 1:N ──▶ CHOICE     (ChoiceTable)   .SceneID → SCENE.SceneID
-  │                │                      .NextScene → SCENE.SceneID
-  │                └── 선택 시 FlagKey = FlagValue 기록 → State.flags
-  │
-  ├─── 1:N ──▶ BRANCH     (BranchTable)   .SceneID → SCENE.SceneID
-  │                │                      .NextScene → SCENE.SceneID
-  │                └── FlagKey = FlagValue 조건 → State.flags 에서 읽음
-  │
-  └─── 1:N ──▶ EVIDENCE   (EvidenceTable) .SceneId → SCENE.SceneID
+한 번에 표시되는 선택지 묶음.
 
+| 컬럼 | 설명 | 참조 |
+| --- | --- | --- |
+| `ChoiceGroupID` | 선택지 그룹 ID | - |
+| `Type` | 그룹 종류 | `EChoiceGroupType` |
+| `ConditionGroupID` | 그룹 표시 조건 | `ConditionTable.ConditionGroupID` |
+| `MaxSelectable` | 선택 가능 개수 | - |
 
-State.flags (런타임 딕셔너리)
-  ← CHOICE 가 씀 (flag_key = flag_value)
-  → BRANCH 가 읽음 (분기 조건)
-  → DIALOGUE.condition 이 읽음 (대사 표시 조건)
-```
+### EChoiceGroupType
+
+- `Normal`
+- `Investigation`
+- `Evidence`
 
 ---
 
-## 플래그 목록 (현재 사용 중)
+## 5. ChoiceTable
 
-| 플래그 키 | 세팅 씬 | 가능한 값 | 용도 |
-|----------|--------|----------|------|
-| `editor_rel` | ch1_newsroom | 0, 1 | 편집장과의 관계 (순응/냉소) |
-| `info_level` | ch2_hospital | 1, 2 | 이판규에게 얻은 정보 수준 |
-| `ending_a_score` | ch3_room4, ch4b_cafe | 0, 1, 2 | 탐구 적극성 점수 |
-| `okryun_pushed` | ch4b_cafe | true | 옥련을 더 캐물었는지 |
-| `called_editor` | ch5_ritual_path | true, false | 편집장에게 연락했는지 |
-| `final_choice` | ch6_ritual_scene | "a", "b", "c" | 최종 선택 (엔딩 분기) |
+실제 플레이어가 고르는 개별 선택지.
 
----
+| 컬럼 | 설명 | 참조 |
+| --- | --- | --- |
+| `ChoiceID` | 선택지 고유 ID | - |
+| `ChoiceGroupID` | 소속 그룹 ID | `ChoiceGroupTable.ChoiceGroupID` |
+| `Order` | 그룹 내 순서 | - |
+| `Text` | 선택지 문구 | - |
+| `ConditionGroupID` | 선택지 노출 조건 | `ConditionTable.ConditionGroupID` |
+| `NextType` | 이동 타입 | `ENextType` |
+| `NextID` | 이동 대상 ID | Scene 또는 Dialog |
+| `EvidenceID` | 획득 증거 ID | `EvidenceTable.EvidenceID` |
+| `TrustCharacterID` | 신뢰도 대상 캐릭터 | `CharacterTable.CharacterID` |
+| `TrustValue` | 신뢰도 변화값 | - |
+| `ResonanceValue` | 공명도 변화값 | - |
 
-## 에셋 경로 규칙
+### ENextType
 
-```
-assets/bg/          ← 배경 이미지 (1280×720 권장, jpg/jpeg/png)
-assets/portraits/   ← 캐릭터 초상화 (220×280 권장, jpg/png)
-assets/items/       ← 단서 아이템 이미지 (300×200 권장, jpg/png)
-assets/sfx/         ← BGM (mp3)
-assets/ev/          ← 미사용 (ev 폴더는 현재 연결 안 됨)
-```
+- `Scene`
+- `Dialog`
+- `None`
 
----
+### 메모
 
-## xlsx 시트 목록
-
-| 시트명 | 상태 | 비고 |
-|--------|------|------|
-| `SceneTable` | ✅ 있음 | |
-| `DialogTable` | ✅ 있음 | `Label`, `SpeakerID`, `EmotionType` 등 확장 컬럼 추가 권장 |
-| `ChoiceTable` | ✅ 있음 | `NextDialogue` 컬럼 추가 권장 |
-| `BranchTable` | ✅ 필요 | 없으면 export 시 분기 무시됨. 구조: SceneID, Order, FlagKey, FlagValue, NextScene |
-| `EvidenceTable` | ✅ 있음 | |
-| `CharacterTable` | 권장 | 없으면 export 시 `characters` 비어있음. 구조: CharacterID, DisplayName, DefaultEmotionType, DefaultImagePath |
-| `CharacterEmotionTable` | 권장 | 없으면 `character_emotions` 비어있음. 구조: CharacterID, EmotionType, ImagePath |
----
-
-## 6. CharacterTable
-
-캐릭터 기본 정보. `export_to_json.py`에서 읽어 `game_data.characters`로 빌드된다.
-
-| 컬럼 | 타입 | 필수 | 설명 |
-|------|------|------|------|
-| `CharacterID` | string | ✅ | 캐릭터 고유 ID. ex) `Yuu`, `Songsoon` |
-| `DisplayName` | string | ✅ | 화면 출력 이름. ex) `유웅룡` |
-| `DefaultEmotionType` | string | ✅ | 기본 감정 타입. ex) `Neutral` |
-| `DefaultImagePath` | string | | 기본 이미지 경로. ex) `assets/portraits/yuu.jpeg` |
-| `RoleText` | string | | 조사 수첩 인물 탭 역할명. ex) `증언자` |
-| `NotebookSummary1` | string | | 조사 수첩 인물 탭 요약 1줄 |
-| `NotebookSummary2` | string | | 조사 수첩 인물 탭 요약 2줄 |
+- 기존 `FlagKey`, `FlagValue`, `NextScene`, `NextDialogue`, `PriorityCost`, `ExtraFlags`는 레거시 대상이다.
+- 이번 구조에서는 선택 결과를 `EvidenceID / TrustValue / ResonanceValue / NextType / NextID`로 우선 표현한다.
 
 ---
 
-## 7. CharacterEmotionTable
+## 6. BranchTable
 
-캐릭터 감정별 이미지. `export_to_json.py`에서 읽어 `game_data.character_emotions`로 빌드된다.
+씬 종료 후 자동 분기.
 
-| 컬럼 | 타입 | 필수 | 설명 |
-|------|------|------|------|
-| `CharacterID` | string | ✅ | CharacterTable.CharacterID 참조. |
-| `EmotionType` | string | ✅ | 감정 타입. `Neutral` / `Tense` / `Uneasy` / `Afraid` / `Sad` / `Angry` / `Shaken` / `Trance` / `Crazy` |
-| `ImagePath` | string | ✅ | 감정 대응 이미지 경로. |
-
-**운영 규칙:**
-- `CharacterID + EmotionType` 조합은 유일해야 함
-- 모든 캐릭터는 최소 `Neutral` 또는 기본 감정 1개 필수
-
-상세 스키마 기준: [DATA_STRUCTURE.md](/G:/GSD/content/docs/system/core/DATA_STRUCTURE.md)
+| 컬럼 | 설명 | 참조 |
+| --- | --- | --- |
+| `BranchID` | 분기 고유 ID | - |
+| `SceneID` | 소속 씬 ID | `SceneTable.SceneID` |
+| `Order` | 분기 평가 순서 | - |
+| `ConditionGroupID` | 분기 조건 | `ConditionTable.ConditionGroupID` |
+| `NextSceneID` | 이동할 다음 씬 | `SceneTable.SceneID` |
 
 ---
 
-## 8. QuestionTable
+## 7. EvidenceTable
 
-조사 수첩의 질문 탭과 추리 퍼즐 확장용 질문 메타 데이터.
+정적 증거 정의.
 
-| 컬럼 | 타입 | 필수 | 설명 |
-|------|------|------|------|
-| `QuestionID` | string | ✅ | 질문 고유 ID. ex) `QSonggeumMissing` |
-| `Title` | string | ✅ | 질문 제목 |
-| `Detail` | string | ✅ | 질문 설명 |
-| `SortOrder` | int | | 정렬 순서 |
-| `Category` | string | | 질문 분류. ex) `Missing`, `Ritual`, `Witness` |
-| `VisibleRuleID` | string | | 질문 노출 규칙 ID |
-| `StateRuleID` | string | | 질문 상태 문구 규칙 ID |
+| 컬럼 | 설명 | 참조 |
+| --- | --- | --- |
+| `EvidenceID` | 증거 고유 ID | - |
+| `Name` | 증거 이름 | - |
+| `Description` | 증거 설명 | - |
+| `Image` | 증거 이미지 경로 | 리소스 경로 |
+| `CategoryID` | UI 카테고리 ID | `EvidenceCategoryTable.CategoryID` |
 
----
+### 메모
 
-## 9. StateDescriptorTable
-
-플래그 수치나 관계 상태를 UI 문구로 해석하는 상태 치환 테이블.
-
-| 컬럼 | 타입 | 필수 | 설명 |
-|------|------|------|------|
-| `DescriptorID` | string | ✅ | 상태 해석 규칙 ID |
-| `TargetFlagID` | string | ✅ | 대상 플래그 ID. ex) `ResonanceLevel` |
-| `MinValue` | number | ✅ | 최소값 포함 |
-| `MaxValue` | number | ✅ | 최대값 포함 |
-| `Label` | string | ✅ | 상태명. ex) `전조` |
-| `Detail` | string | | 상태 설명 |
+- 증거 보유 여부는 런타임 상태가 관리한다.
+- 기존 `SceneId`, `Trigger`, `CategoryTitle`, `CategoryHint`는 레거시 대상이다.
 
 ---
 
-## 10. RuleTable
+## 8. EvidenceCategoryTable
 
-질문 노출/상태 문구처럼 조건 해석이 필요한 메타 데이터를 공통 규칙으로 관리하는 테이블.
+단서 UI 카테고리 정의.
 
-| 컬럼 | 타입 | 필수 | 설명 |
-|------|------|------|------|
-| `RuleRowID` | string | ✅ | 규칙 행 고유 ID |
-| `RuleID` | string | ✅ | 질문이나 UI가 참조하는 규칙 묶음 ID |
-| `RuleKind` | string | ✅ | `Visible` / `State` |
-| `FactType` | string | ✅ | `RevealedCharacter` / `HasEvidence` / `SceneProgressIndex` / `FlagValue` |
-| `FactKey` | string | | 검사 대상 키. 예: `Ipangyu`, `EvDiary`, `ReadRitualScore` |
-| `Operator` | string | ✅ | `Equals` / `Gte` |
-| `Value` | string/number/bool | | 비교할 값 |
-| `ResultValue` | string | | `State` 규칙일 때 반환할 상태 문구 |
-| `Priority` | int | | 같은 `RuleID` 안에서 평가 순서 |
-
-운영 기준:
-
-- `Visible` 규칙은 같은 `RuleID` 행들 중 하나라도 만족하면 노출
-- `State` 규칙은 `Priority` 순으로 검사해 처음 만족한 행의 `ResultValue`를 사용
-- 현재는 질문 탭의 `VisibleRuleID`, `StateRuleID` 연결에 우선 사용
+| 컬럼 | 설명 |
+| --- | --- |
+| `CategoryID` | 카테고리 고유 ID |
+| `CategoryTitle` | 카테고리 이름 |
+| `CategoryHint` | 카테고리 설명 |
 
 ---
 
-## 신규 구조 기준 메모
+## 9. CharacterTable
 
-현재 명세에는 구형 호환 필드와 신규 구조 필드가 함께 존재한다.
+캐릭터 기본 정보와 수첩 정보.
 
-신규 기준은 다음과 같다.
+| 컬럼 | 설명 |
+| --- | --- |
+| `CharacterID` | 캐릭터 고유 ID |
+| `DisplayName` | 표시 이름 |
+| `NotebookSummary1` | 수첩 요약 1 |
+| `NotebookSummary2` | 수첩 요약 2 |
 
-- 화자 기준: `SpeakerID`
-- 감정 이미지 기준: `SpeakerID + EmotionType -> CharacterEmotionTable`
-- 조건 기준: `ConditionFlagID`
-- 선택지 기록 기준: `FlagID`
-- 분기 기준: `FlagID`
+### 메모
 
-즉 아래 필드는 점차 deprecated 대상으로 본다.
+- 현재 운영상 `RoleText`는 유지 중이므로, 런타임 전환 완료 전까지는 보조 컬럼으로 허용한다.
 
-- `DialogTable.Speaker`
-- `DialogTable.Portrait`
-- `DialogTable.ConditionKey`
-- `ChoiceTable.FlagKey`
-- `BranchTable.FlagKey`
+---
 
-### FlagTable 제안
+## 10. CharacterEmotionTable
 
-상태 변수 정의용 테이블을 별도로 둔다.
+감정별 이미지 매핑.
 
-| 컬럼 | 타입 | 필수 | 설명 |
-|------|------|------|------|
-| `FlagID` | string | ✅ | 플래그 고유 ID |
-| `DisplayName` | string | ✅ | 기획/에디터 표시명 |
-| `Description` | string | | 의미 설명 |
-| `ValueType` | string | ✅ | `Boolean` / `Number` / `String` |
-| `DefaultValue` | string | | 기본값 |
-| `Category` | string | | `Relationship` / `Investigation` / `Resonance` / `Route` / `Ending` / `Evidence` / `System` |
+| 컬럼 | 설명 | 참조 |
+| --- | --- | --- |
+| `CharacterID` | 캐릭터 ID | `CharacterTable.CharacterID` |
+| `EmotionType` | 감정 타입 | `EEmotionType` |
+| `ImagePath` | 감정별 이미지 경로 | 리소스 경로 |
 
-예시:
+---
 
-| FlagID | DisplayName | ValueType | DefaultValue | Category |
-|--------|-------------|-----------|--------------|----------|
-| `SongsoonTrust` | 송순 신뢰 | `Number` | `0` | `Relationship` |
-| `TrustedSongsoon` | 송순을 믿음 | `Boolean` | `false` | `Relationship` |
-| `CalledEditor` | 편집장 연락 | `Boolean` | `false` | `Route` |
+## 11. InvestigationTable
 
-### DialogTable 신규 권장형
+조사 메타 정보.
 
-신규 데이터는 아래를 우선 사용한다.
+| 컬럼 | 설명 | 참조 |
+| --- | --- | --- |
+| `InvestigationID` | 조사 고유 ID | - |
+| `Title` | 조사 제목 | - |
+| `Hint` | 조사 안내 문구 | - |
+| `Budget` | 조사 가능 횟수 | - |
+| `ChoiceGroupID` | 조사에서 사용할 선택지 그룹 | `ChoiceGroupTable.ChoiceGroupID` |
 
-- `SpeakerID`
-- `EmotionType`
-- `StandingSlot`
-- `FocusType`
-- `EnterMotion`
-- `ExitMotion`
-- `IdleMotion`
-- `FxType`
-- `Text`
-- `Style`
-- `ConditionFlagID`
-- `ConditionValue`
+### 메모
 
-상세 계획:
+- 기존 `PriorityTitle`, `PriorityHint`, `PriorityBudget`은 이 테이블로 이동한다.
 
-- [DATA_STRUCTURE.md](/G:/GSD/content/docs/system/core/DATA_STRUCTURE.md)
+---
+
+## 하드코딩 유지 대상
+
+이번 전환 라운드에서는 아래 세 구조를 테이블 원본으로 다루지 않는다.
+
+- `Question`
+- `Rule`
+- `StateDescriptor`
+
+이 세 구조는 현재 런타임 로직과 UI 의존성이 크므로, 코드/JSON 하드코딩 영역으로 남긴다.
+
+---
+
+## 레거시 제거 대상
+
+아래 필드는 새 구조 전환 후 제거 대상이다.
+
+- `Scene.NextScene`
+- `Scene.PriorityTitle`
+- `Scene.PriorityHint`
+- `Scene.PriorityBudget`
+- `Scene.PriorityAfterDialogues`
+- `Dialog.Label`
+- `Dialog.ConditionKey`
+- `Dialog.ConditionValue`
+- `Choice.FlagKey`
+- `Choice.FlagValue`
+- `Choice.NextScene`
+- `Choice.NextDialogue`
+- `Choice.PriorityCost`
+- `Choice.ExtraFlags`
+- `Branch.FlagKey`
+- `Branch.FlagValue`

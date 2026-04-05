@@ -66,6 +66,13 @@ def validate_scene_refs(scene_id, scenes, issues):
                 f"[Choice.next_scene] {scene_id} order={choice.get('order')} -> {target} (없는 씬)"
             )
 
+        next_type = choice.get("next_type")
+        next_id = choice.get("next_id")
+        if next_type == "Scene" and next_id and next_id not in scenes:
+            issues.append(
+                f"[Choice.next_id] {scene_id} order={choice.get('order')} -> {next_id} (없는 씬)"
+            )
+
 
 def validate_extra_flags(scene_id, scene, issues):
     buckets = [
@@ -143,6 +150,47 @@ def validate_characters(data, issues):
             continue
         if "Neutral" not in emotion_map:
             issues.append(f"[CharacterEmotion.missing_neutral] {character_id}")
+
+
+def validate_conditions(data, issues):
+    conditions = data.get("conditions", []) or []
+    condition_ids = [item.get("condition_id") for item in conditions if item.get("condition_id")]
+    duplicates = find_duplicates(condition_ids)
+    for dup in duplicates:
+        issues.append(f"[Duplicate.condition_id] {dup}")
+
+    for item in conditions:
+        condition_id = item.get("condition_id") or "(unknown)"
+        if not item.get("condition_group_id"):
+            issues.append(f"[Condition.condition_group_id] {condition_id} missing ConditionGroupID")
+        if not item.get("condition_type"):
+            issues.append(f"[Condition.condition_type] {condition_id} missing ConditionType")
+        if not item.get("compare_type"):
+            issues.append(f"[Condition.compare_type] {condition_id} missing CompareType")
+
+
+def validate_choice_groups(data, issues):
+    choice_groups = data.get("choice_groups", []) or []
+    group_ids = [item.get("choice_group_id") for item in choice_groups if item.get("choice_group_id")]
+    duplicates = find_duplicates(group_ids)
+    for dup in duplicates:
+        issues.append(f"[Duplicate.choice_group_id] {dup}")
+
+
+def validate_evidence_categories(data, issues):
+    categories = data.get("evidence_categories", []) or []
+    category_ids = [item.get("category_id") for item in categories if item.get("category_id")]
+    duplicates = find_duplicates(category_ids)
+    for dup in duplicates:
+        issues.append(f"[Duplicate.evidence_category_id] {dup}")
+
+
+def validate_investigations(data, issues):
+    investigations = data.get("investigations", []) or []
+    investigation_ids = [item.get("investigation_id") for item in investigations if item.get("investigation_id")]
+    duplicates = find_duplicates(investigation_ids)
+    for dup in duplicates:
+        issues.append(f"[Duplicate.investigation_id] {dup}")
 
 
 def validate_dialogue_character_refs(scene_id, scene, data, issues):
@@ -290,6 +338,10 @@ def main():
 
     validate_evidence_ids(scenes, issues)
     validate_characters(data, issues)
+    validate_conditions(data, issues)
+    validate_choice_groups(data, issues)
+    validate_evidence_categories(data, issues)
+    validate_investigations(data, issues)
     validate_questions(data, issues)
     validate_state_descriptors(data, issues)
     validate_rules(data, issues)

@@ -10,13 +10,17 @@ Excel → game_data.js 변환 스크립트
   서버 없이 index.html을 파일로 열어도 동작함
 
 Excel 컬럼 규칙 (PascalCase):
-  SceneTable / Scenes        : SceneID, Chapter, Title, Background, Music, NextScene, Effect, GoalKicker, GoalText
-  DialogTable / Dialogues    : SceneID, Order, Label, Speaker, SpeakerID, EmotionType, StandingSlot, FocusType, EnterMotion, ExitMotion, IdleMotion, FxType, Text, Style, Portrait, ConditionKey, ConditionValue
-  ChoiceTable / Choices      : SceneID, Order, Text, FlagKey, FlagValue, NextScene, NextDialogue
-  BranchTable / Branches     : SceneID, Order, FlagKey, FlagValue, NextScene
-  EvidenceTable / Evidence   : EvidenceID, SceneId, Trigger, Name, Description, Image, CategoryID, CategoryTitle, CategoryHint
-  CharacterTable / Characters: CharacterID, DisplayName, DefaultEmotionType, DefaultImagePath, RoleText, NotebookSummary1, NotebookSummary2
-  CharacterEmotionTable / CharacterEmotions : CharacterID, EmotionType, ImagePath
+  SceneTable / Scenes        : SceneID, Chapter, Title, Background, Music, Effect, GoalKicker, GoalText, EvidencePromptTitle, EvidencePromptHint
+  DialogTable / Dialogues    : 기존 구조 또는 새 구조 병행 허용
+  ChoiceTable / Choices      : 기존 구조 또는 새 구조 병행 허용
+  BranchTable / Branches     : 기존 구조 또는 새 구조 병행 허용
+  ConditionTable / Conditions
+  ChoiceGroupTable / ChoiceGroups
+  EvidenceTable / Evidence
+  EvidenceCategoryTable / EvidenceCategories
+  CharacterTable / Characters
+  CharacterEmotionTable / CharacterEmotions
+  InvestigationTable / Investigations
   QuestionTable / Questions : QuestionID, Title, Detail, SortOrder, Category, ResolutionType, VisibleRuleID, StateRuleID, RelatedEvidenceIDs, SolutionEvidenceIDs, SolutionMode, ContradictionPrompt, ContradictionStatement, SolvedFlagID, ResolvedDetail, SuccessToast, FailureToast, RewardFlagID, RewardValue, RewardMode
   StateDescriptorTable / StateDescriptors : DescriptorID, TargetFlagID, MinValue, MaxValue, Label, Detail
   RuleTable / Rules : RuleRowID, RuleID, RuleKind, FactType, FactKey, Operator, Value, ResultValue, Priority
@@ -89,9 +93,13 @@ def build_game_data(wb):
     dialogues_raw = read_sheet(resolve_sheet(wb, "DialogTable", "Dialogues"))
     choices_raw = read_sheet(resolve_sheet(wb, "ChoiceTable", "Choices"))
     branches_raw = read_sheet(resolve_sheet(wb, "BranchTable", "Branches")) if "BranchTable" in wb.sheetnames or "Branches" in wb.sheetnames else []
+    conditions_raw = read_sheet(resolve_sheet(wb, "ConditionTable", "Conditions")) if "ConditionTable" in wb.sheetnames or "Conditions" in wb.sheetnames else []
+    choice_groups_raw = read_sheet(resolve_sheet(wb, "ChoiceGroupTable", "ChoiceGroups")) if "ChoiceGroupTable" in wb.sheetnames or "ChoiceGroups" in wb.sheetnames else []
     evidence_raw = read_sheet(resolve_sheet(wb, "EvidenceTable", "Evidence"))
+    evidence_categories_raw = read_sheet(resolve_sheet(wb, "EvidenceCategoryTable", "EvidenceCategories")) if "EvidenceCategoryTable" in wb.sheetnames or "EvidenceCategories" in wb.sheetnames else []
     characters_raw = read_sheet(resolve_sheet(wb, "CharacterTable", "Characters")) if "CharacterTable" in wb.sheetnames or "Characters" in wb.sheetnames else []
     character_emotions_raw = read_sheet(resolve_sheet(wb, "CharacterEmotionTable", "CharacterEmotions")) if "CharacterEmotionTable" in wb.sheetnames or "CharacterEmotions" in wb.sheetnames else []
+    investigations_raw = read_sheet(resolve_sheet(wb, "InvestigationTable", "Investigations")) if "InvestigationTable" in wb.sheetnames or "Investigations" in wb.sheetnames else []
     questions_raw = read_sheet(resolve_sheet(wb, "QuestionTable", "Questions")) if "QuestionTable" in wb.sheetnames or "Questions" in wb.sheetnames else []
     state_descriptors_raw = read_sheet(resolve_sheet(wb, "StateDescriptorTable", "StateDescriptors")) if "StateDescriptorTable" in wb.sheetnames or "StateDescriptors" in wb.sheetnames else []
     rules_raw = read_sheet(resolve_sheet(wb, "RuleTable", "Rules")) if "RuleTable" in wb.sheetnames or "Rules" in wb.sheetnames else []
@@ -106,10 +114,12 @@ def build_game_data(wb):
             "title":      s.get("Title"),
             "background": s.get("Background"),
             "music":      s.get("Music"),
-            "next_scene": s.get("NextScene"),
             "effect":     s.get("Effect"),
             "goal_kicker": s.get("GoalKicker"),
             "goal_text":  s.get("GoalText"),
+            "evidence_prompt_title": s.get("EvidencePromptTitle"),
+            "evidence_prompt_hint": s.get("EvidencePromptHint"),
+            "next_scene": s.get("NextScene"),
             "branches":   [],
             "dialogues":  [],
             "choices":    [],
@@ -129,6 +139,7 @@ def build_game_data(wb):
                 "condition": None,
             }
             optional_fields = {
+                "dialog_id": d.get("DialogID"),
                 "speaker_id": d.get("SpeakerID"),
                 "emotion_type": d.get("EmotionType"),
                 "standing_slot": d.get("StandingSlot"),
@@ -137,12 +148,18 @@ def build_game_data(wb):
                 "exit_motion": d.get("ExitMotion"),
                 "idle_motion": d.get("IdleMotion"),
                 "fx_type": d.get("FxType"),
+                "choice_group_id": d.get("ChoiceGroupID"),
+                "next_dialog_id": d.get("NextDialogID"),
             }
             for key, value in optional_fields.items():
                 if value is not None:
                     entry[key] = value
             if d.get("Label"):
                 entry["label"] = d["Label"]
+            elif d.get("DialogID"):
+                entry["label"] = d["DialogID"]
+            if d.get("ConditionGroupID"):
+                entry["condition_group_id"] = d.get("ConditionGroupID")
             cond_key = d.get("ConditionKey")
             cond_val = d.get("ConditionValue")
             if cond_key:
@@ -162,6 +179,24 @@ def build_game_data(wb):
                 "flag_value": c.get("FlagValue"),
                 "next_scene": c.get("NextScene"),
             }
+            if c.get("ChoiceID"):
+                entry["choice_id"] = c.get("ChoiceID")
+            if c.get("ChoiceGroupID"):
+                entry["choice_group_id"] = c.get("ChoiceGroupID")
+            if c.get("ConditionGroupID"):
+                entry["condition_group_id"] = c.get("ConditionGroupID")
+            if c.get("NextType"):
+                entry["next_type"] = c.get("NextType")
+            if c.get("NextID") is not None:
+                entry["next_id"] = c.get("NextID")
+            if c.get("EvidenceID"):
+                entry["evidence_id"] = c.get("EvidenceID")
+            if c.get("TrustCharacterID"):
+                entry["trust_character_id"] = c.get("TrustCharacterID")
+            if c.get("TrustValue") is not None:
+                entry["trust_value"] = c.get("TrustValue")
+            if c.get("ResonanceValue") is not None:
+                entry["resonance_value"] = c.get("ResonanceValue")
             if c.get("NextDialogue"):
                 entry["next_dialogue"] = c["NextDialogue"]
             scenes[sid]["choices"].append(entry)
@@ -173,10 +208,12 @@ def build_game_data(wb):
         sid = b.get("SceneID")
         if sid and sid in scenes:
             scenes[sid]["branches"].append({
+                "branch_id":   b.get("BranchID"),
                 "order":      b.get("Order") or 0,
                 "flag_key":   b.get("FlagKey") or "",
                 "flag_value": b.get("FlagValue"),
-                "next_scene": b.get("NextScene") or "",
+                "next_scene": b.get("NextScene") or b.get("NextSceneID") or "",
+                "condition_group_id": b.get("ConditionGroupID"),
             })
     for sid in scenes:
         scenes[sid]["branches"].sort(key=lambda x: x["order"])
@@ -223,6 +260,56 @@ def build_game_data(wb):
         character_emotions[character_id][emotion_type] = image_path
 
     first_scene = scenes_raw[0]["SceneID"] if scenes_raw else None
+
+    conditions = []
+    for row in conditions_raw:
+        condition_id = row.get("ConditionID")
+        if not condition_id:
+            continue
+        conditions.append({
+            "condition_id": condition_id,
+            "condition_group_id": row.get("ConditionGroupID"),
+            "condition_type": row.get("ConditionType"),
+            "condition_target_id": row.get("ConditionTargetID"),
+            "compare_type": row.get("CompareType"),
+            "condition_value": row.get("ConditionValue"),
+        })
+
+    choice_groups = []
+    for row in choice_groups_raw:
+        choice_group_id = row.get("ChoiceGroupID")
+        if not choice_group_id:
+            continue
+        choice_groups.append({
+            "choice_group_id": choice_group_id,
+            "type": row.get("Type"),
+            "condition_group_id": row.get("ConditionGroupID"),
+            "max_selectable": row.get("MaxSelectable"),
+        })
+
+    evidence_categories = []
+    for row in evidence_categories_raw:
+        category_id = row.get("CategoryID")
+        if not category_id:
+            continue
+        evidence_categories.append({
+            "category_id": category_id,
+            "category_title": row.get("CategoryTitle") or "",
+            "category_hint": row.get("CategoryHint") or "",
+        })
+
+    investigations = []
+    for row in investigations_raw:
+        investigation_id = row.get("InvestigationID")
+        if not investigation_id:
+            continue
+        investigations.append({
+            "investigation_id": investigation_id,
+            "title": row.get("Title") or "",
+            "hint": row.get("Hint") or "",
+            "budget": row.get("Budget"),
+            "choice_group_id": row.get("ChoiceGroupID"),
+        })
 
     questions = []
     for q in questions_raw:
@@ -285,8 +372,12 @@ def build_game_data(wb):
 
     return {
         "first_scene": first_scene,
+        "conditions": conditions,
+        "choice_groups": choice_groups,
+        "evidence_categories": evidence_categories,
         "characters": characters,
         "character_emotions": character_emotions,
+        "investigations": investigations,
         "questions": questions,
         "state_descriptors": state_descriptors,
         "rules": rules,

@@ -25,26 +25,38 @@ DEFAULT_INPUT = os.path.join(os.path.dirname(__file__), "../../game/data/game_da
 DEFAULT_OUTPUT = os.path.join(os.path.dirname(__file__), "../generated/script.generated.xlsx")
 
 SHEET_DEFS = {
+    "ConditionTable": {
+        "headers": ["ConditionID", "ConditionGroupID", "ConditionType", "ConditionTargetID", "CompareType", "ConditionValue"],
+    },
     "SceneTable": {
-        "headers": ["SceneID", "Chapter", "Title", "Background", "Music", "NextScene", "Effect", "GoalKicker", "GoalText"],
+        "headers": ["SceneID", "Chapter", "Title", "Background", "Music", "Effect", "GoalKicker", "GoalText", "EvidencePromptTitle", "EvidencePromptHint", "NextScene"],
     },
     "DialogTable": {
-        "headers": ["SceneID", "Order", "Speaker", "SpeakerID", "EmotionType", "StandingSlot", "FocusType", "EnterMotion", "ExitMotion", "IdleMotion", "FxType", "Text", "Style", "Portrait", "ConditionKey", "ConditionValue", "Label"],
+        "headers": ["DialogID", "SceneID", "Order", "CharacterID", "EmotionType", "StandingSlot", "FocusType", "EnterMotion", "ExitMotion", "IdleMotion", "FxType", "Text", "Style", "ConditionGroupID", "ChoiceGroupID", "NextDialogID", "Speaker", "Portrait", "Label"],
+    },
+    "ChoiceGroupTable": {
+        "headers": ["ChoiceGroupID", "Type", "ConditionGroupID", "MaxSelectable"],
     },
     "ChoiceTable": {
-        "headers": ["SceneID", "Order", "Text", "FlagKey", "FlagValue", "NextScene", "NextDialogue"],
+        "headers": ["ChoiceID", "ChoiceGroupID", "Order", "Text", "ConditionGroupID", "NextType", "NextID", "EvidenceID", "TrustCharacterID", "TrustValue", "ResonanceValue", "SceneID", "FlagKey", "FlagValue", "NextScene", "NextDialogue"],
     },
     "BranchTable": {
-        "headers": ["SceneID", "FlagKey", "FlagValue", "NextScene", "Order"],
+        "headers": ["BranchID", "SceneID", "Order", "ConditionGroupID", "NextSceneID", "FlagKey", "FlagValue", "NextScene"],
     },
     "EvidenceTable": {
-        "headers": ["EvidenceID", "SceneId", "Trigger", "Name", "Description", "Image", "CategoryID", "CategoryTitle", "CategoryHint"],
+        "headers": ["EvidenceID", "Name", "Description", "Image", "CategoryID", "SceneId", "Trigger", "CategoryTitle", "CategoryHint"],
+    },
+    "EvidenceCategoryTable": {
+        "headers": ["CategoryID", "CategoryTitle", "CategoryHint"],
     },
     "CharacterTable": {
         "headers": ["CharacterID", "DisplayName", "DefaultEmotionType", "DefaultImagePath", "RoleText", "NotebookSummary1", "NotebookSummary2"],
     },
     "CharacterEmotionTable": {
         "headers": ["CharacterID", "EmotionType", "ImagePath"],
+    },
+    "InvestigationTable": {
+        "headers": ["InvestigationID", "Title", "Hint", "Budget", "ChoiceGroupID"],
     },
     "QuestionTable": {
         "headers": ["QuestionID", "Title", "Detail", "SortOrder", "Category", "ResolutionType", "VisibleRuleID", "StateRuleID", "RelatedEvidenceIDs", "SolutionEvidenceIDs", "SolutionMode", "ContradictionPrompt", "ContradictionStatement", "SolvedFlagID", "ResolvedDetail", "SuccessToast", "FailureToast", "RewardFlagID", "RewardValue", "RewardMode"],
@@ -101,7 +113,7 @@ def normalize_value(value):
 def append_sheet(ws, headers, rows):
     ws.append(headers)
     for row in rows:
-        ws.append([row.get(header) for header in headers])
+        ws.append([normalize_value(row.get(header)) for header in headers])
     ws.freeze_panes = "A2"
 
 
@@ -116,11 +128,28 @@ def build_scene_rows(data):
             "Title": scene.get("title"),
             "Background": scene.get("background"),
             "Music": scene.get("music"),
-            "NextScene": scene.get("next_scene"),
             "Effect": scene.get("effect"),
             "GoalKicker": scene.get("goal_kicker"),
             "GoalText": scene.get("goal_text"),
+            "EvidencePromptTitle": scene.get("evidence_prompt_title"),
+            "EvidencePromptHint": scene.get("evidence_prompt_hint"),
+            "NextScene": scene.get("next_scene"),
         })
+    return rows
+
+
+def build_condition_rows(data):
+    rows = []
+    for item in data.get("conditions", []) or []:
+        rows.append({
+            "ConditionID": item.get("condition_id"),
+            "ConditionGroupID": item.get("condition_group_id"),
+            "ConditionType": item.get("condition_type"),
+            "ConditionTargetID": item.get("condition_target_id"),
+            "CompareType": item.get("compare_type"),
+            "ConditionValue": item.get("condition_value"),
+        })
+    rows.sort(key=lambda x: ((x.get("ConditionGroupID") or ""), (x.get("ConditionID") or "")))
     return rows
 
 
@@ -132,10 +161,10 @@ def build_dialog_rows(data):
         for line in sorted(scene.get("dialogues", []), key=lambda x: x.get("order", 0)):
             condition = line.get("condition") or {}
             rows.append({
+                "DialogID": line.get("dialog_id"),
                 "SceneID": scene_id,
                 "Order": line.get("order"),
-                "Speaker": line.get("speaker"),
-                "SpeakerID": line.get("speaker_id"),
+                "CharacterID": line.get("speaker_id"),
                 "EmotionType": line.get("emotion_type"),
                 "StandingSlot": line.get("standing_slot"),
                 "FocusType": line.get("focus_type"),
@@ -145,11 +174,26 @@ def build_dialog_rows(data):
                 "FxType": line.get("fx_type"),
                 "Text": line.get("text"),
                 "Style": line.get("style"),
+                "ConditionGroupID": line.get("condition_group_id"),
+                "ChoiceGroupID": line.get("choice_group_id"),
+                "NextDialogID": line.get("next_dialog_id"),
+                "Speaker": line.get("speaker"),
                 "Portrait": line.get("portrait"),
-                "ConditionKey": condition.get("flag_key"),
-                "ConditionValue": normalize_value(condition.get("flag_value")),
                 "Label": line.get("label"),
             })
+    return rows
+
+
+def build_choice_group_rows(data):
+    rows = []
+    for item in data.get("choice_groups", []) or []:
+        rows.append({
+            "ChoiceGroupID": item.get("choice_group_id"),
+            "Type": item.get("type"),
+            "ConditionGroupID": item.get("condition_group_id"),
+            "MaxSelectable": item.get("max_selectable"),
+        })
+    rows.sort(key=lambda x: (x.get("ChoiceGroupID") or ""))
     return rows
 
 
@@ -160,9 +204,18 @@ def build_choice_rows(data):
         scene = scenes[scene_id]
         for choice in sorted(scene.get("choices", []), key=lambda x: x.get("order", 0)):
             rows.append({
-                "SceneID": scene_id,
+                "ChoiceID": choice.get("choice_id"),
+                "ChoiceGroupID": choice.get("choice_group_id"),
                 "Order": choice.get("order"),
                 "Text": choice.get("text"),
+                "ConditionGroupID": choice.get("condition_group_id"),
+                "NextType": choice.get("next_type"),
+                "NextID": choice.get("next_id"),
+                "EvidenceID": choice.get("evidence_id"),
+                "TrustCharacterID": choice.get("trust_character_id"),
+                "TrustValue": choice.get("trust_value"),
+                "ResonanceValue": choice.get("resonance_value"),
+                "SceneID": scene_id,
                 "FlagKey": choice.get("flag_key"),
                 "FlagValue": normalize_value(choice.get("flag_value")),
                 "NextScene": choice.get("next_scene"),
@@ -178,11 +231,14 @@ def build_branch_rows(data):
         scene = scenes[scene_id]
         for branch in sorted(scene.get("branches", []), key=lambda x: x.get("order", 0)):
             rows.append({
+                "BranchID": branch.get("branch_id"),
                 "SceneID": scene_id,
+                "Order": branch.get("order"),
+                "ConditionGroupID": branch.get("condition_group_id"),
+                "NextSceneID": branch.get("next_scene"),
                 "FlagKey": branch.get("flag_key"),
                 "FlagValue": normalize_value(branch.get("flag_value")),
                 "NextScene": branch.get("next_scene"),
-                "Order": branch.get("order"),
             })
     return rows
 
@@ -195,16 +251,28 @@ def build_evidence_rows(data):
         for ev in scene.get("evidence", []):
             rows.append({
                 "EvidenceID": ev.get("evidence_id"),
-                "SceneId": scene_id,
-                "Trigger": normalize_value(ev.get("trigger")),
                 "Name": ev.get("name"),
                 "Description": ev.get("description"),
                 "Image": ev.get("image"),
                 "CategoryID": ev.get("category_id"),
+                "SceneId": scene_id,
+                "Trigger": normalize_value(ev.get("trigger")),
                 "CategoryTitle": ev.get("category_title"),
                 "CategoryHint": ev.get("category_hint"),
             })
     rows.sort(key=lambda x: ((x.get("SceneId") or ""), (x.get("EvidenceID") or "")))
+    return rows
+
+
+def build_evidence_category_rows(data):
+    rows = []
+    for item in data.get("evidence_categories", []) or []:
+        rows.append({
+            "CategoryID": item.get("category_id"),
+            "CategoryTitle": item.get("category_title"),
+            "CategoryHint": item.get("category_hint"),
+        })
+    rows.sort(key=lambda x: (x.get("CategoryID") or ""))
     return rows
 
 
@@ -236,6 +304,20 @@ def build_character_emotion_rows(data):
                 "EmotionType": emotion_type,
                 "ImagePath": emotions.get(emotion_type),
             })
+    return rows
+
+
+def build_investigation_rows(data):
+    rows = []
+    for item in data.get("investigations", []) or []:
+        rows.append({
+            "InvestigationID": item.get("investigation_id"),
+            "Title": item.get("title"),
+            "Hint": item.get("hint"),
+            "Budget": item.get("budget"),
+            "ChoiceGroupID": item.get("choice_group_id"),
+        })
+    rows.sort(key=lambda x: (x.get("InvestigationID") or ""))
     return rows
 
 
@@ -303,13 +385,17 @@ def build_rule_rows(data):
 
 def build_sheet_rows(data):
     return {
+        "ConditionTable": build_condition_rows(data),
         "SceneTable": build_scene_rows(data),
         "DialogTable": build_dialog_rows(data),
+        "ChoiceGroupTable": build_choice_group_rows(data),
         "ChoiceTable": build_choice_rows(data),
         "BranchTable": build_branch_rows(data),
         "EvidenceTable": build_evidence_rows(data),
+        "EvidenceCategoryTable": build_evidence_category_rows(data),
         "CharacterTable": build_character_rows(data),
         "CharacterEmotionTable": build_character_emotion_rows(data),
+        "InvestigationTable": build_investigation_rows(data),
         "QuestionTable": build_question_rows(data),
         "StateDescriptorTable": build_state_descriptor_rows(data),
         "RuleTable": build_rule_rows(data),
@@ -371,14 +457,14 @@ def write_delimited_files(output_path, selected_sheets, sheet_rows):
             writer = csv.DictWriter(csv_file, fieldnames=headers)
             writer.writeheader()
             for row in rows:
-                writer.writerow({header: row.get(header) for header in headers})
+                writer.writerow({header: normalize_value(row.get(header)) for header in headers})
 
         tsv_path = os.path.join(base_dir, f"{sheet_name}.tsv")
         with open(tsv_path, "w", encoding="utf-8-sig", newline="") as tsv_file:
             writer = csv.DictWriter(tsv_file, fieldnames=headers, delimiter="\t")
             writer.writeheader()
             for row in rows:
-                writer.writerow({header: row.get(header) for header in headers})
+                writer.writerow({header: normalize_value(row.get(header)) for header in headers})
 
     return base_dir
 

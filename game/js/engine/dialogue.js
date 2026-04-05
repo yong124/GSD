@@ -7,6 +7,12 @@ const Dialogue = (() => {
   let _stageState = { Left: null, Center: null, Right: null };
 
   function passesCondition(line) {
+    if (line?.condition_group_id && typeof Scene?.passesConditionGroup === 'function') {
+      return Scene.passesConditionGroup(line.condition_group_id, {
+        sceneId: State.currentSceneId,
+        sceneProgressIndex: _index + 1,
+      });
+    }
     const condition = line?.condition;
     if (!condition?.flag_key) return true;
     const actual = State.getFlag(condition.flag_key);
@@ -16,7 +22,7 @@ const Dialogue = (() => {
 
   function getCharacterName(line) {
     if (line.style === 'narration') return '';
-    return line.speaker || Engine.data?.characters?.[line.speaker_id]?.display_name || '';
+    return Engine.data?.characters?.[line.speaker_id]?.display_name || line.speaker || '';
   }
 
   function getCharacterImage(line) {
@@ -131,7 +137,7 @@ const Dialogue = (() => {
       _lines = (lines || []).filter(passesCondition);
       
       if (fromLabel) {
-        const idx = _lines.findIndex(l => l.label === fromLabel);
+        const idx = _lines.findIndex(l => l.label === fromLabel || l.dialog_id === fromLabel);
         _index = idx >= 0 ? idx : 0;
       } else if (restoreProgress) {
         const savedIndex = Number.isInteger(State.dialogueIndex) ? State.dialogueIndex : 0;

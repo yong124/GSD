@@ -5,6 +5,8 @@ const Choice = (() => {
     if (!choice) return '선택의 파장이 남습니다.';
     const key = choice.flag_key || '';
     if (isPriority) return '조사 방향이 또렷해집니다.';
+    if (choice.trust_character_id && Number(choice.trust_value || 0) !== 0) return '인물 사이의 거리가 달라집니다.';
+    if (Number(choice.resonance_value || 0) !== 0) return '공명의 기색이 더 짙어집니다.';
     if (choice.evidence_id) return '붙든 단서가 새로운 반응을 끌어냅니다.';
 
     switch (key) {
@@ -33,7 +35,10 @@ const Choice = (() => {
 
   function getChoiceType(choice, isPriority = false) {
     if (isPriority) return 'choice-investigation';
-    if (choice?.evidence_id) return 'choice-evidence';
+    if (choice?.choice_group_type === 'Evidence') return 'choice-evidence';
+    if (choice?.trust_character_id && Number(choice?.trust_value || 0) !== 0) return 'choice-relationship';
+    if (Number(choice?.resonance_value || 0) !== 0) return 'choice-risk';
+    if (choice?.evidence_id) return 'choice-investigation';
     const key = choice?.flag_key || '';
     if (['SongsoonTrust', 'TrustedSongsoon', 'OkryunPushed'].includes(key)) return 'choice-relationship';
     if (['InvestigationScore', 'ReadRitualScore', 'FoundOldArticles', 'ExposedArchivePattern', 'MatchedRitualPattern'].includes(key)) return 'choice-investigation';
@@ -49,6 +54,27 @@ const Choice = (() => {
   function applyChoiceFlag(choice) {
     applyFlagSet(choice);
     (choice?.extra_flags || []).forEach(applyFlagSet);
+  }
+
+  function applyChoiceEffects(choice, mode = 'normal') {
+    if (!choice) return;
+
+    if (choice?.trust_character_id && Number(choice.trust_value || 0) !== 0) {
+      const trustKey = `${choice.trust_character_id}Trust`;
+      const currentTrust = Number(State.getFlag(trustKey) || 0);
+      State.setFlag(trustKey, currentTrust + Number(choice.trust_value || 0));
+    }
+
+    if (Number(choice?.resonance_value || 0) !== 0) {
+      const currentResonance = Number(State.getFlag('ResonanceLevel') || 0);
+      State.setFlag('ResonanceLevel', currentResonance + Number(choice.resonance_value || 0));
+    }
+
+    if (choice?.evidence_id && mode !== 'evidence' && typeof Evidence?.collect === 'function') {
+      Evidence.collect(choice.evidence_id);
+    }
+
+    applyChoiceFlag(choice);
   }
 
   function showChoiceImpact(choice, isPriority = false) {
@@ -97,7 +123,7 @@ const Choice = (() => {
       const mappedChoices = mapChoices(choices);
       
       UIManager.renderChoiceList(mappedChoices, (picked) => {
-        applyChoiceFlag(picked);
+        applyChoiceEffects(picked, 'normal');
         showChoiceImpact(picked);
         finishChoice(onChoose, picked);
       });
@@ -108,7 +134,7 @@ const Choice = (() => {
     showPriority(scene, onDone) {
       UIManager.setDialogueBoxVisible(false);
       const choices = mapChoices(scene.choices, true);
-      const budget = scene.priority_budget || 0;
+      const budget = scene?.investigation?.budget ?? scene?.priority_budget ?? 0;
       const priorityDialogues = scene.priority_dialogues || {};
       let spent = 0;
       const pickedSet = new Set();
@@ -124,7 +150,7 @@ const Choice = (() => {
           return;
         }
 
-        const meta = getPriorityMeta(scene, budget, spent);
+        const meta = getPriorityMeta(scene.investigation || scene, budget, spent);
 
         UIManager.updateHUD(scene, {
           mode: 'priority',
@@ -133,13 +159,14 @@ const Choice = (() => {
         });
 
         UIManager.renderChoiceList(remaining, (choice) => {
-          applyChoiceFlag(choice);
+          applyChoiceEffects(choice, 'investigation');
           showChoiceImpact(choice, true);
           pickedSet.add(choice.order);
           spent += choice.priority_cost != null ? choice.priority_cost : 1;
           
           setTimeout(() => {
-            const branchLines = (priorityDialogues || {})[choice.next_dialogue || ''] || [];
+            const branchKey = choice.next_dialogue || (choice.next_type === 'Dialog' ? choice.next_id : '');
+            const branchLines = (priorityDialogues || {})[branchKey || ''] || [];
             if (branchLines.length > 0) {
               UIManager.setChoiceBoxVisible(false);
               Dialogue.start(branchLines, render, null);
@@ -161,7 +188,7 @@ const Choice = (() => {
       const meta = getEvidenceMeta(scene, mappedChoices.length);
 
       UIManager.renderChoiceList(mappedChoices, (picked) => {
-        applyChoiceFlag(picked);
+        applyChoiceEffects(picked, 'evidence');
         showChoiceImpact(picked);
         finishChoice(onChoose, picked);
       }, meta);

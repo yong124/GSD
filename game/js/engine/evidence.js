@@ -1,15 +1,17 @@
 const Evidence = (() => {
   let _allEvidence = {};
+  let _evidenceCategories = {};
   let _seenEvidence = new Set();
   let _activeTab = 'status';
   let _selectedQuestionId = null;
   let _selectedEvidenceByQuestion = {};
 
   function getEvidenceCategory(ev) {
+    const category = _evidenceCategories[ev?.category_id];
     return {
-      key: ev?.category_id || 'trace',
-      title: ev?.category_title || '현장 물증',
-      hint: ev?.category_hint || '현장에서 직접 붙잡은 흔적',
+      key: ev?.category_id || category?.category_id || 'trace',
+      title: category?.category_title || ev?.category_title || '현장 물증',
+      hint: category?.category_hint || ev?.category_hint || '현장에서 직접 붙잡은 흔적',
     };
   }
 
@@ -451,6 +453,12 @@ const Evidence = (() => {
 
   return {
     index(scenes) {
+      _evidenceCategories = {};
+      (Engine.data?.evidence_categories || []).forEach(category => {
+        if (category?.category_id) {
+          _evidenceCategories[category.category_id] = category;
+        }
+      });
       Object.values(scenes).forEach(scene => {
         (scene.evidence || []).forEach(ev => {
           _allEvidence[ev.evidence_id] = ev;

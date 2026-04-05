@@ -21,10 +21,14 @@
   const QUESTION_RESOLUTION_TYPE_OPTIONS = ['Evidence', 'Contradiction'];
   const RULE_FACT_TYPE_OPTIONS = ['RevealedCharacter', 'HasEvidence', 'SceneProgressIndex', 'FlagValue'];
   const RULE_OPERATOR_OPTIONS = ['Equals', 'Gte'];
+  const CONDITION_TYPE_OPTIONS = ['Trust', 'EvidenceOwned', 'RevealedCharacter', 'SceneProgressIndex', 'InvestigationScore', 'ResonanceLevel', 'StateValue'];
+  const COMPARE_TYPE_OPTIONS = ['Equal', 'NotEqual', 'Greater', 'GreaterEqual', 'Less', 'LessEqual'];
+  const CHOICE_GROUP_TYPE_OPTIONS = ['Normal', 'Investigation', 'Evidence'];
+  const NEXT_TYPE_OPTIONS = ['Scene', 'Dialog', 'None'];
 
   // ── 상태 ──────────────────────────────────────────────
   const state = {
-    data: { first_scene: '', characters: {}, character_emotions: {}, questions: [], state_descriptors: [], rules: [], scenes: {} },
+    data: { first_scene: '', characters: {}, character_emotions: {}, conditions: [], choice_groups: [], evidence_categories: [], investigations: [], questions: [], state_descriptors: [], rules: [], scenes: {} },
     layout: {},       // { sceneId: { x, y } }
     selectedId: null,
     selectedIds: new Set(),
@@ -71,6 +75,9 @@
     els.fieldEffect  = $('field-effect');
     els.fieldGoalKicker = $('field-goal-kicker');
     els.fieldGoalText = $('field-goal-text');
+    els.fieldInvestigationId = $('field-investigation-id');
+    els.fieldEvidencePromptTitle = $('field-evidence-prompt-title');
+    els.fieldEvidencePromptHint = $('field-evidence-prompt-hint');
     els.fieldPriorityBudget = $('field-priority-budget');
     els.fieldPriorityDialogues = $('field-priority-dialogues');
     els.btnApplyPriorityDialogues = $('btn-apply-priority-dialogues');
@@ -81,6 +88,10 @@
     els.evidenceList = $('evidence-list');
     els.characterList = $('character-list');
     els.characterEmotionList = $('character-emotion-list');
+    els.conditionList = $('condition-list');
+    els.choiceGroupList = $('choice-group-list');
+    els.evidenceCategoryList = $('evidence-category-list');
+    els.investigationList = $('investigation-list');
     els.questionList = $('question-list');
     els.stateDescriptorList = $('state-descriptor-list');
     els.ruleList = $('rule-list');
@@ -297,9 +308,13 @@
 
   function restoreSnapshot(snapshot) {
     const parsed = JSON.parse(snapshot);
-    state.data = parsed.data || { first_scene: '', characters: {}, character_emotions: {}, questions: [], state_descriptors: [], rules: [], scenes: {} };
+    state.data = parsed.data || { first_scene: '', characters: {}, character_emotions: {}, conditions: [], choice_groups: [], evidence_categories: [], investigations: [], questions: [], state_descriptors: [], rules: [], scenes: {} };
     if (!state.data.characters) state.data.characters = {};
     if (!state.data.character_emotions) state.data.character_emotions = {};
+    if (!Array.isArray(state.data.conditions)) state.data.conditions = [];
+    if (!Array.isArray(state.data.choice_groups)) state.data.choice_groups = [];
+    if (!Array.isArray(state.data.evidence_categories)) state.data.evidence_categories = [];
+    if (!Array.isArray(state.data.investigations)) state.data.investigations = [];
     if (!Array.isArray(state.data.questions)) state.data.questions = [];
     if (!Array.isArray(state.data.state_descriptors)) state.data.state_descriptors = [];
     if (!Array.isArray(state.data.rules)) state.data.rules = [];
@@ -844,9 +859,13 @@
     ensurePrimarySelection();
     const id = state.selectedId;
     const hasScene = Boolean(id && state.data.scenes[id]);
-    renderCharacterList();
-    renderCharacterEmotionList();
-    renderQuestionList();
+      renderCharacterList();
+      renderCharacterEmotionList();
+      renderConditionList();
+      renderChoiceGroupList();
+      renderEvidenceCategoryList();
+      renderInvestigationList();
+      renderQuestionList();
     renderStateDescriptorList();
     renderRuleList();
 
@@ -879,6 +898,9 @@
     els.fieldEffect.value = scene.effect || '';
     els.fieldGoalKicker.value = scene.goal_kicker || '';
     els.fieldGoalText.value = scene.goal_text || '';
+    els.fieldInvestigationId.value = scene.investigation_id || '';
+    els.fieldEvidencePromptTitle.value = scene.evidence_prompt_title || '';
+    els.fieldEvidencePromptHint.value = scene.evidence_prompt_hint || '';
     els.fieldPriorityBudget.value = scene.priority_budget ?? '';
     els.fieldPriorityDialogues.value = scene.priority_dialogues
       ? JSON.stringify(scene.priority_dialogues, null, 2)
@@ -1019,6 +1041,8 @@
     const cards = makeCard(
       '대사', scene.dialogues,
       (d) => `
+        <label><span>DialogID</span>
+          <input data-field="dialog_id" value="${escapeAttr(d.dialog_id || '')}" placeholder="예: Dlg_Cafe_010"></label>
         <label><span>레이블 (점프 대상)</span>
           <input data-field="label" value="${escapeAttr(d.label || '')}" placeholder="예: after_choice_a"></label>
         <label><span>화자</span>
@@ -1049,6 +1073,12 @@
         </label>
         <label><span>텍스트</span>
           <textarea data-field="text">${escapeHtml(d.text || '')}</textarea></label>
+        <label><span>ConditionGroupID</span>
+          <input data-field="condition_group_id" value="${escapeAttr(d.condition_group_id || '')}" placeholder="예: CG_Visible_Songsoon"></label>
+        <label><span>ChoiceGroupID</span>
+          <input data-field="choice_group_id" value="${escapeAttr(d.choice_group_id || '')}" placeholder="예: ChoiceGroupCafe01"></label>
+        <label><span>NextDialogID</span>
+          <input data-field="next_dialog_id" value="${escapeAttr(d.next_dialog_id || '')}" placeholder="예: Dlg_Cafe_020"></label>
         <label><span>조건 키</span>
           <input data-field="cond_key" value="${escapeAttr(d.condition?.flag_key || '')}"></label>
         <label><span>조건 값</span>
@@ -1157,18 +1187,26 @@
     const cards = makeCard(
       '선택지', scene.choices,
       (c) => `
+        <label><span>ChoiceID</span>
+          <input data-field="choice_id" value="${escapeAttr(c.choice_id || '')}" placeholder="예: Choice_Cafe_01"></label>
+        <label><span>ChoiceGroupID</span>
+          <input data-field="choice_group_id" value="${escapeAttr(c.choice_group_id || '')}" placeholder="예: ChoiceGroupCafe01"></label>
         <label><span>텍스트</span>
           <input data-field="text" value="${escapeAttr(c.text || '')}"></label>
-        <label><span>다음 씬 (없으면 현재 씬 유지)</span>
-          <input data-field="next_scene" value="${escapeAttr(c.next_scene || '')}"></label>
-        <label><span>조사 분기 키 (next_dialogue)</span>
-          <input data-field="next_dialogue" value="${escapeAttr(c.next_dialogue || '')}" placeholder="예: after_choice_a"></label>
-        <label><span>조사 비용 (priority_cost, 비워두면 일반 선택지)</span>
-          <input data-field="priority_cost" type="number" min="0" step="1" value="${escapeAttr(c.priority_cost != null ? String(c.priority_cost) : '')}"></label>
-        <label><span>플래그 키</span>
-          <input data-field="flag_key" value="${escapeAttr(c.flag_key || '')}"></label>
-        <label><span>플래그 값</span>
-          <input data-field="flag_value" value="${escapeAttr(c.flag_value != null ? String(c.flag_value) : '')}"></label>
+        <label><span>ConditionGroupID</span>
+          <input data-field="condition_group_id" value="${escapeAttr(c.condition_group_id || '')}" placeholder="예: Cond_Cafe_01"></label>
+        <label><span>NextType</span>
+          <input data-field="next_type" value="${escapeAttr(c.next_type || '')}" placeholder="Scene / Dialog / None"></label>
+        <label><span>NextID</span>
+          <input data-field="next_id" value="${escapeAttr(c.next_id || '')}" placeholder="SceneID 또는 DialogID"></label>
+        <label><span>EvidenceID</span>
+          <input data-field="evidence_id" value="${escapeAttr(c.evidence_id || '')}" placeholder="예: EvDiary"></label>
+        <label><span>TrustCharacterID</span>
+          <input data-field="trust_character_id" value="${escapeAttr(c.trust_character_id || '')}" placeholder="예: Songsoon"></label>
+        <label><span>TrustValue</span>
+          <input data-field="trust_value" type="number" step="1" value="${escapeAttr(c.trust_value != null ? String(c.trust_value) : '')}"></label>
+        <label><span>ResonanceValue</span>
+          <input data-field="resonance_value" type="number" step="1" value="${escapeAttr(c.resonance_value != null ? String(c.resonance_value) : '')}"></label>
       `,
       () => { scene.choices.push(newChoice()); afterChange(); },
       (i) => { scene.choices.splice(i, 1); afterChange(); },
@@ -1176,6 +1214,10 @@
       (i) => { if (swap(scene.choices, i, i+1)) afterChange(); },
       (c, field, value) => { c[field] = value; markDirty(); renderWires(); renderValidationPanel(); }
     );
+
+    replaceEnumInputs(cards, [
+      { field: 'next_type', options: NEXT_TYPE_OPTIONS },
+    ]);
 
     els.choiceList.appendChild(cards);
   }
@@ -1376,12 +1418,12 @@
     const cards = makeCard(
       '분기', scene.branches,
       (b) => `
-        <label><span>플래그 키</span>
-          <input data-field="flag_key" value="${escapeAttr(b.flag_key || '')}"></label>
-        <label><span>플래그 값</span>
-          <input data-field="flag_value" value="${escapeAttr(b.flag_value != null ? String(b.flag_value) : '')}"></label>
+        <label><span>BranchID</span>
+          <input data-field="branch_id" value="${escapeAttr(b.branch_id || '')}" placeholder="예: Branch_Cafe_01"></label>
+        <label><span>ConditionGroupID</span>
+          <input data-field="condition_group_id" value="${escapeAttr(b.condition_group_id || '')}" placeholder="예: Cond_Branch_01"></label>
         <label><span>다음 씬</span>
-          <input data-field="next_scene" value="${escapeAttr(b.next_scene || '')}"></label>
+          <input data-field="next_scene" value="${escapeAttr(b.next_scene || b.next_scene_id || '')}"></label>
       `,
       () => { scene.branches.push(newBranch()); afterChange(); },
       (i) => { scene.branches.splice(i, 1); afterChange(); },
@@ -1488,6 +1530,44 @@
       RewardFlagID: question?.reward_flag_id || '',
       RewardValue: question?.reward_value ?? '',
       RewardMode: question?.reward_mode || '',
+    }));
+  }
+
+  function getConditionRows() {
+    return (state.data.conditions || []).map(item => ({
+      ConditionID: item?.condition_id || '',
+      ConditionGroupID: item?.condition_group_id || '',
+      ConditionType: item?.condition_type || '',
+      ConditionTargetID: item?.condition_target_id ?? '',
+      CompareType: item?.compare_type || '',
+      ConditionValue: item?.condition_value ?? '',
+    }));
+  }
+
+  function getChoiceGroupRows() {
+    return (state.data.choice_groups || []).map(item => ({
+      ChoiceGroupID: item?.choice_group_id || '',
+      Type: item?.type || 'Normal',
+      ConditionGroupID: item?.condition_group_id || '',
+      MaxSelectable: item?.max_selectable ?? '',
+    }));
+  }
+
+  function getEvidenceCategoryRows() {
+    return (state.data.evidence_categories || []).map(item => ({
+      CategoryID: item?.category_id || '',
+      CategoryTitle: item?.category_title || '',
+      CategoryHint: item?.category_hint || '',
+    }));
+  }
+
+  function getInvestigationRows() {
+    return (state.data.investigations || []).map(item => ({
+      InvestigationID: item?.investigation_id || '',
+      Title: item?.title || '',
+      Hint: item?.hint || '',
+      Budget: item?.budget ?? '',
+      ChoiceGroupID: item?.choice_group_id || '',
     }));
   }
 
@@ -1834,6 +1914,147 @@
     els.questionList.appendChild(cards);
   }
 
+  function renderConditionList() {
+    els.conditionList.innerHTML = '';
+    const rows = getConditionRows();
+    const cards = makeCard(
+      'Condition', rows,
+      (row) => `
+        <label><span>ConditionID</span>
+          <input data-field="ConditionID" value="${escapeAttr(row.ConditionID || '')}" placeholder="예: C0001"></label>
+        <label><span>ConditionGroupID</span>
+          <input data-field="ConditionGroupID" value="${escapeAttr(row.ConditionGroupID || '')}" placeholder="예: CG_SonggeumOpen"></label>
+        <label><span>ConditionType</span>
+          <input data-field="ConditionType" value="${escapeAttr(row.ConditionType || '')}" placeholder="예: EvidenceOwned"></label>
+        <label><span>ConditionTargetID</span>
+          <input data-field="ConditionTargetID" value="${escapeAttr(row.ConditionTargetID != null ? String(row.ConditionTargetID) : '')}" placeholder="예: EvDiary"></label>
+        <label><span>CompareType</span>
+          <input data-field="CompareType" value="${escapeAttr(row.CompareType || '')}" placeholder="예: Equal"></label>
+        <label><span>ConditionValue</span>
+          <input data-field="ConditionValue" value="${escapeAttr(row.ConditionValue != null ? String(row.ConditionValue) : '')}" placeholder="예: true"></label>
+      `,
+      () => { state.data.conditions.push(newCondition()); afterChange(); },
+      (i) => { state.data.conditions.splice(i, 1); afterChange(); },
+      (i) => { if (swap(state.data.conditions, i - 1, i)) afterChange(); },
+      (i) => { if (swap(state.data.conditions, i, i + 1)) afterChange(); },
+      (row, field, value) => {
+        const target = state.data.conditions.find(item => (item.condition_id || '') === row.ConditionID) || state.data.conditions.find((_, idx) => rows[idx] === row);
+        if (!target) return;
+        if (field === 'ConditionID') target.condition_id = value || '';
+        if (field === 'ConditionGroupID') target.condition_group_id = value || '';
+        if (field === 'ConditionType') target.condition_type = value || '';
+        if (field === 'ConditionTargetID') target.condition_target_id = value === '' ? null : value;
+        if (field === 'CompareType') target.compare_type = value || '';
+        if (field === 'ConditionValue') target.condition_value = value === '' ? null : value;
+        markDirty();
+      }
+    );
+    replaceEnumInputs(cards, [
+      { field: 'ConditionType', options: CONDITION_TYPE_OPTIONS, includeBlank: false },
+      { field: 'CompareType', options: COMPARE_TYPE_OPTIONS, includeBlank: false },
+    ]);
+    els.conditionList.appendChild(cards);
+  }
+
+  function renderChoiceGroupList() {
+    els.choiceGroupList.innerHTML = '';
+    const rows = getChoiceGroupRows();
+    const cards = makeCard(
+      'ChoiceGroup', rows,
+      (row) => `
+        <label><span>ChoiceGroupID</span>
+          <input data-field="ChoiceGroupID" value="${escapeAttr(row.ChoiceGroupID || '')}" placeholder="예: CG_CafeInvestigation"></label>
+        <label><span>Type</span>
+          <input data-field="Type" value="${escapeAttr(row.Type || '')}" placeholder="예: Investigation"></label>
+        <label><span>ConditionGroupID</span>
+          <input data-field="ConditionGroupID" value="${escapeAttr(row.ConditionGroupID || '')}" placeholder="예: CG_Visible"></label>
+        <label><span>MaxSelectable</span>
+          <input data-field="MaxSelectable" type="number" min="0" step="1" value="${escapeAttr(row.MaxSelectable != null ? String(row.MaxSelectable) : '')}"></label>
+      `,
+      () => { state.data.choice_groups.push(newChoiceGroup()); afterChange(); },
+      (i) => { state.data.choice_groups.splice(i, 1); afterChange(); },
+      (i) => { if (swap(state.data.choice_groups, i - 1, i)) afterChange(); },
+      (i) => { if (swap(state.data.choice_groups, i, i + 1)) afterChange(); },
+      (row, field, value) => {
+        const target = state.data.choice_groups.find(item => (item.choice_group_id || '') === row.ChoiceGroupID) || state.data.choice_groups.find((_, idx) => rows[idx] === row);
+        if (!target) return;
+        if (field === 'ChoiceGroupID') target.choice_group_id = value || '';
+        if (field === 'Type') target.type = value || 'Normal';
+        if (field === 'ConditionGroupID') target.condition_group_id = value || '';
+        if (field === 'MaxSelectable') target.max_selectable = value === '' ? null : Number.parseInt(value, 10);
+        markDirty();
+      }
+    );
+    replaceEnumInputs(cards, [
+      { field: 'Type', options: CHOICE_GROUP_TYPE_OPTIONS, includeBlank: false },
+    ]);
+    els.choiceGroupList.appendChild(cards);
+  }
+
+  function renderEvidenceCategoryList() {
+    els.evidenceCategoryList.innerHTML = '';
+    const rows = getEvidenceCategoryRows();
+    const cards = makeCard(
+      'EvidenceCategory', rows,
+      (row) => `
+        <label><span>CategoryID</span>
+          <input data-field="CategoryID" value="${escapeAttr(row.CategoryID || '')}" placeholder="예: ritual"></label>
+        <label><span>CategoryTitle</span>
+          <input data-field="CategoryTitle" value="${escapeAttr(row.CategoryTitle || '')}" placeholder="예: 의례와 공명"></label>
+        <label><span>CategoryHint</span>
+          <textarea data-field="CategoryHint" rows="2">${escapeHtml(row.CategoryHint || '')}</textarea></label>
+      `,
+      () => { state.data.evidence_categories.push(newEvidenceCategory()); afterChange(); },
+      (i) => { state.data.evidence_categories.splice(i, 1); afterChange(); },
+      (i) => { if (swap(state.data.evidence_categories, i - 1, i)) afterChange(); },
+      (i) => { if (swap(state.data.evidence_categories, i, i + 1)) afterChange(); },
+      (row, field, value) => {
+        const target = state.data.evidence_categories.find(item => (item.category_id || '') === row.CategoryID) || state.data.evidence_categories.find((_, idx) => rows[idx] === row);
+        if (!target) return;
+        if (field === 'CategoryID') target.category_id = value || '';
+        if (field === 'CategoryTitle') target.category_title = value || '';
+        if (field === 'CategoryHint') target.category_hint = value || '';
+        markDirty();
+      }
+    );
+    els.evidenceCategoryList.appendChild(cards);
+  }
+
+  function renderInvestigationList() {
+    els.investigationList.innerHTML = '';
+    const rows = getInvestigationRows();
+    const cards = makeCard(
+      'Investigation', rows,
+      (row) => `
+        <label><span>InvestigationID</span>
+          <input data-field="InvestigationID" value="${escapeAttr(row.InvestigationID || '')}" placeholder="예: INV_Cafe"></label>
+        <label><span>Title</span>
+          <input data-field="Title" value="${escapeAttr(row.Title || '')}" placeholder="조사 제목"></label>
+        <label><span>Hint</span>
+          <textarea data-field="Hint" rows="2">${escapeHtml(row.Hint || '')}</textarea></label>
+        <label><span>Budget</span>
+          <input data-field="Budget" type="number" min="0" step="1" value="${escapeAttr(row.Budget != null ? String(row.Budget) : '')}"></label>
+        <label><span>ChoiceGroupID</span>
+          <input data-field="ChoiceGroupID" value="${escapeAttr(row.ChoiceGroupID || '')}" placeholder="예: CG_CafeInvestigation"></label>
+      `,
+      () => { state.data.investigations.push(newInvestigation()); afterChange(); },
+      (i) => { state.data.investigations.splice(i, 1); afterChange(); },
+      (i) => { if (swap(state.data.investigations, i - 1, i)) afterChange(); },
+      (i) => { if (swap(state.data.investigations, i, i + 1)) afterChange(); },
+      (row, field, value) => {
+        const target = state.data.investigations.find(item => (item.investigation_id || '') === row.InvestigationID) || state.data.investigations.find((_, idx) => rows[idx] === row);
+        if (!target) return;
+        if (field === 'InvestigationID') target.investigation_id = value || '';
+        if (field === 'Title') target.title = value || '';
+        if (field === 'Hint') target.hint = value || '';
+        if (field === 'Budget') target.budget = value === '' ? null : Number.parseInt(value, 10);
+        if (field === 'ChoiceGroupID') target.choice_group_id = value || '';
+        markDirty();
+      }
+    );
+    els.investigationList.appendChild(cards);
+  }
+
   function renderStateDescriptorList() {
     els.stateDescriptorList.innerHTML = '';
     const rows = getStateDescriptorRows();
@@ -1951,13 +2172,50 @@
 
   // 기본 객체 생성
   function newDialogue() {
-    return { order: 0, speaker: '', speaker_id: '', emotion_type: '', text: '', portrait: null, style: 'normal', condition: null };
+    return {
+      order: 0,
+      dialog_id: '',
+      label: '',
+      speaker: '',
+      speaker_id: '',
+      emotion_type: '',
+      standing_slot: '',
+      focus_type: '',
+      enter_motion: '',
+      exit_motion: '',
+      idle_motion: '',
+      fx_type: '',
+      text: '',
+      portrait: null,
+      style: 'normal',
+      condition_group_id: '',
+      choice_group_id: '',
+      next_dialog_id: '',
+      condition: null
+    };
   }
   function newChoice() {
-    return { order: 0, text: '', next_scene: '', next_dialogue: '', priority_cost: '', flag_key: '', flag_value: '' };
+    return {
+      order: 0,
+      choice_id: '',
+      choice_group_id: '',
+      text: '',
+      condition_group_id: '',
+      next_type: '',
+      next_id: '',
+      evidence_id: '',
+      trust_character_id: '',
+      trust_value: '',
+      resonance_value: '',
+      next_scene: '',
+      next_dialogue: '',
+      priority_cost: '',
+      flag_key: '',
+      flag_value: ''
+    };
   }
   function newBranch() {
-    return { flag_key: '', flag_value: '', next_scene: '' };
+    return { branch_id: '', condition_group_id: '', flag_key: '', flag_value: '', next_scene: '' };
   }
   function newEvidence() {
     return { evidence_id: '', trigger: 'auto', name: '', description: '', image: '', category_id: '', category_title: '', category_hint: '' };
@@ -1967,6 +2225,18 @@
   }
   function newCharacterEmotion() {
     return { CharacterID: '', EmotionType: 'Neutral', ImagePath: '' };
+  }
+  function newCondition() {
+    return { condition_id: '', condition_group_id: '', condition_type: 'EvidenceOwned', condition_target_id: '', compare_type: 'Equal', condition_value: '' };
+  }
+  function newChoiceGroup() {
+    return { choice_group_id: '', type: 'Normal', condition_group_id: '', max_selectable: null };
+  }
+  function newEvidenceCategory() {
+    return { category_id: '', category_title: '', category_hint: '' };
+  }
+  function newInvestigation() {
+    return { investigation_id: '', title: '', hint: '', budget: null, choice_group_id: '' };
   }
   function newQuestion() {
     return {
@@ -2001,7 +2271,7 @@
   function newScene(id) {
     return {
       id, chapter: null, title: id, background: null, music: null, effect: null, next_scene: null,
-      goal_kicker: null, goal_text: null,
+      goal_kicker: null, goal_text: null, investigation_id: null, evidence_prompt_title: null, evidence_prompt_hint: null,
       priority_budget: null, priority_dialogues: {}, priority_after_dialogues: [],
       branches: [], dialogues: [], choices: [], evidence: []
     };
@@ -2028,6 +2298,7 @@
 
       return {
         order: normalizeOrder(dialogue.order, index + 1),
+        dialog_id: dialogue.dialog_id || null,
         speaker: dialogue.speaker || '',
         speaker_id: dialogue.speaker_id || null,
         emotion_type: dialogue.emotion_type || null,
@@ -2041,6 +2312,9 @@
         style: dialogue.style || 'normal',
         portrait: dialogue.portrait || null,
         label: dialogue.label || null,
+        condition_group_id: dialogue.condition_group_id || null,
+        choice_group_id: dialogue.choice_group_id || null,
+        next_dialog_id: dialogue.next_dialog_id || null,
         condition,
       };
     });
@@ -2048,7 +2322,16 @@
     const normalizedChoices = (scene.choices || []).map((choice, index) => {
       const c = {
         order: normalizeOrder(choice.order, index + 1),
+        choice_id: choice.choice_id || null,
+        choice_group_id: choice.choice_group_id || null,
+        condition_group_id: choice.condition_group_id || null,
         text: choice.text || '',
+        next_type: choice.next_type || null,
+        next_id: choice.next_id || null,
+        evidence_id: choice.evidence_id || null,
+        trust_character_id: choice.trust_character_id || null,
+        trust_value: choice.trust_value === '' || choice.trust_value == null ? null : Number(choice.trust_value),
+        resonance_value: choice.resonance_value === '' || choice.resonance_value == null ? null : Number(choice.resonance_value),
         flag_key: choice.flag_key || null,
         flag_value: normalizeFlagValue(choice.flag_value),
         next_scene: choice.next_scene || null,
@@ -2087,10 +2370,12 @@
     }));
 
     const normalizedBranches = (scene.branches || []).map((branch, index) => ({
+      branch_id: branch.branch_id || null,
       order: normalizeOrder(branch.order, index + 1),
+      condition_group_id: branch.condition_group_id || null,
       flag_key: branch.flag_key || '',
       flag_value: normalizeFlagValue(branch.flag_value),
-      next_scene: branch.next_scene || '',
+      next_scene: branch.next_scene || branch.next_scene_id || '',
     }));
 
     const normalizedEvidence = (scene.evidence || []).map((evidence) => ({
@@ -2113,6 +2398,9 @@
       effect: scene.effect || null,
       goal_kicker: scene.goal_kicker || null,
       goal_text: scene.goal_text || null,
+      investigation_id: scene.investigation_id || null,
+      evidence_prompt_title: scene.evidence_prompt_title || null,
+      evidence_prompt_hint: scene.evidence_prompt_hint || null,
       next_scene: scene.next_scene || null,
       dialogues: normalizedDialogues,
       choices: normalizedChoices,
@@ -2146,6 +2434,10 @@
       first_scene: firstScene,
       characters: state.data.characters || {},
       character_emotions: state.data.character_emotions || {},
+      conditions: state.data.conditions || [],
+      choice_groups: state.data.choice_groups || [],
+      evidence_categories: state.data.evidence_categories || [],
+      investigations: state.data.investigations || [],
       questions: state.data.questions || [],
       state_descriptors: state.data.state_descriptors || [],
       rules: state.data.rules || [],
@@ -2695,10 +2987,14 @@
         setStatus('오류: GAME_DATA 없음', true);
         return;
       }
-      state.data = window.GAME_DATA;
-      if (!state.data.characters) state.data.characters = {};
-      if (!state.data.character_emotions) state.data.character_emotions = {};
-      if (!Array.isArray(state.data.questions)) state.data.questions = [];
+        state.data = window.GAME_DATA;
+        if (!state.data.characters) state.data.characters = {};
+        if (!state.data.character_emotions) state.data.character_emotions = {};
+        if (!Array.isArray(state.data.conditions)) state.data.conditions = [];
+        if (!Array.isArray(state.data.choice_groups)) state.data.choice_groups = [];
+        if (!Array.isArray(state.data.evidence_categories)) state.data.evidence_categories = [];
+        if (!Array.isArray(state.data.investigations)) state.data.investigations = [];
+        if (!Array.isArray(state.data.questions)) state.data.questions = [];
       if (!Array.isArray(state.data.state_descriptors)) state.data.state_descriptors = [];
       if (!Array.isArray(state.data.rules)) state.data.rules = [];
       if (!state.data.scenes) state.data.scenes = {};
@@ -2924,6 +3220,50 @@
       state.data.rules.push(row);
       afterChange();
     });
+    $('btn-add-condition').addEventListener('click', () => {
+      pushHistory();
+      state.data.conditions = state.data.conditions || [];
+      const row = newCondition();
+      let suffix = state.data.conditions.length + 1;
+      do {
+        row.condition_id = `Condition${suffix++}`;
+      } while (state.data.conditions.some(item => item.condition_id === row.condition_id));
+      state.data.conditions.push(row);
+      afterChange();
+    });
+    $('btn-add-choice-group').addEventListener('click', () => {
+      pushHistory();
+      state.data.choice_groups = state.data.choice_groups || [];
+      const row = newChoiceGroup();
+      let suffix = state.data.choice_groups.length + 1;
+      do {
+        row.choice_group_id = `ChoiceGroup${suffix++}`;
+      } while (state.data.choice_groups.some(item => item.choice_group_id === row.choice_group_id));
+      state.data.choice_groups.push(row);
+      afterChange();
+    });
+    $('btn-add-evidence-category').addEventListener('click', () => {
+      pushHistory();
+      state.data.evidence_categories = state.data.evidence_categories || [];
+      const row = newEvidenceCategory();
+      let suffix = state.data.evidence_categories.length + 1;
+      do {
+        row.category_id = `Category${suffix++}`;
+      } while (state.data.evidence_categories.some(item => item.category_id === row.category_id));
+      state.data.evidence_categories.push(row);
+      afterChange();
+    });
+    $('btn-add-investigation').addEventListener('click', () => {
+      pushHistory();
+      state.data.investigations = state.data.investigations || [];
+      const row = newInvestigation();
+      let suffix = state.data.investigations.length + 1;
+      do {
+        row.investigation_id = `Investigation${suffix++}`;
+      } while (state.data.investigations.some(item => item.investigation_id === row.investigation_id));
+      state.data.investigations.push(row);
+      afterChange();
+    });
 
     // 패널 필드
     els.fieldTitle.addEventListener('input', () => {
@@ -2973,6 +3313,27 @@
       const scene = state.data.scenes[state.selectedId];
       if (!scene) return;
       scene.goal_text = els.fieldGoalText.value || null;
+      markDirty();
+      refreshMetaViews();
+    });
+    els.fieldInvestigationId.addEventListener('input', () => {
+      const scene = state.data.scenes[state.selectedId];
+      if (!scene) return;
+      scene.investigation_id = els.fieldInvestigationId.value || null;
+      markDirty();
+      refreshMetaViews();
+    });
+    els.fieldEvidencePromptTitle.addEventListener('input', () => {
+      const scene = state.data.scenes[state.selectedId];
+      if (!scene) return;
+      scene.evidence_prompt_title = els.fieldEvidencePromptTitle.value || null;
+      markDirty();
+      refreshMetaViews();
+    });
+    els.fieldEvidencePromptHint.addEventListener('input', () => {
+      const scene = state.data.scenes[state.selectedId];
+      if (!scene) return;
+      scene.evidence_prompt_hint = els.fieldEvidencePromptHint.value || null;
       markDirty();
       refreshMetaViews();
     });
@@ -3056,6 +3417,9 @@
     els.fieldEffect.addEventListener('focus', pushHistory);
     els.fieldGoalKicker.addEventListener('focus', pushHistory);
     els.fieldGoalText.addEventListener('focus', pushHistory);
+    els.fieldInvestigationId.addEventListener('focus', pushHistory);
+    els.fieldEvidencePromptTitle.addEventListener('focus', pushHistory);
+    els.fieldEvidencePromptHint.addEventListener('focus', pushHistory);
     els.fieldPriorityBudget.addEventListener('focus', pushHistory);
     els.fieldSceneId.addEventListener('focus', pushHistory);
 

@@ -77,6 +77,17 @@
         </div>
 
         <div class="panel-section" data-panel-tab="node">
+          <div class="section-label">조사 연결</div>
+          <input id="field-investigation-id" type="text" placeholder="InvestigationID (예: InvestigationCafe01)">
+        </div>
+
+        <div class="panel-section" data-panel-tab="node">
+          <div class="section-label">증거 제시 UI</div>
+          <input id="field-evidence-prompt-title" type="text" placeholder="증거 제시 패널 제목">
+          <textarea id="field-evidence-prompt-hint" rows="2" placeholder="증거 제시 안내 문구"></textarea>
+        </div>
+
+        <div class="panel-section" data-panel-tab="node">
           <div class="section-label">조사 예산 (priority_budget)
             <span class="section-hint">0이면 일반 선택지 모드</span>
           </div>
@@ -168,6 +179,34 @@
             <button id="btn-add-character-emotion" class="small">+</button>
           </div>
           <div id="character-emotion-list"></div>
+        </div>
+
+        <div class="panel-section" data-panel-tab="character">
+          <div class="section-label">Conditions
+            <button id="btn-add-condition" class="small">+</button>
+          </div>
+          <div id="condition-list"></div>
+        </div>
+
+        <div class="panel-section" data-panel-tab="character">
+          <div class="section-label">ChoiceGroups
+            <button id="btn-add-choice-group" class="small">+</button>
+          </div>
+          <div id="choice-group-list"></div>
+        </div>
+
+        <div class="panel-section" data-panel-tab="character">
+          <div class="section-label">EvidenceCategories
+            <button id="btn-add-evidence-category" class="small">+</button>
+          </div>
+          <div id="evidence-category-list"></div>
+        </div>
+
+        <div class="panel-section" data-panel-tab="character">
+          <div class="section-label">Investigations
+            <button id="btn-add-investigation" class="small">+</button>
+          </div>
+          <div id="investigation-list"></div>
         </div>
 
         <div class="panel-section" data-panel-tab="character">
