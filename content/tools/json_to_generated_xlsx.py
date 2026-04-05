@@ -29,7 +29,7 @@ SHEET_DEFS = {
         "headers": ["ConditionID", "ConditionGroupID", "ConditionType", "ConditionTargetID", "CompareType", "ConditionValue"],
     },
     "SceneTable": {
-        "headers": ["SceneID", "Chapter", "Title", "Background", "Music", "Effect", "GoalKicker", "GoalText", "EvidencePromptTitle", "EvidencePromptHint", "NextScene"],
+        "headers": ["SceneID", "Chapter", "Title", "Background", "Music", "Effect", "GoalKicker", "GoalText", "EvidencePromptTitle", "EvidencePromptHint"],
     },
     "DialogTable": {
         "headers": ["DialogID", "SceneID", "Order", "CharacterID", "EmotionType", "StandingSlot", "FocusType", "EnterMotion", "ExitMotion", "IdleMotion", "FxType", "Text", "Style", "ConditionGroupID", "ChoiceGroupID", "NextDialogID", "Speaker", "Portrait", "Label"],
@@ -38,10 +38,10 @@ SHEET_DEFS = {
         "headers": ["ChoiceGroupID", "Type", "ConditionGroupID", "MaxSelectable"],
     },
     "ChoiceTable": {
-        "headers": ["ChoiceID", "ChoiceGroupID", "Order", "Text", "ConditionGroupID", "NextType", "NextID", "EvidenceID", "TrustCharacterID", "TrustValue", "ResonanceValue", "StateType", "StateValue", "SceneID", "NextScene", "NextDialogue"],
+        "headers": ["ChoiceID", "ChoiceGroupID", "Order", "Text", "ConditionGroupID", "NextType", "NextID", "EvidenceID", "TrustCharacterID", "TrustValue", "ResonanceValue", "StateType", "StateValue", "SceneID"],
     },
     "BranchTable": {
-        "headers": ["BranchID", "SceneID", "Order", "ConditionGroupID", "NextSceneID", "FlagKey", "FlagValue", "NextScene"],
+        "headers": ["BranchID", "SceneID", "Order", "ConditionGroupID", "NextSceneID"],
     },
     "EvidenceTable": {
         "headers": ["EvidenceID", "Name", "Description", "Image", "CategoryID", "SceneId", "Trigger", "CategoryTitle", "CategoryHint"],
@@ -133,7 +133,6 @@ def build_scene_rows(data):
             "GoalText": scene.get("goal_text"),
             "EvidencePromptTitle": scene.get("evidence_prompt_title"),
             "EvidencePromptHint": scene.get("evidence_prompt_hint"),
-            "NextScene": scene.get("next_scene"),
         })
     return rows
 
@@ -218,8 +217,6 @@ def build_choice_rows(data):
                 "StateType": choice.get("state_type"),
                 "StateValue": normalize_value(choice.get("state_value")),
                 "SceneID": scene_id,
-                "NextScene": choice.get("next_scene"),
-                "NextDialogue": choice.get("next_dialogue"),
             })
     return rows
 
@@ -236,9 +233,6 @@ def build_branch_rows(data):
                 "Order": branch.get("order"),
                 "ConditionGroupID": branch.get("condition_group_id"),
                 "NextSceneID": branch.get("next_scene"),
-                "FlagKey": branch.get("flag_key"),
-                "FlagValue": normalize_value(branch.get("flag_value")),
-                "NextScene": branch.get("next_scene"),
             })
     return rows
 

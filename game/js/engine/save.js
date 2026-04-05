@@ -2,15 +2,6 @@ const Save = (() => {
   const SLOT_COUNT = 3;
   const SAVE_KEY = n => `gyeongseong_save_${n}`;
 
-  function migrateLegacy() {
-    const legacy = localStorage.getItem('gyeongseong_save');
-    if (!legacy) return;
-    if (!localStorage.getItem(SAVE_KEY(1))) {
-      localStorage.setItem(SAVE_KEY(1), legacy);
-    }
-    localStorage.removeItem('gyeongseong_save');
-  }
-
   function getSlotInfo(n) {
     const raw = localStorage.getItem(SAVE_KEY(n));
     if (!raw) return null;
@@ -108,8 +99,6 @@ const Save = (() => {
 
   return {
     init() {
-      migrateLegacy();
-
       const saveBtn = document.getElementById('save-btn');
       const loadBtn = document.getElementById('load-btn');
       const closeBtn = document.getElementById('slot-panel-close');

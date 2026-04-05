@@ -89,9 +89,8 @@ const Evidence = (() => {
 
   function getTrustState() {
     const trust = Number(State.getFlag('SongsoonTrust') || 0);
-    const trusted = State.getFlag('TrustedSongsoon') === true;
     return resolveStateDescriptor('SongsoonTrust', trust, () => {
-      if (trust >= 2 || trusted) return { value: '신뢰', detail: '송순이 등을 돌리지 않고 같은 방향을 보고 있습니다.' };
+      if (trust >= 2) return { value: '신뢰', detail: '송순이 등을 돌리지 않고 같은 방향을 보고 있습니다.' };
       if (trust >= 1) return { value: '동행', detail: '경계는 남아 있지만 함께 움직일 정도의 틈은 생겼습니다.' };
       return { value: '경계', detail: '섣부른 추궁은 관계를 닫아버릴 가능성이 큽니다.' };
     });
@@ -201,35 +200,10 @@ const Evidence = (() => {
     );
   }
 
-  function getRevealedCharacterIds() {
-    const scenes = Engine.data?.scenes;
-    const currentSceneId = State.currentSceneId;
-    if (!scenes || !currentSceneId) return [];
-
-    const sceneEntries = Object.entries(scenes);
-    const currentSceneIndex = sceneEntries.findIndex(([sceneId]) => sceneId === currentSceneId);
-    if (currentSceneIndex < 0) return [];
-
-    const revealed = new Set();
-
-    sceneEntries.forEach(([sceneId, scene], index) => {
-      const dialogues = Array.isArray(scene?.dialogues) ? scene.dialogues : [];
-      const limit = sceneId === currentSceneId
-        ? Math.max(0, (Number(State.dialogueIndex) || 0) + 1)
-        : (index < currentSceneIndex ? dialogues.length : 0);
-
-      dialogues.slice(0, limit).forEach(line => {
-        if (line?.speaker_id && isNotebookCharacter(line.speaker_id)) {
-          revealed.add(line.speaker_id);
-        }
-      });
-    });
-
-    return Array.from(revealed);
-  }
-
   function getCharacterEntries() {
-    const revealedIds = getRevealedCharacterIds();
+    const revealedIds = typeof Scene?.getRevealedCharacterIds === 'function'
+      ? Scene.getRevealedCharacterIds().filter(isNotebookCharacter)
+      : [];
 
     return revealedIds.map(characterId => {
       const character = Engine.data?.characters?.[characterId] || {};
@@ -249,16 +223,15 @@ const Evidence = (() => {
     }).filter(Boolean);
   }
 
-  function getSceneProgressIndex() {
-    const scenes = Engine.data?.scenes;
-    const currentSceneId = State.currentSceneId;
-    if (!scenes || !currentSceneId) return -1;
-    return Object.keys(scenes).findIndex(sceneId => sceneId === currentSceneId);
-  }
-
   function getQuestionEntries() {
-    const revealedCharacters = new Set(getRevealedCharacterIds());
-    const sceneProgressIndex = getSceneProgressIndex();
+    const revealedCharacters = new Set(
+      typeof Scene?.getRevealedCharacterIds === 'function'
+        ? Scene.getRevealedCharacterIds()
+        : []
+    );
+    const sceneProgressIndex = typeof Scene?.getSceneProgressIndex === 'function'
+      ? Scene.getSceneProgressIndex()
+      : -1;
     const context = {
       revealedCharacters,
       sceneProgressIndex,
@@ -531,9 +504,6 @@ const Evidence = (() => {
         });
       }
       if (close) close.addEventListener('click', () => this.hide());
-      State.on('change', () => {
-        if (this.isOpen()) renderNotebook();
-      });
       State.on('loaded', () => {
         if (this.isOpen()) renderNotebook();
       });

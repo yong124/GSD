@@ -3,7 +3,7 @@
 
 검수 항목:
 - first_scene 존재 여부
-- 씬 next_scene / branch / choice 참조 씬 존재 여부
+- branch / choice 참조 씬 존재 여부
 - 씬 내부 dialogue / choice / branch order 중복 여부
 - 동일 씬 내 dialogue label 중복 여부
 - evidence id 중복 여부
@@ -48,10 +48,6 @@ def find_duplicates(values):
 
 def validate_scene_refs(scene_id, scenes, issues):
     scene = scenes[scene_id]
-    next_scene = scene.get("next_scene")
-    if next_scene and next_scene not in scenes:
-        issues.append(f"[Scene.next_scene] {scene_id} -> {next_scene} (없는 씬)")
-
     for branch in scene.get("branches", []):
         target = branch.get("next_scene")
         if target and target not in scenes:
@@ -72,27 +68,6 @@ def validate_scene_refs(scene_id, scenes, issues):
             issues.append(
                 f"[Choice.next_id] {scene_id} order={choice.get('order')} -> {next_id} (없는 씬)"
             )
-
-
-def validate_extra_flags(scene_id, scene, issues):
-    buckets = [
-        ("choices", scene.get("choices", [])),
-        ("evidence_choices", scene.get("evidence_choices", [])),
-    ]
-    for bucket_name, items in buckets:
-        for item in items:
-            extra_flags = item.get("extra_flags") or []
-            if not extra_flags:
-                continue
-            if not isinstance(extra_flags, list):
-                issues.append(f"[{bucket_name}.extra_flags] {scene_id} order={item.get('order')} extra_flags must be a list")
-                continue
-            for index, flag in enumerate(extra_flags, start=1):
-                if not isinstance(flag, dict):
-                    issues.append(f"[{bucket_name}.extra_flags] {scene_id} order={item.get('order')} extra_flags[{index}] must be an object")
-                    continue
-                if not flag.get("flag_key"):
-                    issues.append(f"[{bucket_name}.extra_flags] {scene_id} order={item.get('order')} extra_flags[{index}] missing flag_key")
 
 
 def validate_scene_orders(scene_id, scene, issues):
@@ -352,7 +327,6 @@ def main():
     for scene_id in sorted(scenes.keys()):
         scene = scenes[scene_id]
         validate_scene_refs(scene_id, scenes, issues)
-        validate_extra_flags(scene_id, scene, issues)
         validate_scene_orders(scene_id, scene, issues)
         validate_dialog_labels(scene_id, scene, issues)
         validate_dialogue_character_refs(scene_id, scene, data, issues)

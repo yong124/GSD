@@ -135,6 +135,12 @@ const Scene = (() => {
     return revealed;
   }
 
+  function getSceneProgressIndex(sceneId = State.currentSceneId) {
+    const scenes = _data || {};
+    if (!sceneId || !scenes[sceneId]) return -1;
+    return Object.keys(scenes).findIndex(id => id === sceneId);
+  }
+
   function resolveConditionActualValue(condition, context = {}) {
     const type = condition?.condition_type;
     const targetId = condition?.condition_target_id;
@@ -424,6 +430,14 @@ const Scene = (() => {
 
     passesConditionRef(item, context = {}) {
       return passesConditionRef(item, context);
+    },
+
+    getRevealedCharacterIds(context = {}) {
+      return Array.from(getRevealedCharacterSet(context));
+    },
+
+    getSceneProgressIndex(sceneId = State.currentSceneId) {
+      return getSceneProgressIndex(sceneId);
     }
   };
 })();

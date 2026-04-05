@@ -62,7 +62,7 @@ const UIManager = (() => {
     if (investigation >= 3) parts.push('조사 집착');
     else if (investigation >= 1) parts.push('조사 진행');
 
-    if (trust >= 2 || State.getFlag('TrustedSongsoon') === true) parts.push('송순 신뢰');
+    if (trust >= 2) parts.push('송순 신뢰');
     else if (trust >= 1) parts.push('동행 유지');
 
     if (resonance >= 2) parts.push('공명 짙음');
@@ -75,8 +75,6 @@ const UIManager = (() => {
     const container = $(Config.SELECTORS.GAME_CONTAINER);
     const resonance = Number(State.getFlag('ResonanceLevel') || 0);
     const trust = Number(State.getFlag('SongsoonTrust') || 0);
-    const trusted = State.getFlag('TrustedSongsoon') === true;
-
     if (!container) return;
 
     container.classList.remove('state-resonance-low', 'state-resonance-high', 'state-trust-high');
@@ -84,7 +82,7 @@ const UIManager = (() => {
     if (resonance >= 2) container.classList.add('state-resonance-high');
     else if (resonance >= 1) container.classList.add('state-resonance-low');
 
-    if (trust >= 2 || trusted) container.classList.add('state-trust-high');
+    if (trust >= 2) container.classList.add('state-trust-high');
   }
 
   function showBanner(scene) {

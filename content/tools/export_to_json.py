@@ -11,9 +11,9 @@ Excel → game_data.js 변환 스크립트
 
 Excel 컬럼 규칙 (PascalCase):
   SceneTable / Scenes        : SceneID, Chapter, Title, Background, Music, Effect, GoalKicker, GoalText, EvidencePromptTitle, EvidencePromptHint
-  DialogTable / Dialogues    : 기존 구조 또는 새 구조 병행 허용
-  ChoiceTable / Choices      : 기존 구조 또는 새 구조 병행 허용
-  BranchTable / Branches     : 기존 구조 또는 새 구조 병행 허용
+  DialogTable / Dialogues    : 새 구조 기준
+  ChoiceTable / Choices      : 새 구조 기준
+  BranchTable / Branches     : 새 구조 기준
   ConditionTable / Conditions
   ChoiceGroupTable / ChoiceGroups
   EvidenceTable / Evidence
@@ -119,7 +119,6 @@ def build_game_data(wb):
             "goal_text":  s.get("GoalText"),
             "evidence_prompt_title": s.get("EvidencePromptTitle"),
             "evidence_prompt_hint": s.get("EvidencePromptHint"),
-            "next_scene": s.get("NextScene"),
             "branches":   [],
             "dialogues":  [],
             "choices":    [],
@@ -136,7 +135,6 @@ def build_game_data(wb):
                 "text":     d.get("Text") or "",
                 "style":    d.get("Style") or "normal",
                 "portrait": d.get("Portrait"),
-                "condition": None,
             }
             optional_fields = {
                 "dialog_id": d.get("DialogID"),
@@ -160,10 +158,6 @@ def build_game_data(wb):
                 entry["label"] = d["DialogID"]
             if d.get("ConditionGroupID"):
                 entry["condition_group_id"] = d.get("ConditionGroupID")
-            cond_key = d.get("ConditionKey")
-            cond_val = d.get("ConditionValue")
-            if cond_key:
-                entry["condition"] = {"flag_key": cond_key, "flag_value": cond_val}
             scenes[sid]["dialogues"].append(entry)
     for sid in scenes:
         scenes[sid]["dialogues"].sort(key=lambda x: x["order"])
@@ -175,9 +169,6 @@ def build_game_data(wb):
             entry = {
                 "order":      c.get("Order") or 0,
                 "text":       c.get("Text") or "",
-                "flag_key":   c.get("FlagKey"),
-                "flag_value": c.get("FlagValue"),
-                "next_scene": c.get("NextScene"),
             }
             if c.get("ChoiceID"):
                 entry["choice_id"] = c.get("ChoiceID")
@@ -197,8 +188,10 @@ def build_game_data(wb):
                 entry["trust_value"] = c.get("TrustValue")
             if c.get("ResonanceValue") is not None:
                 entry["resonance_value"] = c.get("ResonanceValue")
-            if c.get("NextDialogue"):
-                entry["next_dialogue"] = c["NextDialogue"]
+            if c.get("StateType"):
+                entry["state_type"] = c.get("StateType")
+            if c.get("StateValue") is not None:
+                entry["state_value"] = c.get("StateValue")
             scenes[sid]["choices"].append(entry)
     for sid in scenes:
         scenes[sid]["choices"].sort(key=lambda x: x["order"])
@@ -210,9 +203,7 @@ def build_game_data(wb):
             scenes[sid]["branches"].append({
                 "branch_id":   b.get("BranchID"),
                 "order":      b.get("Order") or 0,
-                "flag_key":   b.get("FlagKey") or "",
-                "flag_value": b.get("FlagValue"),
-                "next_scene": b.get("NextScene") or b.get("NextSceneID") or "",
+                "next_scene": b.get("NextSceneID") or "",
                 "condition_group_id": b.get("ConditionGroupID"),
             })
     for sid in scenes:
