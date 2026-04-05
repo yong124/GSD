@@ -18,6 +18,7 @@
   const IDLE_MOTION_OPTIONS = ['None', 'Tremble', 'ShakeLight', 'ShakeHard'];
   const FX_TYPE_OPTIONS = ['None', 'Fog', 'BlueTrace', 'BloodSmear', 'Flicker', 'RitualGlow'];
   const RULE_KIND_OPTIONS = ['Visible', 'State'];
+  const QUESTION_RESOLUTION_TYPE_OPTIONS = ['Evidence', 'Contradiction'];
   const RULE_FACT_TYPE_OPTIONS = ['RevealedCharacter', 'HasEvidence', 'SceneProgressIndex', 'FlagValue'];
   const RULE_OPERATOR_OPTIONS = ['Equals', 'Gte'];
 
@@ -1472,11 +1473,14 @@
       Detail: question?.detail || '',
       SortOrder: question?.sort_order ?? '',
       Category: question?.category || '',
+      ResolutionType: question?.resolution_type || 'Evidence',
       VisibleRuleID: question?.visible_rule_id || '',
       StateRuleID: question?.state_rule_id || '',
       RelatedEvidenceIDs: Array.isArray(question?.related_evidence_ids) ? question.related_evidence_ids.join(', ') : '',
       SolutionEvidenceIDs: Array.isArray(question?.solution_evidence_ids) ? question.solution_evidence_ids.join(', ') : '',
       SolutionMode: question?.solution_mode || '',
+      ContradictionPrompt: question?.contradiction_prompt || '',
+      ContradictionStatement: question?.contradiction_statement || '',
       SolvedFlagID: question?.solved_flag_id || '',
       ResolvedDetail: question?.resolved_detail || '',
       SuccessToast: question?.success_toast || '',
@@ -1754,6 +1758,8 @@
           <input data-field="SortOrder" type="number" min="0" step="1" value="${escapeAttr(row.SortOrder != null ? String(row.SortOrder) : '')}"></label>
         <label><span>Category</span>
           <input data-field="Category" value="${escapeAttr(row.Category || '')}" placeholder="예: Missing"></label>
+        <label><span>ResolutionType</span>
+          <input data-field="ResolutionType" value="${escapeAttr(row.ResolutionType || 'Evidence')}" placeholder="Evidence / Contradiction"></label>
         <label><span>VisibleRuleID</span>
           <input data-field="VisibleRuleID" value="${escapeAttr(row.VisibleRuleID || '')}" placeholder="예: QR_SonggeumOpen"></label>
           <label><span>StateRuleID</span>
@@ -1764,6 +1770,10 @@
             <input data-field="SolutionEvidenceIDs" value="${escapeAttr(row.SolutionEvidenceIDs || '')}" placeholder="예: EvRitualScore, EvRitualNote"></label>
           <label><span>SolutionMode</span>
             <input data-field="SolutionMode" value="${escapeAttr(row.SolutionMode || '')}" placeholder="Any / All"></label>
+          <label><span>ContradictionPrompt</span>
+            <textarea data-field="ContradictionPrompt" rows="2">${escapeHtml(row.ContradictionPrompt || '')}</textarea></label>
+          <label><span>ContradictionStatement</span>
+            <textarea data-field="ContradictionStatement" rows="3">${escapeHtml(row.ContradictionStatement || '')}</textarea></label>
           <label><span>SolvedFlagID</span>
             <input data-field="SolvedFlagID" value="${escapeAttr(row.SolvedFlagID || '')}" placeholder="예: QuestionSolved_QSonggeumMissing"></label>
           <label><span>ResolvedDetail</span>
@@ -1798,11 +1808,14 @@
         if (field === 'Detail') target.detail = value || '';
           if (field === 'SortOrder') target.sort_order = value === '' ? null : Number.parseInt(value, 10);
           if (field === 'Category') target.category = value || '';
+          if (field === 'ResolutionType') target.resolution_type = value || 'Evidence';
           if (field === 'VisibleRuleID') target.visible_rule_id = value || '';
           if (field === 'StateRuleID') target.state_rule_id = value || '';
           if (field === 'RelatedEvidenceIDs') target.related_evidence_ids = String(value || '').split(',').map(part => part.trim()).filter(Boolean);
           if (field === 'SolutionEvidenceIDs') target.solution_evidence_ids = String(value || '').split(',').map(part => part.trim()).filter(Boolean);
           if (field === 'SolutionMode') target.solution_mode = value || '';
+          if (field === 'ContradictionPrompt') target.contradiction_prompt = value || '';
+          if (field === 'ContradictionStatement') target.contradiction_statement = value || '';
           if (field === 'SolvedFlagID') target.solved_flag_id = value || '';
           if (field === 'ResolvedDetail') target.resolved_detail = value || '';
           if (field === 'SuccessToast') target.success_toast = value || '';
@@ -1813,6 +1826,10 @@
           markDirty();
         }
       );
+
+    replaceEnumInputs(cards, [
+      { field: 'ResolutionType', options: QUESTION_RESOLUTION_TYPE_OPTIONS, includeBlank: false },
+    ]);
 
     els.questionList.appendChild(cards);
   }
@@ -1958,11 +1975,14 @@
       detail: '',
       sort_order: null,
       category: '',
+      resolution_type: 'Evidence',
       visible_rule_id: '',
       state_rule_id: '',
       related_evidence_ids: [],
       solution_evidence_ids: [],
       solution_mode: '',
+      contradiction_prompt: '',
+      contradiction_statement: '',
       solved_flag_id: '',
       resolved_detail: '',
       success_toast: '',

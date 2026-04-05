@@ -425,11 +425,12 @@ const UIManager = (() => {
         </button>
       `).join('');
 
-      const isConnectionQuestion = (selectedQuestion?.solutionEvidenceIds || []).length > 1 || selectedQuestion?.solutionMode === 'All';
+      const isContradictionQuestion = selectedQuestion?.resolutionType === 'Contradiction';
+      const isConnectionQuestion = !isContradictionQuestion && (((selectedQuestion?.solutionEvidenceIds || []).length > 1) || selectedQuestion?.solutionMode === 'All');
       const evidenceOptions = (selectedQuestion?.ownedEvidence || []).map(item => `
         <button class="question-evidence-btn ${selectedEvidenceIds.includes(item.evidenceId) ? 'is-selected' : ''}" data-question-id="${selectedQuestion.questionId}" data-evidence-id="${item.evidenceId}">
           <span class="question-evidence-name">${item.name}</span>
-          <span class="question-evidence-tag">${isConnectionQuestion ? '연결' : '제출'}</span>
+          <span class="question-evidence-tag">${isContradictionQuestion ? '반박' : (isConnectionQuestion ? '연결' : '제출')}</span>
         </button>
       `).join('');
 
@@ -443,9 +444,15 @@ const UIManager = (() => {
           <div class="question-resolution-title">${selectedQuestion.title}</div>
           <div class="question-resolution-state ${selectedQuestion.isSolved ? 'is-solved' : ''}">${selectedQuestion.state}</div>
           <div class="question-resolution-detail">${selectedQuestion.isSolved && selectedQuestion.resolvedDetail ? selectedQuestion.resolvedDetail : selectedQuestion.detail}</div>
+          ${isContradictionQuestion && !selectedQuestion.isSolved ? `
+            <div class="question-contradiction-card">
+              <div class="question-contradiction-kicker">${selectedQuestion.contradictionPrompt || '모순 판별'}</div>
+              <div class="question-contradiction-statement">${selectedQuestion.contradictionStatement || ''}</div>
+            </div>
+          ` : ''}
           <div class="question-resolution-subtitle">관련 단서</div>
           <div class="question-chip-list">${relatedEvidence || '<span class="question-chip is-missing">연결 단서 없음</span>'}</div>
-          <div class="question-resolution-subtitle">${isConnectionQuestion ? '보유 단서를 연결해 정리' : '보유 단서로 정리'}</div>
+          <div class="question-resolution-subtitle">${isContradictionQuestion ? '모순을 드러낼 근거 제시' : (isConnectionQuestion ? '보유 단서를 연결해 정리' : '보유 단서로 정리')}</div>
           ${selectedQuestion.isSolved
             ? '<div class="question-resolution-empty">이미 정리한 질문입니다.</div>'
             : (evidenceOptions

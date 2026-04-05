@@ -174,6 +174,9 @@ def validate_questions(data, issues):
             issues.append("[Question.question_id] missing QuestionID")
         if not question.get("title"):
             issues.append(f"[Question.title] {question.get('question_id') or '(unknown)'} missing Title")
+        resolution_type = question.get("resolution_type") or "Evidence"
+        if resolution_type not in {"Evidence", "Contradiction"}:
+            issues.append(f"[Question.resolution_type] {question.get('question_id') or '(unknown)'} invalid ResolutionType: {resolution_type}")
         visible_rule_id = question.get("visible_rule_id")
         state_rule_id = question.get("state_rule_id")
         if visible_rule_id and visible_rule_id not in visible_rule_ids:
@@ -193,6 +196,11 @@ def validate_questions(data, issues):
         solution_mode = question.get("solution_mode")
         if solution_mode and solution_mode not in {"Any", "All"}:
             issues.append(f"[Question.solution_mode] {question.get('question_id') or '(unknown)'} invalid SolutionMode: {solution_mode}")
+        if resolution_type == "Contradiction":
+            if not question.get("contradiction_prompt"):
+                issues.append(f"[Question.contradiction_prompt] {question.get('question_id') or '(unknown)'} missing ContradictionPrompt")
+            if not question.get("contradiction_statement"):
+                issues.append(f"[Question.contradiction_statement] {question.get('question_id') or '(unknown)'} missing ContradictionStatement")
 
 
 def validate_state_descriptors(data, issues):

@@ -47,7 +47,7 @@ SHEET_DEFS = {
         "headers": ["CharacterID", "EmotionType", "ImagePath"],
     },
     "QuestionTable": {
-        "headers": ["QuestionID", "Title", "Detail", "SortOrder", "Category", "VisibleRuleID", "StateRuleID", "RelatedEvidenceIDs", "SolutionEvidenceIDs", "SolutionMode", "SolvedFlagID", "ResolvedDetail", "SuccessToast", "FailureToast", "RewardFlagID", "RewardValue", "RewardMode"],
+        "headers": ["QuestionID", "Title", "Detail", "SortOrder", "Category", "ResolutionType", "VisibleRuleID", "StateRuleID", "RelatedEvidenceIDs", "SolutionEvidenceIDs", "SolutionMode", "ContradictionPrompt", "ContradictionStatement", "SolvedFlagID", "ResolvedDetail", "SuccessToast", "FailureToast", "RewardFlagID", "RewardValue", "RewardMode"],
     },
     "StateDescriptorTable": {
         "headers": ["DescriptorID", "TargetFlagID", "MinValue", "MaxValue", "Label", "Detail"],
@@ -248,11 +248,14 @@ def build_question_rows(data):
             "Detail": question.get("detail"),
             "SortOrder": question.get("sort_order"),
             "Category": question.get("category"),
+            "ResolutionType": question.get("resolution_type"),
             "VisibleRuleID": question.get("visible_rule_id"),
             "StateRuleID": question.get("state_rule_id"),
             "RelatedEvidenceIDs": ", ".join(question.get("related_evidence_ids", []) or []),
             "SolutionEvidenceIDs": ", ".join(question.get("solution_evidence_ids", []) or []),
             "SolutionMode": question.get("solution_mode"),
+            "ContradictionPrompt": question.get("contradiction_prompt"),
+            "ContradictionStatement": question.get("contradiction_statement"),
             "SolvedFlagID": question.get("solved_flag_id"),
             "ResolvedDetail": question.get("resolved_detail"),
             "SuccessToast": question.get("success_toast"),

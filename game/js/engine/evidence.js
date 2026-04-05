@@ -288,12 +288,15 @@ const Evidence = (() => {
           state: evaluateQuestionState(question.state_rule_id, context),
           detail: question.detail || '',
           category: question.category || '',
+          resolutionType: question.resolution_type || 'Evidence',
           isSolved,
           resolvedDetail: question.resolved_detail || '',
           successToast: question.success_toast || '',
           failureToast: question.failure_toast || '',
           solutionEvidenceIds,
           solutionMode: question.solution_mode || (solutionEvidenceIds.length > 1 ? 'All' : 'Any'),
+          contradictionPrompt: question.contradiction_prompt || '',
+          contradictionStatement: question.contradiction_statement || '',
           solvedFlagId,
           rewardFlagId: question.reward_flag_id || '',
           rewardValue: question.reward_value,
@@ -325,12 +328,19 @@ const Evidence = (() => {
 
   function toggleQuestionEvidence(questionId, evidenceId) {
     if (!questionId || !evidenceId) return;
+    const question = getQuestionEntries().find(item => item.questionId === questionId);
+    if (!question) return;
     if (!_selectedEvidenceByQuestion[questionId]) {
       _selectedEvidenceByQuestion[questionId] = new Set();
     }
     const bucket = _selectedEvidenceByQuestion[questionId];
-    if (bucket.has(evidenceId)) bucket.delete(evidenceId);
-    else bucket.add(evidenceId);
+    if (isConnectionQuestion(question)) {
+      if (bucket.has(evidenceId)) bucket.delete(evidenceId);
+      else bucket.add(evidenceId);
+    } else {
+      bucket.clear();
+      bucket.add(evidenceId);
+    }
     if (this.isOpen()) renderNotebook();
   }
 
@@ -338,9 +348,18 @@ const Evidence = (() => {
     return Array.from(_selectedEvidenceByQuestion[questionId] || []);
   }
 
+  function isConnectionQuestion(question) {
+    if (!question) return false;
+    return question.resolutionType !== 'Contradiction'
+      && (((question.solutionEvidenceIds || []).length > 1) || question.solutionMode === 'All');
+  }
+
   function isQuestionSolved(question, selectedEvidenceIds) {
     const solutionIds = question.solutionEvidenceIds || [];
     if (solutionIds.length === 0) return false;
+    if (question.resolutionType === 'Contradiction') {
+      return selectedEvidenceIds.some(id => solutionIds.includes(id));
+    }
     if (question.solutionMode === 'All') {
       return solutionIds.every(id => selectedEvidenceIds.includes(id));
     }
