@@ -79,3 +79,11 @@ py G:\GSD\content\tools\validate_game_data.py
 - touched Python files compile
 - editor JS passes syntax check
 - validation still passes
+
+## Data-first reminder
+
+- Do not leave authorable gameplay metadata trapped in runtime constants if tables can own it.
+- For new repeatable content, check this order:
+  1. extend an existing table
+  2. add a new table
+  3. keep it in runtime only if it is derived logic

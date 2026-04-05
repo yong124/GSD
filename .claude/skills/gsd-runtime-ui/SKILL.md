@@ -102,3 +102,13 @@ powershell -ExecutionPolicy Bypass -File G:\GSD\content\tools\run_browser_playte
 - browser QA ran against a confirmed live local server
 - title, panels, and hotkeys do not obviously fight each other
 - the UI makes the current player task more legible than before
+
+## Data-first reminder
+
+- If a UI feature needs repeatable authored content, prefer table-backed data over runtime-only hardcoding.
+- Typical examples:
+  - notebook entries
+  - question metadata
+  - state labels
+  - scene goal text
+  - evidence category text

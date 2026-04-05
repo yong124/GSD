@@ -270,6 +270,23 @@ chcp 65001 > $null
 Get-Content '경로' -Encoding utf8
 ```
 
+## Data-First Rule
+
+- When adding repeatable content, prefer table/data ownership over runtime hardcoding.
+- Check in this order before writing new constants or switch logic:
+  1. can this be absorbed by an existing table?
+  2. does this need a new table?
+  3. is this truly runtime-only derived logic?
+- Move repeatable gameplay metadata into tables whenever practical:
+  - scene goals -> `SceneTable`
+  - notebook summaries / roles -> `CharacterTable`
+  - evidence category / hints -> `EvidenceTable`
+  - questions -> `QuestionTable`
+  - state labels / ranges -> `StateDescriptorTable`
+  - visibility / state rules -> `RuleTable`
+- Avoid adding authorable gameplay content only in `evidence.js`, `scene.js`, `ui.js`, or `editor.js` constants.
+- If structure changes, prefer updating `EditorNode -> pipeline -> game_data -> runtime -> validate/docs` in the same work round.
+
 한글이 깨져 보이는 경우에도, 실제 파일은 정상 UTF-8일 수 있다.
 
 ---

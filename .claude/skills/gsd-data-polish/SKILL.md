@@ -74,6 +74,18 @@ If tabular review is needed:
 py G:\GSD\content\tools\json_to_generated_xlsx.py
 ```
 
+## Data-first reminder
+
+- If the task introduces repeatable narrative metadata, move it into tables before defaulting to runtime hardcoding.
+- Prefer extending existing tables first:
+  - `CharacterTable`
+  - `EvidenceTable`
+  - `SceneTable`
+- Use dedicated tables when the content is cross-cutting:
+  - `QuestionTable`
+  - `StateDescriptorTable`
+  - `RuleTable`
+
 ## Watchouts
 
 - Do not assume mojibake means file corruption; re-open in UTF-8 first.
