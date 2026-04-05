@@ -145,6 +145,14 @@ const Scene = (() => {
       }
       case 'EvidenceOwned':
         return State.getFlag(`HasEvidence_${targetId}`) === true || State.getEvidence().includes(targetId);
+      case 'ChoiceSelected': {
+        const choiceIds = String(targetId || '')
+          .split('|')
+          .map(value => value.trim())
+          .filter(Boolean);
+        if (choiceIds.length === 0) return false;
+        return choiceIds.some(choiceId => State.hasChoice(choiceId));
+      }
       case 'RevealedCharacter':
         return getRevealedCharacterSet(context).has(targetId);
       case 'SceneProgressIndex':
@@ -171,18 +179,9 @@ const Scene = (() => {
     ));
   }
 
-  function passesCondition(condition, context = {}) {
-    if (!condition?.flag_key) return true;
-    const actual = State.getFlag(condition.flag_key);
-    const values = Array.isArray(condition.flag_value) ? condition.flag_value : [condition.flag_value];
-    return values.includes(actual);
-  }
-
   function passesConditionRef(item, context = {}) {
-    if (item?.condition_group_id) {
-      return passesConditionGroup(item.condition_group_id, context);
-    }
-    return passesCondition(item?.condition, context);
+    if (!item?.condition_group_id) return true;
+    return passesConditionGroup(item.condition_group_id, context);
   }
 
   function getChoiceGroup(choiceGroupId) {
@@ -287,15 +286,7 @@ const Scene = (() => {
   function resolveNextScene(scene) {
     const branches = scene.branches || [];
     for (const branch of branches) {
-      if (branch?.condition_group_id) {
-        if (passesConditionGroup(branch.condition_group_id, { sceneId: scene?.id })) {
-          return branch.next_scene || branch.next_scene_id;
-        }
-        continue;
-      }
-      const actual = State.getFlag(branch.flag_key);
-      const values = Array.isArray(branch.flag_value) ? branch.flag_value : [branch.flag_value];
-      if (values.includes(actual)) {
+      if (branch?.condition_group_id && passesConditionGroup(branch.condition_group_id, { sceneId: scene?.id })) {
         return branch.next_scene || branch.next_scene_id;
       }
     }
@@ -311,10 +302,7 @@ const Scene = (() => {
     if (nextType === 'Dialog') {
       return { nextScene: null, nextDialogue: nextId || null };
     }
-    return {
-      nextScene: choice?.next_scene || null,
-      nextDialogue: choice?.next_dialogue || null,
-    };
+    return { nextScene: null, nextDialogue: null };
   }
 
   function runScene(scene, fromLabel, restoreProgress = false) {

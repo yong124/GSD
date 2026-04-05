@@ -4,6 +4,7 @@ const State = (() => {
     dialogueIndex: 0,
     flags: {},
     evidence: [],
+    choice_history: [],
     chapter: 1,
   };
 
@@ -64,6 +65,24 @@ const State = (() => {
       return false;
     },
 
+    recordChoice(choiceId) {
+      if (!choiceId) return false;
+      if (!_state.choice_history.includes(choiceId)) {
+        _state.choice_history.push(choiceId);
+        _emit('choice:selected', choiceId);
+        return true;
+      }
+      return false;
+    },
+
+    hasChoice(choiceId) {
+      return _state.choice_history.includes(choiceId);
+    },
+
+    getChoiceHistory() {
+      return [..._state.choice_history];
+    },
+
     getEvidence() {
       return [..._state.evidence];
     },
@@ -80,6 +99,7 @@ const State = (() => {
           dialogueIndex: parsed.dialogueIndex ?? 0,
           flags: parsed.flags && typeof parsed.flags === 'object' ? parsed.flags : {},
           evidence: Array.isArray(parsed.evidence) ? parsed.evidence : [],
+          choice_history: Array.isArray(parsed.choice_history) ? parsed.choice_history : [],
           chapter: Number.isFinite(parsed.chapter) ? parsed.chapter : 1,
         };
         _emit('loaded', _state);
@@ -96,6 +116,7 @@ const State = (() => {
         dialogueIndex: 0,
         flags: {},
         evidence: [],
+        choice_history: [],
         chapter: 1,
       };
       _emit('reset');

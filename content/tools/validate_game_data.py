@@ -154,6 +154,18 @@ def validate_characters(data, issues):
 
 def validate_conditions(data, issues):
     conditions = data.get("conditions", []) or []
+    choice_ids = {
+        choice.get("choice_id")
+        for scene in (data.get("scenes", {}) or {}).values()
+        for choice in ((scene.get("choices", []) or []) + (scene.get("evidence_choices", []) or []))
+        if choice.get("choice_id")
+    }
+    evidence_ids = {
+        evidence.get("evidence_id")
+        for scene in (data.get("scenes", {}) or {}).values()
+        for evidence in (scene.get("evidence", []) or [])
+        if evidence.get("evidence_id")
+    }
     condition_ids = [item.get("condition_id") for item in conditions if item.get("condition_id")]
     duplicates = find_duplicates(condition_ids)
     for dup in duplicates:
@@ -167,6 +179,15 @@ def validate_conditions(data, issues):
             issues.append(f"[Condition.condition_type] {condition_id} missing ConditionType")
         if not item.get("compare_type"):
             issues.append(f"[Condition.compare_type] {condition_id} missing CompareType")
+        condition_type = item.get("condition_type")
+        target_id = item.get("condition_target_id")
+        if condition_type == "ChoiceSelected" and target_id:
+            target_ids = [value.strip() for value in str(target_id).split("|") if value.strip()]
+            for choice_id in target_ids:
+                if choice_id not in choice_ids:
+                    issues.append(f"[Condition.condition_target_id] {condition_id} -> {choice_id} (missing ChoiceID)")
+        if condition_type == "EvidenceOwned" and target_id and target_id not in evidence_ids:
+            issues.append(f"[Condition.condition_target_id] {condition_id} -> {target_id} (missing EvidenceID)")
 
 
 def validate_choice_groups(data, issues):

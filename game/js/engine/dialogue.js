@@ -7,17 +7,11 @@ const Dialogue = (() => {
   let _stageState = { Left: null, Center: null, Right: null };
 
   function passesCondition(line) {
-    if (line?.condition_group_id && typeof Scene?.passesConditionGroup === 'function') {
-      return Scene.passesConditionGroup(line.condition_group_id, {
-        sceneId: State.currentSceneId,
-        sceneProgressIndex: _index + 1,
-      });
-    }
-    const condition = line?.condition;
-    if (!condition?.flag_key) return true;
-    const actual = State.getFlag(condition.flag_key);
-    const expectedValues = Array.isArray(condition.flag_value) ? condition.flag_value : [condition.flag_value];
-    return expectedValues.includes(actual);
+    if (!line?.condition_group_id || typeof Scene?.passesConditionGroup !== 'function') return true;
+    return Scene.passesConditionGroup(line.condition_group_id, {
+      sceneId: State.currentSceneId,
+      sceneProgressIndex: _index + 1,
+    });
   }
 
   function getCharacterName(line) {

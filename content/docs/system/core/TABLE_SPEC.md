@@ -24,6 +24,7 @@
 
 - `Trust`
 - `EvidenceOwned`
+- `ChoiceSelected`
 - `RevealedCharacter`
 - `SceneProgressIndex`
 - `InvestigationScore`
