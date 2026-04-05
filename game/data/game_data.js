@@ -3199,6 +3199,21 @@ window.GAME_DATA = {
           "emotion_type": "Tense",
           "standing_slot": "Right",
           "focus_type": "Speaker"
+        },
+        {
+          "order": 12,
+          "speaker": "유웅룡",
+          "text": "송금이 스스로 달아났다는 식으로 몰아붙인 말도 결국 기사 한 귀퉁이의 편한 변명에 불과했군요. 이 일기장 앞에선 그런 설명이 버티질 못합니다.",
+          "style": "thought",
+          "portrait": "assets/portraits/yuu.jpeg",
+          "condition": {
+            "flag_key": "QuestionSolved_QSonggeumRunaway",
+            "flag_value": true
+          },
+          "speaker_id": "Yuu",
+          "emotion_type": "Tense",
+          "standing_slot": "Right",
+          "focus_type": "Speaker"
         }
       ],
       "evidence_dialogues": {
@@ -3281,6 +3296,24 @@ window.GAME_DATA = {
           "flag_value": 3,
           "next_scene": "ch4a_articles_note",
           "next_dialogue": "articles_note_react"
+        },
+          {
+            "order": 3,
+            "text": "삭제된 문장과 증언을 묶어 편집장의 의도를 먼저 추적한다.",
+            "flag_key": "FoundOldArticles",
+            "flag_value": true,
+            "extra_flags": [
+              {
+                "flag_key": "ExposedArchivePattern",
+                "flag_value": true
+              }
+            ],
+            "next_scene": "ch4a_articles_expose",
+            "next_dialogue": "articles_expose_react",
+            "condition": {
+              "flag_key": "QuestionSolved_QSonggeumRunaway",
+              "flag_value": true
+          }
         }
       ],
       "evidence": [
@@ -3385,6 +3418,41 @@ window.GAME_DATA = {
           "emotion_type": "Tense",
           "standing_slot": "Right",
           "focus_type": "Speaker"
+        }
+      ],
+      "choices": [],
+      "evidence": []
+    },
+    "ch4a_articles_expose": {
+      "id": "ch4a_articles_expose",
+      "chapter": 4,
+      "title": "삭제된 문장을 잇다",
+      "background": "assets/bg/newsroom.jpeg",
+      "music": "assets/sfx/mystery.mp3",
+      "next_scene": "ch4a_slum",
+      "effect": null,
+      "branches": [],
+      "dialogues": [
+        {
+          "order": 1,
+          "label": "articles_expose_react",
+          "speaker": "유웅룡",
+          "speaker_id": "Yuu",
+          "emotion_type": "Tense",
+          "standing_slot": "Right",
+          "focus_type": "Speaker",
+          "text": "좋습니다. 이제 실종을 도피로 덮은 쪽과, 기사를 잘라 낸 쪽을 같은 손으로 보겠습니다. 지운 문장과 지워진 사람을 한 장에서 떼어 읽을 순 없으니까요.",
+          "style": "thought",
+          "portrait": "assets/portraits/yuu.jpeg",
+          "condition": null
+        },
+        {
+          "order": 2,
+          "speaker": "",
+          "text": "유웅룡은 기사 뭉치 위에 메모를 덧대며, 누가 어떤 설명을 편한 거짓말로 남겼는지부터 다시 줄을 긋는다. 이제 자료실은 보관소가 아니라 반박문을 준비하는 작업대처럼 보인다.",
+          "style": "narration",
+          "portrait": null,
+          "condition": null
         }
       ],
       "choices": [],
@@ -4894,6 +4962,21 @@ window.GAME_DATA = {
             "flag_key": "HasEvidence_EvOldArticles",
             "flag_value": true
           }
+        },
+        {
+          "order": 16,
+          "speaker": "유웅룡",
+          "text": "이걸 우발적 광신쯤으로 넘기긴 어렵습니다. 종이에 적힌 순서와 남은 몫이 전부 맞아떨어져요. 저들은 처음부터 사람 수까지 세며 판을 굴렸습니다.",
+          "style": "thought",
+          "portrait": "assets/portraits/yuu.jpeg",
+          "condition": {
+            "flag_key": "QuestionSolved_QRitualAccident",
+            "flag_value": true
+          },
+          "speaker_id": "Yuu",
+          "emotion_type": "Tense",
+          "standing_slot": "Right",
+          "focus_type": "Speaker"
         }
       ],
       "evidence_dialogues": {
@@ -4944,6 +5027,28 @@ window.GAME_DATA = {
             "portrait": null,
             "condition": null
           }
+        ],
+        "present_mask": [
+          {
+            "order": 1,
+            "speaker": "유웅룡",
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker",
+            "text": "가면의 네 눈과 제단 문양이 정확히 맞물립니다. 우발적 광신이라면 이런 식의 배치가 나올 리 없어요. 이건 누가 어느 자리에서 무엇을 보게 할지까지 짜 둔 판입니다.",
+            "style": "thought",
+            "portrait": "assets/portraits/yuu.jpeg",
+            "condition": null
+          },
+          {
+            "order": 2,
+            "speaker": "",
+            "text": "가면을 제단 위에 맞대는 순간, 장식처럼 보이던 문양이 자리표처럼 읽히기 시작한다. 숨 넘어가는 노래조차 즉흥이 아니라 정해진 위치를 따라 흐르던 의식이었다는 감각이 섬뜩하게 또렷해진다.",
+            "style": "narration",
+            "portrait": null,
+            "condition": null
+          }
         ]
       },
       "evidence_choices": [
@@ -4962,6 +5067,24 @@ window.GAME_DATA = {
           "flag_key": "ResonanceLevel",
           "flag_value": 2,
           "next_dialogue": "present_ritual_score"
+        },
+          {
+            "order": 3,
+            "text": "가면의 눈 배열을 제단 문양과 대조한다.",
+            "evidence_id": "EvMask",
+            "flag_key": "InvestigationScore",
+            "flag_value": 4,
+            "extra_flags": [
+              {
+                "flag_key": "MatchedRitualPattern",
+                "flag_value": true
+              }
+            ],
+            "next_dialogue": "present_mask",
+            "condition": {
+              "flag_key": "QuestionSolved_QRitualAccident",
+              "flag_value": true
+            }
         }
       ],
       "choices": [],
@@ -5347,6 +5470,25 @@ window.GAME_DATA = {
           "priority_cost": 1,
           "next_dialogue": "ritual_hesitate",
           "next_scene": null
+        },
+          {
+            "order": 4,
+            "text": "지금까지 붙든 질문과 단서를 들이밀며 이해심을 몰아세운다.",
+            "flag_key": "FinalChoice",
+            "flag_value": "B",
+            "extra_flags": [
+              {
+                "flag_key": "ExposedTruthAtRitual",
+                "flag_value": true
+              }
+            ],
+            "priority_cost": 1,
+            "next_dialogue": "ritual_expose",
+            "next_scene": null,
+            "condition": {
+              "flag_key": "SolvedQuestionCount",
+            "flag_value": [4, 5, 6]
+          }
         }
       ],
       "evidence": [],
@@ -5427,11 +5569,47 @@ window.GAME_DATA = {
           "speaker": "",
           "text": "의식은 이미 균열을 드러냈다. 이제 남은 것은 누가 어디로 몸을 던졌는지, 그리고 그 선택이 무엇을 사람으로 남길지뿐이다.",
           "style": "narration",
-          "portrait": null,
-          "condition": null
-        }
-      ]
-    },
+            "portrait": null,
+            "condition": null
+          }
+        ],
+        "ritual_expose": [
+          {
+            "order": 1,
+            "speaker": "유웅룡",
+            "speaker_id": "Yuu",
+            "emotion_type": "Angry",
+            "standing_slot": "Right",
+            "focus_type": "Speaker",
+            "idle_motion": "ShakeLight",
+            "text": "그만 연기합시다. 이판규를 미친놈으로 덮고, 송금을 도망친 사람으로 만들고, 의식을 우발적 광신이라 부른 거짓말이 전부 여기서 이어졌습니다. 이제 남은 건 사람 잡아먹는 판을 들키지 않으려는 몸부림뿐이군요.",
+            "style": "normal",
+            "portrait": "assets/portraits/yuu.jpeg",
+            "condition": null
+          },
+          {
+            "order": 2,
+            "speaker": "이해심",
+            "speaker_id": "Haesim",
+            "emotion_type": "Crazy",
+            "standing_slot": "Center",
+            "focus_type": "Speaker",
+            "idle_motion": "Tremble",
+            "text": "입을 맞춘다고 진실이 되는 줄 아느냐. 질문 몇 개 풀었다고 문턱의 무게를 재단할 수는 없어.",
+            "style": "normal",
+            "portrait": "assets/portraits/haesim.jpeg",
+            "condition": null
+          },
+          {
+            "order": 3,
+            "speaker": "",
+            "text": "쌓아 온 질문들이 한꺼번에 제단 위로 던져진다. 방 안 공기가 순간 비틀린다. 이해심 쪽 의식의 흐름이 아주 잠깐 끊기고, 유웅룡은 그 틈을 몸으로 파고든다.",
+            "style": "narration",
+            "portrait": null,
+            "condition": null
+          }
+        ]
+      },
     "ch6_choice_a": {
       "id": "ch6_choice_a",
       "chapter": 6,
@@ -5611,6 +5789,17 @@ window.GAME_DATA = {
             "flag_key": "SolvedQuestionCount",
             "flag_value": [2, 3]
           }
+        },
+        {
+          "order": 3,
+          "speaker": "",
+          "text": "더 나아가, 그중 몇몇은 아예 거짓말의 모양으로 남아 있었다. 미친 넋두리, 자발적 도피, 우발적 광신. 여기까지 오며 그 편한 설명들을 하나씩 부순 사람에겐 이제 무엇을 택하든 변명할 자리가 더 좁다.",
+          "style": "narration",
+          "portrait": null,
+          "condition": {
+            "flag_key": "SolvedQuestionCount",
+            "flag_value": [4, 5, 6]
+          }
         }
       ],
       "choices": [],
@@ -5668,36 +5857,42 @@ window.GAME_DATA = {
       "branches": [
         {
           "order": 1,
+          "flag_key": "MatchedRitualPattern",
+          "flag_value": true,
+          "next_scene": "ch6_ending_a"
+        },
+        {
+          "order": 2,
           "flag_key": "SolvedQuestionCount",
           "flag_value": [2, 3],
           "next_scene": "ch6_ending_a"
         },
         {
-          "order": 2,
+          "order": 3,
           "flag_key": "TrustedSongsoon",
           "flag_value": true,
           "next_scene": "ch6_ending_a"
         },
         {
-          "order": 3,
+          "order": 4,
           "flag_key": "SongsoonTrust",
           "flag_value": 2,
           "next_scene": "ch6_ending_a"
         },
         {
-          "order": 4,
+          "order": 5,
           "flag_key": "SongsoonTrust",
           "flag_value": 1,
           "next_scene": "ch6_ending_a"
         },
         {
-          "order": 5,
+          "order": 6,
           "flag_key": "OkryunPushed",
           "flag_value": true,
           "next_scene": "ch6_ending_a"
         },
         {
-          "order": 6,
+          "order": 7,
           "flag_key": "EndingAScore",
           "flag_value": 2,
           "next_scene": "ch6_ending_a"
@@ -5743,6 +5938,17 @@ window.GAME_DATA = {
           "condition": {
             "flag_key": "SolvedQuestionCount",
             "flag_value": [2, 3]
+          }
+        },
+        {
+          "order": 5,
+          "speaker": "",
+          "text": "가면의 눈과 제단 문양이 어떻게 맞물렸는지까지 짚고 들어왔기에, 두 사람이 지금 끊어 낸 것이 막연한 공포가 아니라 짜여진 의식의 한 축이었다는 사실이 더 분명하게 남는다.",
+          "style": "narration",
+          "portrait": null,
+          "condition": {
+            "flag_key": "MatchedRitualPattern",
+            "flag_value": true
           }
         }
       ],
@@ -5846,24 +6052,36 @@ window.GAME_DATA = {
       "branches": [
         {
           "order": 1,
-          "flag_key": "SolvedQuestionCount",
-          "flag_value": [2, 3],
+          "flag_key": "ExposedTruthAtRitual",
+          "flag_value": true,
           "next_scene": "ch6_ending_b"
         },
         {
           "order": 2,
-          "flag_key": "ReadRitualScore",
+          "flag_key": "ExposedArchivePattern",
           "flag_value": true,
           "next_scene": "ch6_ending_b"
         },
         {
           "order": 3,
+          "flag_key": "SolvedQuestionCount",
+          "flag_value": [2, 3],
+          "next_scene": "ch6_ending_b"
+        },
+        {
+          "order": 4,
+          "flag_key": "ReadRitualScore",
+          "flag_value": true,
+          "next_scene": "ch6_ending_b"
+        },
+        {
+          "order": 5,
           "flag_key": "InvestigationScore",
           "flag_value": 3,
           "next_scene": "ch6_ending_b"
         },
         {
-          "order": 4,
+          "order": 6,
           "flag_key": "CalledEditor",
           "flag_value": false,
           "next_scene": "ch6_ending_b"
@@ -5909,6 +6127,28 @@ window.GAME_DATA = {
           "condition": {
             "flag_key": "SolvedQuestionCount",
             "flag_value": [2, 3]
+          }
+        },
+        {
+          "order": 5,
+          "speaker": "",
+          "text": "자료실에서 이어 붙인 문장과 제단 앞에서 들이민 반박까지 겹치자, 남길 기록은 추측보다 고발문에 가까워진다. 누가 어떤 거짓말로 사람을 밀어 넣었는지까지 적을 자리가 생긴다.",
+          "style": "narration",
+          "portrait": null,
+          "condition": {
+            "flag_key": "ExposedArchivePattern",
+            "flag_value": true
+          }
+        },
+        {
+          "order": 6,
+          "speaker": "",
+          "text": "마지막 제단 앞에서 거짓말의 모양을 직접 들이민 탓에, 이제는 우발이었다는 말로도 이 밤을 봉합하기 어렵다. 남길 문장 자체가 한층 더 날카로워진다.",
+          "style": "narration",
+          "portrait": null,
+          "condition": {
+            "flag_key": "ExposedTruthAtRitual",
+            "flag_value": true
           }
         }
       ],
@@ -6028,6 +6268,21 @@ window.GAME_DATA = {
           "condition": {
             "flag_key": "SolvedQuestionCount",
             "flag_value": [2, 3]
+          },
+          "speaker_id": "Yuu",
+          "emotion_type": "Tense",
+          "standing_slot": "Right",
+          "focus_type": "Speaker"
+        },
+        {
+          "order": 10,
+          "speaker": "유웅룡",
+          "text": "적어도 이 의식이 어떻게 짜였는지는 이제 분명합니다. 오늘 밤을 막연한 재앙 하나로 넘기진 않겠습니다. 누가 판을 깔았는지도 함께 남길 겁니다.",
+          "style": "thought",
+          "portrait": "assets/portraits/yuu.jpeg",
+          "condition": {
+            "flag_key": "MatchedRitualPattern",
+            "flag_value": true
           },
           "speaker_id": "Yuu",
           "emotion_type": "Tense",
@@ -6420,6 +6675,17 @@ window.GAME_DATA = {
           "condition": {
             "flag_key": "SolvedQuestionCount",
             "flag_value": [4, 5, 6]
+          }
+        },
+        {
+          "order": 13,
+          "speaker": "",
+          "text": "자료실에서 이어 붙인 기사와 제단 앞에서 들이민 반박까지 남아 있다면, 그 수첩은 더 이상 메모장이 아니다. 도시에 맞서 끝내 접지 않은 고발문에 가깝다.",
+          "style": "narration",
+          "portrait": null,
+          "condition": {
+            "flag_key": "ExposedArchivePattern",
+            "flag_value": true
           }
         }
       ],

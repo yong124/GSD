@@ -14,7 +14,11 @@ const Choice = (() => {
       case 'InvestigationScore':
       case 'ReadRitualScore':
       case 'FoundOldArticles':
+      case 'ExposedArchivePattern':
+      case 'MatchedRitualPattern':
         return '조사 감각이 한층 또렷해집니다.';
+      case 'ExposedTruthAtRitual':
+        return '마지막 대면의 기울기가 더 날카로워집니다.';
       case 'ResonanceLevel':
       case 'TouchedRoomWall':
         return '공명의 기색이 더 짙어집니다.';
@@ -32,15 +36,19 @@ const Choice = (() => {
     if (choice?.evidence_id) return 'choice-evidence';
     const key = choice?.flag_key || '';
     if (['SongsoonTrust', 'TrustedSongsoon', 'OkryunPushed'].includes(key)) return 'choice-relationship';
-    if (['InvestigationScore', 'ReadRitualScore', 'FoundOldArticles'].includes(key)) return 'choice-investigation';
-    if (['ResonanceLevel', 'TouchedRoomWall', 'FinalChoice'].includes(key)) return 'choice-risk';
+    if (['InvestigationScore', 'ReadRitualScore', 'FoundOldArticles', 'ExposedArchivePattern', 'MatchedRitualPattern'].includes(key)) return 'choice-investigation';
+    if (['ResonanceLevel', 'TouchedRoomWall', 'FinalChoice', 'ExposedTruthAtRitual'].includes(key)) return 'choice-risk';
     return 'choice-decision';
   }
 
+  function applyFlagSet(flag) {
+    if (!flag?.flag_key) return;
+    State.setFlag(flag.flag_key, flag.flag_value ?? true);
+  }
+
   function applyChoiceFlag(choice) {
-    if (choice?.flag_key) {
-      State.setFlag(choice.flag_key, choice.flag_value ?? true);
-    }
+    applyFlagSet(choice);
+    (choice?.extra_flags || []).forEach(applyFlagSet);
   }
 
   function showChoiceImpact(choice, isPriority = false) {

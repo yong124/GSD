@@ -67,6 +67,27 @@ def validate_scene_refs(scene_id, scenes, issues):
             )
 
 
+def validate_extra_flags(scene_id, scene, issues):
+    buckets = [
+        ("choices", scene.get("choices", [])),
+        ("evidence_choices", scene.get("evidence_choices", [])),
+    ]
+    for bucket_name, items in buckets:
+        for item in items:
+            extra_flags = item.get("extra_flags") or []
+            if not extra_flags:
+                continue
+            if not isinstance(extra_flags, list):
+                issues.append(f"[{bucket_name}.extra_flags] {scene_id} order={item.get('order')} extra_flags must be a list")
+                continue
+            for index, flag in enumerate(extra_flags, start=1):
+                if not isinstance(flag, dict):
+                    issues.append(f"[{bucket_name}.extra_flags] {scene_id} order={item.get('order')} extra_flags[{index}] must be an object")
+                    continue
+                if not flag.get("flag_key"):
+                    issues.append(f"[{bucket_name}.extra_flags] {scene_id} order={item.get('order')} extra_flags[{index}] missing flag_key")
+
+
 def validate_scene_orders(scene_id, scene, issues):
     for key in ("dialogues", "choices", "branches"):
         items = scene.get(key, [])
@@ -262,6 +283,7 @@ def main():
     for scene_id in sorted(scenes.keys()):
         scene = scenes[scene_id]
         validate_scene_refs(scene_id, scenes, issues)
+        validate_extra_flags(scene_id, scene, issues)
         validate_scene_orders(scene_id, scene, issues)
         validate_dialog_labels(scene_id, scene, issues)
         validate_dialogue_character_refs(scene_id, scene, data, issues)

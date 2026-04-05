@@ -74,12 +74,25 @@ const Scene = (() => {
     triggerEnding();
   }
 
-  function hasPriorityMode(scene) {
-    return (scene.priority_budget || 0) > 0 && (scene.choices || []).some(choice => choice.priority_cost != null);
+  function passesCondition(condition) {
+    if (!condition?.flag_key) return true;
+    const actual = State.getFlag(condition.flag_key);
+    const values = Array.isArray(condition.flag_value) ? condition.flag_value : [condition.flag_value];
+    return values.includes(actual);
+  }
+
+  function getAvailableChoices(scene) {
+    return (scene.choices || []).filter(choice => passesCondition(choice?.condition));
+  }
+
+  function hasPriorityMode(scene, choices = null) {
+    const visibleChoices = Array.isArray(choices) ? choices : getAvailableChoices(scene);
+    return (scene.priority_budget || 0) > 0 && visibleChoices.some(choice => choice.priority_cost != null);
   }
 
   function getAvailableEvidenceChoices(scene) {
     return (scene.evidence_choices || []).filter(choice => {
+      if (!passesCondition(choice?.condition)) return false;
       const evidenceId = choice?.evidence_id;
       if (!evidenceId) return false;
       return State.getFlag(`HasEvidence_${evidenceId}`) === true;
@@ -131,13 +144,13 @@ const Scene = (() => {
 
     function afterDialogue() {
       Evidence.collectOnClick(scene);
-      const choices = scene.choices || [];
+      const choices = getAvailableChoices(scene);
       const evidenceChoices = getAvailableEvidenceChoices(scene);
 
       const continueAfterEvidence = () => {
-        if (hasPriorityMode(scene)) {
+        if (hasPriorityMode(scene, choices)) {
           const afterLines = scene.priority_after_dialogues || [];
-          Choice.showPriority(scene, () => {
+          Choice.showPriority({ ...scene, choices }, () => {
             if (afterLines.length > 0) {
               Dialogue.start(afterLines, () => loadResolvedNext(scene), null);
             } else {
