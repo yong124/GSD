@@ -148,7 +148,16 @@ def validate_dialogue_character_refs(scene_id, scene, data, issues):
 
 def validate_questions(data, issues):
     questions = data.get("questions", []) or []
-    known_rule_ids = {rule.get("rule_id") for rule in (data.get("rules", []) or []) if rule.get("rule_id")}
+    visible_rule_ids = {
+        rule.get("rule_id")
+        for rule in (data.get("rules", []) or [])
+        if rule.get("rule_id") and rule.get("rule_kind") == "Visible"
+    }
+    state_rule_ids = {
+        rule.get("rule_id")
+        for rule in (data.get("rules", []) or [])
+        if rule.get("rule_id") and rule.get("rule_kind") == "State"
+    }
     question_ids = [question.get("question_id") for question in questions if question.get("question_id")]
     duplicates = find_duplicates(question_ids)
     for dup in duplicates:
@@ -161,10 +170,10 @@ def validate_questions(data, issues):
             issues.append(f"[Question.title] {question.get('question_id') or '(unknown)'} missing Title")
         visible_rule_id = question.get("visible_rule_id")
         state_rule_id = question.get("state_rule_id")
-        if visible_rule_id and visible_rule_id not in known_rule_ids:
-            issues.append(f"[Question.visible_rule_id] {question.get('question_id') or '(unknown)'} -> {visible_rule_id} (missing RuleID)")
-        if state_rule_id and state_rule_id not in known_rule_ids:
-            issues.append(f"[Question.state_rule_id] {question.get('question_id') or '(unknown)'} -> {state_rule_id} (missing RuleID)")
+        if visible_rule_id and visible_rule_id not in visible_rule_ids:
+            issues.append(f"[Question.visible_rule_id] {question.get('question_id') or '(unknown)'} -> {visible_rule_id} (missing Visible RuleID)")
+        if state_rule_id and state_rule_id not in state_rule_ids:
+            issues.append(f"[Question.state_rule_id] {question.get('question_id') or '(unknown)'} -> {state_rule_id} (missing State RuleID)")
 
 
 def validate_state_descriptors(data, issues):

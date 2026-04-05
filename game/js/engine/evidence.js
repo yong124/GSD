@@ -127,7 +127,7 @@ const Evidence = (() => {
       case 'SceneProgressIndex':
         return context.sceneProgressIndex;
       case 'FlagValue':
-        return Number(State.getFlag(factKey) ?? 0);
+        return State.getFlag(factKey);
       default:
         return null;
     }
@@ -140,15 +140,15 @@ const Evidence = (() => {
     return actualValue === expectedValue;
   }
 
-  function getRulesById(ruleId) {
+  function getRulesById(ruleId, ruleKind = null) {
     return (Engine.data?.rules || [])
-      .filter(rule => rule?.rule_id === ruleId)
+      .filter(rule => rule?.rule_id === ruleId && (!ruleKind || rule?.rule_kind === ruleKind))
       .slice()
       .sort((a, b) => Number(a?.priority || 0) - Number(b?.priority || 0));
   }
 
   function evaluateQuestionVisible(ruleId, context) {
-    const rules = getRulesById(ruleId);
+    const rules = getRulesById(ruleId, 'Visible');
     if (rules.length === 0) return true;
     return rules.some(rule => compareRuleValue(
       getRuleFactValue(rule, context),
@@ -158,7 +158,7 @@ const Evidence = (() => {
   }
 
   function evaluateQuestionState(ruleId, context) {
-    const rules = getRulesById(ruleId);
+    const rules = getRulesById(ruleId, 'State');
     if (rules.length === 0) return '추적 중';
     const matched = rules.find(rule => compareRuleValue(
       getRuleFactValue(rule, context),
