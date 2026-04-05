@@ -300,7 +300,8 @@ const Scene = (() => {
         return branch.next_scene || branch.next_scene_id;
       }
     }
-    return scene.next_scene;
+    const defaultBranch = branches.find(branch => !branch?.condition_group_id);
+    return defaultBranch?.next_scene || null;
   }
 
   function resolveChoiceNavigation(choice) {
