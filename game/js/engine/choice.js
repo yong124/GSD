@@ -85,11 +85,11 @@ const Choice = (() => {
 
   function getPriorityMeta(scene, budget, spent) {
     const remaining = Math.max(0, budget - spent);
-    const title = scene.priority_title || scene.title || '조사 장면';
+    const title = scene.title || '조사 장면';
     return {
       kicker: '조사 중',
       title,
-      hint: scene.priority_hint || '남은 조사 기회 안에서 무엇을 먼저 확인할지 정하세요.',
+      hint: scene.hint || '남은 조사 기회 안에서 무엇을 먼저 확인할지 정하세요.',
       indicator: `남은 조사 기회  ${remaining} / ${budget}`,
       hudText: `${title} · ${remaining} / ${budget}`,
     };

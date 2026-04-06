@@ -1109,10 +1109,6 @@
       (d) => `
         <label><span>DialogID</span>
           <input data-field="dialog_id" value="${escapeAttr(d.dialog_id || '')}" placeholder="예: Dlg_Cafe_010"></label>
-        <label><span>레이블 (점프 대상)</span>
-          <input data-field="label" value="${escapeAttr(d.label || '')}" placeholder="예: after_choice_a"></label>
-        <label><span>화자</span>
-          <input data-field="speaker" value="${escapeAttr(d.speaker || '')}"></label>
         <label><span>SpeakerID</span>
           <input data-field="speaker_id" value="${escapeAttr(d.speaker_id || '')}" placeholder="?? Yuu"></label>
         <label><span>EmotionType</span>

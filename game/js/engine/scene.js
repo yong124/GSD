@@ -233,9 +233,9 @@ const Scene = (() => {
       const group = getChoiceGroup(investigationChoices[0]?.choice_group_id);
       return {
         investigation_id: scene?.investigation_id || investigationChoices[0]?.choice_group_id || scene?.id,
-        title: scene?.priority_title || scene?.title || '조사 장면',
-        hint: scene?.priority_hint || '남은 조사 기회 안에서 무엇을 먼저 확인할지 정하세요.',
-        budget: group?.max_selectable ?? scene?.priority_budget ?? 1,
+        title: scene?.title || '조사 장면',
+        hint: '남은 조사 기회 안에서 무엇을 먼저 확인할지 정하세요.',
+        budget: group?.max_selectable ?? 1,
         choice_group_id: group?.choice_group_id || investigationChoices[0]?.choice_group_id || null,
       };
     }

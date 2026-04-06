@@ -16,13 +16,13 @@ const Dialogue = (() => {
 
   function getCharacterName(line) {
     if (line.style === 'narration') return '';
-    return Engine.data?.characters?.[line.speaker_id]?.display_name || line.speaker || '';
+    return Engine.data?.characters?.[line.speaker_id]?.display_name || '';
   }
 
   function getCharacterImage(line) {
     const char = Engine.data?.characters?.[line.speaker_id];
     const emoPath = Engine.data?.character_emotions?.[line.speaker_id]?.[line.emotion_type];
-    return emoPath || char?.default_image_path || line.portrait || '';
+    return emoPath || char?.default_image_path || '';
   }
 
   function resetStage() {
