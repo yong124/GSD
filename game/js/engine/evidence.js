@@ -8,8 +8,11 @@ const Evidence = (() => {
 
   function getEvidenceCategory(ev) {
     const category = _evidenceCategories[ev?.category_id];
+    if (!category && ev?.category_id) {
+      console.warn(`[Evidence] category_id '${ev.category_id}' not found in EvidenceCategoryTable (evidence: ${ev.evidence_id})`);
+    }
     return {
-      key: ev?.category_id || category?.category_id || 'trace',
+      key: ev?.category_id || 'trace',
       title: category?.category_title || '현장 물증',
       hint: category?.category_hint || '현장에서 직접 붙잡은 흔적',
     };

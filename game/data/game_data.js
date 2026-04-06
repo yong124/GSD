@@ -201,7 +201,7 @@ window.GAME_DATA = {
     {
       "condition_id": "Cond_Room4_ReadRitual_01",
       "condition_group_id": "CG_Room4_ReadRitual",
-      "condition_type": "ReadRitualScore",
+      "condition_type": "StateValue",
       "condition_target_id": "ReadRitualScore",
       "compare_type": "Equal",
       "condition_value": true
@@ -217,7 +217,7 @@ window.GAME_DATA = {
     {
       "condition_id": "Cond_Library_Investigation_01",
       "condition_group_id": "CG_Library_Investigation2",
-      "condition_type": "InvestigationScore",
+      "condition_type": "StateValue",
       "condition_target_id": "InvestigationScore",
       "compare_type": "GreaterEqual",
       "condition_value": 2
@@ -281,7 +281,7 @@ window.GAME_DATA = {
     {
       "condition_id": "Cond_Threshold_Resonance_01",
       "condition_group_id": "CG_Threshold_Resonance2",
-      "condition_type": "ResonanceLevel",
+      "condition_type": "StateValue",
       "condition_target_id": "ResonanceLevel",
       "compare_type": "GreaterEqual",
       "condition_value": 2
@@ -297,7 +297,7 @@ window.GAME_DATA = {
     {
       "condition_id": "Cond_Threshold_Investigation_01",
       "condition_group_id": "CG_Threshold_Investigation3",
-      "condition_type": "InvestigationScore",
+      "condition_type": "StateValue",
       "condition_target_id": "InvestigationScore",
       "compare_type": "GreaterEqual",
       "condition_value": 3
@@ -332,7 +332,7 @@ window.GAME_DATA = {
     {
       "condition_id": "Cond_RitualScene_Resonance_01",
       "condition_group_id": "CG_RitualScene_Resonance2",
-      "condition_type": "ResonanceLevel",
+      "condition_type": "StateValue",
       "condition_target_id": "ResonanceLevel",
       "compare_type": "GreaterEqual",
       "condition_value": 2
@@ -502,7 +502,7 @@ window.GAME_DATA = {
     {
       "condition_id": "Cond_Descent_SongsoonTrust1_01",
       "condition_group_id": "CG_Descent_SongsoonTrust1",
-      "condition_type": "SongsoonTrust",
+      "condition_type": "StateValue",
       "condition_target_id": "SongsoonTrust",
       "compare_type": "GreaterEqual",
       "condition_value": 1
@@ -510,7 +510,7 @@ window.GAME_DATA = {
     {
       "condition_id": "Cond_Branch_SongsoonTrust2_01",
       "condition_group_id": "CG_Branch_SongsoonTrust2",
-      "condition_type": "SongsoonTrust",
+      "condition_type": "StateValue",
       "condition_target_id": "SongsoonTrust",
       "compare_type": "GreaterEqual",
       "condition_value": 2
@@ -518,7 +518,7 @@ window.GAME_DATA = {
     {
       "condition_id": "Cond_Branch_SongsoonTrust1_01",
       "condition_group_id": "CG_Branch_SongsoonTrust1",
-      "condition_type": "SongsoonTrust",
+      "condition_type": "StateValue",
       "condition_target_id": "SongsoonTrust",
       "compare_type": "GreaterEqual",
       "condition_value": 1
@@ -542,7 +542,7 @@ window.GAME_DATA = {
     {
       "condition_id": "Cond_Branch_ReadRitual_01",
       "condition_group_id": "CG_Branch_ReadRitual",
-      "condition_type": "ReadRitualScore",
+      "condition_type": "StateValue",
       "condition_target_id": "ReadRitualScore",
       "compare_type": "Equal",
       "condition_value": true
@@ -550,7 +550,7 @@ window.GAME_DATA = {
     {
       "condition_id": "Cond_Branch_Investigation3_01",
       "condition_group_id": "CG_Branch_Investigation3",
-      "condition_type": "InvestigationScore",
+      "condition_type": "StateValue",
       "condition_target_id": "InvestigationScore",
       "compare_type": "GreaterEqual",
       "condition_value": 3

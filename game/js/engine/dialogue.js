@@ -127,11 +127,11 @@ const Dialogue = (() => {
       });
     },
 
-    start(lines, onDone, fromLabel, restoreProgress = false) {
+    start(lines, onDone, fromDialogId, restoreProgress = false) {
       _lines = (lines || []).filter(passesCondition);
-      
-      if (fromLabel) {
-        const idx = _lines.findIndex(l => l.label === fromLabel || l.dialog_id === fromLabel);
+
+      if (fromDialogId) {
+        const idx = _lines.findIndex(l => l.dialog_id === fromDialogId);
         _index = idx >= 0 ? idx : 0;
       } else if (restoreProgress) {
         const savedIndex = Number.isInteger(State.dialogueIndex) ? State.dialogueIndex : 0;
