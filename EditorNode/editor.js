@@ -1129,10 +1129,6 @@
           <select data-field="style">
             ${STYLE_OPTIONS.map(s => `<option value="${s}"${(d.style||'normal')===s?' selected':''}>${s}</option>`).join('')}
           </select></label>
-        <label><span>초상화</span>
-          <input data-field="portrait" value="${escapeAttr(d.portrait || '')}">
-          ${d.portrait ? `<img class="portrait-thumb" src="../game/${escapeAttr(d.portrait)}" alt="">` : ''}
-        </label>
         <label><span>텍스트</span>
           <textarea data-field="text">${escapeHtml(d.text || '')}</textarea></label>
         <label><span>ConditionGroupID</span>
@@ -1156,23 +1152,6 @@
           state.previewDialogueIndex = index;
           renderDialoguePreview(scene);
         });
-      });
-    });
-
-    // portrait 썸네일 실시간 업데이트
-    cards.querySelectorAll('[data-field="portrait"]').forEach(input => {
-      input.addEventListener('input', () => {
-        let thumb = input.parentElement.querySelector('.portrait-thumb');
-        if (thumb) {
-          thumb.src = input.value ? `../game/${input.value}` : '';
-          thumb.hidden = !input.value;
-        } else if (input.value) {
-          const img = document.createElement('img');
-          img.className = 'portrait-thumb';
-          img.alt = '';
-          img.src = `../game/${input.value}`;
-          input.parentElement.appendChild(img);
-        }
       });
     });
 
@@ -1458,8 +1437,6 @@
         '분기 대사',
         lines,
         (line) => `
-          <label><span>화자</span>
-            <input data-field="speaker" value="${escapeAttr(line.speaker || '')}"></label>
           <label><span>SpeakerID</span>
             <input data-field="speaker_id" value="${escapeAttr(line.speaker_id || '')}"></label>
           <label><span>EmotionType</span>
@@ -1515,14 +1492,12 @@
     const cards = makeCard(
       '조사 후 대사', scene.priority_after_dialogues,
       (d) => `
-        <label><span>화자</span>
-          <input data-field="speaker" value="${escapeAttr(d.speaker || '')}"></label>
         <label><span>텍스트</span>
           <textarea data-field="text">${escapeHtml(d.text || '')}</textarea></label>
         <label><span>스타일</span>
           <input data-field="style" value="${escapeAttr(d.style || 'narration')}"></label>
       `,
-      () => { scene.priority_after_dialogues.push({ order: scene.priority_after_dialogues.length + 1, speaker: '', text: '', style: 'narration', portrait: null }); afterChange(); },
+      () => { scene.priority_after_dialogues.push({ order: scene.priority_after_dialogues.length + 1, speaker_id: '', text: '', style: 'narration' }); afterChange(); },
       (i) => { scene.priority_after_dialogues.splice(i, 1); afterChange(); },
       (i) => { if (swap(scene.priority_after_dialogues, i-1, i)) afterChange(); },
       (i) => { if (swap(scene.priority_after_dialogues, i, i+1)) afterChange(); },
