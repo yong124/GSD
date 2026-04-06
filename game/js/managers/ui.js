@@ -65,8 +65,8 @@ const UIManager = (() => {
     if (trust >= 2) parts.push('송순 신뢰');
     else if (trust >= 1) parts.push('동행 유지');
 
-    if (resonance >= 2) parts.push('공명 짙음');
-    else if (resonance >= 1) parts.push('공명 전조');
+    if (resonance >= 2) parts.push('침식 짙음');
+    else if (resonance >= 1) parts.push('침식 전조');
 
     return parts.join(' · ') || '추적 중';
   }

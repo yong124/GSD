@@ -1,0 +1,34 @@
+{
+  "structural": {
+    "errors": [],
+    "points": 30
+  },
+  "evidenceLogic": {
+    "errors": [],
+    "points": 25
+  },
+  "narrative": {
+    "points": 25,
+    "observations": [],
+    "samples": [
+      {
+        "id": "QIpangyuCall",
+        "resolvedSnippet": "붉은 쪽지는 이판규가 우연히 뛰쳐나간 것이 아니라, 낙원 쪽의 호출에 떠밀려 움직였다는 직접적인 흔적이다. ..."
+      },
+      {
+        "id": "QIpangyuMadness",
+        "resolvedSnippet": "붉은 쪽지는 이판규의 발작적 발언이 꾸며낸 말이 아니라, 실제 호출의 흔적과 맞닿아 있었음을 보여준다. 그의..."
+      },
+      {
+        "id": "QSonggeumMissing",
+        "resolvedSnippet": "숨겨진 일기장은 송금의 실종이 단순 도피가 아니라, 의례 속 역할로 밀려 들어간 소거였음을 보여준다. 사라짐..."
+      }
+    ]
+  },
+  "balance": {
+    "points": 20,
+    "resonanceDistribution": {
+      "Ritual": 2
+    }
+  }
+}
