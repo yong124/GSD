@@ -7,29 +7,12 @@ const Choice = (() => {
 
   function describeChoiceImpact(choice, isPriority = false) {
     if (!choice) return '선택의 파장이 남습니다.';
-    const choiceId = getChoiceId(choice);
     const stateType = choice.state_type || '';
     if (isPriority) return '조사 방향이 또렷해집니다.';
     if (choice.trust_character_id && Number(choice.trust_value || 0) !== 0) return '인물 사이의 거리가 달라집니다.';
     if (Number(choice.resonance_value || 0) !== 0) return '공명의 기색이 더 짙어집니다.';
     if (choice.evidence_id) return '붙든 단서가 새로운 반응을 끌어냅니다.';
-
-    switch (choiceId) {
-      case 'Ch2HospitalAskDoor':
-      case 'Ch4ALibraryExposeArchive':
-        return '조사 감각이 한층 또렷해집니다.';
-      case 'Ch5PathContactEditor':
-        return '바깥에 남길 흔적을 만들었습니다.';
-      case 'Ch5PathNoContact':
-        return '둘만의 증언으로 끝까지 내려갑니다.';
-      case 'Ch6FinalAnswer':
-      case 'Ch6FinalBlock':
-      case 'Ch6FinalHesitate':
-      case 'Ch6FinalExpose':
-        return '마지막 결단의 무게가 기울기 시작합니다.';
-      default:
-        break;
-    }
+    if (choice.impact_text) return choice.impact_text;
 
     switch (stateType) {
       case 'SongsoonTrust':
@@ -50,14 +33,10 @@ const Choice = (() => {
     if (choice?.trust_character_id && Number(choice?.trust_value || 0) !== 0) return 'choice-relationship';
     if (Number(choice?.resonance_value || 0) !== 0) return 'choice-risk';
     if (choice?.evidence_id) return 'choice-investigation';
-    const choiceId = getChoiceId(choice);
-    if (['Ch2CafeAskManager', 'Ch2CafeAskWaitress', 'Ch2CafeAskObserver', 'Ch4ALibraryTakeArticles', 'Ch4ALibraryNoteArticles', 'Ch4ALibraryExposeArchive', 'Ch4BCafePress', 'Ch5RitualPresentMask'].includes(choiceId)) return 'choice-investigation';
-    if (['Ch3WarehouseTrustSongsoon', 'Ch3Room4ComfortSongsoon'].includes(choiceId)) return 'choice-relationship';
-    if (['Ch6FinalAnswer', 'Ch6FinalBlock', 'Ch6FinalHesitate', 'Ch6FinalExpose'].includes(choiceId)) return 'choice-risk';
     const stateType = choice?.state_type || '';
-    if (['SongsoonTrust'].includes(stateType)) return 'choice-relationship';
-    if (['InvestigationScore', 'ReadRitualScore'].includes(stateType)) return 'choice-investigation';
-    if (['ResonanceLevel'].includes(stateType)) return 'choice-risk';
+    if (stateType === 'SongsoonTrust') return 'choice-relationship';
+    if (stateType === 'InvestigationScore' || stateType === 'ReadRitualScore') return 'choice-investigation';
+    if (stateType === 'ResonanceLevel') return 'choice-risk';
     return 'choice-decision';
   }
 
@@ -142,8 +121,8 @@ const Choice = (() => {
     showPriority(scene, onDone) {
       UIManager.setDialogueBoxVisible(false);
       const choices = mapChoices(scene.choices, true);
-      const budget = scene?.investigation?.budget ?? scene?.priority_budget ?? 0;
-      const priorityDialogues = scene.priority_dialogues || {};
+      const budget = scene?.investigation?.budget ?? 0;
+      const priorityDialogues = scene.investigation?.priority_dialogues || {};
       let spent = 0;
       const pickedSet = new Set();
 
@@ -170,7 +149,7 @@ const Choice = (() => {
           applyChoiceEffects(choice, 'investigation');
           showChoiceImpact(choice, true);
           pickedSet.add(choice.order);
-          spent += choice.priority_cost != null ? choice.priority_cost : 1;
+          spent += 1;
           
           setTimeout(() => {
             const branchKey = choice.next_type === 'Dialog' ? choice.next_id : '';

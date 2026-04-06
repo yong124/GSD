@@ -201,7 +201,6 @@ const Scene = (() => {
   function getChoiceGroupType(choice) {
     const group = getChoiceGroup(choice?.choice_group_id);
     if (group?.type) return group.type;
-    if (choice?.priority_cost != null) return 'Investigation';
     return 'Normal';
   }
 
@@ -238,16 +237,6 @@ const Scene = (() => {
         hint: scene?.priority_hint || '남은 조사 기회 안에서 무엇을 먼저 확인할지 정하세요.',
         budget: group?.max_selectable ?? scene?.priority_budget ?? 1,
         choice_group_id: group?.choice_group_id || investigationChoices[0]?.choice_group_id || null,
-      };
-    }
-
-    if ((scene?.priority_budget || 0) > 0) {
-      return {
-        investigation_id: scene?.id,
-        title: scene?.priority_title || scene?.title || '조사 장면',
-        hint: scene?.priority_hint || '남은 조사 기회 안에서 무엇을 먼저 확인할지 정하세요.',
-        budget: scene.priority_budget || 0,
-        choice_group_id: null,
       };
     }
 
@@ -342,7 +331,7 @@ const Scene = (() => {
 
       const continueAfterEvidence = () => {
         if (hasPriorityMode(scene, investigationChoices)) {
-          const afterLines = scene.priority_after_dialogues || [];
+          const afterLines = investigation?.priority_after_dialogues || [];
           Choice.showPriority({ ...scene, choices: investigationChoices, investigation }, () => {
             if (afterLines.length > 0) {
               Dialogue.start(afterLines, () => loadResolvedNext(scene), null);
