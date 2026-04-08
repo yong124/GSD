@@ -3,16 +3,65 @@
  */
 const UIManager = (() => {
   const $ = id => document.getElementById(id);
+  const _gaugeListeners = new Map();
+
+  function getGaugeDefinitions() {
+    return Array.isArray(window.GAME_DATA?.gauges) ? window.GAME_DATA.gauges : [];
+  }
+
+  function getGaugeDefinition(gaugeId) {
+    return getGaugeDefinitions().find(gauge => gauge?.gauge_id === gaugeId) || null;
+  }
+
+  function getGaugeStateRows(gaugeId) {
+    return (window.GAME_DATA?.gauge_states || []).filter(row => row?.gauge_id === gaugeId);
+  }
+
+  function getGaugeStateForValue(gaugeId, value) {
+    return getGaugeStateRows(gaugeId).find(row => {
+      const minValue = Number(row?.min_value);
+      const maxValue = Number(row?.max_value);
+      return value >= minValue && value <= maxValue;
+    }) || null;
+  }
+
+  function getGaugePercent(gauge, value) {
+    const minValue = Number(gauge?.min_value || 0);
+    const maxValue = Number(gauge?.max_value || 0);
+    if (maxValue <= minValue) return 0;
+    return Math.max(0, Math.min(100, ((value - minValue) / (maxValue - minValue)) * 100));
+  }
+
+  function bindGaugeListeners() {
+    _gaugeListeners.forEach((listener, gaugeId) => {
+      State.off(`change:gauge:${gaugeId}`, listener);
+    });
+    _gaugeListeners.clear();
+
+    getGaugeDefinitions().forEach(gauge => {
+      const gaugeId = gauge?.gauge_id;
+      if (!gaugeId) return;
+      const listener = value => updateGaugeHUD(gaugeId, value);
+      _gaugeListeners.set(gaugeId, listener);
+      State.on(`change:gauge:${gaugeId}`, listener);
+    });
+  }
 
   function init() {
+    bindGaugeListeners();
     State.on('change', () => {
       applyStateMood();
       _updateHUDStatsOnly();
-      updateGaugeHUD();
     });
     State.on('evidence:added', () => _updateHUDStatsOnly());
-    State.on('loaded', () => updateGaugeHUD());
-    State.on('reset', () => updateGaugeHUD());
+    State.on('loaded', () => {
+      bindGaugeListeners();
+      updateGaugeHUD();
+    });
+    State.on('reset', () => {
+      bindGaugeListeners();
+      updateGaugeHUD();
+    });
 
     document.addEventListener('keydown', e => {
       if (e.code === 'Escape' && isEvidenceInventoryVisible()) {
@@ -59,17 +108,13 @@ const UIManager = (() => {
   }
 
   function getVisibleGaugeRows() {
-    return (window.GAME_DATA?.gauges || [])
+    return getGaugeDefinitions()
       .filter(gauge => gauge?.hud_visible)
       .sort((a, b) => Number(a?.hud_order || 0) - Number(b?.hud_order || 0))
       .map(gauge => {
         const value = Number(State.getGauge?.(gauge.gauge_id) ?? gauge.default_value ?? 0);
-        const states = (window.GAME_DATA?.gauge_states || []).filter(row => row?.gauge_id === gauge.gauge_id);
-        const currentState = states.find(row => value >= Number(row?.min_value) && value <= Number(row?.max_value)) || null;
-        const minValue = Number(gauge?.min_value || 0);
-        const maxValue = Number(gauge?.max_value || 0);
-        const pct = maxValue > minValue ? ((value - minValue) / (maxValue - minValue)) * 100 : 0;
-        return { gauge, value, currentState, pct: Math.max(0, Math.min(100, pct)) };
+        const currentState = getGaugeStateForValue(gauge.gauge_id, value);
+        return { gauge, value, currentState, pct: getGaugePercent(gauge, value) };
       });
   }
 
@@ -85,19 +130,60 @@ const UIManager = (() => {
       <div class="hud-gauge-card" data-gauge-id="${row.gauge.gauge_id}">
         <div class="hud-gauge-head">
           <span class="hud-gauge-label">${row.gauge.label || row.gauge.gauge_id}</span>
-          <span class="hud-gauge-value">${row.value}</span>
+          <span class="hud-gauge-status">${row.currentState?.label || ''}</span>
         </div>
         <div class="hud-gauge-bar">
           <div class="hud-gauge-fill" style="width:${row.pct}%; background:${row.currentState?.hud_color || '#6a9f6a'}"></div>
         </div>
-        <div class="hud-gauge-state">${row.currentState?.label || ''}</div>
+        <div class="hud-gauge-meta">
+          <span class="hud-gauge-value">${row.value} / ${Number(row.gauge.max_value ?? 0)}</span>
+        </div>
       </div>
     `).join('');
     gameContainer.classList.toggle('hud-hidden', !!titleVisible);
   }
 
-  function updateGaugeHUD() {
-    renderGaugeHUD();
+  function updateGaugeHUD(gaugeId = null, value = null, previousState = null, nextState = null) {
+    const container = $('hud-gauges');
+    const titleScreen = $('title-screen');
+    const gameContainer = $(Config.SELECTORS.GAME_CONTAINER);
+    const titleVisible = titleScreen && !titleScreen.classList.contains('hidden');
+
+    if (!container || !gameContainer) return;
+
+    if (!gaugeId || !container.querySelector(`[data-gauge-id="${gaugeId}"]`)) {
+      renderGaugeHUD();
+    } else {
+      const gauge = getGaugeDefinition(gaugeId);
+      if (!gauge?.hud_visible) return;
+
+      const nextValue = Number(value ?? State.getGauge?.(gaugeId) ?? gauge.default_value ?? 0);
+      const currentState = nextState || getGaugeStateForValue(gaugeId, nextValue);
+      const gaugeEl = container.querySelector(`[data-gauge-id="${gaugeId}"]`);
+      if (!gaugeEl) {
+        renderGaugeHUD();
+      } else {
+        const fill = gaugeEl.querySelector('.hud-gauge-fill');
+        const status = gaugeEl.querySelector('.hud-gauge-status');
+        const valueEl = gaugeEl.querySelector('.hud-gauge-value');
+        if (fill) {
+          fill.style.width = `${getGaugePercent(gauge, nextValue)}%`;
+          fill.style.background = currentState?.hud_color || '#6a9f6a';
+        }
+        if (status) status.textContent = currentState?.label || '';
+        if (valueEl) valueEl.textContent = `${nextValue} / ${Number(gauge.max_value ?? 0)}`;
+      }
+    }
+
+    gameContainer.classList.toggle('hud-hidden', !!titleVisible);
+
+    if (nextState && (previousState?.label || '') !== (nextState?.label || '')) {
+      const gauge = getGaugeDefinition(gaugeId);
+      const gaugeLabel = gauge?.label || gaugeId || '게이지';
+      const prevLabel = previousState?.label || '이전';
+      const nextLabel = nextState?.label || '현재';
+      showToast(`[${gaugeLabel}] 상태 변화: ${prevLabel} -> ${nextLabel}`, 'toast-impact');
+    }
   }
 
   function _getStateReadout() {
@@ -313,7 +399,11 @@ const UIManager = (() => {
     } else {
       list.innerHTML = entries.map(entry => `
         <button class="choice-btn choice-evidence inventory-choice" data-evidence-id="${entry.evidence_id}">
-          ${entry.text}
+          ${entry.image ? `<img class="inventory-choice-image" src="${entry.image}" alt="${entry.text}">` : ''}
+          <span class="inventory-choice-copy">
+            <span class="inventory-choice-title">${entry.text}</span>
+            ${entry.detail ? `<span class="inventory-choice-detail">${entry.detail}</span>` : ''}
+          </span>
         </button>
       `).join('');
       list.querySelectorAll('[data-evidence-id]').forEach(button => {

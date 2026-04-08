@@ -1,4 +1,17 @@
 const State = (() => {
+  const LEGACY_GAUGE_FLAG_MAP = {
+    ResonanceLevel: 'Erosion',
+    InvestigationScore: 'Credibility',
+    ReadRitualScore: 'ReadRitualScore',
+    SolvedQuestionCount: 'SolvedQuestionCount',
+  };
+  const GAUGE_LEGACY_FLAG_MAP = {
+    Erosion: 'ResonanceLevel',
+    Credibility: 'InvestigationScore',
+    ReadRitualScore: 'ReadRitualScore',
+    SolvedQuestionCount: 'SolvedQuestionCount',
+  };
+
   function getGaugeDefinitions() {
     return Array.isArray(window.GAME_DATA?.gauges) ? window.GAME_DATA.gauges : [];
   }
@@ -95,6 +108,27 @@ const State = (() => {
     setFlag(key, value) {
       const prev = _state.flags[key];
       _state.flags[key] = value;
+
+      const mirroredGaugeId = LEGACY_GAUGE_FLAG_MAP[key];
+      if (mirroredGaugeId) {
+        const prevGaugeValue = this.getGauge(mirroredGaugeId);
+        const nextGaugeValue = clampGaugeValue(mirroredGaugeId, Number(value || 0));
+        _state.gauges[mirroredGaugeId] = nextGaugeValue;
+        if (prevGaugeValue !== nextGaugeValue) {
+          _emit(`change:gauge:${mirroredGaugeId}`, nextGaugeValue);
+          _emit('change', { key: `gauge:${mirroredGaugeId}`, value: nextGaugeValue });
+        }
+      }
+
+      if (typeof key === 'string' && key.endsWith('Trust')) {
+        const characterId = key.replace(/Trust$/, '');
+        _state.trusts[characterId] = Number(value || 0);
+      }
+
+      if (typeof key === 'string' && key.startsWith('QuestionSolved_') && value === true) {
+        this.recordChoice(key);
+      }
+
       if (prev !== value) {
         _emit(`change:${key}`, value);
         _emit('change', { key, value });
@@ -149,6 +183,16 @@ const State = (() => {
       const prevValue = this.getGauge(gaugeId);
       const nextValue = clampGaugeValue(gaugeId, value);
       _state.gauges[gaugeId] = nextValue;
+
+      const mirroredFlagKey = GAUGE_LEGACY_FLAG_MAP[gaugeId];
+      if (mirroredFlagKey) {
+        const prevFlagValue = _state.flags[mirroredFlagKey];
+        _state.flags[mirroredFlagKey] = nextValue;
+        if (prevFlagValue !== nextValue) {
+          _emit(`change:${mirroredFlagKey}`, nextValue);
+          _emit('change', { key: mirroredFlagKey, value: nextValue });
+        }
+      }
 
       if (prevValue !== nextValue) {
         _emit(`change:gauge:${gaugeId}`, nextValue);

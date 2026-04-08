@@ -195,16 +195,32 @@ window.GAME_DATA = {
       "type": "Investigation",
       "condition_group_id": null,
       "max_selectable": 1
+    },
+    {
+      "choice_group_id": "ChoiceGroup_LibraryEvidence",
+      "type": "Evidence",
+      "answer_type": "Evidence",
+      "condition_group_id": null,
+      "max_selectable": 1,
+      "default_dialog_id": "present_library_default"
+    },
+    {
+      "choice_group_id": "ChoiceGroup_RitualEvidence",
+      "type": "Evidence",
+      "answer_type": "Evidence",
+      "condition_group_id": null,
+      "max_selectable": 1,
+      "default_dialog_id": "present_ritual_default"
     }
   ],
   "conditions": [
     {
       "condition_id": "Cond_Room4_ReadRitual_01",
       "condition_group_id": "CG_Room4_ReadRitual",
-      "condition_type": "StateValue",
+      "condition_type": "GaugeValue",
       "condition_target_id": "ReadRitualScore",
-      "compare_type": "Equal",
-      "condition_value": true
+      "compare_type": "GreaterEqual",
+      "condition_value": 1
     },
     {
       "condition_id": "Cond_Room4_TrustedSongsoon_01",
@@ -241,7 +257,7 @@ window.GAME_DATA = {
     {
       "condition_id": "Cond_Library_RunawaySolved_01",
       "condition_group_id": "CG_Library_QSonggeumRunaway",
-      "condition_type": "StateValue",
+      "condition_type": "ChoiceSelected",
       "condition_target_id": "QuestionSolved_QSonggeumRunaway",
       "compare_type": "Equal",
       "condition_value": true
@@ -265,7 +281,7 @@ window.GAME_DATA = {
     {
       "condition_id": "Cond_RitualRoom_AccidentSolved_01",
       "condition_group_id": "CG_RitualRoom_QRitualAccident",
-      "condition_type": "StateValue",
+      "condition_type": "ChoiceSelected",
       "condition_target_id": "QuestionSolved_QRitualAccident",
       "compare_type": "Equal",
       "condition_value": true
@@ -321,7 +337,7 @@ window.GAME_DATA = {
     {
       "condition_id": "Cond_Threshold_SolvedMid_01",
       "condition_group_id": "CG_Threshold_SolvedMid",
-      "condition_type": "StateValue",
+      "condition_type": "GaugeValue",
       "condition_target_id": "SolvedQuestionCount",
       "compare_type": "Equal",
       "condition_value": [
@@ -340,7 +356,7 @@ window.GAME_DATA = {
     {
       "condition_id": "Cond_RitualScene_SolvedHigh_01",
       "condition_group_id": "CG_RitualScene_SolvedHigh",
-      "condition_type": "StateValue",
+      "condition_type": "GaugeValue",
       "condition_target_id": "SolvedQuestionCount",
       "compare_type": "Equal",
       "condition_value": [
@@ -352,7 +368,7 @@ window.GAME_DATA = {
     {
       "condition_id": "Cond_Outcome_QMadness_01",
       "condition_group_id": "CG_Outcome_QMadness",
-      "condition_type": "StateValue",
+      "condition_type": "ChoiceSelected",
       "condition_target_id": "QuestionSolved_QIpangyuMadness",
       "compare_type": "Equal",
       "condition_value": true
@@ -360,7 +376,7 @@ window.GAME_DATA = {
     {
       "condition_id": "Cond_Outcome_QRunaway_01",
       "condition_group_id": "CG_Outcome_QRunaway",
-      "condition_type": "StateValue",
+      "condition_type": "ChoiceSelected",
       "condition_target_id": "QuestionSolved_QSonggeumRunaway",
       "compare_type": "Equal",
       "condition_value": true
@@ -368,7 +384,7 @@ window.GAME_DATA = {
     {
       "condition_id": "Cond_Outcome_SolvedMid_01",
       "condition_group_id": "CG_Outcome_SolvedMid",
-      "condition_type": "StateValue",
+      "condition_type": "GaugeValue",
       "condition_target_id": "SolvedQuestionCount",
       "compare_type": "Equal",
       "condition_value": [
@@ -403,8 +419,8 @@ window.GAME_DATA = {
     {
       "condition_id": "Cond_Branch_TouchedRoomWall_01",
       "condition_group_id": "CG_Branch_TouchedRoomWall",
-      "condition_type": "StateValue",
-      "condition_target_id": "TouchedRoomWall",
+      "condition_type": "ChoiceSelected",
+      "condition_target_id": "Ch3Room4TouchWall",
       "compare_type": "Equal",
       "condition_value": true
     },
@@ -443,7 +459,7 @@ window.GAME_DATA = {
     {
       "condition_id": "Cond_Branch_SolvedMid_01",
       "condition_group_id": "CG_Branch_SolvedMid",
-      "condition_type": "StateValue",
+      "condition_type": "GaugeValue",
       "condition_target_id": "SolvedQuestionCount",
       "compare_type": "Equal",
       "condition_value": [
@@ -542,10 +558,10 @@ window.GAME_DATA = {
     {
       "condition_id": "Cond_Branch_ReadRitual_01",
       "condition_group_id": "CG_Branch_ReadRitual",
-      "condition_type": "StateValue",
+      "condition_type": "GaugeValue",
       "condition_target_id": "ReadRitualScore",
-      "compare_type": "Equal",
-      "condition_value": true
+      "compare_type": "GreaterEqual",
+      "condition_value": 1
     },
     {
       "condition_id": "Cond_Branch_Investigation3_01",
@@ -566,7 +582,7 @@ window.GAME_DATA = {
     {
       "condition_id": "Cond_RitualRoom_QRitualAccident_01",
       "condition_group_id": "CG_RitualRoom_QRitualAccident",
-      "condition_type": "StateValue",
+      "condition_type": "ChoiceSelected",
       "condition_target_id": "QuestionSolved_QRitualAccident",
       "compare_type": "Equal",
       "condition_value": true
@@ -679,51 +695,7 @@ window.GAME_DATA = {
             "focus_type": "Speaker"
           }
         ]
-      },
-      "priority_after_dialogues": [
-        {
-          "order": 1,
-          "text": "다른 여급 하나가 시선을 피하며 지나간다. 하지만 떠나기 직전, 구석에 앉은 송순 쪽으로 짧게 눈짓한다.",
-          "style": "narration",
-          "condition": null
-        },
-        {
-          "order": 2,
-          "text": "커피는 입에 맞으세요, 손님? 밤공기가 제법 매워졌지요. (잔을 채우며 쪽지를 미끄러뜨린다) 오늘 밤, 우물터 옆 담벼락으로 와요. 여기서는 오래 말을 못 붙입니다.",
-          "style": "normal",
-          "condition": null,
-          "speaker_id": "Songsoon",
-          "emotion_type": "Uneasy",
-          "standing_slot": "Left",
-          "focus_type": "Speaker"
-        },
-        {
-          "order": 3,
-          "text": "그 순간 무대 전등이 짧게 떨린다. 커피잔 위 연기 사이로 푸른 빛이 스쳐 지나가고, 누군가 허밍 한 토막을 흘린 듯한 기척이 남는다. 그러나 무대 위 악사들 가운데 입을 연 이는 없다.",
-          "style": "narration",
-          "condition": null
-        },
-        {
-          "order": 4,
-          "text": "무대는 멎었고, 여급들은 입을 닫았고, 쪽지는 손에서 손으로 미끄러진다. 누군가 이 집에서 사람을 지우고 있다. 그런데 지운 자리만은 어째 저리 또렷한가.",
-          "style": "thought",
-          "condition": null,
-          "speaker_id": "Yuu",
-          "emotion_type": "Tense",
-          "standing_slot": "Right",
-          "focus_type": "Speaker"
-        },
-        {
-          "order": 5,
-          "text": "병원에서 들은 '문'이 아주 헛소리는 아니었군. 이 집 사람들은 문을 보았다고 말하진 못해도, 문 앞에서 발을 거둔 얼굴은 하고 있습니다.",
-          "style": "thought",
-          "condition_group_id": "CG_Cafe_Info2",
-          "speaker_id": "Yuu",
-          "emotion_type": "Tense",
-          "standing_slot": "Right",
-          "focus_type": "Speaker"
-        }
-      ]
+      }
     },
     {
       "investigation_id": "Investigation_Room4",
@@ -826,35 +798,7 @@ window.GAME_DATA = {
             "condition": null
           }
         ]
-      },
-      "priority_after_dialogues": [
-        {
-          "order": 1,
-          "text": "방 안을 훑는 시선이 이제 막연한 공포에서 벗어나 순서를 갖기 시작한다. 무엇을 먼저 붙잡아야 하는지, 두 사람 다 조금은 알게 된다.",
-          "style": "narration",
-          "condition": null
-        },
-        {
-          "order": 2,
-          "speaker_id": "Yuu",
-          "emotion_type": "Tense",
-          "standing_slot": "Right",
-          "focus_type": "Speaker",
-          "text": "방 안에서 본 조각들이 자료실 기록과 이어질 겁니다. 여기서 멈추면 저 문장들은 또 묻히겠지요.",
-          "style": "thought",
-          "condition": null
-        },
-        {
-          "order": 3,
-          "speaker_id": "Songsoon",
-          "emotion_type": "Uneasy",
-          "standing_slot": "Left",
-          "focus_type": "Speaker",
-          "text": "가요. 이번엔 무서운 것만 보지 말고, 남겨진 것도 같이 보죠.",
-          "style": "normal",
-          "condition": null
-        }
-      ]
+      }
     },
     {
       "investigation_id": "Investigation_RitualFinal",
@@ -919,15 +863,7 @@ window.GAME_DATA = {
             "condition": null
           }
         ]
-      },
-      "priority_after_dialogues": [
-        {
-          "order": 1,
-          "text": "의식은 이미 균열을 드러냈다. 이제 남은 것은 누가 어디로 몸을 던졌는지, 그리고 그 선택이 무엇을 사람으로 남길지뿐이다.",
-          "style": "narration",
-          "condition": null
-        }
-      ]
+      }
     }
   ],
   "questions": [
@@ -1419,6 +1355,24 @@ window.GAME_DATA = {
       "default_value": 10,
       "hud_visible": true,
       "hud_order": 2
+    },
+    {
+      "gauge_id": "ReadRitualScore",
+      "label": "의식 악보 독해",
+      "min_value": 0,
+      "max_value": 10,
+      "default_value": 0,
+      "hud_visible": false,
+      "hud_order": 98
+    },
+    {
+      "gauge_id": "SolvedQuestionCount",
+      "label": "정리한 질문 수",
+      "min_value": 0,
+      "max_value": 10,
+      "default_value": 0,
+      "hud_visible": false,
+      "hud_order": 99
     }
   ],
   "gauge_states": [
@@ -1701,7 +1655,6 @@ window.GAME_DATA = {
       "title": "난향일보 편집국",
       "background": "assets/bg/newsroom.jpeg",
       "music": "assets/sfx/newsroom.mp3",
-      "next_scene": null,
       "effect": null,
       "branches": [],
       "dialogues": [
@@ -1794,8 +1747,6 @@ window.GAME_DATA = {
           "choice_id": "Ch1NewsroomObedient",
           "effect_group_id": "eff_ch1_newsroom_obedient",
           "text": "세간의 입에 오를 만한 글로 꾸며 보지요.",
-          "trust_character_id": "Editor",
-          "trust_value": 1,
           "next_type": "Scene",
           "next_id": "ch1_newsroom_obedient"
         },
@@ -1929,7 +1880,6 @@ window.GAME_DATA = {
       "title": "정신병원 접견실",
       "background": "assets/bg/hospital.jpeg",
       "music": "assets/sfx/tense.mp3",
-      "next_scene": null,
       "effect": null,
       "branches": [],
       "dialogues": [
@@ -2714,8 +2664,6 @@ window.GAME_DATA = {
           "choice_id": "Ch3WarehouseReadRitual",
           "effect_group_id": "eff_ch3_warehouse_read_ritual",
           "text": "관자놀이가 깨질 듯해도 악보를 끝까지 읽어 낸다.",
-          "state_type": "ReadRitualScore",
-          "state_value": 1,
           "next_type": "Scene",
           "next_id": "ch3_score_read"
         },
@@ -3114,8 +3062,6 @@ window.GAME_DATA = {
           "choice_id": "Ch3Room4TouchWall",
           "effect_group_id": "eff_ch3_room4_touch_wall",
           "text": "위험을 감수하고 벽의 문양에 직접 손을 댄다.",
-          "state_type": "ResonanceLevel",
-          "state_value": 2,
           "next_type": "Dialog",
           "next_id": "room4_touch"
         },
@@ -3125,8 +3071,6 @@ window.GAME_DATA = {
           "choice_id": "Ch3Room4ReadRecord",
           "effect_group_id": "eff_ch3_room4_read_record",
           "text": "공포보다 기록을 우선하고 일기장의 다음 장을 더 읽는다.",
-          "state_type": "ReadRitualScore",
-          "state_value": 1,
           "next_type": "Dialog",
           "next_id": "room4_record"
         },
@@ -3480,6 +3424,20 @@ window.GAME_DATA = {
             "portrait": null,
             "condition": null
           }
+        ],
+        "present_library_default": [
+          {
+            "order": 1,
+            "speaker": "유웅룡",
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker",
+            "text": "지금 내민 단서만으로는 기사와 증언의 틈을 바로 묶어내기 어렵다. 조금 더 맞는 증거가 필요하다.",
+            "style": "thought",
+            "portrait": "assets/portraits/yuu.jpeg",
+            "condition": null
+          }
         ]
       },
       "evidence_choices": [
@@ -3488,8 +3446,6 @@ window.GAME_DATA = {
           "choice_id": "Ch4ALibraryPresentDiary",
           "text": "숨겨진 일기장을 기사 옆에 펼쳐 놓는다.",
           "evidence_id": "EvDiary",
-          "state_type": "InvestigationScore",
-          "state_value": 3,
           "next_type": "Dialog",
           "next_id": "present_diary"
         },
@@ -3498,8 +3454,6 @@ window.GAME_DATA = {
           "choice_id": "Ch4ALibraryPresentHanbok",
           "text": "청색 한복의 결을 기사 기록과 대조한다.",
           "evidence_id": "EvBlueHanbok",
-          "state_type": "ReadRitualScore",
-          "state_value": 1,
           "next_type": "Dialog",
           "next_id": "present_hanbok"
         }
@@ -3517,8 +3471,6 @@ window.GAME_DATA = {
           "choice_id": "Ch4ALibraryNoteArticles",
           "effect_group_id": "eff_ch4a_library_note_articles",
           "text": "핵심 문장만 수첩에 적고 넘어간다.",
-          "state_type": "InvestigationScore",
-          "state_value": 3,
           "next_type": "Scene",
           "next_id": "ch4a_articles_note"
         },
@@ -3529,6 +3481,24 @@ window.GAME_DATA = {
           "next_type": "Scene",
           "next_id": "ch4a_articles_expose",
           "condition_group_id": "CG_Library_QSonggeumRunaway"
+        },
+        {
+          "order": 101,
+          "choice_group_id": "ChoiceGroup_LibraryEvidence",
+          "choice_id": "Ch4ALibraryEvidenceDiary",
+          "text": "찢어진 일기장을 기사 옆에 펼친다.",
+          "evidence_id": "EvDiary",
+          "next_type": "Dialog",
+          "next_id": "present_diary"
+        },
+        {
+          "order": 102,
+          "choice_group_id": "ChoiceGroup_LibraryEvidence",
+          "choice_id": "Ch4ALibraryEvidenceHanbok",
+          "text": "청색 한복의 결을 기사 기록과 대조한다.",
+          "evidence_id": "EvBlueHanbok",
+          "next_type": "Dialog",
+          "next_id": "present_hanbok"
         }
       ],
       "evidence": [
@@ -3768,7 +3738,6 @@ window.GAME_DATA = {
       "title": "여급의 루트",
       "background": "assets/bg/cafe.jpeg",
       "music": "assets/sfx/jazz_dark.mp3",
-      "next_scene": null,
       "effect": null,
       "branches": [],
       "dialogues": [
@@ -4625,8 +4594,6 @@ window.GAME_DATA = {
           "choice_id": "Ch5GuardedDoorListen",
           "effect_group_id": "eff_ch5_guarded_door_listen",
           "text": "허밍의 결을 끝까지 듣고, 문 안쪽 호흡을 짚어 본다.",
-          "state_type": "ResonanceLevel",
-          "state_value": 2,
           "next_type": "Scene",
           "next_id": "ch5_guarded_door_listen"
         },
@@ -4635,8 +4602,6 @@ window.GAME_DATA = {
           "choice_id": "Ch5GuardedDoorSteady",
           "effect_group_id": "eff_ch5_guarded_door_steady",
           "text": "송순과 숨을 고른 뒤, 함께 문을 민다.",
-          "state_type": "SongsoonTrust",
-          "state_value": 2,
           "next_type": "Scene",
           "next_id": "ch5_guarded_door_steady"
         }
@@ -4979,6 +4944,20 @@ window.GAME_DATA = {
             "portrait": null,
             "condition": null
           }
+        ],
+        "present_ritual_default": [
+          {
+            "order": 1,
+            "speaker": "유웅룡",
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker",
+            "text": "이 증거만으로는 의식의 구조를 바로 꿰맞출 수 없다. 다른 단서를 더 정확히 짚어야 한다.",
+            "style": "thought",
+            "portrait": "assets/portraits/yuu.jpeg",
+            "condition": null
+          }
         ]
       },
       "evidence_choices": [
@@ -4987,8 +4966,6 @@ window.GAME_DATA = {
           "choice_id": "Ch5RitualPresentNote",
           "text": "의례실 종이를 제단 앞 문장과 맞대 본다.",
           "evidence_id": "EvRitualNote",
-          "state_type": "ReadRitualScore",
-          "state_value": 2,
           "next_type": "Dialog",
           "next_id": "present_ritual_note"
         },
@@ -4997,8 +4974,6 @@ window.GAME_DATA = {
           "choice_id": "Ch5RitualPresentScore",
           "text": "감응 악보를 지금 울리는 노래와 겹쳐 본다.",
           "evidence_id": "EvRitualScore",
-          "state_type": "ResonanceLevel",
-          "state_value": 2,
           "next_type": "Dialog",
           "next_id": "present_ritual_score"
         },
@@ -5007,14 +4982,41 @@ window.GAME_DATA = {
           "choice_id": "Ch5RitualPresentMask",
           "text": "가면의 눈 배열을 제단 문양과 대조한다.",
           "evidence_id": "EvMask",
-          "state_type": "InvestigationScore",
-          "state_value": 4,
           "next_type": "Dialog",
           "next_id": "present_mask",
           "condition_group_id": "CG_RitualRoom_QRitualAccident"
         }
       ],
-      "choices": [],
+      "choices": [
+        {
+          "order": 101,
+          "choice_group_id": "ChoiceGroup_RitualEvidence",
+          "choice_id": "Ch5RitualEvidenceNote",
+          "text": "의례실 종이를 제단 옆 문장과 맞대 본다.",
+          "evidence_id": "EvRitualNote",
+          "next_type": "Dialog",
+          "next_id": "present_ritual_note"
+        },
+        {
+          "order": 102,
+          "choice_group_id": "ChoiceGroup_RitualEvidence",
+          "choice_id": "Ch5RitualEvidenceScore",
+          "text": "감응 악보를 지금 울리는 노래와 겹쳐 본다.",
+          "evidence_id": "EvRitualScore",
+          "next_type": "Dialog",
+          "next_id": "present_ritual_score"
+        },
+        {
+          "order": 103,
+          "choice_group_id": "ChoiceGroup_RitualEvidence",
+          "choice_id": "Ch5RitualEvidenceMask",
+          "text": "가면의 네 배열을 제단 문양과 대조한다.",
+          "evidence_id": "EvMask",
+          "condition_group_id": "CG_RitualRoom_QRitualAccident",
+          "next_type": "Dialog",
+          "next_id": "present_mask"
+        }
+      ],
       "evidence": [
         {
           "evidence_id": "EvRitualNote",
@@ -6121,7 +6123,6 @@ window.GAME_DATA = {
       "title": "에필로그",
       "background": "assets/bg/newsroom.jpeg",
       "music": "assets/sfx/ending.mp3",
-      "next_scene": null,
       "effect": null,
       "branches": [],
       "dialogues": [

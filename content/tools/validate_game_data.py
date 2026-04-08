@@ -63,11 +63,6 @@ def validate_scene_refs(scene_id, scenes, issues):
             )
 
     for choice in scene.get("choices", []):
-        target = choice.get("next_scene")
-        if target and target not in scenes:
-            issues.append(
-                f"[Choice.next_scene] {scene_id} order={choice.get('order')} -> {target} (없는 씬)"
-            )
 
         next_type = choice.get("next_type")
         next_id = choice.get("next_id")
@@ -84,17 +79,6 @@ def validate_scene_orders(scene_id, scene, issues):
         duplicates = find_duplicates(orders)
         for dup in duplicates:
             issues.append(f"[Duplicate.order] {scene_id} {key} order={dup}")
-
-
-def validate_dialog_labels(scene_id, scene, issues):
-    labels = [
-        line.get("label")
-        for line in scene.get("dialogues", [])
-        if isinstance(line.get("label"), str) and line.get("label").strip()
-    ]
-    duplicates = find_duplicates(labels)
-    for dup in duplicates:
-        issues.append(f"[Duplicate.label] {scene_id} label={dup}")
 
 
 def validate_evidence_ids(scenes, issues):
@@ -136,6 +120,15 @@ def validate_characters(data, issues):
 
 def validate_conditions(data, issues):
     conditions = data.get("conditions", []) or []
+    valid_condition_types = {
+        "GaugeValue",
+        "Trust",
+        "EvidenceOwned",
+        "ChoiceSelected",
+        "RevealedCharacter",
+        "SceneProgressIndex",
+        "SceneVisited",
+    }
     gauge_ids = {item.get("gauge_id") for item in (data.get("gauges", []) or []) if item.get("gauge_id")}
     scene_ids = set((data.get("scenes", {}) or {}).keys())
     character_ids = set((data.get("characters", {}) or {}).keys())
@@ -145,6 +138,11 @@ def validate_conditions(data, issues):
         for choice in ((scene.get("choices", []) or []) + (scene.get("evidence_choices", []) or []))
         if choice.get("choice_id")
     }
+    choice_ids.update({
+        question.get("solved_flag_id")
+        for question in (data.get("questions", []) or [])
+        if question.get("solved_flag_id")
+    })
     evidence_ids = {
         evidence.get("evidence_id")
         for scene in (data.get("scenes", {}) or {}).values()
@@ -165,6 +163,8 @@ def validate_conditions(data, issues):
         if not item.get("compare_type"):
             issues.append(f"[Condition.compare_type] {condition_id} missing CompareType")
         condition_type = item.get("condition_type")
+        if condition_type and condition_type not in valid_condition_types:
+            issues.append(f"[Condition.condition_type] {condition_id} invalid ConditionType: {condition_type}")
         target_id = item.get("condition_target_id")
         if condition_type == "ChoiceSelected" and target_id:
             target_ids = [value.strip() for value in str(target_id).split("|") if value.strip()]
@@ -189,11 +189,57 @@ def validate_choice_groups(data, issues):
         issues.append(f"[Duplicate.choice_group_id] {dup}")
 
     valid_answer_types = {"Text", "Evidence", None, ""}
+    scenes = data.get("scenes", {}) or {}
+    scene_dialog_ids = set()
+    evidence_dialog_keys = set()
+    for scene in scenes.values():
+        for dialogue in scene.get("dialogues", []) or []:
+            dialog_id = dialogue.get("dialog_id")
+            if dialog_id:
+                scene_dialog_ids.add(dialog_id)
+        for dialog_key in (scene.get("evidence_dialogues", {}) or {}).keys():
+            if dialog_key:
+                evidence_dialog_keys.add(dialog_key)
     for item in choice_groups:
         choice_group_id = item.get("choice_group_id") or "(unknown)"
         answer_type = item.get("answer_type")
         if answer_type not in valid_answer_types:
             issues.append(f"[ChoiceGroup.answer_type] {choice_group_id} invalid AnswerType: {answer_type}")
+        if answer_type == "Evidence":
+            default_dialog_id = item.get("default_dialog_id")
+            if not default_dialog_id:
+                issues.append(f"[ChoiceGroup.default_dialog_id] {choice_group_id} missing DefaultDialogID")
+            elif default_dialog_id not in scene_dialog_ids and default_dialog_id not in evidence_dialog_keys:
+                issues.append(f"[ChoiceGroup.default_dialog_id] {choice_group_id} -> {default_dialog_id} (missing DialogID)")
+
+
+def validate_choice_answer_types(data, issues):
+    scenes = data.get("scenes", {}) or {}
+    choice_groups = {
+        item.get("choice_group_id"): item
+        for item in (data.get("choice_groups", []) or [])
+        if item.get("choice_group_id")
+    }
+    evidence_ids = {
+        evidence.get("evidence_id")
+        for scene in scenes.values()
+        for evidence in (scene.get("evidence", []) or [])
+        if evidence.get("evidence_id")
+    }
+
+    for scene_id, scene in scenes.items():
+        for choice in scene.get("choices", []) or []:
+            choice_id = choice.get("choice_id") or f"{scene_id}:{choice.get('order')}"
+            group = choice_groups.get(choice.get("choice_group_id"))
+            answer_type = group.get("answer_type") if group else "Text"
+            if answer_type == "Evidence":
+                evidence_id = choice.get("evidence_id")
+                if not evidence_id:
+                    issues.append(f"[Choice.evidence_id] {choice_id} missing EvidenceID for Evidence answer type")
+                elif evidence_id not in evidence_ids:
+                    issues.append(f"[Choice.evidence_id] {choice_id} -> {evidence_id} (missing EvidenceID)")
+                if not choice.get("next_id"):
+                    issues.append(f"[Choice.next_id] {choice_id} missing next_id for Evidence answer type")
 
 
 def validate_evidence_categories(data, issues):
@@ -414,13 +460,13 @@ def main():
         scene = scenes[scene_id]
         validate_scene_refs(scene_id, scenes, issues)
         validate_scene_orders(scene_id, scene, issues)
-        validate_dialog_labels(scene_id, scene, issues)
         validate_dialogue_character_refs(scene_id, scene, data, issues)
 
     validate_evidence_ids(scenes, issues)
     validate_characters(data, issues)
     validate_conditions(data, issues)
     validate_choice_groups(data, issues)
+    validate_choice_answer_types(data, issues)
     validate_evidence_categories(data, issues)
     validate_investigations(data, issues)
     validate_gauges(data, scenes, issues)

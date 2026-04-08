@@ -44,6 +44,46 @@ EXCEL_PATH  = os.path.join(os.path.dirname(__file__), "../data/script.xlsx")
 OUTPUT_PATH = os.path.join(os.path.dirname(__file__), "../../game/data/game_data.js")
 
 
+def normalize_condition_row(row):
+    condition_type = row.get("ConditionType")
+    target_id = row.get("ConditionTargetID")
+    normalized_type = condition_type
+    normalized_target_id = target_id
+
+    if condition_type == "SongsoonTrust":
+        normalized_type = "Trust"
+        normalized_target_id = "Songsoon"
+    elif condition_type == "ResonanceLevel":
+        normalized_type = "GaugeValue"
+        normalized_target_id = "Erosion"
+    elif condition_type == "InvestigationScore":
+        normalized_type = "GaugeValue"
+        normalized_target_id = "Credibility"
+    elif condition_type == "ReadRitualScore":
+        normalized_type = "GaugeValue"
+        normalized_target_id = "ReadRitualScore"
+    elif condition_type == "StateValue":
+        if target_id in {"ReadRitualScore", "SolvedQuestionCount"}:
+            normalized_type = "GaugeValue"
+            normalized_target_id = target_id
+        elif target_id == "CalledEditor":
+            normalized_type = "ChoiceSelected"
+            normalized_target_id = "Ch5PathContactEditor" if row.get("ConditionValue") is True else "Ch5PathNoContact"
+        else:
+            normalized_type = "ChoiceSelected"
+            normalized_target_id = {
+                "TouchedRoomWall": "Ch3Room4TouchWall",
+                "QuestionSolved_QIpangyuCall": "QuestionSolved_QIpangyuCall",
+                "QuestionSolved_QIpangyuMadness": "QuestionSolved_QIpangyuMadness",
+                "QuestionSolved_QSonggeumMissing": "QuestionSolved_QSonggeumMissing",
+                "QuestionSolved_QSonggeumRunaway": "QuestionSolved_QSonggeumRunaway",
+                "QuestionSolved_QRitualLead": "QuestionSolved_QRitualLead",
+                "QuestionSolved_QRitualAccident": "QuestionSolved_QRitualAccident",
+            }.get(target_id, target_id)
+
+    return normalized_type, normalized_target_id
+
+
 def is_ignored_name(value):
     return isinstance(value, str) and value.strip().startswith("$")
 
@@ -144,10 +184,8 @@ def build_game_data(wb):
         if sid and sid in scenes:
             entry = {
                 "order":    d.get("Order") or 0,
-                "speaker":  d.get("Speaker") or "",
                 "text":     d.get("Text") or "",
                 "style":    d.get("Style") or "normal",
-                "portrait": d.get("Portrait"),
             }
             optional_fields = {
                 "dialog_id": d.get("DialogID"),
@@ -166,10 +204,6 @@ def build_game_data(wb):
             for key, value in optional_fields.items():
                 if value is not None:
                     entry[key] = value
-            if d.get("Label"):
-                entry["label"] = d["Label"]
-            elif d.get("DialogID"):
-                entry["label"] = d["DialogID"]
             if d.get("ConditionGroupID"):
                 entry["condition_group_id"] = d.get("ConditionGroupID")
             scenes[sid]["dialogues"].append(entry)
@@ -198,16 +232,6 @@ def build_game_data(wb):
                 entry["evidence_id"] = c.get("EvidenceID")
             if c.get("EffectGroupID"):
                 entry["effect_group_id"] = c.get("EffectGroupID")
-            if c.get("TrustCharacterID"):
-                entry["trust_character_id"] = c.get("TrustCharacterID")
-            if c.get("TrustValue") is not None:
-                entry["trust_value"] = c.get("TrustValue")
-            if c.get("ResonanceValue") is not None:
-                entry["resonance_value"] = c.get("ResonanceValue")
-            if c.get("StateType"):
-                entry["state_type"] = c.get("StateType")
-            if c.get("StateValue") is not None:
-                entry["state_value"] = c.get("StateValue")
             scenes[sid]["choices"].append(entry)
     for sid in scenes:
         scenes[sid]["choices"].sort(key=lambda x: x["order"])
@@ -273,11 +297,12 @@ def build_game_data(wb):
         condition_id = row.get("ConditionID")
         if not condition_id:
             continue
+        condition_type, condition_target_id = normalize_condition_row(row)
         conditions.append({
             "condition_id": condition_id,
             "condition_group_id": row.get("ConditionGroupID"),
-            "condition_type": row.get("ConditionType"),
-            "condition_target_id": row.get("ConditionTargetID"),
+            "condition_type": condition_type,
+            "condition_target_id": condition_target_id,
             "compare_type": row.get("CompareType"),
             "condition_value": row.get("ConditionValue"),
         })

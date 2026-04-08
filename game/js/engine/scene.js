@@ -76,9 +76,7 @@ const Scene = (() => {
   }
 
   function handleGaugeStateChange(event) {
-    if (event?.state?.label && typeof UIManager?.showToast === 'function') {
-      UIManager.showToast(`${event.gaugeId}: ${event.state.label}`, 'toast-impact');
-    }
+    UIManager.updateGaugeHUD?.(event?.gaugeId, event?.value, event?.previousState, event?.state);
     const triggerSceneId = event?.state?.trigger_scene_id;
     if (!triggerSceneId) return;
     Scene.load(triggerSceneId);
@@ -110,6 +108,7 @@ const Scene = (() => {
 
   function parseConditionValue(value) {
     if (value === null || value === undefined) return null;
+    if (Array.isArray(value)) return value;
     if (typeof value === 'boolean' || typeof value === 'number') return value;
     const text = String(value).trim();
     if (text === '') return null;
@@ -198,16 +197,7 @@ const Scene = (() => {
         return context.sceneProgressIndex ?? Number(State.dialogueIndex || 0);
       case 'SceneVisited':
         return State.hasVisitedScene?.(targetId) === true;
-      case 'StateValue': {
-        const raw = State.getFlag(targetId);
-        if (raw === null || raw === undefined) return null;
-        const num = Number(raw);
-        return isNaN(num) ? raw : num;
-      }
       default:
-        if (type === 'SongsoonTrust') return Number(State.getTrust?.('Songsoon') || State.getFlag('SongsoonTrust') || 0);
-        if (type === 'ResonanceLevel') return Number(State.getGauge?.('Erosion') || State.getFlag('ResonanceLevel') || 0);
-        if (type === 'InvestigationScore') return Number(State.getGauge?.('Credibility') || State.getFlag('InvestigationScore') || 0);
         return null;
     }
   }
@@ -340,6 +330,12 @@ const Scene = (() => {
   }
 
   function runScene(scene, fromLabel, restoreProgress = false) {
+    // Clear leftover overlays from the previous scene before the new flow starts.
+    Choice?.hide?.();
+    UIManager.hideEvidenceInventory?.();
+    UIManager.setChoiceBoxVisible(false);
+    UIManager.setDialogueBoxVisible(true);
+
     State.currentSceneId = scene.id;
     State.visitScene?.(scene.id);
     _hudContext = null;
@@ -366,13 +362,8 @@ const Scene = (() => {
 
       const continueAfterEvidence = () => {
         if (hasPriorityMode(scene, investigationChoices)) {
-          const afterLines = investigation?.priority_after_dialogues || [];
           Choice.showPriority({ ...scene, choices: investigationChoices, investigation }, () => {
-            if (afterLines.length > 0) {
-              Dialogue.start(afterLines, () => loadResolvedNext(scene), null);
-            } else {
-              loadResolvedNext(scene);
-            }
+            loadResolvedNext(scene);
           });
         } else if (choices.length > 0) {
           Choice.show(choices, chosen => {

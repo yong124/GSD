@@ -41,12 +41,14 @@ const Engine = (() => {
       // 4. Scene system initialization
       Scene.init(_data);
       UIManager.renderGaugeHUD?.();
+      UIManager.updateGaugeHUD?.();
 
       _initialized = true;
       console.log(`[Engine] Initialized version ${Config.VERSION}`);
       
       // Emit signal
       document.dispatchEvent(new CustomEvent('engine:ready', { detail: { data: _data } }));
+      document.addEventListener('game:loaded', () => UIManager.updateGaugeHUD?.());
       
     } catch (err) {
       console.error('[Engine] Bootstrap failed:', err);
