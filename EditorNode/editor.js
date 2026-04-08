@@ -3196,7 +3196,7 @@
     $('btn-redo').addEventListener('click', redo);
     $('btn-load').addEventListener('click', loadData);
     $('btn-export').addEventListener('click', exportData);
-    if (els.btnOpenSceneQa) els.btnOpenSceneQa.addEventListener('click', openSceneQa);
+    if (els.btnOpenSceneQa) els.btnOpenSceneQa.addEventListener('click', () => openSceneQa());
     if (els.btnCopySceneQa) els.btnCopySceneQa.addEventListener('click', () => { copySceneQaUrl(); });
     els.fieldSearch.addEventListener('input', () => {
       state.filters.query = els.fieldSearch.value;
