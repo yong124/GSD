@@ -46,6 +46,13 @@ def find_duplicates(values):
     return sorted([value for value, count in counts.items() if count > 1])
 
 
+def to_number(value):
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
 def validate_scene_refs(scene_id, scenes, issues):
     scene = scenes[scene_id]
     for branch in scene.get("branches", []):
@@ -129,6 +136,9 @@ def validate_characters(data, issues):
 
 def validate_conditions(data, issues):
     conditions = data.get("conditions", []) or []
+    gauge_ids = {item.get("gauge_id") for item in (data.get("gauges", []) or []) if item.get("gauge_id")}
+    scene_ids = set((data.get("scenes", {}) or {}).keys())
+    character_ids = set((data.get("characters", {}) or {}).keys())
     choice_ids = {
         choice.get("choice_id")
         for scene in (data.get("scenes", {}) or {}).values()
@@ -163,6 +173,12 @@ def validate_conditions(data, issues):
                     issues.append(f"[Condition.condition_target_id] {condition_id} -> {choice_id} (missing ChoiceID)")
         if condition_type == "EvidenceOwned" and target_id and target_id not in evidence_ids:
             issues.append(f"[Condition.condition_target_id] {condition_id} -> {target_id} (missing EvidenceID)")
+        if condition_type == "GaugeValue" and target_id and target_id not in gauge_ids:
+            issues.append(f"[Condition.condition_target_id] {condition_id} -> {target_id} (missing GaugeID)")
+        if condition_type == "SceneVisited" and target_id and target_id not in scene_ids:
+            issues.append(f"[Condition.condition_target_id] {condition_id} -> {target_id} (missing SceneID)")
+        if condition_type == "Trust" and target_id and target_id not in character_ids:
+            issues.append(f"[Condition.condition_target_id] {condition_id} -> {target_id} (missing CharacterID)")
 
 
 def validate_choice_groups(data, issues):
@@ -171,6 +187,13 @@ def validate_choice_groups(data, issues):
     duplicates = find_duplicates(group_ids)
     for dup in duplicates:
         issues.append(f"[Duplicate.choice_group_id] {dup}")
+
+    valid_answer_types = {"Text", "Evidence", None, ""}
+    for item in choice_groups:
+        choice_group_id = item.get("choice_group_id") or "(unknown)"
+        answer_type = item.get("answer_type")
+        if answer_type not in valid_answer_types:
+            issues.append(f"[ChoiceGroup.answer_type] {choice_group_id} invalid AnswerType: {answer_type}")
 
 
 def validate_evidence_categories(data, issues):
@@ -187,6 +210,69 @@ def validate_investigations(data, issues):
     duplicates = find_duplicates(investigation_ids)
     for dup in duplicates:
         issues.append(f"[Duplicate.investigation_id] {dup}")
+
+
+def validate_gauges(data, scenes, issues):
+    gauges = data.get("gauges", []) or []
+    gauge_states = data.get("gauge_states", []) or []
+    gauge_ids = [item.get("gauge_id") for item in gauges if item.get("gauge_id")]
+    duplicates = find_duplicates(gauge_ids)
+    for dup in duplicates:
+        issues.append(f"[Duplicate.gauge_id] {dup}")
+
+    gauge_id_set = set(gauge_ids)
+    for gauge in gauges:
+        gauge_id = gauge.get("gauge_id") or "(unknown)"
+        if not gauge.get("label"):
+            issues.append(f"[Gauge.label] {gauge_id} missing Label")
+        if gauge.get("min_value") is None:
+            issues.append(f"[Gauge.min_value] {gauge_id} missing MinValue")
+        if gauge.get("max_value") is None:
+            issues.append(f"[Gauge.max_value] {gauge_id} missing MaxValue")
+        if gauge.get("default_value") is None:
+            issues.append(f"[Gauge.default_value] {gauge_id} missing DefaultValue")
+        min_value = to_number(gauge.get("min_value"))
+        max_value = to_number(gauge.get("max_value"))
+        if min_value is not None and max_value is not None and min_value > max_value:
+            issues.append(f"[Gauge.range] {gauge_id} min_value > max_value")
+
+    for row in gauge_states:
+        gauge_id = row.get("gauge_id") or "(unknown)"
+        if gauge_id not in gauge_id_set:
+            issues.append(f"[GaugeState.gauge_id] {gauge_id} missing GaugeID")
+        if row.get("min_value") is None:
+            issues.append(f"[GaugeState.min_value] {gauge_id}/{row.get('label') or '(unknown)'} missing MinValue")
+        if row.get("max_value") is None:
+            issues.append(f"[GaugeState.max_value] {gauge_id}/{row.get('label') or '(unknown)'} missing MaxValue")
+        if not row.get("label"):
+            issues.append(f"[GaugeState.label] {gauge_id} missing Label")
+        trigger_scene_id = row.get("trigger_scene_id")
+        if trigger_scene_id and trigger_scene_id not in scenes:
+            issues.append(f"[GaugeState.trigger_scene_id] {gauge_id} -> {trigger_scene_id} (missing SceneID)")
+
+
+def validate_effects(data, issues):
+    effects = data.get("effects", []) or []
+    gauge_ids = {item.get("gauge_id") for item in (data.get("gauges", []) or []) if item.get("gauge_id")}
+    evidence_ids = {
+        evidence.get("evidence_id")
+        for scene in (data.get("scenes", {}) or {}).values()
+        for evidence in (scene.get("evidence", []) or [])
+        if evidence.get("evidence_id")
+    }
+    character_ids = set((data.get("characters", {}) or {}).keys())
+
+    for effect in effects:
+        effect_group_id = effect.get("effect_group_id") or "(unknown)"
+        effect_type = effect.get("effect_type")
+        if not effect_group_id:
+            issues.append("[Effect.effect_group_id] missing EffectGroupID")
+        if effect_type == "GaugeChange" and effect.get("gauge_id") not in gauge_ids:
+            issues.append(f"[Effect.gauge_id] {effect_group_id} -> {effect.get('gauge_id')} (missing GaugeID)")
+        if effect_type == "EvidenceGive" and effect.get("evidence_id") and effect.get("evidence_id") not in evidence_ids:
+            issues.append(f"[Effect.evidence_id] {effect_group_id} -> {effect.get('evidence_id')} (missing EvidenceID)")
+        if effect_type == "TrustChange" and effect.get("trust_character_id") not in character_ids:
+            issues.append(f"[Effect.trust_character_id] {effect_group_id} -> {effect.get('trust_character_id')} (missing CharacterID)")
 
 
 def validate_dialogue_character_refs(scene_id, scene, data, issues):
@@ -337,6 +423,8 @@ def main():
     validate_choice_groups(data, issues)
     validate_evidence_categories(data, issues)
     validate_investigations(data, issues)
+    validate_gauges(data, scenes, issues)
+    validate_effects(data, issues)
     validate_questions(data, issues)
     validate_state_descriptors(data, issues)
     validate_rules(data, issues)

@@ -1,19 +1,26 @@
 /**
- * ui.js — Manages all HUD, Banner, and Overlay updates.
+ * ui.js - Manages HUD, banner, overlays, and notebook panels.
  */
 const UIManager = (() => {
   const $ = id => document.getElementById(id);
 
   function init() {
-    // Reactive updates
     State.on('change', () => {
       applyStateMood();
-      // We don't have the current scene context here, 
-      // so we use a flag or just update mood/state readout.
       _updateHUDStatsOnly();
+      updateGaugeHUD();
     });
-
     State.on('evidence:added', () => _updateHUDStatsOnly());
+    State.on('loaded', () => updateGaugeHUD());
+    State.on('reset', () => updateGaugeHUD());
+
+    document.addEventListener('keydown', e => {
+      if (e.code === 'Escape' && isEvidenceInventoryVisible()) {
+        e.preventDefault();
+        hideEvidenceInventory();
+        setChoiceBoxVisible(false);
+      }
+    });
 
     console.log('[UIManager] Initialized');
   }
@@ -25,9 +32,6 @@ const UIManager = (() => {
     if (stateEl) stateEl.textContent = _getStateReadout();
   }
 
-  /**
-   * Update the in-game HUD with scene and state data.
-   */
   function updateHUD(scene, hudContext = null) {
     const titleEl = $('hud-scene-title');
     const chapterEl = $('hud-chapter');
@@ -45,43 +49,84 @@ const UIManager = (() => {
     evidenceEl.textContent = `단서 ${State.getEvidence().length}건`;
     stateEl.textContent = _getStateReadout();
 
-    focusRow.classList.toggle('hidden', !hudContext);
-    focusKicker.textContent = hudContext?.kicker || '';
-    focusText.textContent = hudContext?.text || '';
+    if (focusRow) focusRow.classList.toggle('hidden', !hudContext);
+    if (focusKicker) focusKicker.textContent = hudContext?.kicker || '';
+    if (focusText) focusText.textContent = hudContext?.text || '';
     container.classList.toggle('hud-priority-active', hudContext?.mode === 'priority');
 
+    renderGaugeHUD();
     applyStateMood();
+  }
+
+  function getVisibleGaugeRows() {
+    return (window.GAME_DATA?.gauges || [])
+      .filter(gauge => gauge?.hud_visible)
+      .sort((a, b) => Number(a?.hud_order || 0) - Number(b?.hud_order || 0))
+      .map(gauge => {
+        const value = Number(State.getGauge?.(gauge.gauge_id) ?? gauge.default_value ?? 0);
+        const states = (window.GAME_DATA?.gauge_states || []).filter(row => row?.gauge_id === gauge.gauge_id);
+        const currentState = states.find(row => value >= Number(row?.min_value) && value <= Number(row?.max_value)) || null;
+        const minValue = Number(gauge?.min_value || 0);
+        const maxValue = Number(gauge?.max_value || 0);
+        const pct = maxValue > minValue ? ((value - minValue) / (maxValue - minValue)) * 100 : 0;
+        return { gauge, value, currentState, pct: Math.max(0, Math.min(100, pct)) };
+      });
+  }
+
+  function renderGaugeHUD() {
+    const container = $('hud-gauges');
+    const gameContainer = $(Config.SELECTORS.GAME_CONTAINER);
+    const titleScreen = $('title-screen');
+    if (!container || !gameContainer) return;
+
+    const rows = getVisibleGaugeRows();
+    const titleVisible = titleScreen && !titleScreen.classList.contains('hidden');
+    container.innerHTML = rows.map(row => `
+      <div class="hud-gauge-card" data-gauge-id="${row.gauge.gauge_id}">
+        <div class="hud-gauge-head">
+          <span class="hud-gauge-label">${row.gauge.label || row.gauge.gauge_id}</span>
+          <span class="hud-gauge-value">${row.value}</span>
+        </div>
+        <div class="hud-gauge-bar">
+          <div class="hud-gauge-fill" style="width:${row.pct}%; background:${row.currentState?.hud_color || '#6a9f6a'}"></div>
+        </div>
+        <div class="hud-gauge-state">${row.currentState?.label || ''}</div>
+      </div>
+    `).join('');
+    gameContainer.classList.toggle('hud-hidden', !!titleVisible);
+  }
+
+  function updateGaugeHUD() {
+    renderGaugeHUD();
   }
 
   function _getStateReadout() {
     const parts = [];
-    const resonance = Number(State.getFlag('ResonanceLevel') || 0);
-    const trust = Number(State.getFlag('SongsoonTrust') || 0);
-    const investigation = Number(State.getFlag('InvestigationScore') || 0);
+    const erosion = Number(State.getGauge?.('Erosion') || State.getFlag('ResonanceLevel') || 0);
+    const trust = Number(State.getTrust?.('Songsoon') || State.getFlag('SongsoonTrust') || 0);
+    const credibility = Number(State.getGauge?.('Credibility') || State.getFlag('InvestigationScore') || 0);
 
-    if (investigation >= 3) parts.push('조사 집착');
-    else if (investigation >= 1) parts.push('조사 진행');
+    if (credibility >= 3) parts.push('조사 진척');
+    else if (credibility >= 1) parts.push('조사 진행');
 
-    if (trust >= 2) parts.push('송순 신뢰');
+    if (trust >= 2) parts.push('속순 신뢰');
     else if (trust >= 1) parts.push('동행 유지');
 
-    if (resonance >= 2) parts.push('침식 짙음');
-    else if (resonance >= 1) parts.push('침식 전조');
+    if (erosion >= 2) parts.push('침식 심화');
+    else if (erosion >= 1) parts.push('침식 전조');
 
     return parts.join(' · ') || '추적 중';
   }
 
   function applyStateMood() {
     const container = $(Config.SELECTORS.GAME_CONTAINER);
-    const resonance = Number(State.getFlag('ResonanceLevel') || 0);
-    const trust = Number(State.getFlag('SongsoonTrust') || 0);
+    const resonance = Number(State.getFlag('ResonanceLevel') || State.getGauge?.('Erosion') || 0);
+    const trust = Number(State.getFlag('SongsoonTrust') || State.getTrust?.('Songsoon') || 0);
     if (!container) return;
 
     container.classList.remove('state-resonance-low', 'state-resonance-high', 'state-trust-high');
-
     if (resonance >= 2) container.classList.add('state-resonance-high');
     else if (resonance >= 1) container.classList.add('state-resonance-low');
-
     if (trust >= 2) container.classList.add('state-trust-high');
   }
 
@@ -93,7 +138,6 @@ const UIManager = (() => {
 
     kicker.textContent = scene.chapter ? `CHAPTER ${scene.chapter}` : 'INVESTIGATION';
     title.textContent = scene.title;
-
     el.classList.remove('hidden');
     el.classList.add('show');
 
@@ -112,7 +156,6 @@ const UIManager = (() => {
 
     kicker.textContent = goalData.kicker;
     text.textContent = goalData.text;
-
     el.classList.remove('hidden');
     el.classList.add('show');
 
@@ -129,7 +172,6 @@ const UIManager = (() => {
 
     el.textContent = message;
     el.className = `toast-${type} show`;
-
     clearTimeout(el._timer);
     el._timer = setTimeout(() => {
       el.classList.remove('show');
@@ -171,7 +213,6 @@ const UIManager = (() => {
 
     if (num) num.textContent = `CHAPTER ${chapter}`;
     if (tit) tit.textContent = title;
-    
     card.classList.remove('hidden');
     card.classList.add('show');
 
@@ -214,7 +255,7 @@ const UIManager = (() => {
     const list = $('choice-list');
     if (!list) return;
     list.innerHTML = '';
-    
+
     if (meta) {
       if (meta.kicker || meta.title || meta.hint) {
         const header = document.createElement('div');
@@ -237,8 +278,7 @@ const UIManager = (() => {
     choices.forEach(choice => {
       const btn = document.createElement('button');
       btn.className = `choice-btn ${choice.type || 'choice-decision'}`;
-      btn.textContent = choice.text;
-      
+      btn.textContent = choice.text || choice.evidence_id || '';
       btn.addEventListener('click', () => {
         list.querySelectorAll('.choice-btn').forEach(b => { b.disabled = true; });
         btn.classList.add('choice-picked');
@@ -258,6 +298,42 @@ const UIManager = (() => {
     if (el) el.classList.toggle('hidden', !visible);
   }
 
+  function showEvidenceInventory(entries, meta, onPick) {
+    const panel = $('evidence-inventory');
+    const list = $('evidence-inventory-list');
+    const title = $('evidence-inventory-title');
+    const hint = $('evidence-inventory-hint');
+    if (!panel || !list) return;
+
+    if (title) title.textContent = meta?.title || '증거 제시';
+    if (hint) hint.textContent = meta?.hint || '';
+
+    if (!entries || entries.length === 0) {
+      list.innerHTML = '<div class="memo-empty">제시할 단서가 없습니다</div>';
+    } else {
+      list.innerHTML = entries.map(entry => `
+        <button class="choice-btn choice-evidence inventory-choice" data-evidence-id="${entry.evidence_id}">
+          ${entry.text}
+        </button>
+      `).join('');
+      list.querySelectorAll('[data-evidence-id]').forEach(button => {
+        button.addEventListener('click', () => onPick?.(button.dataset.evidenceId));
+      });
+    }
+
+    panel.classList.remove('hidden');
+  }
+
+  function hideEvidenceInventory() {
+    const panel = $('evidence-inventory');
+    if (panel) panel.classList.add('hidden');
+  }
+
+  function isEvidenceInventoryVisible() {
+    const panel = $('evidence-inventory');
+    return !!panel && !panel.classList.contains('hidden');
+  }
+
   function renderSaveSlotList(slots, onPick, title, subtitle) {
     const list = $('slot-list');
     const elTitle = $('slot-panel-title');
@@ -266,22 +342,21 @@ const UIManager = (() => {
 
     if (elTitle) elTitle.textContent = title || '';
     if (elSubtitle) elSubtitle.textContent = subtitle || '';
-    
+
     list.innerHTML = '';
     slots.forEach(slot => {
       const btn = document.createElement('button');
       btn.className = `slot-btn ${slot.isEmpty ? 'slot-empty' : ''} ${slot.isLastUsed ? 'slot-last-used' : ''}`;
-      
-      const tagHtml = slot.isLastUsed ? '<span class="slot-tag">자동저장</span>' : '';
+      const tagHtml = slot.isLastUsed ? '<span class="slot-tag">최근</span>' : '';
       if (!slot.isEmpty) {
         btn.innerHTML = `
-          <span class="slot-name">슬롯 ${slot.number}  ·  CH${slot.chapter}  ${slot.sceneTitle}${tagHtml}</span>
+          <span class="slot-name">슬롯 ${slot.number} · CH${slot.chapter} ${slot.sceneTitle}${tagHtml}</span>
           <span class="slot-info">${slot.timeText || ''}</span>
         `;
       } else {
         btn.innerHTML = `
           <span class="slot-name">슬롯 ${slot.number}${tagHtml}</span>
-          <span class="slot-info">비어있음</span>
+          <span class="slot-info">비어 있음</span>
         `;
         if (slot.isDisabled) {
           btn.disabled = true;
@@ -311,7 +386,7 @@ const UIManager = (() => {
 
     if (meta) {
       const totalCount = groups.reduce((acc, g) => acc + g.items.length, 0);
-      meta.textContent = totalCount === 0 ? '추적 중인 흔적이 없습니다.' : `분별된 흔적 ${totalCount}건`;
+      meta.textContent = totalCount === 0 ? '추적 중인 단서가 없습니다.' : `분류된 단서 ${totalCount}건`;
     }
 
     if (groups.length === 0) {
@@ -348,10 +423,7 @@ const UIManager = (() => {
     const tabButtons = Array.from(document.querySelectorAll('#memo-tabs .memo-tab'));
     if (!list) return;
 
-    if (meta) {
-      meta.textContent = data?.metaText || '';
-    }
-
+    if (meta) meta.textContent = data?.metaText || '';
     tabButtons.forEach(btn => {
       const isActive = btn.dataset.tab === activeTab;
       btn.classList.toggle('is-active', isActive);
@@ -402,14 +474,14 @@ const UIManager = (() => {
 
       list.innerHTML = cards
         ? `<section class="notebook-pane"><div class="memo-section-title">관계 인물</div><div class="character-grid">${cards}</div></section>`
-        : '<div class="memo-empty">정리된 인물 정보가 없습니다.</div>';
+        : '<div class="memo-empty">정리할 인물 정보가 없습니다.</div>';
       return;
     }
 
-      if (activeTab === 'questions') {
+    if (activeTab === 'questions') {
       const questions = data?.questions || [];
       if (questions.length === 0) {
-        list.innerHTML = '<div class="memo-empty">현재 정리된 질문이 없습니다.</div>';
+        list.innerHTML = '<div class="memo-empty">현재 정리할 질문이 없습니다.</div>';
         return;
       }
 
@@ -444,7 +516,7 @@ const UIManager = (() => {
           <div class="question-resolution-detail">${selectedQuestion.isSolved && selectedQuestion.resolvedDetail ? selectedQuestion.resolvedDetail : selectedQuestion.detail}</div>
           ${isContradictionQuestion && !selectedQuestion.isSolved ? `
             <div class="question-contradiction-card">
-              <div class="question-contradiction-kicker">${selectedQuestion.contradictionPrompt || '모순 판별'}</div>
+              <div class="question-contradiction-kicker">${selectedQuestion.contradictionPrompt || '모순 제시'}</div>
               <div class="question-contradiction-statement">${selectedQuestion.contradictionStatement || ''}</div>
             </div>
           ` : ''}
@@ -452,7 +524,7 @@ const UIManager = (() => {
           <div class="question-chip-list">${relatedEvidence || '<span class="question-chip is-missing">연결 단서 없음</span>'}</div>
           <div class="question-resolution-subtitle">${isContradictionQuestion ? '모순을 드러낼 근거 제시' : (isConnectionQuestion ? '보유 단서를 연결해 정리' : '보유 단서로 정리')}</div>
           ${selectedQuestion.isSolved
-            ? '<div class="question-resolution-empty">이미 정리한 질문입니다.</div>'
+            ? '<div class="question-resolution-empty">이미 정리된 질문입니다.</div>'
             : (evidenceOptions
               ? `<div class="question-evidence-list">${evidenceOptions}</div>${isConnectionQuestion ? `
                 <button class="question-commit-btn" data-question-id="${selectedQuestion.questionId}">
@@ -465,7 +537,7 @@ const UIManager = (() => {
 
       list.innerHTML = `
         <section class="notebook-pane">
-          <div class="memo-section-title">남은 질문</div>
+          <div class="memo-section-title">현재 질문</div>
           <div class="question-list">${questionCards}</div>
         </section>
         ${resolutionHtml}
@@ -476,11 +548,8 @@ const UIManager = (() => {
       });
       list.querySelectorAll('.question-evidence-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-          if (isConnectionQuestion) {
-            handlers.onQuestionEvidenceToggle?.(btn.dataset.questionId, btn.dataset.evidenceId);
-          } else {
-            handlers.onQuestionSubmit?.(btn.dataset.questionId, btn.dataset.evidenceId);
-          }
+          if (isConnectionQuestion) handlers.onQuestionEvidenceToggle?.(btn.dataset.questionId, btn.dataset.evidenceId);
+          else handlers.onQuestionSubmit?.(btn.dataset.questionId, btn.dataset.evidenceId);
         });
       });
       list.querySelectorAll('.question-commit-btn').forEach(btn => {
@@ -511,6 +580,11 @@ const UIManager = (() => {
     updateMemoBadge,
     renderMemo,
     renderNotebook,
-    showChapterCard
+    showChapterCard,
+    renderGaugeHUD,
+    updateGaugeHUD,
+    showEvidenceInventory,
+    hideEvidenceInventory,
+    isEvidenceInventoryVisible,
   };
 })();

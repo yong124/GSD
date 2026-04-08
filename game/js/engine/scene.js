@@ -8,6 +8,9 @@ const Scene = (() => {
   let _conditions = [];
   let _choiceGroups = new Map();
   let _investigations = new Map();
+  let _gauges = [];
+  let _gaugeStates = [];
+  const _gaugeListeners = new Map();
 
   const SCENE_THEMES = {
     court:       'linear-gradient(160deg, #0d1520 0%, #1a2535 50%, #0d1015 100%)',
@@ -66,6 +69,34 @@ const Scene = (() => {
 
   function triggerEnding(delayMs = 1500) {
     setTimeout(() => document.dispatchEvent(new Event('game:ending')), delayMs);
+  }
+
+  function getGaugeStates(gaugeId) {
+    return _gaugeStates.filter(row => row?.gauge_id === gaugeId);
+  }
+
+  function handleGaugeStateChange(event) {
+    if (event?.state?.label && typeof UIManager?.showToast === 'function') {
+      UIManager.showToast(`${event.gaugeId}: ${event.state.label}`, 'toast-impact');
+    }
+    const triggerSceneId = event?.state?.trigger_scene_id;
+    if (!triggerSceneId) return;
+    Scene.load(triggerSceneId);
+  }
+
+  function bindGaugeStateListeners() {
+    _gaugeListeners.forEach((listener, gaugeId) => {
+      State.off(`gauge:state:${gaugeId}`, listener);
+    });
+    _gaugeListeners.clear();
+
+    (_gauges || []).forEach(gauge => {
+      const gaugeId = gauge?.gauge_id;
+      if (!gaugeId) return;
+      const listener = event => handleGaugeStateChange(event);
+      _gaugeListeners.set(gaugeId, listener);
+      State.on(`gauge:state:${gaugeId}`, listener);
+    });
   }
 
   function loadResolvedNext(scene) {
@@ -145,9 +176,11 @@ const Scene = (() => {
     const type = condition?.condition_type;
     const targetId = condition?.condition_target_id;
     switch (type) {
+      case 'GaugeValue':
+        return Number(State.getGauge(targetId) || 0);
       case 'Trust': {
-        const trustKey = targetId && String(targetId).endsWith('Trust') ? targetId : `${targetId}Trust`;
-        return Number(State.getFlag(trustKey) || 0);
+        const characterId = targetId && String(targetId).endsWith('Trust') ? String(targetId).replace(/Trust$/, '') : targetId;
+        return Number(State.getTrust?.(characterId) || 0);
       }
       case 'EvidenceOwned':
         return State.getFlag(`HasEvidence_${targetId}`) === true || State.getEvidence().includes(targetId);
@@ -163,6 +196,8 @@ const Scene = (() => {
         return getRevealedCharacterSet(context).has(targetId);
       case 'SceneProgressIndex':
         return context.sceneProgressIndex ?? Number(State.dialogueIndex || 0);
+      case 'SceneVisited':
+        return State.hasVisitedScene?.(targetId) === true;
       case 'StateValue': {
         const raw = State.getFlag(targetId);
         if (raw === null || raw === undefined) return null;
@@ -170,6 +205,9 @@ const Scene = (() => {
         return isNaN(num) ? raw : num;
       }
       default:
+        if (type === 'SongsoonTrust') return Number(State.getTrust?.('Songsoon') || State.getFlag('SongsoonTrust') || 0);
+        if (type === 'ResonanceLevel') return Number(State.getGauge?.('Erosion') || State.getFlag('ResonanceLevel') || 0);
+        if (type === 'InvestigationScore') return Number(State.getGauge?.('Credibility') || State.getFlag('InvestigationScore') || 0);
         return null;
     }
   }
@@ -249,10 +287,10 @@ const Scene = (() => {
     const context = { sceneId: scene?.id };
     const groupedEvidenceChoices = (scene?.choices || []).filter(choice => {
       if (!passesConditionRef(choice, context)) return false;
-      if (getChoiceGroupType(choice) !== 'Evidence') return false;
-      const evidenceId = choice?.evidence_id;
-      if (!evidenceId) return false;
-      return State.getFlag(`HasEvidence_${evidenceId}`) === true || State.getEvidence().includes(evidenceId);
+      const group = getChoiceGroup(choice?.choice_group_id);
+      const answerType = group?.answer_type || (getChoiceGroupType(choice) === 'Evidence' ? 'Evidence' : 'Text');
+      if (answerType !== 'Evidence') return false;
+      return true;
     });
     if (groupedEvidenceChoices.length > 0) return groupedEvidenceChoices;
 
@@ -303,6 +341,7 @@ const Scene = (() => {
 
   function runScene(scene, fromLabel, restoreProgress = false) {
     State.currentSceneId = scene.id;
+    State.visitScene?.(scene.id);
     _hudContext = null;
     if (!restoreProgress || fromLabel) {
       State.dialogueIndex = 0;
@@ -357,6 +396,8 @@ const Scene = (() => {
           const branchLines = (scene.evidence_dialogues || {})[nextDialogue || ''] || [];
           if (branchLines.length > 0) {
             Dialogue.start(branchLines, continueAfterEvidence, null);
+          } else if (nextDialogue) {
+            Dialogue.start(scene.dialogues || [], continueAfterEvidence, nextDialogue);
           } else {
             continueAfterEvidence();
           }
@@ -376,6 +417,9 @@ const Scene = (() => {
       _conditions = Array.isArray(gameData.conditions) ? gameData.conditions : [];
       _choiceGroups = new Map((gameData.choice_groups || []).map(item => [item.choice_group_id, item]));
       _investigations = new Map((gameData.investigations || []).map(item => [item.investigation_id, item]));
+      _gauges = Array.isArray(gameData.gauges) ? gameData.gauges : [];
+      _gaugeStates = Array.isArray(gameData.gauge_states) ? gameData.gauge_states : [];
+      bindGaugeStateListeners();
     },
 
     load(sceneId, fromLabel, options = {}) {

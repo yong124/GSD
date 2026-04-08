@@ -183,6 +183,67 @@ body {
   box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45), 0 0 15px rgba(58, 106, 170, 0.15);
 }
 
+#hud-gauges {
+  position: absolute;
+  top: calc(var(--safe-top) + 12px);
+  right: calc(var(--safe-side) + 16px);
+  z-index: 21;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(240px, calc(100% - var(--safe-side-double) - 32px));
+}
+
+.hud-gauge-card {
+  padding: 10px 12px;
+  background: rgba(12, 15, 20, 0.86);
+  border: 1px solid rgba(200, 168, 75, 0.18);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.36);
+  backdrop-filter: var(--panel-blur);
+}
+
+.hud-gauge-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+}
+
+.hud-gauge-label {
+  color: var(--gold-light);
+}
+
+.hud-gauge-value,
+.hud-gauge-state {
+  color: var(--text-main);
+}
+
+.hud-gauge-bar {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.hud-gauge-fill {
+  height: 100%;
+  transition: width 0.4s ease, background-color 0.4s ease;
+}
+
+.hud-gauge-state {
+  margin-top: 6px;
+  font-family: var(--font-ui);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+}
+
+#game-container.hud-hidden #investigation-hud,
+#game-container.hud-hidden #hud-gauges {
+  display: none;
+}
+
 #standing-stage {
   position: absolute;
   inset: 0 0 calc(var(--dialogue-height) + var(--safe-bottom) + 12px) 0;

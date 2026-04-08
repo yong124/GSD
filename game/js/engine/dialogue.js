@@ -75,6 +75,9 @@ const Dialogue = (() => {
     if (typeof Effects?.pulse === 'function') {
       Effects.pulse(line.fx_type || '', 950);
     }
+    if (line?.effect_group_id && typeof Choice?.applyEffectGroup === 'function') {
+      Choice.applyEffectGroup(line.effect_group_id);
+    }
     
     const speakerName = getCharacterName(line);
     const portrait = (line.style === 'narration' || !speakerName) ? null : getCharacterImage(line);

@@ -5,6 +5,9 @@
     { id: 'characters', label: '캐릭터' },
     { id: 'character-emotions', label: '감정' },
     { id: 'conditions', label: '조건' },
+    { id: 'gauges', label: '게이지' },
+    { id: 'gauge-states', label: '게이지상태' },
+    { id: 'effects', label: '이펙트' },
     { id: 'choice-groups', label: '선택그룹' },
     { id: 'evidence-categories', label: '단서분류' },
     { id: 'investigations', label: '조사' },
@@ -14,11 +17,13 @@
   ];
 
   const CONDITION_TYPE_OPTIONS = [
+    'GaugeValue',
     'Trust',
     'EvidenceOwned',
     'ChoiceSelected',
     'RevealedCharacter',
     'SceneProgressIndex',
+    'SceneVisited',
     'ReadRitualScore',
     'ResonanceLevel',
     'InvestigationScore',
@@ -27,13 +32,21 @@
   ];
 
   const STATE_TYPE_OPTIONS = [
+    'Erosion',
+    'Credibility',
     'ReadRitualScore',
     'ResonanceLevel',
     'InvestigationScore',
     'SongsoonTrust',
   ];
 
+  const ANSWER_TYPE_OPTIONS = ['Text', 'Evidence'];
+  const EFFECT_TYPE_OPTIONS = ['GaugeChange', 'EvidenceGive', 'TrustChange'];
   const RULE_FACT_TYPE_OPTIONS = ['RevealedCharacter', 'HasEvidence', 'SceneProgressIndex', 'FlagValue'];
+
+  function uniqueSorted(values) {
+    return [...new Set(values.filter(Boolean))].sort();
+  }
 
   function collectChoiceIds(data) {
     const ids = [];
@@ -42,7 +55,7 @@
         if (choice?.choice_id) ids.push(choice.choice_id);
       });
     });
-    return [...new Set(ids)].sort();
+    return uniqueSorted(ids);
   }
 
   function collectDialogIds(data) {
@@ -52,7 +65,7 @@
         if (dialogue?.dialog_id) ids.push(dialogue.dialog_id);
       });
     });
-    return [...new Set(ids)].sort();
+    return uniqueSorted(ids);
   }
 
   function collectSceneIds(data) {
@@ -70,32 +83,35 @@
         if (evidence?.evidence_id || evidence?.id) ids.push(evidence.evidence_id || evidence.id);
       });
     });
-    return [...new Set(ids)].sort();
+    return uniqueSorted(ids);
   }
 
   function collectRuleIds(data) {
-    const ids = (data?.rules || []).map(rule => rule?.rule_id).filter(Boolean);
-    return [...new Set(ids)].sort();
+    return uniqueSorted((data?.rules || []).map(rule => rule?.rule_id));
   }
 
   function collectConditionGroupIds(data) {
-    const ids = (data?.conditions || []).map(condition => condition?.condition_group_id).filter(Boolean);
-    return [...new Set(ids)].sort();
+    return uniqueSorted((data?.conditions || []).map(condition => condition?.condition_group_id));
   }
 
   function collectChoiceGroupIds(data) {
-    const ids = (data?.choice_groups || []).map(item => item?.choice_group_id).filter(Boolean);
-    return [...new Set(ids)].sort();
+    return uniqueSorted((data?.choice_groups || []).map(item => item?.choice_group_id));
   }
 
   function collectInvestigationIds(data) {
-    const ids = (data?.investigations || []).map(item => item?.investigation_id).filter(Boolean);
-    return [...new Set(ids)].sort();
+    return uniqueSorted((data?.investigations || []).map(item => item?.investigation_id));
   }
 
   function collectEvidenceCategoryIds(data) {
-    const ids = (data?.evidence_categories || []).map(item => item?.category_id).filter(Boolean);
-    return [...new Set(ids)].sort();
+    return uniqueSorted((data?.evidence_categories || []).map(item => item?.category_id));
+  }
+
+  function collectGaugeIds(data) {
+    return uniqueSorted((data?.gauges || []).map(item => item?.gauge_id));
+  }
+
+  function collectEffectGroupIds(data) {
+    return uniqueSorted((data?.effects || []).map(item => item?.effect_group_id));
   }
 
   function getConditionTargetOptions(data, conditionType) {
@@ -109,6 +125,10 @@
         return collectChoiceIds(data);
       case 'StateValue':
         return STATE_TYPE_OPTIONS.slice();
+      case 'GaugeValue':
+        return collectGaugeIds(data);
+      case 'SceneVisited':
+        return collectSceneIds(data);
       default:
         return [];
     }
@@ -118,6 +138,8 @@
     DATA_TABS,
     CONDITION_TYPE_OPTIONS,
     STATE_TYPE_OPTIONS,
+    ANSWER_TYPE_OPTIONS,
+    EFFECT_TYPE_OPTIONS,
     RULE_FACT_TYPE_OPTIONS,
     collectChoiceIds,
     collectDialogIds,
@@ -129,6 +151,8 @@
     collectChoiceGroupIds,
     collectInvestigationIds,
     collectEvidenceCategoryIds,
+    collectGaugeIds,
+    collectEffectGroupIds,
     getConditionTargetOptions,
   };
 })();

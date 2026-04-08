@@ -88,6 +88,13 @@ def resolve_sheet(wb, *candidates):
     sys.exit(1)
 
 
+def resolve_optional_sheet(wb, *candidates):
+    for name in candidates:
+        if name in wb.sheetnames:
+            return wb[name]
+    return None
+
+
 def build_game_data(wb):
     scenes_raw = read_sheet(resolve_sheet(wb, "SceneTable", "Scenes"))
     dialogues_raw = read_sheet(resolve_sheet(wb, "DialogTable", "Dialogues"))
@@ -103,6 +110,12 @@ def build_game_data(wb):
     questions_raw = read_sheet(resolve_sheet(wb, "QuestionTable", "Questions")) if "QuestionTable" in wb.sheetnames or "Questions" in wb.sheetnames else []
     state_descriptors_raw = read_sheet(resolve_sheet(wb, "StateDescriptorTable", "StateDescriptors")) if "StateDescriptorTable" in wb.sheetnames or "StateDescriptors" in wb.sheetnames else []
     rules_raw = read_sheet(resolve_sheet(wb, "RuleTable", "Rules")) if "RuleTable" in wb.sheetnames or "Rules" in wb.sheetnames else []
+    gauges_ws = resolve_optional_sheet(wb, "GaugeTable", "Gauges")
+    gauge_states_ws = resolve_optional_sheet(wb, "GaugeStateTable", "GaugeStates")
+    effects_ws = resolve_optional_sheet(wb, "EffectTable", "Effects")
+    gauges_raw = read_sheet(gauges_ws) if gauges_ws else []
+    gauge_states_raw = read_sheet(gauge_states_ws) if gauge_states_ws else []
+    effects_raw = read_sheet(effects_ws) if effects_ws else []
 
     # SceneID 기준으로 씬 딕셔너리 구성
     scenes = {}
@@ -148,6 +161,7 @@ def build_game_data(wb):
                 "fx_type": d.get("FxType"),
                 "choice_group_id": d.get("ChoiceGroupID"),
                 "next_dialog_id": d.get("NextDialogID"),
+                "effect_group_id": d.get("EffectGroupID"),
             }
             for key, value in optional_fields.items():
                 if value is not None:
@@ -182,6 +196,8 @@ def build_game_data(wb):
                 entry["next_id"] = c.get("NextID")
             if c.get("EvidenceID"):
                 entry["evidence_id"] = c.get("EvidenceID")
+            if c.get("EffectGroupID"):
+                entry["effect_group_id"] = c.get("EffectGroupID")
             if c.get("TrustCharacterID"):
                 entry["trust_character_id"] = c.get("TrustCharacterID")
             if c.get("TrustValue") is not None:
@@ -274,8 +290,10 @@ def build_game_data(wb):
         choice_groups.append({
             "choice_group_id": choice_group_id,
             "type": row.get("Type"),
+            "answer_type": row.get("AnswerType"),
             "condition_group_id": row.get("ConditionGroupID"),
             "max_selectable": row.get("MaxSelectable"),
+            "default_dialog_id": row.get("DefaultDialogID"),
         })
 
     evidence_categories = []
@@ -361,6 +379,51 @@ def build_game_data(wb):
             "priority": row.get("Priority"),
         })
 
+    gauges = []
+    for row in gauges_raw:
+        gauge_id = row.get("GaugeID")
+        if not gauge_id:
+            continue
+        gauges.append({
+            "gauge_id": gauge_id,
+            "label": row.get("Label") or "",
+            "min_value": row.get("MinValue"),
+            "max_value": row.get("MaxValue"),
+            "default_value": row.get("DefaultValue"),
+            "hud_visible": row.get("HudVisible"),
+            "hud_order": row.get("HudOrder"),
+        })
+
+    gauge_states = []
+    for row in gauge_states_raw:
+        gauge_id = row.get("GaugeID")
+        if not gauge_id:
+            continue
+        gauge_states.append({
+            "gauge_id": gauge_id,
+            "min_value": row.get("MinValue"),
+            "max_value": row.get("MaxValue"),
+            "label": row.get("Label") or "",
+            "hud_color": row.get("HudColor") or "",
+            "detail": row.get("Detail") or "",
+            "trigger_scene_id": row.get("TriggerSceneID"),
+        })
+
+    effects = []
+    for row in effects_raw:
+        effect_group_id = row.get("EffectGroupID")
+        if not effect_group_id:
+            continue
+        effects.append({
+            "effect_group_id": effect_group_id,
+            "effect_type": row.get("EffectType"),
+            "gauge_id": row.get("GaugeID"),
+            "gauge_delta": row.get("GaugeDelta"),
+            "evidence_id": row.get("EvidenceID"),
+            "trust_character_id": row.get("TrustCharacterID"),
+            "trust_delta": row.get("TrustDelta"),
+        })
+
     return {
         "first_scene": first_scene,
         "conditions": conditions,
@@ -372,6 +435,9 @@ def build_game_data(wb):
         "questions": questions,
         "state_descriptors": state_descriptors,
         "rules": rules,
+        "gauges": gauges,
+        "gauge_states": gauge_states,
+        "effects": effects,
         "scenes": scenes,
     }
 

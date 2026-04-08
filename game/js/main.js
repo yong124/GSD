@@ -12,6 +12,7 @@
     _titleVisible = false;
     InputManager.setTitleVisible(false);
     $('title-screen').classList.add('hidden');
+    UIManager.updateGaugeHUD?.();
   }
 
   function showTitleScreen() {
@@ -21,6 +22,7 @@
     $('title-screen').classList.remove('hidden');
     $('continue-btn').disabled = !hasSave;
     $('continue-btn').setAttribute('aria-disabled', String(!hasSave));
+    UIManager.updateGaugeHUD?.();
   }
 
   function startNewGame(data) {

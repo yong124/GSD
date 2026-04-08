@@ -217,8 +217,8 @@ window.GAME_DATA = {
     {
       "condition_id": "Cond_Library_Investigation_01",
       "condition_group_id": "CG_Library_Investigation2",
-      "condition_type": "StateValue",
-      "condition_target_id": "InvestigationScore",
+      "condition_type": "GaugeValue",
+      "condition_target_id": "Credibility",
       "compare_type": "GreaterEqual",
       "condition_value": 2
     },
@@ -281,8 +281,8 @@ window.GAME_DATA = {
     {
       "condition_id": "Cond_Threshold_Resonance_01",
       "condition_group_id": "CG_Threshold_Resonance2",
-      "condition_type": "StateValue",
-      "condition_target_id": "ResonanceLevel",
+      "condition_type": "GaugeValue",
+      "condition_target_id": "Erosion",
       "compare_type": "GreaterEqual",
       "condition_value": 2
     },
@@ -297,8 +297,8 @@ window.GAME_DATA = {
     {
       "condition_id": "Cond_Threshold_Investigation_01",
       "condition_group_id": "CG_Threshold_Investigation3",
-      "condition_type": "StateValue",
-      "condition_target_id": "InvestigationScore",
+      "condition_type": "GaugeValue",
+      "condition_target_id": "Credibility",
       "compare_type": "GreaterEqual",
       "condition_value": 3
     },
@@ -332,8 +332,8 @@ window.GAME_DATA = {
     {
       "condition_id": "Cond_RitualScene_Resonance_01",
       "condition_group_id": "CG_RitualScene_Resonance2",
-      "condition_type": "StateValue",
-      "condition_target_id": "ResonanceLevel",
+      "condition_type": "GaugeValue",
+      "condition_target_id": "Erosion",
       "compare_type": "GreaterEqual",
       "condition_value": 2
     },
@@ -502,24 +502,24 @@ window.GAME_DATA = {
     {
       "condition_id": "Cond_Descent_SongsoonTrust1_01",
       "condition_group_id": "CG_Descent_SongsoonTrust1",
-      "condition_type": "StateValue",
-      "condition_target_id": "SongsoonTrust",
+      "condition_type": "Trust",
+      "condition_target_id": "Songsoon",
       "compare_type": "GreaterEqual",
       "condition_value": 1
     },
     {
       "condition_id": "Cond_Branch_SongsoonTrust2_01",
       "condition_group_id": "CG_Branch_SongsoonTrust2",
-      "condition_type": "StateValue",
-      "condition_target_id": "SongsoonTrust",
+      "condition_type": "Trust",
+      "condition_target_id": "Songsoon",
       "compare_type": "GreaterEqual",
       "condition_value": 2
     },
     {
       "condition_id": "Cond_Branch_SongsoonTrust1_01",
       "condition_group_id": "CG_Branch_SongsoonTrust1",
-      "condition_type": "StateValue",
-      "condition_target_id": "SongsoonTrust",
+      "condition_type": "Trust",
+      "condition_target_id": "Songsoon",
       "compare_type": "GreaterEqual",
       "condition_value": 1
     },
@@ -550,8 +550,8 @@ window.GAME_DATA = {
     {
       "condition_id": "Cond_Branch_Investigation3_01",
       "condition_group_id": "CG_Branch_Investigation3",
-      "condition_type": "StateValue",
-      "condition_target_id": "InvestigationScore",
+      "condition_type": "GaugeValue",
+      "condition_target_id": "Credibility",
       "compare_type": "GreaterEqual",
       "condition_value": 3
     },
@@ -1401,6 +1401,165 @@ window.GAME_DATA = {
       "priority": 10
     }
   ],
+  "gauges": [
+    {
+      "gauge_id": "Erosion",
+      "label": "침식",
+      "min_value": 0,
+      "max_value": 10,
+      "default_value": 0,
+      "hud_visible": true,
+      "hud_order": 1
+    },
+    {
+      "gauge_id": "Credibility",
+      "label": "신용",
+      "min_value": 0,
+      "max_value": 10,
+      "default_value": 10,
+      "hud_visible": true,
+      "hud_order": 2
+    }
+  ],
+  "gauge_states": [
+    {
+      "gauge_id": "Erosion",
+      "min_value": 0,
+      "max_value": 2,
+      "label": "안정",
+      "hud_color": "#6a9f6a",
+      "detail": "아직은 이성을 붙들고 사건을 따라갈 수 있는 상태다.",
+      "trigger_scene_id": null
+    },
+    {
+      "gauge_id": "Erosion",
+      "min_value": 3,
+      "max_value": 5,
+      "label": "위조",
+      "hud_color": "#c8a84b",
+      "detail": "조사 과정 곳곳에서 의식의 균열이 스며든다.",
+      "trigger_scene_id": null
+    },
+    {
+      "gauge_id": "Erosion",
+      "min_value": 6,
+      "max_value": 8,
+      "label": "심화",
+      "hud_color": "#b06040",
+      "detail": "위협을 감수한 만큼 비현실의 결이 짙어진다.",
+      "trigger_scene_id": null
+    },
+    {
+      "gauge_id": "Erosion",
+      "min_value": 9,
+      "max_value": 9,
+      "label": "침식",
+      "hud_color": "#8b2020",
+      "detail": "이성과 의식의 경계가 크게 흔들리고 있다.",
+      "trigger_scene_id": null
+    },
+    {
+      "gauge_id": "Erosion",
+      "min_value": 10,
+      "max_value": 10,
+      "label": "붕괴",
+      "hud_color": "#4a0000",
+      "detail": "",
+      "trigger_scene_id": "scene_gameover_erosion"
+    },
+    {
+      "gauge_id": "Credibility",
+      "min_value": 3,
+      "max_value": 10,
+      "label": "신뢰",
+      "hud_color": "#6a9f6a",
+      "detail": "기자로서의 발언에 무게가 실린다.",
+      "trigger_scene_id": null
+    },
+    {
+      "gauge_id": "Credibility",
+      "min_value": 1,
+      "max_value": 2,
+      "label": "흔들림",
+      "hud_color": "#c8a84b",
+      "detail": "압박을 받는 순간 신뢰가 빠르게 깎이고 있다.",
+      "trigger_scene_id": null
+    },
+    {
+      "gauge_id": "Credibility",
+      "min_value": 0,
+      "max_value": 0,
+      "label": "실각",
+      "hud_color": "#8b2020",
+      "detail": "",
+      "trigger_scene_id": "scene_gameover_credibility"
+    }
+  ],
+  "effects": [
+    {
+      "effect_group_id": "eff_ch1_newsroom_obedient",
+      "effect_type": "TrustChange",
+      "gauge_id": null,
+      "gauge_delta": null,
+      "evidence_id": null,
+      "trust_character_id": "Editor",
+      "trust_delta": 1
+    },
+    {
+      "effect_group_id": "eff_ch3_warehouse_read_ritual",
+      "effect_type": "GaugeChange",
+      "gauge_id": "Credibility",
+      "gauge_delta": 1,
+      "evidence_id": null,
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_ch3_room4_touch_wall",
+      "effect_type": "GaugeChange",
+      "gauge_id": "Erosion",
+      "gauge_delta": 2,
+      "evidence_id": null,
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_ch3_room4_read_record",
+      "effect_type": "GaugeChange",
+      "gauge_id": "Credibility",
+      "gauge_delta": 1,
+      "evidence_id": null,
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_ch4a_library_note_articles",
+      "effect_type": "GaugeChange",
+      "gauge_id": "Credibility",
+      "gauge_delta": 3,
+      "evidence_id": null,
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_ch5_guarded_door_listen",
+      "effect_type": "GaugeChange",
+      "gauge_id": "Erosion",
+      "gauge_delta": 2,
+      "evidence_id": null,
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_ch5_guarded_door_steady",
+      "effect_type": "TrustChange",
+      "gauge_id": null,
+      "gauge_delta": null,
+      "evidence_id": null,
+      "trust_character_id": "Songsoon",
+      "trust_delta": 2
+    }
+  ],
   "scenes": {
     "ch1_court": {
       "id": "ch1_court",
@@ -1633,6 +1792,7 @@ window.GAME_DATA = {
         {
           "order": 1,
           "choice_id": "Ch1NewsroomObedient",
+          "effect_group_id": "eff_ch1_newsroom_obedient",
           "text": "세간의 입에 오를 만한 글로 꾸며 보지요.",
           "trust_character_id": "Editor",
           "trust_value": 1,
@@ -2552,6 +2712,7 @@ window.GAME_DATA = {
         {
           "order": 1,
           "choice_id": "Ch3WarehouseReadRitual",
+          "effect_group_id": "eff_ch3_warehouse_read_ritual",
           "text": "관자놀이가 깨질 듯해도 악보를 끝까지 읽어 낸다.",
           "state_type": "ReadRitualScore",
           "state_value": 1,
@@ -2951,6 +3112,7 @@ window.GAME_DATA = {
           "order": 1,
           "choice_group_id": "ChoiceGroup_Room4Investigation",
           "choice_id": "Ch3Room4TouchWall",
+          "effect_group_id": "eff_ch3_room4_touch_wall",
           "text": "위험을 감수하고 벽의 문양에 직접 손을 댄다.",
           "state_type": "ResonanceLevel",
           "state_value": 2,
@@ -2961,6 +3123,7 @@ window.GAME_DATA = {
           "order": 2,
           "choice_group_id": "ChoiceGroup_Room4Investigation",
           "choice_id": "Ch3Room4ReadRecord",
+          "effect_group_id": "eff_ch3_room4_read_record",
           "text": "공포보다 기록을 우선하고 일기장의 다음 장을 더 읽는다.",
           "state_type": "ReadRitualScore",
           "state_value": 1,
@@ -3352,6 +3515,7 @@ window.GAME_DATA = {
         {
           "order": 2,
           "choice_id": "Ch4ALibraryNoteArticles",
+          "effect_group_id": "eff_ch4a_library_note_articles",
           "text": "핵심 문장만 수첩에 적고 넘어간다.",
           "state_type": "InvestigationScore",
           "state_value": 3,
@@ -4459,6 +4623,7 @@ window.GAME_DATA = {
         {
           "order": 1,
           "choice_id": "Ch5GuardedDoorListen",
+          "effect_group_id": "eff_ch5_guarded_door_listen",
           "text": "허밍의 결을 끝까지 듣고, 문 안쪽 호흡을 짚어 본다.",
           "state_type": "ResonanceLevel",
           "state_value": 2,
@@ -4468,6 +4633,7 @@ window.GAME_DATA = {
         {
           "order": 2,
           "choice_id": "Ch5GuardedDoorSteady",
+          "effect_group_id": "eff_ch5_guarded_door_steady",
           "text": "송순과 숨을 고른 뒤, 함께 문을 민다.",
           "state_type": "SongsoonTrust",
           "state_value": 2,
@@ -6144,6 +6310,42 @@ window.GAME_DATA = {
           "speaker_id": "Yuu",
           "emotion_type": "Tense",
           "standing_slot": "Right"
+        }
+      ],
+      "choices": [],
+      "evidence": []
+    },
+    "scene_gameover_erosion": {
+      "id": "scene_gameover_erosion",
+      "chapter": 0,
+      "title": "게임 오버 - 침식",
+      "background": "assets/bg/factory.jpeg",
+      "music": "assets/sfx/ending.mp3",
+      "effect": null,
+      "branches": [],
+      "dialogues": [
+        {
+          "order": 1,
+          "text": "더는 기록과 현실의 경계를 붙들 수 없다. 의식은 끝내 사건 바깥으로 미끄러진다.",
+          "style": "narration"
+        }
+      ],
+      "choices": [],
+      "evidence": []
+    },
+    "scene_gameover_credibility": {
+      "id": "scene_gameover_credibility",
+      "chapter": 0,
+      "title": "게임 오버 - 신용",
+      "background": "assets/bg/newsroom.jpeg",
+      "music": "assets/sfx/ending.mp3",
+      "effect": null,
+      "branches": [],
+      "dialogues": [
+        {
+          "order": 1,
+          "text": "기록은 남았지만 믿어 줄 사람은 없다. 기자로서의 발언권은 완전히 무너졌다.",
+          "style": "narration"
         }
       ],
       "choices": [],

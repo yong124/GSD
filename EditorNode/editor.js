@@ -22,15 +22,17 @@
   const EDITOR_DATA_UI = window.EditorDataUI || {};
   const RULE_FACT_TYPE_OPTIONS = EDITOR_DATA_UI.RULE_FACT_TYPE_OPTIONS || ['RevealedCharacter', 'HasEvidence', 'SceneProgressIndex', 'FlagValue'];
   const RULE_OPERATOR_OPTIONS = ['Equals', 'Gte'];
-  const CONDITION_TYPE_OPTIONS = EDITOR_DATA_UI.CONDITION_TYPE_OPTIONS || ['Trust', 'EvidenceOwned', 'ChoiceSelected', 'RevealedCharacter', 'SceneProgressIndex', 'ReadRitualScore', 'ResonanceLevel', 'InvestigationScore', 'SongsoonTrust', 'StateValue'];
-  const STATE_TYPE_OPTIONS = EDITOR_DATA_UI.STATE_TYPE_OPTIONS || ['ReadRitualScore', 'ResonanceLevel', 'InvestigationScore', 'SongsoonTrust'];
+  const CONDITION_TYPE_OPTIONS = EDITOR_DATA_UI.CONDITION_TYPE_OPTIONS || ['GaugeValue', 'Trust', 'EvidenceOwned', 'ChoiceSelected', 'RevealedCharacter', 'SceneProgressIndex', 'SceneVisited', 'ReadRitualScore', 'ResonanceLevel', 'InvestigationScore', 'SongsoonTrust', 'StateValue'];
+  const STATE_TYPE_OPTIONS = EDITOR_DATA_UI.STATE_TYPE_OPTIONS || ['Erosion', 'Credibility', 'ReadRitualScore', 'ResonanceLevel', 'InvestigationScore', 'SongsoonTrust'];
+  const ANSWER_TYPE_OPTIONS = EDITOR_DATA_UI.ANSWER_TYPE_OPTIONS || ['Text', 'Evidence'];
+  const EFFECT_TYPE_OPTIONS = EDITOR_DATA_UI.EFFECT_TYPE_OPTIONS || ['GaugeChange', 'EvidenceGive', 'TrustChange'];
   const COMPARE_TYPE_OPTIONS = ['Equal', 'NotEqual', 'Greater', 'GreaterEqual', 'Less', 'LessEqual'];
   const CHOICE_GROUP_TYPE_OPTIONS = ['Normal', 'Investigation', 'Evidence'];
   const NEXT_TYPE_OPTIONS = ['Scene', 'Dialog', 'None'];
 
   // ── 상태 ──────────────────────────────────────────────
   const state = {
-    data: { first_scene: '', characters: {}, character_emotions: {}, conditions: [], choice_groups: [], evidence_categories: [], investigations: [], questions: [], state_descriptors: [], rules: [], scenes: {} },
+    data: { first_scene: '', characters: {}, character_emotions: {}, conditions: [], gauges: [], gauge_states: [], effects: [], choice_groups: [], evidence_categories: [], investigations: [], questions: [], state_descriptors: [], rules: [], scenes: {} },
     layout: {},       // { sceneId: { x, y } }
     selectedId: null,
     selectedIds: new Set(),
@@ -95,6 +97,9 @@
     els.characterList = $('character-list');
     els.characterEmotionList = $('character-emotion-list');
     els.conditionList = $('condition-list');
+    els.gaugeList = $('gauge-list');
+    els.gaugeStateList = $('gauge-state-list');
+    els.effectList = $('effect-list');
     els.choiceGroupList = $('choice-group-list');
     els.evidenceCategoryList = $('evidence-category-list');
     els.investigationList = $('investigation-list');
@@ -172,6 +177,8 @@
     if (type === 'choiceGroupIds' && typeof ui.collectChoiceGroupIds === 'function') return ui.collectChoiceGroupIds(state.data);
     if (type === 'investigationIds' && typeof ui.collectInvestigationIds === 'function') return ui.collectInvestigationIds(state.data);
     if (type === 'evidenceCategoryIds' && typeof ui.collectEvidenceCategoryIds === 'function') return ui.collectEvidenceCategoryIds(state.data);
+    if (type === 'gaugeIds' && typeof ui.collectGaugeIds === 'function') return ui.collectGaugeIds(state.data);
+    if (type === 'effectGroupIds' && typeof ui.collectEffectGroupIds === 'function') return ui.collectEffectGroupIds(state.data);
     return [];
   }
 
@@ -345,10 +352,13 @@
 
   function restoreSnapshot(snapshot) {
     const parsed = JSON.parse(snapshot);
-    state.data = parsed.data || { first_scene: '', characters: {}, character_emotions: {}, conditions: [], choice_groups: [], evidence_categories: [], investigations: [], questions: [], state_descriptors: [], rules: [], scenes: {} };
+    state.data = parsed.data || { first_scene: '', characters: {}, character_emotions: {}, conditions: [], gauges: [], gauge_states: [], effects: [], choice_groups: [], evidence_categories: [], investigations: [], questions: [], state_descriptors: [], rules: [], scenes: {} };
     if (!state.data.characters) state.data.characters = {};
     if (!state.data.character_emotions) state.data.character_emotions = {};
     if (!Array.isArray(state.data.conditions)) state.data.conditions = [];
+    if (!Array.isArray(state.data.gauges)) state.data.gauges = [];
+    if (!Array.isArray(state.data.gauge_states)) state.data.gauge_states = [];
+    if (!Array.isArray(state.data.effects)) state.data.effects = [];
     if (!Array.isArray(state.data.choice_groups)) state.data.choice_groups = [];
     if (!Array.isArray(state.data.evidence_categories)) state.data.evidence_categories = [];
     if (!Array.isArray(state.data.investigations)) state.data.investigations = [];
@@ -909,6 +919,9 @@
       renderCharacterList();
       renderCharacterEmotionList();
       renderConditionList();
+      renderGaugeList();
+      renderGaugeStateList();
+      renderEffectList();
       renderChoiceGroupList();
       renderEvidenceCategoryList();
       renderInvestigationList();
@@ -1131,12 +1144,16 @@
           </select></label>
         <label><span>텍스트</span>
           <textarea data-field="text">${escapeHtml(d.text || '')}</textarea></label>
+        <label><span>AnswerType</span>
+          <input data-field="AnswerType" value="${escapeAttr(row.AnswerType || 'Text')}" placeholder="Text / Evidence"></label>
         <label><span>ConditionGroupID</span>
           <input data-field="condition_group_id" value="${escapeAttr(d.condition_group_id || '')}" placeholder="예: CG_Visible_Songsoon"></label>
         <label><span>ChoiceGroupID</span>
           <input data-field="choice_group_id" value="${escapeAttr(d.choice_group_id || '')}" placeholder="예: ChoiceGroupCafe01"></label>
         <label><span>NextDialogID</span>
           <input data-field="next_dialog_id" value="${escapeAttr(d.next_dialog_id || '')}" placeholder="예: Dlg_Cafe_020"></label>
+        <label><span>EffectGroupID</span>
+          <input data-field="effect_group_id" value="${escapeAttr(d.effect_group_id || '')}" placeholder="예: eff_dialog"></label>
       `,
       () => { scene.dialogues.splice(0, 0, newDialogue()); afterChange(); },
       (i) => { scene.dialogues.splice(i, 1); afterChange(); },
@@ -1183,6 +1200,12 @@
       const select = document.createElement('select');
       select.dataset.field = 'next_dialog_id';
       select.innerHTML = renderSelectOptions(getDataOptions('dialogIds'), input.value || '', true);
+      input.replaceWith(select);
+    });
+    cards.querySelectorAll('input[data-field="effect_group_id"]').forEach(input => {
+      const select = document.createElement('select');
+      select.dataset.field = 'effect_group_id';
+      select.innerHTML = renderSelectOptions(getDataOptions('effectGroupIds'), input.value || '', true);
       input.replaceWith(select);
     });
 
@@ -1259,6 +1282,8 @@
           <input data-field="next_id" value="${escapeAttr(c.next_id || '')}" placeholder="SceneID 또는 DialogID"></label>
         <label><span>EvidenceID</span>
           <input data-field="evidence_id" value="${escapeAttr(c.evidence_id || '')}" placeholder="예: EvDiary"></label>
+        <label><span>EffectGroupID</span>
+          <input data-field="effect_group_id" value="${escapeAttr(c.effect_group_id || '')}" placeholder="예: eff_choice"></label>
         <label><span>TrustCharacterID</span>
           <input data-field="trust_character_id" value="${escapeAttr(c.trust_character_id || '')}" placeholder="예: Songsoon"></label>
         <label><span>TrustValue</span>
@@ -1300,6 +1325,12 @@
       const select = document.createElement('select');
       select.dataset.field = 'evidence_id';
       select.innerHTML = renderSelectOptions(getDataOptions('evidenceIds'), input.value || '', true);
+      input.replaceWith(select);
+    });
+    cards.querySelectorAll('input[data-field="effect_group_id"]').forEach(input => {
+      const select = document.createElement('select');
+      select.dataset.field = 'effect_group_id';
+      select.innerHTML = renderSelectOptions(getDataOptions('effectGroupIds'), input.value || '', true);
       input.replaceWith(select);
     });
     cards.querySelectorAll('input[data-field="trust_character_id"]').forEach(input => {
@@ -1661,12 +1692,50 @@
     }));
   }
 
+  function getGaugeRows() {
+    return (state.data.gauges || []).map(item => ({
+      GaugeID: item?.gauge_id || '',
+      Label: item?.label || '',
+      MinValue: item?.min_value ?? '',
+      MaxValue: item?.max_value ?? '',
+      DefaultValue: item?.default_value ?? '',
+      HudVisible: item?.hud_visible ?? true,
+      HudOrder: item?.hud_order ?? '',
+    }));
+  }
+
+  function getGaugeStateRows() {
+    return (state.data.gauge_states || []).map(item => ({
+      GaugeID: item?.gauge_id || '',
+      MinValue: item?.min_value ?? '',
+      MaxValue: item?.max_value ?? '',
+      Label: item?.label || '',
+      HudColor: item?.hud_color || '',
+      Detail: item?.detail || '',
+      TriggerSceneID: item?.trigger_scene_id || '',
+    }));
+  }
+
+  function getEffectRows() {
+    return (state.data.effects || []).map(item => ({
+      EffectGroupID: item?.effect_group_id || '',
+      EffectType: item?.effect_type || 'GaugeChange',
+      GaugeID: item?.gauge_id || '',
+      GaugeDelta: item?.gauge_delta ?? '',
+      EvidenceID: item?.evidence_id || '',
+      TrustCharacterID: item?.trust_character_id || '',
+      TrustDelta: item?.trust_delta ?? '',
+    }));
+  }
+
   function getChoiceGroupRows() {
     return (state.data.choice_groups || []).map(item => ({
       ChoiceGroupID: item?.choice_group_id || '',
       Type: item?.type || 'Normal',
+      AnswerType: item?.answer_type || 'Text',
       ConditionGroupID: item?.condition_group_id || '',
       MaxSelectable: item?.max_selectable ?? '',
+      DefaultDialogID: item?.default_dialog_id || '',
     }));
   }
 
@@ -2116,6 +2185,152 @@
     els.conditionList.appendChild(cards);
   }
 
+  function renderGaugeList() {
+    els.gaugeList.innerHTML = '';
+    const rows = getGaugeRows();
+    const handleGaugeChange = (row, field, value) => {
+      const target = state.data.gauges.find(item => (item.gauge_id || '') === row.GaugeID) || state.data.gauges.find((_, idx) => rows[idx] === row);
+      if (!target) return;
+      if (field === 'GaugeID') target.gauge_id = value || '';
+      if (field === 'Label') target.label = value || '';
+      if (field === 'MinValue') target.min_value = value === '' ? null : Number(value);
+      if (field === 'MaxValue') target.max_value = value === '' ? null : Number(value);
+      if (field === 'DefaultValue') target.default_value = value === '' ? null : Number(value);
+      if (field === 'HudVisible') target.hud_visible = value === 'true';
+      if (field === 'HudOrder') target.hud_order = value === '' ? null : Number(value);
+      markDirty();
+    };
+
+    const cards = makeCard(
+      'Gauge', rows,
+      row => `
+        <label><span>GaugeID</span><input data-field="GaugeID" value="${escapeAttr(row.GaugeID || '')}" placeholder="Erosion"></label>
+        <label><span>Label</span><input data-field="Label" value="${escapeAttr(row.Label || '')}" placeholder="침식"></label>
+        <label><span>MinValue</span><input data-field="MinValue" type="number" step="1" value="${escapeAttr(row.MinValue != null ? String(row.MinValue) : '')}"></label>
+        <label><span>MaxValue</span><input data-field="MaxValue" type="number" step="1" value="${escapeAttr(row.MaxValue != null ? String(row.MaxValue) : '')}"></label>
+        <label><span>DefaultValue</span><input data-field="DefaultValue" type="number" step="1" value="${escapeAttr(row.DefaultValue != null ? String(row.DefaultValue) : '')}"></label>
+        <label><span>HudVisible</span><input data-field="HudVisible" value="${escapeAttr(String(row.HudVisible))}"></label>
+        <label><span>HudOrder</span><input data-field="HudOrder" type="number" step="1" value="${escapeAttr(row.HudOrder != null ? String(row.HudOrder) : '')}"></label>
+      `,
+      () => { state.data.gauges.push(newGauge()); afterChange(); },
+      i => { state.data.gauges.splice(i, 1); afterChange(); },
+      i => { if (swap(state.data.gauges, i - 1, i)) afterChange(); },
+      i => { if (swap(state.data.gauges, i, i + 1)) afterChange(); },
+      handleGaugeChange
+    );
+    replaceEnumInputs(cards, [
+      { field: 'HudVisible', options: ['true', 'false'], includeBlank: false },
+    ]);
+    rebindCardCollection(cards, rows, handleGaugeChange);
+    els.gaugeList.appendChild(cards);
+  }
+
+  function renderGaugeStateList() {
+    els.gaugeStateList.innerHTML = '';
+    const rows = getGaugeStateRows();
+    const handleGaugeStateChange = (row, field, value) => {
+      const target = state.data.gauge_states.find(item => (item.gauge_id || '') === row.GaugeID && String(item.min_value ?? '') === String(row.MinValue ?? '') && String(item.max_value ?? '') === String(row.MaxValue ?? '')) || state.data.gauge_states.find((_, idx) => rows[idx] === row);
+      if (!target) return;
+      if (field === 'GaugeID') target.gauge_id = value || '';
+      if (field === 'MinValue') target.min_value = value === '' ? null : Number(value);
+      if (field === 'MaxValue') target.max_value = value === '' ? null : Number(value);
+      if (field === 'Label') target.label = value || '';
+      if (field === 'HudColor') target.hud_color = value || '';
+      if (field === 'Detail') target.detail = value || '';
+      if (field === 'TriggerSceneID') target.trigger_scene_id = value || '';
+      markDirty();
+    };
+    const cards = makeCard(
+      'GaugeState', rows,
+      row => `
+        <label><span>GaugeID</span><input data-field="GaugeID" value="${escapeAttr(row.GaugeID || '')}" placeholder="Erosion"></label>
+        <label><span>MinValue</span><input data-field="MinValue" type="number" step="1" value="${escapeAttr(row.MinValue != null ? String(row.MinValue) : '')}"></label>
+        <label><span>MaxValue</span><input data-field="MaxValue" type="number" step="1" value="${escapeAttr(row.MaxValue != null ? String(row.MaxValue) : '')}"></label>
+        <label><span>Label</span><input data-field="Label" value="${escapeAttr(row.Label || '')}"></label>
+        <label><span>HudColor</span><input data-field="HudColor" value="${escapeAttr(row.HudColor || '')}" placeholder="#6a9f6a"></label>
+        <label><span>Detail</span><textarea data-field="Detail">${escapeHtml(row.Detail || '')}</textarea></label>
+        <label><span>TriggerSceneID</span><input data-field="TriggerSceneID" value="${escapeAttr(row.TriggerSceneID || '')}"></label>
+      `,
+      () => { state.data.gauge_states.push(newGaugeState()); afterChange(); },
+      i => { state.data.gauge_states.splice(i, 1); afterChange(); },
+      i => { if (swap(state.data.gauge_states, i - 1, i)) afterChange(); },
+      i => { if (swap(state.data.gauge_states, i, i + 1)) afterChange(); },
+      handleGaugeStateChange
+    );
+    cards.querySelectorAll('input[data-field="GaugeID"]').forEach(input => {
+      const select = document.createElement('select');
+      select.dataset.field = 'GaugeID';
+      select.innerHTML = renderSelectOptions(getDataOptions('gaugeIds'), input.value || '', true);
+      input.replaceWith(select);
+    });
+    cards.querySelectorAll('input[data-field="TriggerSceneID"]').forEach(input => {
+      const select = document.createElement('select');
+      select.dataset.field = 'TriggerSceneID';
+      select.innerHTML = renderSelectOptions(getDataOptions('sceneIds'), input.value || '', true);
+      input.replaceWith(select);
+    });
+    rebindCardCollection(cards, rows, handleGaugeStateChange);
+    els.gaugeStateList.appendChild(cards);
+  }
+
+  function renderEffectList() {
+    els.effectList.innerHTML = '';
+    const rows = getEffectRows();
+    const handleEffectChange = (row, field, value) => {
+      const target = state.data.effects.find(item => (item.effect_group_id || '') === row.EffectGroupID && (item.effect_type || '') === row.EffectType) || state.data.effects.find((_, idx) => rows[idx] === row);
+      if (!target) return;
+      if (field === 'EffectGroupID') target.effect_group_id = value || '';
+      if (field === 'EffectType') target.effect_type = value || 'GaugeChange';
+      if (field === 'GaugeID') target.gauge_id = value || '';
+      if (field === 'GaugeDelta') target.gauge_delta = value === '' ? null : Number(value);
+      if (field === 'EvidenceID') target.evidence_id = value || '';
+      if (field === 'TrustCharacterID') target.trust_character_id = value || '';
+      if (field === 'TrustDelta') target.trust_delta = value === '' ? null : Number(value);
+      markDirty();
+      if (field === 'EffectType') renderEffectList();
+    };
+    const cards = makeCard(
+      'Effect', rows,
+      row => `
+        <label><span>EffectGroupID</span><input data-field="EffectGroupID" value="${escapeAttr(row.EffectGroupID || '')}"></label>
+        <label><span>EffectType</span><input data-field="EffectType" value="${escapeAttr(row.EffectType || 'GaugeChange')}"></label>
+        <label><span>GaugeID</span><input data-field="GaugeID" value="${escapeAttr(row.GaugeID || '')}"></label>
+        <label><span>GaugeDelta</span><input data-field="GaugeDelta" type="number" step="1" value="${escapeAttr(row.GaugeDelta != null ? String(row.GaugeDelta) : '')}"></label>
+        <label><span>EvidenceID</span><input data-field="EvidenceID" value="${escapeAttr(row.EvidenceID || '')}"></label>
+        <label><span>TrustCharacterID</span><input data-field="TrustCharacterID" value="${escapeAttr(row.TrustCharacterID || '')}"></label>
+        <label><span>TrustDelta</span><input data-field="TrustDelta" type="number" step="1" value="${escapeAttr(row.TrustDelta != null ? String(row.TrustDelta) : '')}"></label>
+      `,
+      () => { state.data.effects.push(newEffect()); afterChange(); },
+      i => { state.data.effects.splice(i, 1); afterChange(); },
+      i => { if (swap(state.data.effects, i - 1, i)) afterChange(); },
+      i => { if (swap(state.data.effects, i, i + 1)) afterChange(); },
+      handleEffectChange
+    );
+    replaceEnumInputs(cards, [
+      { field: 'EffectType', options: EFFECT_TYPE_OPTIONS, includeBlank: false },
+    ]);
+    cards.querySelectorAll('input[data-field="GaugeID"]').forEach(input => {
+      const select = document.createElement('select');
+      select.dataset.field = 'GaugeID';
+      select.innerHTML = renderSelectOptions(getDataOptions('gaugeIds'), input.value || '', true);
+      input.replaceWith(select);
+    });
+    cards.querySelectorAll('input[data-field="EvidenceID"]').forEach(input => {
+      const select = document.createElement('select');
+      select.dataset.field = 'EvidenceID';
+      select.innerHTML = renderSelectOptions(getDataOptions('evidenceIds'), input.value || '', true);
+      input.replaceWith(select);
+    });
+    cards.querySelectorAll('input[data-field="TrustCharacterID"]').forEach(input => {
+      const select = document.createElement('select');
+      select.dataset.field = 'TrustCharacterID';
+      select.innerHTML = renderSelectOptions(getDataOptions('characterIds'), input.value || '', true);
+      input.replaceWith(select);
+    });
+    rebindCardCollection(cards, rows, handleEffectChange);
+    els.effectList.appendChild(cards);
+  }
+
   function renderChoiceGroupList() {
     els.choiceGroupList.innerHTML = '';
     const rows = getChoiceGroupRows();
@@ -2124,8 +2339,10 @@
       if (!target) return;
       if (field === 'ChoiceGroupID') target.choice_group_id = value || '';
       if (field === 'Type') target.type = value || 'Normal';
+      if (field === 'AnswerType') target.answer_type = value || 'Text';
       if (field === 'ConditionGroupID') target.condition_group_id = value || '';
       if (field === 'MaxSelectable') target.max_selectable = value === '' ? null : Number.parseInt(value, 10);
+      if (field === 'DefaultDialogID') target.default_dialog_id = value || '';
       markDirty();
     };
     const cards = makeCard(
@@ -2139,6 +2356,8 @@
           <input data-field="ConditionGroupID" value="${escapeAttr(row.ConditionGroupID || '')}" placeholder="예: CG_Visible"></label>
         <label><span>MaxSelectable</span>
           <input data-field="MaxSelectable" type="number" min="0" step="1" value="${escapeAttr(row.MaxSelectable != null ? String(row.MaxSelectable) : '')}"></label>
+        <label><span>DefaultDialogID</span>
+          <input data-field="DefaultDialogID" value="${escapeAttr(row.DefaultDialogID || '')}" placeholder="?? Dlg_Fallback"></label>
       `,
       () => { state.data.choice_groups.push(newChoiceGroup()); afterChange(); },
       (i) => { state.data.choice_groups.splice(i, 1); afterChange(); },
@@ -2148,11 +2367,18 @@
     );
     replaceEnumInputs(cards, [
       { field: 'Type', options: CHOICE_GROUP_TYPE_OPTIONS, includeBlank: false },
+      { field: 'AnswerType', options: ANSWER_TYPE_OPTIONS, includeBlank: false },
     ]);
     cards.querySelectorAll('input[data-field="ConditionGroupID"]').forEach(input => {
       const select = document.createElement('select');
       select.dataset.field = 'ConditionGroupID';
       select.innerHTML = renderSelectOptions(getDataOptions('conditionGroupIds'), input.value || '', true);
+      input.replaceWith(select);
+    });
+    cards.querySelectorAll('input[data-field="DefaultDialogID"]').forEach(input => {
+      const select = document.createElement('select');
+      select.dataset.field = 'DefaultDialogID';
+      select.innerHTML = renderSelectOptions(getDataOptions('dialogIds'), input.value || '', true);
       input.replaceWith(select);
     });
     rebindCardCollection(cards, rows, handleChoiceGroupChange);
@@ -2415,8 +2641,17 @@
   function newCondition() {
     return { condition_id: '', condition_group_id: '', condition_type: 'EvidenceOwned', condition_target_id: '', compare_type: 'Equal', condition_value: '' };
   }
+  function newGauge() {
+    return { gauge_id: '', label: '', min_value: 0, max_value: 10, default_value: 0, hud_visible: true, hud_order: 1 };
+  }
+  function newGaugeState() {
+    return { gauge_id: '', min_value: 0, max_value: 0, label: '', hud_color: '', detail: '', trigger_scene_id: '' };
+  }
+  function newEffect() {
+    return { effect_group_id: '', effect_type: 'GaugeChange', gauge_id: '', gauge_delta: 0, evidence_id: '', trust_character_id: '', trust_delta: 0 };
+  }
   function newChoiceGroup() {
-    return { choice_group_id: '', type: 'Normal', condition_group_id: '', max_selectable: null };
+    return { choice_group_id: '', type: 'Normal', answer_type: 'Text', condition_group_id: '', max_selectable: null, default_dialog_id: '' };
   }
   function newEvidenceCategory() {
     return { category_id: '', category_title: '', category_hint: '' };
@@ -2603,6 +2838,9 @@
       characters: state.data.characters || {},
       character_emotions: state.data.character_emotions || {},
       conditions: state.data.conditions || [],
+      gauges: state.data.gauges || [],
+      gauge_states: state.data.gauge_states || [],
+      effects: state.data.effects || [],
       choice_groups: state.data.choice_groups || [],
       evidence_categories: state.data.evidence_categories || [],
       investigations: state.data.investigations || [],
@@ -3104,6 +3342,9 @@
         if (!state.data.characters) state.data.characters = {};
         if (!state.data.character_emotions) state.data.character_emotions = {};
         if (!Array.isArray(state.data.conditions)) state.data.conditions = [];
+        if (!Array.isArray(state.data.gauges)) state.data.gauges = [];
+        if (!Array.isArray(state.data.gauge_states)) state.data.gauge_states = [];
+        if (!Array.isArray(state.data.effects)) state.data.effects = [];
         if (!Array.isArray(state.data.choice_groups)) state.data.choice_groups = [];
         if (!Array.isArray(state.data.evidence_categories)) state.data.evidence_categories = [];
         if (!Array.isArray(state.data.investigations)) state.data.investigations = [];
@@ -3347,6 +3588,36 @@
         row.condition_id = `Condition${suffix++}`;
       } while (state.data.conditions.some(item => item.condition_id === row.condition_id));
       state.data.conditions.push(row);
+      afterChange();
+    });
+    $('btn-add-gauge').addEventListener('click', () => {
+      pushHistory();
+      state.data.gauges = state.data.gauges || [];
+      const row = newGauge();
+      let suffix = state.data.gauges.length + 1;
+      do {
+        row.gauge_id = `Gauge${suffix++}`;
+      } while (state.data.gauges.some(item => item.gauge_id === row.gauge_id));
+      state.data.gauges.push(row);
+      afterChange();
+    });
+    $('btn-add-gauge-state').addEventListener('click', () => {
+      pushHistory();
+      state.data.gauge_states = state.data.gauge_states || [];
+      const row = newGaugeState();
+      row.gauge_id = state.data.gauges?.[0]?.gauge_id || '';
+      state.data.gauge_states.push(row);
+      afterChange();
+    });
+    $('btn-add-effect').addEventListener('click', () => {
+      pushHistory();
+      state.data.effects = state.data.effects || [];
+      const row = newEffect();
+      let suffix = state.data.effects.length + 1;
+      do {
+        row.effect_group_id = `Effect${suffix++}`;
+      } while (state.data.effects.some(item => item.effect_group_id === row.effect_group_id));
+      state.data.effects.push(row);
       afterChange();
     });
     $('btn-add-choice-group').addEventListener('click', () => {

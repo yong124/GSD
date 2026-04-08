@@ -40,6 +40,7 @@ const Engine = (() => {
       
       // 4. Scene system initialization
       Scene.init(_data);
+      UIManager.renderGaugeHUD?.();
 
       _initialized = true;
       console.log(`[Engine] Initialized version ${Config.VERSION}`);
