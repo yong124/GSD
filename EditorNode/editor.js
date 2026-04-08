@@ -1,4 +1,4 @@
-(function () {
+﻿(function () {
   'use strict';
 
   // ── 상수 ──────────────────────────────────────────────
@@ -22,17 +22,15 @@
   const EDITOR_DATA_UI = window.EditorDataUI || {};
   const RULE_FACT_TYPE_OPTIONS = EDITOR_DATA_UI.RULE_FACT_TYPE_OPTIONS || ['RevealedCharacter', 'HasEvidence', 'SceneProgressIndex', 'FlagValue'];
   const RULE_OPERATOR_OPTIONS = ['Equals', 'Gte'];
-  const CONDITION_TYPE_OPTIONS = EDITOR_DATA_UI.CONDITION_TYPE_OPTIONS || ['GaugeValue', 'Trust', 'EvidenceOwned', 'ChoiceSelected', 'RevealedCharacter', 'SceneProgressIndex', 'SceneVisited', 'ReadRitualScore', 'ResonanceLevel', 'InvestigationScore', 'SongsoonTrust', 'StateValue'];
-  const STATE_TYPE_OPTIONS = EDITOR_DATA_UI.STATE_TYPE_OPTIONS || ['Erosion', 'Credibility', 'ReadRitualScore', 'ResonanceLevel', 'InvestigationScore', 'SongsoonTrust'];
-  const ANSWER_TYPE_OPTIONS = EDITOR_DATA_UI.ANSWER_TYPE_OPTIONS || ['Text', 'Evidence'];
-  const EFFECT_TYPE_OPTIONS = EDITOR_DATA_UI.EFFECT_TYPE_OPTIONS || ['GaugeChange', 'EvidenceGive', 'TrustChange'];
+  const CONDITION_TYPE_OPTIONS = EDITOR_DATA_UI.CONDITION_TYPE_OPTIONS || ['GaugeValue', 'Trust', 'EvidenceOwned', 'ChoiceSelected', 'RevealedCharacter', 'SceneProgressIndex', 'SceneVisited'];
+  const STATE_TYPE_OPTIONS = EDITOR_DATA_UI.STATE_TYPE_OPTIONS || ['Erosion', 'Credibility', 'ReadRitualScore', 'SolvedQuestionCount'];
   const COMPARE_TYPE_OPTIONS = ['Equal', 'NotEqual', 'Greater', 'GreaterEqual', 'Less', 'LessEqual'];
   const CHOICE_GROUP_TYPE_OPTIONS = ['Normal', 'Investigation', 'Evidence'];
   const NEXT_TYPE_OPTIONS = ['Scene', 'Dialog', 'None'];
 
   // ── 상태 ──────────────────────────────────────────────
   const state = {
-    data: { first_scene: '', characters: {}, character_emotions: {}, conditions: [], gauges: [], gauge_states: [], effects: [], choice_groups: [], evidence_categories: [], investigations: [], questions: [], state_descriptors: [], rules: [], scenes: {} },
+    data: { first_scene: '', characters: {}, character_emotions: {}, conditions: [], choice_groups: [], evidence_categories: [], investigations: [], questions: [], state_descriptors: [], rules: [], scenes: {} },
     layout: {},       // { sceneId: { x, y } }
     selectedId: null,
     selectedIds: new Set(),
@@ -86,20 +84,19 @@
     els.fieldInvestigationId = $('field-investigation-id');
     els.fieldEvidencePromptTitle = $('field-evidence-prompt-title');
     els.fieldEvidencePromptHint = $('field-evidence-prompt-hint');
-    els.fieldPriorityBudget = $('field-priority-budget');
+    els.fieldQaCurrentDialog = $('field-qa-current-dialog');
+    els.fieldQaAllEvidence = $('field-qa-all-evidence');
+    els.btnOpenSceneQa = $('btn-open-scene-qa');
+    els.btnCopySceneQa = $('btn-copy-scene-qa');
     els.fieldPriorityDialogues = $('field-priority-dialogues');
     els.btnApplyPriorityDialogues = $('btn-apply-priority-dialogues');
     els.btnAddPriorityGroup = $('btn-add-priority-group');
     els.priorityDialogueList = $('priority-dialogue-list');
-    els.priorityAfterList = $('priority-after-list');
     els.fieldSceneId = $('field-scene-id');
     els.evidenceList = $('evidence-list');
     els.characterList = $('character-list');
     els.characterEmotionList = $('character-emotion-list');
     els.conditionList = $('condition-list');
-    els.gaugeList = $('gauge-list');
-    els.gaugeStateList = $('gauge-state-list');
-    els.effectList = $('effect-list');
     els.choiceGroupList = $('choice-group-list');
     els.evidenceCategoryList = $('evidence-category-list');
     els.investigationList = $('investigation-list');
@@ -144,6 +141,55 @@
     return String(s ?? '').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
   }
 
+  function getPreviewDialogId(scene) {
+    const dialogues = scene?.dialogues || [];
+    if (!dialogues.length) return '';
+    const index = Math.max(0, Math.min(state.previewDialogueIndex, dialogues.length - 1));
+    return dialogues[index]?.dialog_id || '';
+  }
+
+  function buildSceneQaUrl(sceneId) {
+    if (!sceneId) return '';
+    const gameUrl = new URL('../game/index.html', window.location.href);
+    gameUrl.searchParams.set('qa_scene', sceneId);
+    if (els.fieldQaAllEvidence?.checked) {
+      gameUrl.searchParams.set('qa_evidence', 'all');
+    }
+    if (els.fieldQaCurrentDialog?.checked) {
+      const dialogId = getPreviewDialogId(state.data.scenes?.[sceneId]);
+      if (dialogId) gameUrl.searchParams.set('qa_dialog_id', dialogId);
+    }
+    return gameUrl.toString();
+  }
+
+  async function copySceneQaUrl() {
+    const sceneId = state.selectedId;
+    if (!sceneId || !state.data.scenes?.[sceneId]) {
+      setStatus('먼저 씬을 선택하세요', true);
+      return;
+    }
+    const url = buildSceneQaUrl(sceneId);
+    try {
+      await navigator.clipboard.writeText(url);
+      setStatus(`QA URL 복사 완료: ${sceneId}`);
+    } catch (error) {
+      setStatus(`QA URL 복사 실패: ${error.message}`, true);
+    }
+  }
+
+  function openSceneQa(sceneId = state.selectedId) {
+    if (!sceneId || !state.data.scenes?.[sceneId]) {
+      setStatus('먼저 씬을 선택하세요', true);
+      return;
+    }
+    if (state.dirty) {
+      setStatus('미저장 변경은 game_data.js에 반영되지 않습니다', true);
+    } else {
+      setStatus(`QA 실행: ${sceneId}`);
+    }
+    window.open(buildSceneQaUrl(sceneId), '_blank', 'noopener');
+  }
+
   function renderSelectOptions(options, selectedValue, includeBlank = true) {
     const normalized = selectedValue ?? '';
     const items = [];
@@ -177,8 +223,6 @@
     if (type === 'choiceGroupIds' && typeof ui.collectChoiceGroupIds === 'function') return ui.collectChoiceGroupIds(state.data);
     if (type === 'investigationIds' && typeof ui.collectInvestigationIds === 'function') return ui.collectInvestigationIds(state.data);
     if (type === 'evidenceCategoryIds' && typeof ui.collectEvidenceCategoryIds === 'function') return ui.collectEvidenceCategoryIds(state.data);
-    if (type === 'gaugeIds' && typeof ui.collectGaugeIds === 'function') return ui.collectGaugeIds(state.data);
-    if (type === 'effectGroupIds' && typeof ui.collectEffectGroupIds === 'function') return ui.collectEffectGroupIds(state.data);
     return [];
   }
 
@@ -352,13 +396,10 @@
 
   function restoreSnapshot(snapshot) {
     const parsed = JSON.parse(snapshot);
-    state.data = parsed.data || { first_scene: '', characters: {}, character_emotions: {}, conditions: [], gauges: [], gauge_states: [], effects: [], choice_groups: [], evidence_categories: [], investigations: [], questions: [], state_descriptors: [], rules: [], scenes: {} };
+    state.data = parsed.data || { first_scene: '', characters: {}, character_emotions: {}, conditions: [], choice_groups: [], evidence_categories: [], investigations: [], questions: [], state_descriptors: [], rules: [], scenes: {} };
     if (!state.data.characters) state.data.characters = {};
     if (!state.data.character_emotions) state.data.character_emotions = {};
     if (!Array.isArray(state.data.conditions)) state.data.conditions = [];
-    if (!Array.isArray(state.data.gauges)) state.data.gauges = [];
-    if (!Array.isArray(state.data.gauge_states)) state.data.gauge_states = [];
-    if (!Array.isArray(state.data.effects)) state.data.effects = [];
     if (!Array.isArray(state.data.choice_groups)) state.data.choice_groups = [];
     if (!Array.isArray(state.data.evidence_categories)) state.data.evidence_categories = [];
     if (!Array.isArray(state.data.investigations)) state.data.investigations = [];
@@ -384,7 +425,7 @@
     state.selectedIds = new Set([...state.selectedIds].filter(id => state.data.scenes[id]));
     ensurePrimarySelection();
     renderPanel();
-    setStatus('↩ 실행 취소');
+    setStatus('? 실행 취소');
   }
   function redo() {
     if (state.future.length === 0) { setStatus('더 이상 다시 실행할 수 없습니다', true); return; }
@@ -396,7 +437,7 @@
     state.selectedIds = new Set([...state.selectedIds].filter(id => state.data.scenes[id]));
     ensurePrimarySelection();
     renderPanel();
-    setStatus('↪ 다시 실행');
+    setStatus('? 다시 실행');
   }
 
   function isTyping() {
@@ -579,10 +620,10 @@
     ];
 
     (scene.dialogues || []).forEach(dialogue => {
-      tokens.push(dialogue.label, dialogue.speaker, dialogue.speaker_id, dialogue.emotion_type, dialogue.text, dialogue.condition_group_id, dialogue.choice_group_id, dialogue.next_dialog_id);
+      tokens.push(dialogue.dialog_id, dialogue.speaker_id, dialogue.emotion_type, dialogue.text, dialogue.condition_group_id, dialogue.choice_group_id, dialogue.next_dialog_id);
     });
     (scene.choices || []).forEach(choice => {
-      tokens.push(choice.choice_id, choice.choice_group_id, choice.text, choice.condition_group_id, choice.next_type, choice.next_id, choice.evidence_id, choice.trust_character_id, choice.state_type);
+      tokens.push(choice.choice_id, choice.choice_group_id, choice.text, choice.condition_group_id, choice.next_type, choice.next_id, choice.evidence_id, choice.effect_group_id);
     });
     (scene.branches || []).forEach(branch => {
       tokens.push(branch.branch_id, branch.condition_group_id, branch.next_scene);
@@ -734,8 +775,11 @@
       node.innerHTML = `
         <div class="pin-in" data-id="${escapeAttr(id)}"></div>
         <div class="node-header">
-          <span>${escapeHtml(scene.title || id)}</span>
-          <span class="node-id">${escapeHtml(id)}</span>
+          <span class="node-title">${escapeHtml(scene.title || id)}</span>
+          <span class="node-header-actions">
+            <button type="button" class="node-qa-btn" data-scene-qa="${escapeAttr(id)}">QA</button>
+            <span class="node-id">${escapeHtml(id)}</span>
+          </span>
         </div>
         <div class="node-body">
           <div class="node-preview">${escapeHtml(preview)}</div>
@@ -748,6 +792,7 @@
       // 노드 선택
       node.addEventListener('mousedown', e => {
         if (e.button !== 0) return;
+        if (e.target.closest('.node-qa-btn')) return;
         if (e.target.classList.contains('pin-in') ||
             e.target.classList.contains('pin-out') ||
             e.target.classList.contains('pin-branch') ||
@@ -775,6 +820,15 @@
           moved: false,
         };
       });
+
+      const qaButton = node.querySelector('[data-scene-qa]');
+      if (qaButton) {
+        qaButton.addEventListener('click', e => {
+          e.preventDefault();
+          e.stopPropagation();
+          openSceneQa(id);
+        });
+      }
 
       els.nodeLayer.appendChild(node);
     });
@@ -906,7 +960,7 @@
     saveLayout();
     markDirty();
     render();
-    setStatus('✓ 자동 정렬 적용 완료');
+    setStatus('? 자동 정렬 적용 완료');
   }
 
   // ── 오른쪽 패널 ───────────────────────────────────────
@@ -919,9 +973,6 @@
       renderCharacterList();
       renderCharacterEmotionList();
       renderConditionList();
-      renderGaugeList();
-      renderGaugeStateList();
-      renderEffectList();
       renderChoiceGroupList();
       renderEvidenceCategoryList();
       renderInvestigationList();
@@ -937,6 +988,8 @@
     if (!hasScene) {
       els.panelEmpty.classList.remove('hidden');
       els.panelContent.classList.remove('hidden');
+      if (els.btnOpenSceneQa) els.btnOpenSceneQa.disabled = true;
+      if (els.btnCopySceneQa) els.btnCopySceneQa.disabled = true;
       applyPanelTabVisibility();
       (els.panelTabSections || []).forEach(section => {
         if (section.dataset.panelTab === 'node') section.classList.add('hidden');
@@ -948,6 +1001,8 @@
     applyPanelTabVisibility();
 
     const scene = state.data.scenes[id];
+    if (els.btnOpenSceneQa) els.btnOpenSceneQa.disabled = false;
+    if (els.btnCopySceneQa) els.btnCopySceneQa.disabled = false;
 
     els.fieldTitle.value = scene.title || '';
     els.fieldBg.value = scene.background || '';
@@ -961,7 +1016,6 @@
     }
     els.fieldEvidencePromptTitle.value = scene.evidence_prompt_title || '';
     els.fieldEvidencePromptHint.value = scene.evidence_prompt_hint || '';
-    els.fieldPriorityBudget.value = scene.priority_budget ?? '';
     els.fieldPriorityDialogues.value = scene.priority_dialogues
       ? JSON.stringify(scene.priority_dialogues, null, 2)
       : '';
@@ -971,7 +1025,6 @@
     renderDialogueList(scene);
     renderChoiceList(scene);
     renderPriorityDialogueList(scene);
-    renderPriorityAfterList(scene);
     renderBranchList(scene);
     renderEvidenceList(scene);
     renderAnalysisPanel();
@@ -1144,16 +1197,12 @@
           </select></label>
         <label><span>텍스트</span>
           <textarea data-field="text">${escapeHtml(d.text || '')}</textarea></label>
-        <label><span>AnswerType</span>
-          <input data-field="AnswerType" value="${escapeAttr(row.AnswerType || 'Text')}" placeholder="Text / Evidence"></label>
         <label><span>ConditionGroupID</span>
           <input data-field="condition_group_id" value="${escapeAttr(d.condition_group_id || '')}" placeholder="예: CG_Visible_Songsoon"></label>
         <label><span>ChoiceGroupID</span>
           <input data-field="choice_group_id" value="${escapeAttr(d.choice_group_id || '')}" placeholder="예: ChoiceGroupCafe01"></label>
         <label><span>NextDialogID</span>
           <input data-field="next_dialog_id" value="${escapeAttr(d.next_dialog_id || '')}" placeholder="예: Dlg_Cafe_020"></label>
-        <label><span>EffectGroupID</span>
-          <input data-field="effect_group_id" value="${escapeAttr(d.effect_group_id || '')}" placeholder="예: eff_dialog"></label>
       `,
       () => { scene.dialogues.splice(0, 0, newDialogue()); afterChange(); },
       (i) => { scene.dialogues.splice(i, 1); afterChange(); },
@@ -1202,12 +1251,6 @@
       select.innerHTML = renderSelectOptions(getDataOptions('dialogIds'), input.value || '', true);
       input.replaceWith(select);
     });
-    cards.querySelectorAll('input[data-field="effect_group_id"]').forEach(input => {
-      const select = document.createElement('select');
-      select.dataset.field = 'effect_group_id';
-      select.innerHTML = renderSelectOptions(getDataOptions('effectGroupIds'), input.value || '', true);
-      input.replaceWith(select);
-    });
 
     // speaker_id → 캐릭터 드롭다운 교체
     const characterIds = getDataOptions('characterIds');
@@ -1215,7 +1258,7 @@
       const sel = document.createElement('select');
       sel.dataset.field = 'speaker_id';
       const blank = document.createElement('option');
-      blank.value = ''; blank.textContent = '—';
+      blank.value = ''; blank.textContent = '?';
       sel.appendChild(blank);
       characterIds.forEach(cid => {
         const opt = document.createElement('option');
@@ -1239,7 +1282,7 @@
           ? Object.keys((state.data.character_emotions || {})[sid] || {})
           : [];
         const opts = emotions.length > 0 ? emotions : EMOTION_TYPE_OPTIONS;
-        emotionSel.innerHTML = '<option value="">—</option>' +
+        emotionSel.innerHTML = '<option value="">?</option>' +
           opts.map(e => `<option value="${e}"${cur === e ? ' selected' : ''}>${e}</option>`).join('');
       });
     });
@@ -1254,11 +1297,7 @@
     if (!scene.choices) scene.choices = [];
     els.choiceList.innerHTML = '';
     const handleChoiceChange = (c, field, value) => {
-      if (['trust_value', 'resonance_value', 'state_value', 'priority_cost'].includes(field)) {
-        c[field] = value === '' ? '' : Number(value);
-      } else {
-        c[field] = value;
-      }
+      c[field] = value;
       markDirty();
       renderWires();
       renderValidationPanel();
@@ -1284,18 +1323,6 @@
           <input data-field="evidence_id" value="${escapeAttr(c.evidence_id || '')}" placeholder="예: EvDiary"></label>
         <label><span>EffectGroupID</span>
           <input data-field="effect_group_id" value="${escapeAttr(c.effect_group_id || '')}" placeholder="예: eff_choice"></label>
-        <label><span>TrustCharacterID</span>
-          <input data-field="trust_character_id" value="${escapeAttr(c.trust_character_id || '')}" placeholder="예: Songsoon"></label>
-        <label><span>TrustValue</span>
-          <input data-field="trust_value" type="number" step="1" value="${escapeAttr(c.trust_value != null ? String(c.trust_value) : '')}"></label>
-        <label><span>ResonanceValue</span>
-          <input data-field="resonance_value" type="number" step="1" value="${escapeAttr(c.resonance_value != null ? String(c.resonance_value) : '')}"></label>
-        <label><span>PriorityCost</span>
-          <input data-field="priority_cost" type="number" step="1" value="${escapeAttr(c.priority_cost != null ? String(c.priority_cost) : '')}"></label>
-        <label><span>StateType</span>
-          <input data-field="state_type" value="${escapeAttr(c.state_type || '')}" placeholder="예: InvestigationScore"></label>
-        <label><span>StateValue</span>
-          <input data-field="state_value" type="number" step="1" value="${escapeAttr(c.state_value != null ? String(c.state_value) : '')}"></label>
       `,
       () => { scene.choices.push(newChoice()); afterChange(); },
       (i) => { scene.choices.splice(i, 1); afterChange(); },
@@ -1306,7 +1333,6 @@
 
     replaceEnumInputs(cards, [
       { field: 'next_type', options: NEXT_TYPE_OPTIONS },
-      { field: 'state_type', options: STATE_TYPE_OPTIONS },
     ]);
 
     cards.querySelectorAll('input[data-field="choice_group_id"]').forEach(input => {
@@ -1331,12 +1357,6 @@
       const select = document.createElement('select');
       select.dataset.field = 'effect_group_id';
       select.innerHTML = renderSelectOptions(getDataOptions('effectGroupIds'), input.value || '', true);
-      input.replaceWith(select);
-    });
-    cards.querySelectorAll('input[data-field="trust_character_id"]').forEach(input => {
-      const select = document.createElement('select');
-      select.dataset.field = 'trust_character_id';
-      select.innerHTML = renderSelectOptions(getDataOptions('characterIds'), input.value || '', true);
       input.replaceWith(select);
     });
     cards.querySelectorAll('input[data-field="next_id"]').forEach(input => {
@@ -1369,7 +1389,8 @@
   function getNextPriorityGroupKey(scene) {
     const existing = new Set(Object.keys(scene.priority_dialogues || {}));
     const suggested = (scene.choices || [])
-      .map(choice => String(choice.next_dialogue || '').trim())
+      .filter(choice => choice.next_type === 'Dialog')
+      .map(choice => String(choice.next_id || '').trim())
       .filter(Boolean);
 
     const unusedSuggested = suggested.find(key => !existing.has(key));
@@ -1391,7 +1412,7 @@
     scene.priority_dialogues[trimmed] = scene.priority_dialogues[oldKey] || [];
     delete scene.priority_dialogues[oldKey];
     (scene.choices || []).forEach(choice => {
-      if (choice.next_dialogue === oldKey) choice.next_dialogue = trimmed;
+      if (choice.next_type === 'Dialog' && choice.next_id === oldKey) choice.next_id = trimmed;
     });
     return true;
   }
@@ -1416,7 +1437,8 @@
       groupCard.className = 'pcard';
 
       const keyOptions = (scene.choices || [])
-        .map(choice => String(choice.next_dialogue || '').trim())
+        .filter(choice => choice.next_type === 'Dialog')
+        .map(choice => String(choice.next_id || '').trim())
         .filter(Boolean)
         .filter((key, index, array) => array.indexOf(key) === index)
         .map(key => `<option value="${escapeAttr(key)}"></option>`)
@@ -1513,29 +1535,6 @@
     });
 
     els.priorityDialogueList.appendChild(wrap);
-  }
-
-  // 조사 후 대사 목록
-  function renderPriorityAfterList(scene) {
-    if (!scene.priority_after_dialogues) scene.priority_after_dialogues = [];
-    els.priorityAfterList.innerHTML = '';
-
-    const cards = makeCard(
-      '조사 후 대사', scene.priority_after_dialogues,
-      (d) => `
-        <label><span>텍스트</span>
-          <textarea data-field="text">${escapeHtml(d.text || '')}</textarea></label>
-        <label><span>스타일</span>
-          <input data-field="style" value="${escapeAttr(d.style || 'narration')}"></label>
-      `,
-      () => { scene.priority_after_dialogues.push({ order: scene.priority_after_dialogues.length + 1, speaker_id: '', text: '', style: 'narration' }); afterChange(); },
-      (i) => { scene.priority_after_dialogues.splice(i, 1); afterChange(); },
-      (i) => { if (swap(scene.priority_after_dialogues, i-1, i)) afterChange(); },
-      (i) => { if (swap(scene.priority_after_dialogues, i, i+1)) afterChange(); },
-      (d, field, value) => { d[field] = value; markDirty(); }
-    );
-
-    els.priorityAfterList.appendChild(cards);
   }
 
   // 분기 목록
@@ -1692,50 +1691,12 @@
     }));
   }
 
-  function getGaugeRows() {
-    return (state.data.gauges || []).map(item => ({
-      GaugeID: item?.gauge_id || '',
-      Label: item?.label || '',
-      MinValue: item?.min_value ?? '',
-      MaxValue: item?.max_value ?? '',
-      DefaultValue: item?.default_value ?? '',
-      HudVisible: item?.hud_visible ?? true,
-      HudOrder: item?.hud_order ?? '',
-    }));
-  }
-
-  function getGaugeStateRows() {
-    return (state.data.gauge_states || []).map(item => ({
-      GaugeID: item?.gauge_id || '',
-      MinValue: item?.min_value ?? '',
-      MaxValue: item?.max_value ?? '',
-      Label: item?.label || '',
-      HudColor: item?.hud_color || '',
-      Detail: item?.detail || '',
-      TriggerSceneID: item?.trigger_scene_id || '',
-    }));
-  }
-
-  function getEffectRows() {
-    return (state.data.effects || []).map(item => ({
-      EffectGroupID: item?.effect_group_id || '',
-      EffectType: item?.effect_type || 'GaugeChange',
-      GaugeID: item?.gauge_id || '',
-      GaugeDelta: item?.gauge_delta ?? '',
-      EvidenceID: item?.evidence_id || '',
-      TrustCharacterID: item?.trust_character_id || '',
-      TrustDelta: item?.trust_delta ?? '',
-    }));
-  }
-
   function getChoiceGroupRows() {
     return (state.data.choice_groups || []).map(item => ({
       ChoiceGroupID: item?.choice_group_id || '',
       Type: item?.type || 'Normal',
-      AnswerType: item?.answer_type || 'Text',
       ConditionGroupID: item?.condition_group_id || '',
       MaxSelectable: item?.max_selectable ?? '',
-      DefaultDialogID: item?.default_dialog_id || '',
     }));
   }
 
@@ -2185,152 +2146,6 @@
     els.conditionList.appendChild(cards);
   }
 
-  function renderGaugeList() {
-    els.gaugeList.innerHTML = '';
-    const rows = getGaugeRows();
-    const handleGaugeChange = (row, field, value) => {
-      const target = state.data.gauges.find(item => (item.gauge_id || '') === row.GaugeID) || state.data.gauges.find((_, idx) => rows[idx] === row);
-      if (!target) return;
-      if (field === 'GaugeID') target.gauge_id = value || '';
-      if (field === 'Label') target.label = value || '';
-      if (field === 'MinValue') target.min_value = value === '' ? null : Number(value);
-      if (field === 'MaxValue') target.max_value = value === '' ? null : Number(value);
-      if (field === 'DefaultValue') target.default_value = value === '' ? null : Number(value);
-      if (field === 'HudVisible') target.hud_visible = value === 'true';
-      if (field === 'HudOrder') target.hud_order = value === '' ? null : Number(value);
-      markDirty();
-    };
-
-    const cards = makeCard(
-      'Gauge', rows,
-      row => `
-        <label><span>GaugeID</span><input data-field="GaugeID" value="${escapeAttr(row.GaugeID || '')}" placeholder="Erosion"></label>
-        <label><span>Label</span><input data-field="Label" value="${escapeAttr(row.Label || '')}" placeholder="침식"></label>
-        <label><span>MinValue</span><input data-field="MinValue" type="number" step="1" value="${escapeAttr(row.MinValue != null ? String(row.MinValue) : '')}"></label>
-        <label><span>MaxValue</span><input data-field="MaxValue" type="number" step="1" value="${escapeAttr(row.MaxValue != null ? String(row.MaxValue) : '')}"></label>
-        <label><span>DefaultValue</span><input data-field="DefaultValue" type="number" step="1" value="${escapeAttr(row.DefaultValue != null ? String(row.DefaultValue) : '')}"></label>
-        <label><span>HudVisible</span><input data-field="HudVisible" value="${escapeAttr(String(row.HudVisible))}"></label>
-        <label><span>HudOrder</span><input data-field="HudOrder" type="number" step="1" value="${escapeAttr(row.HudOrder != null ? String(row.HudOrder) : '')}"></label>
-      `,
-      () => { state.data.gauges.push(newGauge()); afterChange(); },
-      i => { state.data.gauges.splice(i, 1); afterChange(); },
-      i => { if (swap(state.data.gauges, i - 1, i)) afterChange(); },
-      i => { if (swap(state.data.gauges, i, i + 1)) afterChange(); },
-      handleGaugeChange
-    );
-    replaceEnumInputs(cards, [
-      { field: 'HudVisible', options: ['true', 'false'], includeBlank: false },
-    ]);
-    rebindCardCollection(cards, rows, handleGaugeChange);
-    els.gaugeList.appendChild(cards);
-  }
-
-  function renderGaugeStateList() {
-    els.gaugeStateList.innerHTML = '';
-    const rows = getGaugeStateRows();
-    const handleGaugeStateChange = (row, field, value) => {
-      const target = state.data.gauge_states.find(item => (item.gauge_id || '') === row.GaugeID && String(item.min_value ?? '') === String(row.MinValue ?? '') && String(item.max_value ?? '') === String(row.MaxValue ?? '')) || state.data.gauge_states.find((_, idx) => rows[idx] === row);
-      if (!target) return;
-      if (field === 'GaugeID') target.gauge_id = value || '';
-      if (field === 'MinValue') target.min_value = value === '' ? null : Number(value);
-      if (field === 'MaxValue') target.max_value = value === '' ? null : Number(value);
-      if (field === 'Label') target.label = value || '';
-      if (field === 'HudColor') target.hud_color = value || '';
-      if (field === 'Detail') target.detail = value || '';
-      if (field === 'TriggerSceneID') target.trigger_scene_id = value || '';
-      markDirty();
-    };
-    const cards = makeCard(
-      'GaugeState', rows,
-      row => `
-        <label><span>GaugeID</span><input data-field="GaugeID" value="${escapeAttr(row.GaugeID || '')}" placeholder="Erosion"></label>
-        <label><span>MinValue</span><input data-field="MinValue" type="number" step="1" value="${escapeAttr(row.MinValue != null ? String(row.MinValue) : '')}"></label>
-        <label><span>MaxValue</span><input data-field="MaxValue" type="number" step="1" value="${escapeAttr(row.MaxValue != null ? String(row.MaxValue) : '')}"></label>
-        <label><span>Label</span><input data-field="Label" value="${escapeAttr(row.Label || '')}"></label>
-        <label><span>HudColor</span><input data-field="HudColor" value="${escapeAttr(row.HudColor || '')}" placeholder="#6a9f6a"></label>
-        <label><span>Detail</span><textarea data-field="Detail">${escapeHtml(row.Detail || '')}</textarea></label>
-        <label><span>TriggerSceneID</span><input data-field="TriggerSceneID" value="${escapeAttr(row.TriggerSceneID || '')}"></label>
-      `,
-      () => { state.data.gauge_states.push(newGaugeState()); afterChange(); },
-      i => { state.data.gauge_states.splice(i, 1); afterChange(); },
-      i => { if (swap(state.data.gauge_states, i - 1, i)) afterChange(); },
-      i => { if (swap(state.data.gauge_states, i, i + 1)) afterChange(); },
-      handleGaugeStateChange
-    );
-    cards.querySelectorAll('input[data-field="GaugeID"]').forEach(input => {
-      const select = document.createElement('select');
-      select.dataset.field = 'GaugeID';
-      select.innerHTML = renderSelectOptions(getDataOptions('gaugeIds'), input.value || '', true);
-      input.replaceWith(select);
-    });
-    cards.querySelectorAll('input[data-field="TriggerSceneID"]').forEach(input => {
-      const select = document.createElement('select');
-      select.dataset.field = 'TriggerSceneID';
-      select.innerHTML = renderSelectOptions(getDataOptions('sceneIds'), input.value || '', true);
-      input.replaceWith(select);
-    });
-    rebindCardCollection(cards, rows, handleGaugeStateChange);
-    els.gaugeStateList.appendChild(cards);
-  }
-
-  function renderEffectList() {
-    els.effectList.innerHTML = '';
-    const rows = getEffectRows();
-    const handleEffectChange = (row, field, value) => {
-      const target = state.data.effects.find(item => (item.effect_group_id || '') === row.EffectGroupID && (item.effect_type || '') === row.EffectType) || state.data.effects.find((_, idx) => rows[idx] === row);
-      if (!target) return;
-      if (field === 'EffectGroupID') target.effect_group_id = value || '';
-      if (field === 'EffectType') target.effect_type = value || 'GaugeChange';
-      if (field === 'GaugeID') target.gauge_id = value || '';
-      if (field === 'GaugeDelta') target.gauge_delta = value === '' ? null : Number(value);
-      if (field === 'EvidenceID') target.evidence_id = value || '';
-      if (field === 'TrustCharacterID') target.trust_character_id = value || '';
-      if (field === 'TrustDelta') target.trust_delta = value === '' ? null : Number(value);
-      markDirty();
-      if (field === 'EffectType') renderEffectList();
-    };
-    const cards = makeCard(
-      'Effect', rows,
-      row => `
-        <label><span>EffectGroupID</span><input data-field="EffectGroupID" value="${escapeAttr(row.EffectGroupID || '')}"></label>
-        <label><span>EffectType</span><input data-field="EffectType" value="${escapeAttr(row.EffectType || 'GaugeChange')}"></label>
-        <label><span>GaugeID</span><input data-field="GaugeID" value="${escapeAttr(row.GaugeID || '')}"></label>
-        <label><span>GaugeDelta</span><input data-field="GaugeDelta" type="number" step="1" value="${escapeAttr(row.GaugeDelta != null ? String(row.GaugeDelta) : '')}"></label>
-        <label><span>EvidenceID</span><input data-field="EvidenceID" value="${escapeAttr(row.EvidenceID || '')}"></label>
-        <label><span>TrustCharacterID</span><input data-field="TrustCharacterID" value="${escapeAttr(row.TrustCharacterID || '')}"></label>
-        <label><span>TrustDelta</span><input data-field="TrustDelta" type="number" step="1" value="${escapeAttr(row.TrustDelta != null ? String(row.TrustDelta) : '')}"></label>
-      `,
-      () => { state.data.effects.push(newEffect()); afterChange(); },
-      i => { state.data.effects.splice(i, 1); afterChange(); },
-      i => { if (swap(state.data.effects, i - 1, i)) afterChange(); },
-      i => { if (swap(state.data.effects, i, i + 1)) afterChange(); },
-      handleEffectChange
-    );
-    replaceEnumInputs(cards, [
-      { field: 'EffectType', options: EFFECT_TYPE_OPTIONS, includeBlank: false },
-    ]);
-    cards.querySelectorAll('input[data-field="GaugeID"]').forEach(input => {
-      const select = document.createElement('select');
-      select.dataset.field = 'GaugeID';
-      select.innerHTML = renderSelectOptions(getDataOptions('gaugeIds'), input.value || '', true);
-      input.replaceWith(select);
-    });
-    cards.querySelectorAll('input[data-field="EvidenceID"]').forEach(input => {
-      const select = document.createElement('select');
-      select.dataset.field = 'EvidenceID';
-      select.innerHTML = renderSelectOptions(getDataOptions('evidenceIds'), input.value || '', true);
-      input.replaceWith(select);
-    });
-    cards.querySelectorAll('input[data-field="TrustCharacterID"]').forEach(input => {
-      const select = document.createElement('select');
-      select.dataset.field = 'TrustCharacterID';
-      select.innerHTML = renderSelectOptions(getDataOptions('characterIds'), input.value || '', true);
-      input.replaceWith(select);
-    });
-    rebindCardCollection(cards, rows, handleEffectChange);
-    els.effectList.appendChild(cards);
-  }
-
   function renderChoiceGroupList() {
     els.choiceGroupList.innerHTML = '';
     const rows = getChoiceGroupRows();
@@ -2339,10 +2154,8 @@
       if (!target) return;
       if (field === 'ChoiceGroupID') target.choice_group_id = value || '';
       if (field === 'Type') target.type = value || 'Normal';
-      if (field === 'AnswerType') target.answer_type = value || 'Text';
       if (field === 'ConditionGroupID') target.condition_group_id = value || '';
       if (field === 'MaxSelectable') target.max_selectable = value === '' ? null : Number.parseInt(value, 10);
-      if (field === 'DefaultDialogID') target.default_dialog_id = value || '';
       markDirty();
     };
     const cards = makeCard(
@@ -2356,8 +2169,6 @@
           <input data-field="ConditionGroupID" value="${escapeAttr(row.ConditionGroupID || '')}" placeholder="예: CG_Visible"></label>
         <label><span>MaxSelectable</span>
           <input data-field="MaxSelectable" type="number" min="0" step="1" value="${escapeAttr(row.MaxSelectable != null ? String(row.MaxSelectable) : '')}"></label>
-        <label><span>DefaultDialogID</span>
-          <input data-field="DefaultDialogID" value="${escapeAttr(row.DefaultDialogID || '')}" placeholder="?? Dlg_Fallback"></label>
       `,
       () => { state.data.choice_groups.push(newChoiceGroup()); afterChange(); },
       (i) => { state.data.choice_groups.splice(i, 1); afterChange(); },
@@ -2367,18 +2178,11 @@
     );
     replaceEnumInputs(cards, [
       { field: 'Type', options: CHOICE_GROUP_TYPE_OPTIONS, includeBlank: false },
-      { field: 'AnswerType', options: ANSWER_TYPE_OPTIONS, includeBlank: false },
     ]);
     cards.querySelectorAll('input[data-field="ConditionGroupID"]').forEach(input => {
       const select = document.createElement('select');
       select.dataset.field = 'ConditionGroupID';
       select.innerHTML = renderSelectOptions(getDataOptions('conditionGroupIds'), input.value || '', true);
-      input.replaceWith(select);
-    });
-    cards.querySelectorAll('input[data-field="DefaultDialogID"]').forEach(input => {
-      const select = document.createElement('select');
-      select.dataset.field = 'DefaultDialogID';
-      select.innerHTML = renderSelectOptions(getDataOptions('dialogIds'), input.value || '', true);
       input.replaceWith(select);
     });
     rebindCardCollection(cards, rows, handleChoiceGroupChange);
@@ -2618,12 +2422,7 @@
       next_type: '',
       next_id: '',
       evidence_id: '',
-      trust_character_id: '',
-      trust_value: '',
-      resonance_value: '',
-      priority_cost: '',
-      state_type: '',
-      state_value: ''
+      effect_group_id: ''
     };
   }
   function newBranch() {
@@ -2641,17 +2440,8 @@
   function newCondition() {
     return { condition_id: '', condition_group_id: '', condition_type: 'EvidenceOwned', condition_target_id: '', compare_type: 'Equal', condition_value: '' };
   }
-  function newGauge() {
-    return { gauge_id: '', label: '', min_value: 0, max_value: 10, default_value: 0, hud_visible: true, hud_order: 1 };
-  }
-  function newGaugeState() {
-    return { gauge_id: '', min_value: 0, max_value: 0, label: '', hud_color: '', detail: '', trigger_scene_id: '' };
-  }
-  function newEffect() {
-    return { effect_group_id: '', effect_type: 'GaugeChange', gauge_id: '', gauge_delta: 0, evidence_id: '', trust_character_id: '', trust_delta: 0 };
-  }
   function newChoiceGroup() {
-    return { choice_group_id: '', type: 'Normal', answer_type: 'Text', condition_group_id: '', max_selectable: null, default_dialog_id: '' };
+    return { choice_group_id: '', type: 'Normal', condition_group_id: '', max_selectable: null };
   }
   function newEvidenceCategory() {
     return { category_id: '', category_title: '', category_hint: '' };
@@ -2693,7 +2483,7 @@
     return {
       id, chapter: null, title: id, background: null, music: null, effect: null,
       goal_kicker: null, goal_text: null, investigation_id: null, evidence_prompt_title: null, evidence_prompt_hint: null,
-      priority_budget: null, priority_dialogues: {}, priority_after_dialogues: [],
+      priority_dialogues: {},
       branches: [], dialogues: [], choices: [], evidence: []
     };
   }
@@ -2713,7 +2503,6 @@
       return {
         order: normalizeOrder(dialogue.order, index + 1),
         dialog_id: dialogue.dialog_id || null,
-        speaker: dialogue.speaker || '',
         speaker_id: dialogue.speaker_id || null,
         emotion_type: dialogue.emotion_type || null,
         standing_slot: dialogue.standing_slot || null,
@@ -2724,8 +2513,6 @@
         fx_type: dialogue.fx_type || null,
         text: dialogue.text || '',
         style: dialogue.style || 'normal',
-        portrait: dialogue.portrait || null,
-        label: dialogue.label || null,
         condition_group_id: dialogue.condition_group_id || null,
         choice_group_id: dialogue.choice_group_id || null,
         next_dialog_id: dialogue.next_dialog_id || null,
@@ -2742,12 +2529,7 @@
         next_type: choice.next_type || null,
         next_id: choice.next_id || null,
         evidence_id: choice.evidence_id || null,
-        trust_character_id: choice.trust_character_id || null,
-        trust_value: choice.trust_value === '' || choice.trust_value == null ? null : Number(choice.trust_value),
-        resonance_value: choice.resonance_value === '' || choice.resonance_value == null ? null : Number(choice.resonance_value),
-        priority_cost: choice.priority_cost === '' || choice.priority_cost == null ? null : Number(choice.priority_cost),
-        state_type: choice.state_type || null,
-        state_value: choice.state_value === '' || choice.state_value == null ? null : Number(choice.state_value),
+        effect_group_id: choice.effect_group_id || null,
       };
       return c;
     });
@@ -2766,16 +2548,6 @@
         portrait: line.portrait || null,
       }));
     });
-
-    const normalizedPriorityAfterDialogues = (scene.priority_after_dialogues || []).map((line, index) => ({
-      order: normalizeOrder(line.order, index + 1),
-      speaker: line.speaker || '',
-      speaker_id: line.speaker_id || null,
-      emotion_type: line.emotion_type || null,
-      text: line.text || '',
-      style: line.style || 'narration',
-      portrait: line.portrait || null,
-    }));
 
     const normalizedBranches = (scene.branches || []).map((branch, index) => ({
       branch_id: branch.branch_id || null,
@@ -2813,12 +2585,7 @@
       branches: normalizedBranches,
     };
 
-    const budget = scene.priority_budget != null && scene.priority_budget !== ''
-      ? Number.parseInt(scene.priority_budget, 10)
-      : null;
-    if (budget) result.priority_budget = budget;
     if (Object.keys(normalizedPriorityDialogues).length > 0) result.priority_dialogues = normalizedPriorityDialogues;
-    if (normalizedPriorityAfterDialogues.length > 0) result.priority_after_dialogues = normalizedPriorityAfterDialogues;
 
     return result;
   }
@@ -2838,9 +2605,6 @@
       characters: state.data.characters || {},
       character_emotions: state.data.character_emotions || {},
       conditions: state.data.conditions || [],
-      gauges: state.data.gauges || [],
-      gauge_states: state.data.gauge_states || [],
-      effects: state.data.effects || [],
       choice_groups: state.data.choice_groups || [],
       evidence_categories: state.data.evidence_categories || [],
       investigations: state.data.investigations || [],
@@ -2872,7 +2636,7 @@
     markDirty();
     render();
     renderPanel();
-    setStatus(`✓ ${targetIds.length}개 씬 배경 일괄 변경`);
+    setStatus(`? ${targetIds.length}개 씬 배경 일괄 변경`);
   }
 
   function applyBatchStyle() {
@@ -2907,7 +2671,7 @@
     markDirty();
     render();
     renderPanel();
-    setStatus(`✓ ${changed}개 대사 스타일 일괄 변경`);
+    setStatus(`? ${changed}개 대사 스타일 일괄 변경`);
   }
 
   function replaceFlagKeyEverywhere() {
@@ -2951,7 +2715,7 @@
       });
 
       (scene.choices || []).forEach(choice => {
-        ['text', 'next_id', 'state_type'].forEach(field => {
+        ['text', 'next_id', 'effect_group_id'].forEach(field => {
           const result = replaceStringValue(choice[field], oldText, newText);
           choice[field] = result.value;
           changed += result.changed;
@@ -2976,7 +2740,7 @@
     markDirty();
     render();
     renderPanel();
-    setStatus(`✓ 문자열 ${changed}건 치환 완료`);
+    setStatus(`? 문자열 ${changed}건 치환 완료`);
   }
 
   function sortScenesByChapter() {
@@ -3007,7 +2771,7 @@
     markDirty();
     render();
     renderPanel();
-    setStatus('✓ 챕터 기준 정렬 보조 적용 완료');
+    setStatus('? 챕터 기준 정렬 보조 적용 완료');
   }
 
   function duplicateScene(id) {
@@ -3036,7 +2800,7 @@
     markDirty();
     render();
     renderPanel();
-    setStatus(`✓ 씬 복제: ${nextId}`);
+    setStatus(`? 씬 복제: ${nextId}`);
   }
 
   function collectValidation() {
@@ -3046,7 +2810,6 @@
     const reachable = new Set();
     const stack = [];
     const evidenceOwners = new Map();
-    const labelOwners = new Map();
     const sceneIdOwners = new Map();
 
     if (firstScene && scenes[firstScene]) {
@@ -3069,7 +2832,7 @@
       const declaredId = scene.id || sceneKey;
       const dialogueLabels = new Set(
         (scene.dialogues || [])
-          .map(dialogue => dialogue.label)
+          .map(dialogue => dialogue.dialog_id)
           .filter(Boolean)
       );
       if (!sceneIdOwners.has(declaredId)) sceneIdOwners.set(declaredId, []);
@@ -3111,12 +2874,6 @@
         if (!evidenceOwners.has(evidenceId)) evidenceOwners.set(evidenceId, []);
         evidenceOwners.get(evidenceId).push(`${sceneKey}#${index + 1}`);
       });
-
-      (scene.dialogues || []).forEach((dialogue, index) => {
-        if (!dialogue.label) return;
-        if (!labelOwners.has(dialogue.label)) labelOwners.set(dialogue.label, []);
-        labelOwners.get(dialogue.label).push(`${sceneKey}#${index + 1}`);
-      });
     });
 
     sceneIdOwners.forEach((owners, id) => {
@@ -3136,16 +2893,6 @@
           type: 'error',
           title: '중복 EvidenceID',
           body: `"${id}"가 ${owners.join(', ')}에서 중복 사용되고 있습니다.`,
-        });
-      }
-    });
-
-    labelOwners.forEach((owners, label) => {
-      if (owners.length > 1) {
-        findings.push({
-          type: 'warn',
-          title: '중복 Label',
-          body: `"${label}"가 ${owners.join(', ')}에서 중복 사용되고 있습니다.`,
         });
       }
     });
@@ -3234,9 +2981,7 @@
     (scene.choices || []).forEach(choice => {
       if (choice.choice_id) writesFlags.add(`Choice:${choice.choice_id}`);
       if (choice.evidence_id) writesFlags.add(`Evidence:${choice.evidence_id}`);
-      if (choice.trust_character_id && choice.trust_value != null && choice.trust_value !== '') writesFlags.add(`Trust:${choice.trust_character_id}`);
-      if (choice.state_type && choice.state_value != null && choice.state_value !== '') writesFlags.add(`State:${choice.state_type}`);
-      if (choice.resonance_value != null && choice.resonance_value !== '') writesFlags.add('State:ResonanceLevel');
+      if (choice.effect_group_id) writesFlags.add(`Effect:${choice.effect_group_id}`);
     });
 
     const nextTargets = [];
@@ -3342,9 +3087,6 @@
         if (!state.data.characters) state.data.characters = {};
         if (!state.data.character_emotions) state.data.character_emotions = {};
         if (!Array.isArray(state.data.conditions)) state.data.conditions = [];
-        if (!Array.isArray(state.data.gauges)) state.data.gauges = [];
-        if (!Array.isArray(state.data.gauge_states)) state.data.gauge_states = [];
-        if (!Array.isArray(state.data.effects)) state.data.effects = [];
         if (!Array.isArray(state.data.choice_groups)) state.data.choice_groups = [];
         if (!Array.isArray(state.data.evidence_categories)) state.data.evidence_categories = [];
         if (!Array.isArray(state.data.investigations)) state.data.investigations = [];
@@ -3364,7 +3106,7 @@
       state.selectedId = null;
       render();
       renderPanel();
-      setStatus('✓ 불러오기 완료');
+      setStatus('? 불러오기 완료');
     };
     script.onerror = () => setStatus('오류: game_data.js 를 찾을 수 없습니다', true);
     document.head.appendChild(script);
@@ -3383,7 +3125,7 @@
     a.click();
     URL.revokeObjectURL(a.href);
     state.dirty = false;
-    setStatus('✓ 내보내기 완료');
+    setStatus('? 내보내기 완료');
     render();
     renderPanel();
   }
@@ -3443,7 +3185,7 @@
     markDirty();
     render();
     renderPanel();
-    setStatus(`✓ 씬 ${selected.length}개 삭제`);
+    setStatus(`? 씬 ${selected.length}개 삭제`);
   }
 
   // ── 이벤트 바인딩 ─────────────────────────────────────
@@ -3454,6 +3196,8 @@
     $('btn-redo').addEventListener('click', redo);
     $('btn-load').addEventListener('click', loadData);
     $('btn-export').addEventListener('click', exportData);
+    if (els.btnOpenSceneQa) els.btnOpenSceneQa.addEventListener('click', openSceneQa);
+    if (els.btnCopySceneQa) els.btnCopySceneQa.addEventListener('click', () => { copySceneQaUrl(); });
     els.fieldSearch.addEventListener('input', () => {
       state.filters.query = els.fieldSearch.value;
       render();
@@ -3590,36 +3334,6 @@
       state.data.conditions.push(row);
       afterChange();
     });
-    $('btn-add-gauge').addEventListener('click', () => {
-      pushHistory();
-      state.data.gauges = state.data.gauges || [];
-      const row = newGauge();
-      let suffix = state.data.gauges.length + 1;
-      do {
-        row.gauge_id = `Gauge${suffix++}`;
-      } while (state.data.gauges.some(item => item.gauge_id === row.gauge_id));
-      state.data.gauges.push(row);
-      afterChange();
-    });
-    $('btn-add-gauge-state').addEventListener('click', () => {
-      pushHistory();
-      state.data.gauge_states = state.data.gauge_states || [];
-      const row = newGaugeState();
-      row.gauge_id = state.data.gauges?.[0]?.gauge_id || '';
-      state.data.gauge_states.push(row);
-      afterChange();
-    });
-    $('btn-add-effect').addEventListener('click', () => {
-      pushHistory();
-      state.data.effects = state.data.effects || [];
-      const row = newEffect();
-      let suffix = state.data.effects.length + 1;
-      do {
-        row.effect_group_id = `Effect${suffix++}`;
-      } while (state.data.effects.some(item => item.effect_group_id === row.effect_group_id));
-      state.data.effects.push(row);
-      afterChange();
-    });
     $('btn-add-choice-group').addEventListener('click', () => {
       pushHistory();
       state.data.choice_groups = state.data.choice_groups || [];
@@ -3727,41 +3441,6 @@
       refreshMetaViews();
     });
 
-    els.fieldPriorityBudget.addEventListener('input', () => {
-      const scene = state.data.scenes[state.selectedId];
-      if (!scene) return;
-      const v = els.fieldPriorityBudget.value;
-      scene.priority_budget = v === '' ? null : Number.parseInt(v, 10);
-      markDirty();
-    });
-
-    els.priorityAfterList.addEventListener('click', (e) => {
-      const btn = e.target.closest('[data-action]');
-      if (!btn) return;
-      const scene = state.data.scenes[state.selectedId];
-      if (!scene) return;
-      const card = btn.closest('.card');
-      const idx = card ? Number(card.dataset.index) : -1;
-      const action = btn.dataset.action;
-      pushHistory();
-      if (action === 'add-priority-after') {
-        scene.priority_after_dialogues = scene.priority_after_dialogues || [];
-        scene.priority_after_dialogues.push({ order: scene.priority_after_dialogues.length + 1, speaker: '', text: '', style: 'narration', portrait: null });
-      } else if (action === 'del' && idx >= 0) {
-        scene.priority_after_dialogues.splice(idx, 1);
-      }
-      afterChange();
-    });
-
-    document.getElementById('btn-add-priority-after').addEventListener('click', () => {
-      const scene = state.data.scenes[state.selectedId];
-      if (!scene) return;
-      pushHistory();
-      scene.priority_after_dialogues = scene.priority_after_dialogues || [];
-      scene.priority_after_dialogues.push({ order: scene.priority_after_dialogues.length + 1, speaker: '', text: '', style: 'narration', portrait: null });
-      afterChange();
-    });
-
     if (els.btnApplyPriorityDialogues) {
       const replacement = els.btnApplyPriorityDialogues.cloneNode(true);
       els.btnApplyPriorityDialogues.replaceWith(replacement);
@@ -3809,7 +3488,6 @@
     els.fieldInvestigationId.addEventListener('focus', pushHistory);
     els.fieldEvidencePromptTitle.addEventListener('focus', pushHistory);
     els.fieldEvidencePromptHint.addEventListener('focus', pushHistory);
-    els.fieldPriorityBudget.addEventListener('focus', pushHistory);
     els.fieldSceneId.addEventListener('focus', pushHistory);
 
     els.btnPreviewPrev.addEventListener('click', () => {
@@ -4034,3 +3712,4 @@
   }
 
 })();
+

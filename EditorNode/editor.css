@@ -127,6 +127,25 @@ button.small { padding: 1px 7px; font-size: 11px; }
   border-bottom: 1px solid var(--border);
   font-size: 12px; font-weight: 600; color: var(--text);
 }
+.node-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.node-header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.node-qa-btn {
+  padding: 1px 6px;
+  min-height: 20px;
+  border-radius: 999px;
+  font-size: 10px;
+  line-height: 1;
+}
 .node-id { font-size: 9px; color: var(--text-dim); }
 
 .node-body { padding: 8px 8px 10px; }
@@ -267,6 +286,31 @@ button.small { padding: 1px 7px; font-size: 11px; }
   font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase;
   letter-spacing: .06em; padding-bottom: 4px;
   border-bottom: 1px solid var(--border);
+}
+.section-hint {
+  color: var(--text-dim);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.qa-toggle-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.qa-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text);
+  font-size: 12px;
+}
+.qa-toggle input {
+  width: auto;
+}
+.qa-action-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 #workspace.data-mode .pcard {

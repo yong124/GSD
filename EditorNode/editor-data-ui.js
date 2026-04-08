@@ -24,20 +24,13 @@
     'RevealedCharacter',
     'SceneProgressIndex',
     'SceneVisited',
-    'ReadRitualScore',
-    'ResonanceLevel',
-    'InvestigationScore',
-    'SongsoonTrust',
-    'StateValue',
   ];
 
   const STATE_TYPE_OPTIONS = [
     'Erosion',
     'Credibility',
     'ReadRitualScore',
-    'ResonanceLevel',
-    'InvestigationScore',
-    'SongsoonTrust',
+    'SolvedQuestionCount',
   ];
 
   const ANSWER_TYPE_OPTIONS = ['Text', 'Evidence'];
@@ -54,6 +47,9 @@
       (scene?.choices || []).forEach(choice => {
         if (choice?.choice_id) ids.push(choice.choice_id);
       });
+    });
+    (data?.questions || []).forEach(question => {
+      if (question?.solved_flag_id) ids.push(question.solved_flag_id);
     });
     return uniqueSorted(ids);
   }
@@ -123,8 +119,6 @@
         return collectEvidenceIds(data);
       case 'ChoiceSelected':
         return collectChoiceIds(data);
-      case 'StateValue':
-        return STATE_TYPE_OPTIONS.slice();
       case 'GaugeValue':
         return collectGaugeIds(data);
       case 'SceneVisited':

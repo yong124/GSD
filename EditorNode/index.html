@@ -104,14 +104,20 @@
         </div>
 
         <div class="panel-section" data-panel-tab="node">
-          <div class="section-label">조사 예산 (priority_budget)
-            <span class="section-hint">0이면 일반 선택지 모드</span>
+          <div class="section-label">대사 프리뷰</div>
+          <div class="qa-toggle-list">
+            <label class="qa-toggle"><input id="field-qa-current-dialog" type="checkbox"> 현재 미리보기 대사부터 시작</label>
+            <label class="qa-toggle"><input id="field-qa-all-evidence" type="checkbox" checked> 전체 단서 지급</label>
           </div>
-          <input id="field-priority-budget" type="number" min="0" step="1" placeholder="예: 2">
+          <div class="qa-action-row">
+            <button id="btn-open-scene-qa" type="button">선택 씬 실행</button>
+            <button id="btn-copy-scene-qa" type="button" class="small">URL 복사</button>
+          </div>
+          <div class="section-hint">현재 저장된 game_data.js 기준으로 새 탭에서 실행됩니다.</div>
         </div>
 
         <div class="panel-section" data-panel-tab="node">
-          <div class="section-label">대사 프리뷰</div>
+          <div class="section-label">????꾨━酉?/div>
           <div id="dialogue-preview" class="dialogue-preview">
             <div id="preview-background" class="preview-background">
               <div class="preview-overlay"></div>
@@ -145,13 +151,6 @@
             <button id="btn-add-choice" class="small">+</button>
           </div>
           <div id="choice-list"></div>
-        </div>
-
-        <div class="panel-section" data-panel-tab="node">
-          <div class="section-label">조사 후 대사 (priority_after_dialogues)
-            <button id="btn-add-priority-after" class="small">+</button>
-          </div>
-          <div id="priority-after-list"></div>
         </div>
 
         <div class="panel-section" data-panel-tab="node">
