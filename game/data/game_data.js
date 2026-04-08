@@ -716,6 +716,30 @@ window.GAME_DATA = {
       "condition_target_id": "Ch5IpangyuDealAccept",
       "compare_type": "Equal",
       "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Erosion_Max_01",
+      "condition_group_id": "CG_Erosion_Max",
+      "condition_type": "GaugeValue",
+      "condition_target_id": "Erosion",
+      "compare_type": "GreaterEqual",
+      "condition_value": 10
+    },
+    {
+      "condition_id": "Cond_Credibility_Zero_01",
+      "condition_group_id": "CG_Credibility_Zero",
+      "condition_type": "GaugeValue",
+      "condition_target_id": "Credibility",
+      "compare_type": "LessEqual",
+      "condition_value": 0
+    },
+    {
+      "condition_id": "Cond_Erosion_High_01",
+      "condition_group_id": "CG_Erosion_High",
+      "condition_type": "GaugeValue",
+      "condition_target_id": "Erosion",
+      "compare_type": "GreaterEqual",
+      "condition_value": 7
     }
   ],
   "evidence_categories": [
@@ -3424,8 +3448,8 @@ window.GAME_DATA = {
           "choice_id": "Ch3Room4TouchWall",
           "effect_group_id": "eff_ch3_room4_touch_wall",
           "text": "위험을 감수하고 벽의 문양에 직접 손을 댄다.",
-          "next_type": "Dialog",
-          "next_id": "room4_touch"
+          "next_type": "Scene",
+          "next_id": "ch3_room4_touch"
         },
         {
           "order": 2,
@@ -3433,16 +3457,16 @@ window.GAME_DATA = {
           "choice_id": "Ch3Room4ReadRecord",
           "effect_group_id": "eff_ch3_room4_read_record",
           "text": "공포보다 기록을 우선하고 일기장의 다음 장을 더 읽는다.",
-          "next_type": "Dialog",
-          "next_id": "room4_record"
+          "next_type": "Scene",
+          "next_id": "ch3_room4_record"
         },
         {
           "order": 3,
           "choice_group_id": "ChoiceGroup_Room4Investigation",
           "choice_id": "Ch3Room4ComfortSongsoon",
           "text": "증거보다 먼저 송순에게 혼자 떠맡지 말자고 말한다.",
-          "next_type": "Dialog",
-          "next_id": "room4_comfort"
+          "next_type": "Scene",
+          "next_id": "ch3_room4_comfort"
         }
       ],
       "evidence": [
@@ -5599,8 +5623,20 @@ window.GAME_DATA = {
       "effect": null,
       "branches": [
         {
-          "branch_id": "Br_ch6_threshold_Default",
+          "branch_id": "Br_ch6_threshold_ErosionMax",
           "order": 1,
+          "condition_group_id": "CG_Erosion_Max",
+          "next_scene": "scene_gameover_erosion"
+        },
+        {
+          "branch_id": "Br_ch6_threshold_CredibilityZero",
+          "order": 2,
+          "condition_group_id": "CG_Credibility_Zero",
+          "next_scene": "scene_gameover_credibility"
+        },
+        {
+          "branch_id": "Br_ch6_threshold_Default",
+          "order": 3,
           "condition_group_id": null,
           "next_scene": "ch6_ritual_scene"
         }
@@ -5855,8 +5891,8 @@ window.GAME_DATA = {
           "choice_group_id": "ChoiceGroup_RitualFinal",
           "choice_id": "Ch6FinalAnswer",
           "text": "송순이 언니의 노래에 응답한다.",
-          "next_type": "Dialog",
-          "next_id": "ritual_answer",
+          "next_type": "Scene",
+          "next_id": "ch6_choice_a",
           "impact_text": "마지막 결단의 무게가 기울기 시작합니다."
         },
         {
@@ -5864,8 +5900,8 @@ window.GAME_DATA = {
           "choice_group_id": "ChoiceGroup_RitualFinal",
           "choice_id": "Ch6FinalBlock",
           "text": "유웅룡이 이해심을 막으러 달려간다.",
-          "next_type": "Dialog",
-          "next_id": "ritual_block",
+          "next_type": "Scene",
+          "next_id": "ch6_choice_b",
           "impact_text": "마지막 결단의 무게가 기울기 시작합니다."
         },
         {
@@ -5873,8 +5909,8 @@ window.GAME_DATA = {
           "choice_group_id": "ChoiceGroup_RitualFinal",
           "choice_id": "Ch6FinalHesitate",
           "text": "아무것도 하지 않고 지켜본다.",
-          "next_type": "Dialog",
-          "next_id": "ritual_hesitate",
+          "next_type": "Scene",
+          "next_id": "ch6_choice_c",
           "impact_text": "마지막 결단의 무게가 기울기 시작합니다."
         },
         {
@@ -6673,20 +6709,26 @@ window.GAME_DATA = {
       "effect": null,
       "branches": [
         {
-          "branch_id": "Br_ch6_epilogue_EndingB",
+          "branch_id": "Br_ch6_epilogue_ErosionHigh",
           "order": 1,
+          "condition_group_id": "CG_Erosion_High",
+          "next_scene": "scene_ending_erosion"
+        },
+        {
+          "branch_id": "Br_ch6_epilogue_EndingB",
+          "order": 2,
           "condition_group_id": "CG_Epilogue_EndingB",
           "next_scene": "ch6_ending_b"
         },
         {
           "branch_id": "Br_ch6_epilogue_EndingA",
-          "order": 2,
+          "order": 3,
           "condition_group_id": "CG_Epilogue_EndingA",
           "next_scene": "ch6_ending_a"
         },
         {
           "branch_id": "Br_ch6_epilogue_Default",
-          "order": 3,
+          "order": 4,
           "condition_group_id": null,
           "next_scene": "ch6_ending_c"
         }
