@@ -211,32 +211,299 @@ window.GAME_DATA = {
       "condition_group_id": null,
       "max_selectable": 1,
       "default_dialog_id": "present_ritual_default"
+    },
+    {
+      "choice_group_id": "ChoiceGroup_Ipangyu_Confront",
+      "type": "Evidence",
+      "answer_type": "Evidence",
+      "condition_group_id": null,
+      "max_selectable": 1,
+      "default_dialog_id": "dlg_ipangyu_default"
+    },
+    {
+      "choice_group_id": "ChoiceGroup_Okryeon_Confront",
+      "type": "Evidence",
+      "answer_type": "Evidence",
+      "condition_group_id": null,
+      "max_selectable": 1,
+      "default_dialog_id": "dlg_okryeon_close"
+    },
+    {
+      "choice_group_id": "ChoiceGroup_Songsoon_Trust",
+      "type": "Evidence",
+      "answer_type": "Evidence",
+      "condition_group_id": null,
+      "max_selectable": 1,
+      "default_dialog_id": "dlg_songsoon_skeptical"
+    },
+    {
+      "choice_group_id": "ChoiceGroup_Editor_Confront",
+      "type": "Evidence",
+      "answer_type": "Evidence",
+      "condition_group_id": null,
+      "max_selectable": 1,
+      "default_dialog_id": "dlg_editor_deflect"
+    },
+    {
+      "choice_group_id": "ChoiceGroup_ArticleQ1",
+      "type": "Evidence",
+      "answer_type": "Evidence",
+      "condition_group_id": null,
+      "max_selectable": 1,
+      "default_dialog_id": "dlg_article_default"
+    },
+    {
+      "choice_group_id": "ChoiceGroup_ArticleQ2",
+      "type": "Evidence",
+      "answer_type": "Evidence",
+      "condition_group_id": null,
+      "max_selectable": 1,
+      "default_dialog_id": "dlg_article_default"
+    },
+    {
+      "choice_group_id": "ChoiceGroup_ArticleQ3",
+      "type": "Evidence",
+      "answer_type": "Evidence",
+      "condition_group_id": null,
+      "max_selectable": 1,
+      "default_dialog_id": "dlg_article_default"
     }
   ],
   "conditions": [
     {
-      "condition_id": "Cond_Room4_ReadRitual_01",
-      "condition_group_id": "CG_Room4_ReadRitual",
+      "condition_id": "Cond_Backroom_EditorRel0_01",
+      "condition_group_id": "CG_Backroom_EditorRel0",
+      "condition_type": "Trust",
+      "condition_target_id": "Editor",
+      "compare_type": "Equal",
+      "condition_value": 0
+    },
+    {
+      "condition_id": "Cond_Backroom_EditorRel1_01",
+      "condition_group_id": "CG_Backroom_EditorRel1",
+      "condition_type": "Trust",
+      "condition_target_id": "Editor",
+      "compare_type": "GreaterEqual",
+      "condition_value": 1
+    },
+    {
+      "condition_id": "Cond_Backroom_FoundOldArticles_01",
+      "condition_group_id": "CG_Backroom_FoundOldArticles",
+      "condition_type": "ChoiceSelected",
+      "condition_target_id": "Ch4ALibraryTakeArticles|Ch4ALibraryExposeArchive",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Branch_CalledEditorFalse_01",
+      "condition_group_id": "CG_Branch_CalledEditorFalse",
+      "condition_type": "ChoiceSelected",
+      "condition_target_id": "Ch5PathNoContact",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Branch_EndingAScore2_01",
+      "condition_group_id": "CG_Branch_EndingAScore2",
+      "condition_type": "ChoiceSelected",
+      "condition_target_id": "Ch4BCafeHold",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Branch_ExposedArchive_01",
+      "condition_group_id": "CG_Branch_ExposedArchivePattern",
+      "condition_type": "ChoiceSelected",
+      "condition_target_id": "Ch4ALibraryExposeArchive",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Branch_ExposedTruth_01",
+      "condition_group_id": "CG_Branch_ExposedTruthAtRitual",
+      "condition_type": "ChoiceSelected",
+      "condition_target_id": "Ch6FinalExpose",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Branch_FinalChoice_A",
+      "condition_group_id": "CG_Branch_FinalChoice_A",
+      "condition_type": "ChoiceSelected",
+      "condition_target_id": "Ch6FinalAnswer",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Branch_FinalChoice_B",
+      "condition_group_id": "CG_Branch_FinalChoice_B",
+      "condition_type": "ChoiceSelected",
+      "condition_target_id": "Ch6FinalBlock|Ch6FinalExpose",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Branch_FinalChoice_C",
+      "condition_group_id": "CG_Branch_FinalChoice_C",
+      "condition_type": "ChoiceSelected",
+      "condition_target_id": "Ch6FinalHesitate",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Branch_FoundOldArticles_01",
+      "condition_group_id": "CG_Branch_FoundOldArticles",
+      "condition_type": "ChoiceSelected",
+      "condition_target_id": "Ch4ALibraryTakeArticles|Ch4ALibraryExposeArchive",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Branch_Investigation3_01",
+      "condition_group_id": "CG_Branch_Investigation3",
+      "condition_type": "GaugeValue",
+      "condition_target_id": "Credibility",
+      "compare_type": "GreaterEqual",
+      "condition_value": 3
+    },
+    {
+      "condition_id": "Cond_Branch_MatchedPattern_01",
+      "condition_group_id": "CG_Branch_MatchedPattern",
+      "condition_type": "ChoiceSelected",
+      "condition_target_id": "Ch5RitualPresentMask",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Branch_OkryunPushed_01",
+      "condition_group_id": "CG_Branch_OkryunPushed",
+      "condition_type": "ChoiceSelected",
+      "condition_target_id": "Ch4BCafePress",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Branch_ReadRitual_01",
+      "condition_group_id": "CG_Branch_ReadRitual",
       "condition_type": "GaugeValue",
       "condition_target_id": "ReadRitualScore",
       "compare_type": "GreaterEqual",
       "condition_value": 1
     },
     {
-      "condition_id": "Cond_Room4_TrustedSongsoon_01",
-      "condition_group_id": "CG_Room4_TrustedSongsoon",
+      "condition_id": "Cond_Branch_SolvedMid_01",
+      "condition_group_id": "CG_Branch_SolvedMid",
+      "condition_type": "GaugeValue",
+      "condition_target_id": "SolvedQuestionCount",
+      "compare_type": "Equal",
+      "condition_value": [
+        2,
+        3
+      ]
+    },
+    {
+      "condition_id": "Cond_Branch_SongsoonTrust1_01",
+      "condition_group_id": "CG_Branch_SongsoonTrust1",
+      "condition_type": "Trust",
+      "condition_target_id": "Songsoon",
+      "compare_type": "GreaterEqual",
+      "condition_value": 1
+    },
+    {
+      "condition_id": "Cond_Branch_SongsoonTrust2_01",
+      "condition_group_id": "CG_Branch_SongsoonTrust2",
+      "condition_type": "Trust",
+      "condition_target_id": "Songsoon",
+      "compare_type": "GreaterEqual",
+      "condition_value": 2
+    },
+    {
+      "condition_id": "Cond_Branch_TouchedRoomWall_01",
+      "condition_group_id": "CG_Branch_TouchedRoomWall",
       "condition_type": "ChoiceSelected",
-      "condition_target_id": "Ch3WarehouseTrustSongsoon|Ch3Room4ComfortSongsoon",
+      "condition_target_id": "Ch3Room4TouchWall",
       "compare_type": "Equal",
       "condition_value": true
     },
     {
-      "condition_id": "Cond_Library_Investigation_01",
-      "condition_group_id": "CG_Library_Investigation2",
+      "condition_id": "Cond_Cafe_Info2_01",
+      "condition_group_id": "CG_Cafe_Info2",
+      "condition_type": "ChoiceSelected",
+      "condition_target_id": "Ch2HospitalAskDoor",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Descent_CalledEditorTrue_01",
+      "condition_group_id": "CG_Descent_CalledEditorTrue",
+      "condition_type": "ChoiceSelected",
+      "condition_target_id": "Ch5PathContactEditor",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Descent_SongsoonTrust1_01",
+      "condition_group_id": "CG_Descent_SongsoonTrust1",
+      "condition_type": "Trust",
+      "condition_target_id": "Songsoon",
+      "compare_type": "GreaterEqual",
+      "condition_value": 1
+    },
+    {
+      "condition_id": "Cond_EndingB_ErodedRecord_01",
+      "condition_group_id": "CG_EndingB_ErodedRecord",
+      "condition_type": "GaugeValue",
+      "condition_target_id": "Erosion",
+      "compare_type": "GreaterEqual",
+      "condition_value": 6
+    },
+    {
+      "condition_id": "Cond_EndingB_ErodedRecord_02",
+      "condition_group_id": "CG_EndingB_ErodedRecord",
       "condition_type": "GaugeValue",
       "condition_target_id": "Credibility",
       "compare_type": "GreaterEqual",
-      "condition_value": 2
+      "condition_value": 7
+    },
+    {
+      "condition_id": "Cond_Epilogue_EndingA_01",
+      "condition_group_id": "CG_Epilogue_EndingA",
+      "condition_type": "Trust",
+      "condition_target_id": "Songsoon",
+      "compare_type": "GreaterEqual",
+      "condition_value": 1
+    },
+    {
+      "condition_id": "Cond_Epilogue_EndingA_02",
+      "condition_group_id": "CG_Epilogue_EndingA",
+      "condition_type": "ChoiceSelected",
+      "condition_target_id": "article_q1_correct",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Epilogue_EndingB_01",
+      "condition_group_id": "CG_Epilogue_EndingB",
+      "condition_type": "GaugeValue",
+      "condition_target_id": "Credibility",
+      "compare_type": "GreaterEqual",
+      "condition_value": 7
+    },
+    {
+      "condition_id": "Cond_Epilogue_EndingB_02",
+      "condition_group_id": "CG_Epilogue_EndingB",
+      "condition_type": "ChoiceSelected",
+      "condition_target_id": "article_q3_correct",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Hospital_Info2_01",
+      "condition_group_id": "CG_Hospital_Info2",
+      "condition_type": "ChoiceSelected",
+      "condition_target_id": "Ch2HospitalAskDoor",
+      "compare_type": "Equal",
+      "condition_value": true
     },
     {
       "condition_id": "Cond_Library_BlueHanbok_01",
@@ -255,115 +522,20 @@ window.GAME_DATA = {
       "condition_value": true
     },
     {
+      "condition_id": "Cond_Library_Investigation_01",
+      "condition_group_id": "CG_Library_Investigation2",
+      "condition_type": "GaugeValue",
+      "condition_target_id": "Credibility",
+      "compare_type": "GreaterEqual",
+      "condition_value": 2
+    },
+    {
       "condition_id": "Cond_Library_RunawaySolved_01",
       "condition_group_id": "CG_Library_QSonggeumRunaway",
       "condition_type": "ChoiceSelected",
       "condition_target_id": "QuestionSolved_QSonggeumRunaway",
       "compare_type": "Equal",
       "condition_value": true
-    },
-    {
-      "condition_id": "Cond_RitualRoom_RitualScore_01",
-      "condition_group_id": "CG_RitualRoom_RitualScore",
-      "condition_type": "EvidenceOwned",
-      "condition_target_id": "EvRitualScore",
-      "compare_type": "Equal",
-      "condition_value": true
-    },
-    {
-      "condition_id": "Cond_RitualRoom_OldArticles_01",
-      "condition_group_id": "CG_RitualRoom_OldArticles",
-      "condition_type": "EvidenceOwned",
-      "condition_target_id": "EvOldArticles",
-      "compare_type": "Equal",
-      "condition_value": true
-    },
-    {
-      "condition_id": "Cond_RitualRoom_AccidentSolved_01",
-      "condition_group_id": "CG_RitualRoom_QRitualAccident",
-      "condition_type": "ChoiceSelected",
-      "condition_target_id": "QuestionSolved_QRitualAccident",
-      "compare_type": "Equal",
-      "condition_value": true
-    },
-    {
-      "condition_id": "Cond_Threshold_FoundOldArticles_01",
-      "condition_group_id": "CG_Threshold_FoundOldArticles",
-      "condition_type": "ChoiceSelected",
-      "condition_target_id": "Ch4ALibraryTakeArticles|Ch4ALibraryExposeArchive",
-      "compare_type": "Equal",
-      "condition_value": true
-    },
-    {
-      "condition_id": "Cond_Threshold_Resonance_01",
-      "condition_group_id": "CG_Threshold_Resonance2",
-      "condition_type": "GaugeValue",
-      "condition_target_id": "Erosion",
-      "compare_type": "GreaterEqual",
-      "condition_value": 2
-    },
-    {
-      "condition_id": "Cond_Threshold_TrustedSongsoon_01",
-      "condition_group_id": "CG_Threshold_TrustedSongsoon",
-      "condition_type": "ChoiceSelected",
-      "condition_target_id": "Ch3WarehouseTrustSongsoon|Ch3Room4ComfortSongsoon",
-      "compare_type": "Equal",
-      "condition_value": true
-    },
-    {
-      "condition_id": "Cond_Threshold_Investigation_01",
-      "condition_group_id": "CG_Threshold_Investigation3",
-      "condition_type": "GaugeValue",
-      "condition_target_id": "Credibility",
-      "compare_type": "GreaterEqual",
-      "condition_value": 3
-    },
-    {
-      "condition_id": "Cond_Threshold_CalledEditorFalse_01",
-      "condition_group_id": "CG_Threshold_CalledEditorFalse",
-      "condition_type": "ChoiceSelected",
-      "condition_target_id": "Ch5PathNoContact",
-      "compare_type": "Equal",
-      "condition_value": true
-    },
-    {
-      "condition_id": "Cond_Threshold_RitualNote_01",
-      "condition_group_id": "CG_Threshold_RitualNote",
-      "condition_type": "EvidenceOwned",
-      "condition_target_id": "EvRitualNote",
-      "compare_type": "Equal",
-      "condition_value": true
-    },
-    {
-      "condition_id": "Cond_Threshold_SolvedMid_01",
-      "condition_group_id": "CG_Threshold_SolvedMid",
-      "condition_type": "GaugeValue",
-      "condition_target_id": "SolvedQuestionCount",
-      "compare_type": "Equal",
-      "condition_value": [
-        2,
-        3
-      ]
-    },
-    {
-      "condition_id": "Cond_RitualScene_Resonance_01",
-      "condition_group_id": "CG_RitualScene_Resonance2",
-      "condition_type": "GaugeValue",
-      "condition_target_id": "Erosion",
-      "compare_type": "GreaterEqual",
-      "condition_value": 2
-    },
-    {
-      "condition_id": "Cond_RitualScene_SolvedHigh_01",
-      "condition_group_id": "CG_RitualScene_SolvedHigh",
-      "condition_type": "GaugeValue",
-      "condition_target_id": "SolvedQuestionCount",
-      "compare_type": "Equal",
-      "condition_value": [
-        4,
-        5,
-        6
-      ]
     },
     {
       "condition_id": "Cond_Outcome_QMadness_01",
@@ -393,72 +565,116 @@ window.GAME_DATA = {
       ]
     },
     {
-      "condition_id": "Cond_Branch_FinalChoice_A",
-      "condition_group_id": "CG_Branch_FinalChoice_A",
+      "condition_id": "Cond_RitualRoom_AccidentSolved_01",
+      "condition_group_id": "CG_RitualRoom_QRitualAccident",
       "condition_type": "ChoiceSelected",
-      "condition_target_id": "Ch6FinalAnswer",
+      "condition_target_id": "QuestionSolved_QRitualAccident",
       "compare_type": "Equal",
       "condition_value": true
     },
     {
-      "condition_id": "Cond_Branch_FinalChoice_B",
-      "condition_group_id": "CG_Branch_FinalChoice_B",
-      "condition_type": "ChoiceSelected",
-      "condition_target_id": "Ch6FinalBlock|Ch6FinalExpose",
+      "condition_id": "Cond_RitualRoom_OldArticles_01",
+      "condition_group_id": "CG_RitualRoom_OldArticles",
+      "condition_type": "EvidenceOwned",
+      "condition_target_id": "EvOldArticles",
       "compare_type": "Equal",
       "condition_value": true
     },
     {
-      "condition_id": "Cond_Branch_FinalChoice_C",
-      "condition_group_id": "CG_Branch_FinalChoice_C",
+      "condition_id": "Cond_RitualRoom_QRitualAccident_01",
+      "condition_group_id": "CG_RitualRoom_QRitualAccident",
       "condition_type": "ChoiceSelected",
-      "condition_target_id": "Ch6FinalHesitate",
+      "condition_target_id": "QuestionSolved_QRitualAccident",
       "compare_type": "Equal",
       "condition_value": true
     },
     {
-      "condition_id": "Cond_Branch_TouchedRoomWall_01",
-      "condition_group_id": "CG_Branch_TouchedRoomWall",
-      "condition_type": "ChoiceSelected",
-      "condition_target_id": "Ch3Room4TouchWall",
+      "condition_id": "Cond_RitualRoom_RitualScore_01",
+      "condition_group_id": "CG_RitualRoom_RitualScore",
+      "condition_type": "EvidenceOwned",
+      "condition_target_id": "EvRitualScore",
       "compare_type": "Equal",
       "condition_value": true
     },
     {
-      "condition_id": "Cond_Branch_MatchedPattern_01",
-      "condition_group_id": "CG_Branch_MatchedPattern",
+      "condition_id": "Cond_RitualScene_Resonance_01",
+      "condition_group_id": "CG_RitualScene_Resonance2",
+      "condition_type": "GaugeValue",
+      "condition_target_id": "Erosion",
+      "compare_type": "GreaterEqual",
+      "condition_value": 2
+    },
+    {
+      "condition_id": "Cond_RitualScene_SolvedHigh_01",
+      "condition_group_id": "CG_RitualScene_SolvedHigh",
+      "condition_type": "GaugeValue",
+      "condition_target_id": "SolvedQuestionCount",
+      "compare_type": "Equal",
+      "condition_value": [
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "condition_id": "Cond_Room4_ReadRitual_01",
+      "condition_group_id": "CG_Room4_ReadRitual",
+      "condition_type": "GaugeValue",
+      "condition_target_id": "ReadRitualScore",
+      "compare_type": "GreaterEqual",
+      "condition_value": 1
+    },
+    {
+      "condition_id": "Cond_Room4_TrustedSongsoon_01",
+      "condition_group_id": "CG_Room4_TrustedSongsoon",
       "condition_type": "ChoiceSelected",
-      "condition_target_id": "Ch5RitualPresentMask",
+      "condition_target_id": "Ch3WarehouseTrustSongsoon|Ch3Room4ComfortSongsoon",
       "compare_type": "Equal",
       "condition_value": true
     },
     {
-      "condition_id": "Cond_Branch_FoundOldArticles_01",
-      "condition_group_id": "CG_Branch_FoundOldArticles",
+      "condition_id": "Cond_Threshold_CalledEditorFalse_01",
+      "condition_group_id": "CG_Threshold_CalledEditorFalse",
+      "condition_type": "ChoiceSelected",
+      "condition_target_id": "Ch5PathNoContact",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Threshold_FoundOldArticles_01",
+      "condition_group_id": "CG_Threshold_FoundOldArticles",
       "condition_type": "ChoiceSelected",
       "condition_target_id": "Ch4ALibraryTakeArticles|Ch4ALibraryExposeArchive",
       "compare_type": "Equal",
       "condition_value": true
     },
     {
-      "condition_id": "Cond_Branch_ExposedTruth_01",
-      "condition_group_id": "CG_Branch_ExposedTruthAtRitual",
-      "condition_type": "ChoiceSelected",
-      "condition_target_id": "Ch6FinalExpose",
+      "condition_id": "Cond_Threshold_Investigation_01",
+      "condition_group_id": "CG_Threshold_Investigation3",
+      "condition_type": "GaugeValue",
+      "condition_target_id": "Credibility",
+      "compare_type": "GreaterEqual",
+      "condition_value": 3
+    },
+    {
+      "condition_id": "Cond_Threshold_Resonance_01",
+      "condition_group_id": "CG_Threshold_Resonance2",
+      "condition_type": "GaugeValue",
+      "condition_target_id": "Erosion",
+      "compare_type": "GreaterEqual",
+      "condition_value": 2
+    },
+    {
+      "condition_id": "Cond_Threshold_RitualNote_01",
+      "condition_group_id": "CG_Threshold_RitualNote",
+      "condition_type": "EvidenceOwned",
+      "condition_target_id": "EvRitualNote",
       "compare_type": "Equal",
       "condition_value": true
     },
     {
-      "condition_id": "Cond_Branch_ExposedArchive_01",
-      "condition_group_id": "CG_Branch_ExposedArchivePattern",
-      "condition_type": "ChoiceSelected",
-      "condition_target_id": "Ch4ALibraryExposeArchive",
-      "compare_type": "Equal",
-      "condition_value": true
-    },
-    {
-      "condition_id": "Cond_Branch_SolvedMid_01",
-      "condition_group_id": "CG_Branch_SolvedMid",
+      "condition_id": "Cond_Threshold_SolvedMid_01",
+      "condition_group_id": "CG_Threshold_SolvedMid",
       "condition_type": "GaugeValue",
       "condition_target_id": "SolvedQuestionCount",
       "compare_type": "Equal",
@@ -468,122 +684,10 @@ window.GAME_DATA = {
       ]
     },
     {
-      "condition_id": "Cond_Hospital_Info2_01",
-      "condition_group_id": "CG_Hospital_Info2",
+      "condition_id": "Cond_Threshold_TrustedSongsoon_01",
+      "condition_group_id": "CG_Threshold_TrustedSongsoon",
       "condition_type": "ChoiceSelected",
-      "condition_target_id": "Ch2HospitalAskDoor",
-      "compare_type": "Equal",
-      "condition_value": true
-    },
-    {
-      "condition_id": "Cond_Cafe_Info2_01",
-      "condition_group_id": "CG_Cafe_Info2",
-      "condition_type": "ChoiceSelected",
-      "condition_target_id": "Ch2HospitalAskDoor",
-      "compare_type": "Equal",
-      "condition_value": true
-    },
-    {
-      "condition_id": "Cond_Backroom_EditorRel1_01",
-      "condition_group_id": "CG_Backroom_EditorRel1",
-      "condition_type": "Trust",
-      "condition_target_id": "Editor",
-      "compare_type": "GreaterEqual",
-      "condition_value": 1
-    },
-    {
-      "condition_id": "Cond_Backroom_EditorRel0_01",
-      "condition_group_id": "CG_Backroom_EditorRel0",
-      "condition_type": "Trust",
-      "condition_target_id": "Editor",
-      "compare_type": "Equal",
-      "condition_value": 0
-    },
-    {
-      "condition_id": "Cond_Backroom_FoundOldArticles_01",
-      "condition_group_id": "CG_Backroom_FoundOldArticles",
-      "condition_type": "ChoiceSelected",
-      "condition_target_id": "Ch4ALibraryTakeArticles|Ch4ALibraryExposeArchive",
-      "compare_type": "Equal",
-      "condition_value": true
-    },
-    {
-      "condition_id": "Cond_Descent_CalledEditorTrue_01",
-      "condition_group_id": "CG_Descent_CalledEditorTrue",
-      "condition_type": "ChoiceSelected",
-      "condition_target_id": "Ch5PathContactEditor",
-      "compare_type": "Equal",
-      "condition_value": true
-    },
-    {
-      "condition_id": "Cond_Descent_SongsoonTrust1_01",
-      "condition_group_id": "CG_Descent_SongsoonTrust1",
-      "condition_type": "Trust",
-      "condition_target_id": "Songsoon",
-      "compare_type": "GreaterEqual",
-      "condition_value": 1
-    },
-    {
-      "condition_id": "Cond_Branch_SongsoonTrust2_01",
-      "condition_group_id": "CG_Branch_SongsoonTrust2",
-      "condition_type": "Trust",
-      "condition_target_id": "Songsoon",
-      "compare_type": "GreaterEqual",
-      "condition_value": 2
-    },
-    {
-      "condition_id": "Cond_Branch_SongsoonTrust1_01",
-      "condition_group_id": "CG_Branch_SongsoonTrust1",
-      "condition_type": "Trust",
-      "condition_target_id": "Songsoon",
-      "compare_type": "GreaterEqual",
-      "condition_value": 1
-    },
-    {
-      "condition_id": "Cond_Branch_OkryunPushed_01",
-      "condition_group_id": "CG_Branch_OkryunPushed",
-      "condition_type": "ChoiceSelected",
-      "condition_target_id": "Ch4BCafePress",
-      "compare_type": "Equal",
-      "condition_value": true
-    },
-    {
-      "condition_id": "Cond_Branch_EndingAScore2_01",
-      "condition_group_id": "CG_Branch_EndingAScore2",
-      "condition_type": "ChoiceSelected",
-      "condition_target_id": "Ch4BCafeHold",
-      "compare_type": "Equal",
-      "condition_value": true
-    },
-    {
-      "condition_id": "Cond_Branch_ReadRitual_01",
-      "condition_group_id": "CG_Branch_ReadRitual",
-      "condition_type": "GaugeValue",
-      "condition_target_id": "ReadRitualScore",
-      "compare_type": "GreaterEqual",
-      "condition_value": 1
-    },
-    {
-      "condition_id": "Cond_Branch_Investigation3_01",
-      "condition_group_id": "CG_Branch_Investigation3",
-      "condition_type": "GaugeValue",
-      "condition_target_id": "Credibility",
-      "compare_type": "GreaterEqual",
-      "condition_value": 3
-    },
-    {
-      "condition_id": "Cond_Branch_CalledEditorFalse_01",
-      "condition_group_id": "CG_Branch_CalledEditorFalse",
-      "condition_type": "ChoiceSelected",
-      "condition_target_id": "Ch5PathNoContact",
-      "compare_type": "Equal",
-      "condition_value": true
-    },
-    {
-      "condition_id": "Cond_RitualRoom_QRitualAccident_01",
-      "condition_group_id": "CG_RitualRoom_QRitualAccident",
-      "condition_type": "ChoiceSelected",
-      "condition_target_id": "QuestionSolved_QRitualAccident",
+      "condition_target_id": "Ch3WarehouseTrustSongsoon|Ch3Room4ComfortSongsoon",
       "compare_type": "Equal",
       "condition_value": true
     }
@@ -1349,7 +1453,7 @@ window.GAME_DATA = {
     },
     {
       "gauge_id": "Credibility",
-      "label": "신용",
+      "label": "평판",
       "min_value": 0,
       "max_value": 10,
       "default_value": 10,
@@ -1419,15 +1523,15 @@ window.GAME_DATA = {
       "label": "붕괴",
       "hud_color": "#4a0000",
       "detail": "",
-      "trigger_scene_id": "scene_gameover_erosion"
+      "trigger_scene_id": "scene_ending_erosion"
     },
     {
       "gauge_id": "Credibility",
       "min_value": 3,
       "max_value": 10,
-      "label": "신뢰",
+      "label": "안정",
       "hud_color": "#6a9f6a",
-      "detail": "기자로서의 발언에 무게가 실린다.",
+      "detail": "기자로서의 평판이 아직 버티고 있다.",
       "trigger_scene_id": null
     },
     {
@@ -1436,7 +1540,7 @@ window.GAME_DATA = {
       "max_value": 2,
       "label": "흔들림",
       "hud_color": "#c8a84b",
-      "detail": "압박을 받는 순간 신뢰가 빠르게 깎이고 있다.",
+      "detail": "압박을 받는 순간 평판이 빠르게 깎이고 있다.",
       "trigger_scene_id": null
     },
     {
@@ -1451,6 +1555,24 @@ window.GAME_DATA = {
   ],
   "effects": [
     {
+      "effect_group_id": "eff_article_correct",
+      "effect_type": "GaugeChange",
+      "gauge_id": "Credibility",
+      "gauge_delta": 1,
+      "evidence_id": null,
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_article_wrong",
+      "effect_type": "GaugeChange",
+      "gauge_id": "Credibility",
+      "gauge_delta": -1,
+      "evidence_id": null,
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
       "effect_group_id": "eff_ch1_newsroom_obedient",
       "effect_type": "TrustChange",
       "gauge_id": null,
@@ -1460,7 +1582,7 @@ window.GAME_DATA = {
       "trust_delta": 1
     },
     {
-      "effect_group_id": "eff_ch3_warehouse_read_ritual",
+      "effect_group_id": "eff_ch3_room4_read_record",
       "effect_type": "GaugeChange",
       "gauge_id": "Credibility",
       "gauge_delta": 1,
@@ -1478,7 +1600,7 @@ window.GAME_DATA = {
       "trust_delta": null
     },
     {
-      "effect_group_id": "eff_ch3_room4_read_record",
+      "effect_group_id": "eff_ch3_warehouse_read_ritual",
       "effect_type": "GaugeChange",
       "gauge_id": "Credibility",
       "gauge_delta": 1,
@@ -1512,6 +1634,96 @@ window.GAME_DATA = {
       "evidence_id": null,
       "trust_character_id": "Songsoon",
       "trust_delta": 2
+    },
+    {
+      "effect_group_id": "eff_editor_correct",
+      "effect_type": "GaugeChange",
+      "gauge_id": "Credibility",
+      "gauge_delta": 2,
+      "evidence_id": null,
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_editor_wrong",
+      "effect_type": "GaugeChange",
+      "gauge_id": "Credibility",
+      "gauge_delta": -1,
+      "evidence_id": null,
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_ipangyu_correct",
+      "effect_type": "GaugeChange",
+      "gauge_id": "Credibility",
+      "gauge_delta": 1,
+      "evidence_id": null,
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_ipangyu_correct",
+      "effect_type": "GaugeChange",
+      "gauge_id": "Erosion",
+      "gauge_delta": 1,
+      "evidence_id": null,
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_ipangyu_wrong",
+      "effect_type": "GaugeChange",
+      "gauge_id": "Credibility",
+      "gauge_delta": -1,
+      "evidence_id": null,
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_okryeon_diary",
+      "effect_type": "GaugeChange",
+      "gauge_id": "Credibility",
+      "gauge_delta": 1,
+      "evidence_id": null,
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_okryeon_hanbok",
+      "effect_type": "GaugeChange",
+      "gauge_id": "Credibility",
+      "gauge_delta": 1,
+      "evidence_id": null,
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_okryeon_hanbok",
+      "effect_type": "GaugeChange",
+      "gauge_id": "Erosion",
+      "gauge_delta": 1,
+      "evidence_id": null,
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_okryeon_wrong",
+      "effect_type": "GaugeChange",
+      "gauge_id": "Credibility",
+      "gauge_delta": -1,
+      "evidence_id": null,
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_songsoon_trust",
+      "effect_type": "TrustChange",
+      "gauge_id": null,
+      "gauge_delta": null,
+      "evidence_id": null,
+      "trust_character_id": "Songsoon",
+      "trust_delta": 1
     }
   ],
   "scenes": {
@@ -2319,7 +2531,7 @@ window.GAME_DATA = {
           "branch_id": "Br_ch2_cafe_Default",
           "order": 1,
           "condition_group_id": null,
-          "next_scene": "ch2_well"
+          "next_scene": "ch2_ipangyu"
         }
       ],
       "dialogues": [
@@ -2511,10 +2723,89 @@ window.GAME_DATA = {
           "order": 12,
           "text": "담장 너머로 짧은 허밍이 지나간다. 둘 다 동시에 고개를 드는데, 이번엔 아무도 그 소리를 부정하지 않는다.",
           "style": "narration"
+        },
+        {
+          "order": 13,
+          "text": "저 소리예요. 언니가 창고에서 들었다고 한 거요. 저는 처음 들어봐요. 근데 어디선가 아는 소리 같아요.",
+          "style": "normal",
+          "speaker_id": "Songsoon",
+          "emotion_type": "Uneasy",
+          "standing_slot": "Left",
+          "focus_type": "Speaker"
+        },
+        {
+          "order": 14,
+          "text": "허밍 소리가 들렸다는 게 거짓말이 아니다. 저 여자도 처음 듣는 소리라고 했지만, 표정은 아는 소리처럼 굳어 있다.",
+          "style": "thought",
+          "speaker_id": "Yuu",
+          "emotion_type": "Tense",
+          "standing_slot": "Right",
+          "focus_type": "Speaker"
         }
       ],
-      "choices": [],
-      "evidence": []
+      "choices": [
+        {
+          "order": 101,
+          "choice_group_id": "ChoiceGroup_Songsoon_Trust",
+          "choice_id": "Ch2WellTrustNote",
+          "text": "쪽지를 꺼내 보인다.",
+          "evidence_id": "EvNote",
+          "effect_group_id": "eff_songsoon_trust",
+          "next_type": "Dialog",
+          "next_id": "dlg_songsoon_open"
+        },
+        {
+          "order": 102,
+          "choice_group_id": "ChoiceGroup_Songsoon_Trust",
+          "choice_id": "Ch2WellTrustCloth",
+          "text": "푸른 천 조각을 내민다.",
+          "evidence_id": "EvBlueCloth",
+          "effect_group_id": "eff_songsoon_trust",
+          "next_type": "Dialog",
+          "next_id": "dlg_songsoon_open"
+        }
+      ],
+      "evidence": [],
+      "evidence_prompt_title": "송순의 신뢰를 얻어라",
+      "evidence_prompt_hint": "네가 가진 것이 이 사건과 연결된 증거라는 걸 보여줘야 송순이 입을 연다.",
+      "evidence_dialogues": {
+        "dlg_songsoon_open": [
+          {
+            "order": 1,
+            "text": "...이걸 갖고 계셨군요. 그럼 기자님은 이미 낙원 안까지 들어갔던 거네요.",
+            "style": "normal",
+            "speaker_id": "Songsoon",
+            "emotion_type": "Uneasy",
+            "standing_slot": "Left",
+            "focus_type": "Speaker"
+          },
+          {
+            "order": 2,
+            "text": "낙원 안쪽 창고에 들어가는 문이 있어요. 이해심 님만 열 수 있다고 했는데, 언니는 그 안에서 노래를 했대요. 세 번.",
+            "style": "normal",
+            "speaker_id": "Songsoon",
+            "emotion_type": "Uneasy",
+            "standing_slot": "Left",
+            "focus_type": "Speaker"
+          },
+          {
+            "order": 3,
+            "text": "짧은 침묵이 지나간다. 허밍 소리는 이미 사라졌지만, 아무도 그것이 없었다고 말하지 않는다.",
+            "style": "narration"
+          }
+        ],
+        "dlg_songsoon_skeptical": [
+          {
+            "order": 1,
+            "text": "그게 언니하고 무슨 상관이에요. 기자님이 진짜 알고 싶은 게 뭔지, 저는 아직 모르겠어요. 조금 더 보고 결정해도 될까요.",
+            "style": "normal",
+            "speaker_id": "Songsoon",
+            "emotion_type": "Uneasy",
+            "standing_slot": "Left",
+            "focus_type": "Speaker"
+          }
+        ]
+      }
     },
     "ch3_warehouse": {
       "id": "ch3_warehouse",
@@ -3808,6 +4099,24 @@ window.GAME_DATA = {
           "emotion_type": "Afraid",
           "standing_slot": "Center",
           "focus_type": "Speaker"
+        },
+        {
+          "order": 9,
+          "text": "두 분이 나누는 대화가 들렸소. 한 가지만 더 물어도 되겠소. 그날 창고에서 마지막으로 나온 사람이 누구였소?",
+          "style": "normal",
+          "speaker_id": "Yuu",
+          "emotion_type": "Neutral",
+          "standing_slot": "Right",
+          "focus_type": "Speaker"
+        },
+        {
+          "order": 10,
+          "text": "...그건 모르겠어요. 저는 도망쳤으니까. 뒤를 안 봤어요.",
+          "style": "normal",
+          "speaker_id": "Okryeon",
+          "emotion_type": "Afraid",
+          "standing_slot": "Center",
+          "focus_type": "Speaker"
         }
       ],
       "choices": [
@@ -3824,9 +4133,74 @@ window.GAME_DATA = {
           "text": "조금만 더 말해줘요. 여기서 멈출 순 없어요.",
           "next_type": "Scene",
           "next_id": "ch4b_cafe_press"
+        },
+        {
+          "order": 101,
+          "choice_group_id": "ChoiceGroup_Okryeon_Confront",
+          "choice_id": "Ch4BCafeDiary",
+          "text": "송금의 일기장을 꺼내 보인다.",
+          "evidence_id": "EvDiary",
+          "effect_group_id": "eff_okryeon_diary",
+          "next_type": "Dialog",
+          "next_id": "dlg_okryeon_reveal"
+        },
+        {
+          "order": 102,
+          "choice_group_id": "ChoiceGroup_Okryeon_Confront",
+          "choice_id": "Ch4BCafeHanbok",
+          "text": "푸른 한복 조각을 내민다.",
+          "evidence_id": "EvBlueHanbok",
+          "effect_group_id": "eff_okryeon_hanbok",
+          "next_type": "Dialog",
+          "next_id": "dlg_okryeon_reveal"
         }
       ],
-      "evidence": []
+      "evidence": [],
+      "evidence_prompt_title": "옥련에게 사건과 연결된 증거를 보여라",
+      "evidence_prompt_hint": "옥련이 알고 있는 것과 연결된 단서만이 그녀의 입을 더 열게 한다.",
+      "evidence_dialogues": {
+        "dlg_okryeon_reveal": [
+          {
+            "order": 1,
+            "text": "이걸 어디서 구하셨어요. 낙원 안쪽에 있지 않으면 볼 수 없는 거예요.",
+            "style": "normal",
+            "speaker_id": "Okryeon",
+            "emotion_type": "Afraid",
+            "standing_slot": "Center",
+            "focus_type": "Speaker"
+          },
+          {
+            "order": 2,
+            "text": "창고 문 안에서 노래가 들렸어요. 아주 낮은 소리였는데, 들으면 그다음 소리가 안 들렸어요. 며칠씩이나. 저는 그래서 도망친 거예요.",
+            "style": "normal",
+            "speaker_id": "Okryeon",
+            "emotion_type": "Afraid",
+            "standing_slot": "Center",
+            "focus_type": "Speaker"
+          },
+          {
+            "order": 3,
+            "text": "알겠소. 충분하오. 나머지는 내가 이어 가겠소. 말해준 것만으로도 이미 많이 도움이 됐소.",
+            "style": "normal",
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
+          }
+        ],
+        "dlg_okryeon_close": [
+          {
+            "order": 1,
+            "text": "죄송해요. 그것만으론 제가 드릴 말씀이 없어요. 더 직접적인 걸 갖고 오시면 모를까요.",
+            "style": "normal",
+            "speaker_id": "Okryeon",
+            "emotion_type": "Afraid",
+            "standing_slot": "Center",
+            "focus_type": "Speaker",
+            "effect_group_id": "eff_okryeon_wrong"
+          }
+        ]
+      }
     },
     "ch4b_cafe_hold": {
       "id": "ch4b_cafe_hold",
@@ -4127,10 +4501,84 @@ window.GAME_DATA = {
           "emotion_type": "Angry",
           "standing_slot": "Left",
           "focus_type": "Speaker"
+        },
+        {
+          "order": 13,
+          "text": "이제 나가거라. 더 할 말은 없다.",
+          "style": "normal",
+          "speaker_id": "Editor",
+          "emotion_type": "Angry",
+          "standing_slot": "Left",
+          "focus_type": "Speaker"
+        },
+        {
+          "order": 14,
+          "text": "편집장은 더 이상 막지 않는다. 가도 된다는 말이기도 하고, 되돌릴 수 없다는 말이기도 하다.",
+          "style": "thought",
+          "speaker_id": "Yuu",
+          "emotion_type": "Tense",
+          "standing_slot": "Right",
+          "focus_type": "Speaker"
         }
       ],
-      "choices": [],
-      "evidence": []
+      "choices": [
+        {
+          "order": 101,
+          "choice_group_id": "ChoiceGroup_Editor_Confront",
+          "choice_id": "Ch4AEditorArticles",
+          "text": "1924년 기사 뭉치를 책상에 올려놓는다.",
+          "evidence_id": "EvOldArticles",
+          "effect_group_id": "eff_editor_correct",
+          "next_type": "Dialog",
+          "next_id": "dlg_editor_reveal"
+        }
+      ],
+      "evidence": [],
+      "evidence_prompt_title": "편집장에게 핵심 증거를 들이밀어라",
+      "evidence_prompt_hint": "그가 직접 연관된 증거를 꺼내야만 그의 입이 열린다. 무관한 것을 내밀면 외면한다.",
+      "evidence_dialogues": {
+        "dlg_editor_reveal": [
+          {
+            "order": 1,
+            "text": "...이걸, 어디서 꺼내 왔나.",
+            "style": "normal",
+            "speaker_id": "Editor",
+            "emotion_type": "Angry",
+            "standing_slot": "Left",
+            "focus_type": "Speaker"
+          },
+          {
+            "order": 2,
+            "text": "내가 접어 둔 기사가 이것뿐만이 아니야. 위에서 덮으라 했어. 사람 이름도, 날짜도, 사건 내용도. 살아남으려면 그 수밖에 없었어.",
+            "style": "normal",
+            "speaker_id": "Editor",
+            "emotion_type": "Angry",
+            "standing_slot": "Left",
+            "focus_type": "Speaker"
+          },
+          {
+            "order": 3,
+            "text": "충분합니다. 이제 제 몫이 생겼습니다. 선배가 못 쓴 문장까지 이어 쓰겠습니다.",
+            "style": "normal",
+            "speaker_id": "Yuu",
+            "emotion_type": "Neutral",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
+          }
+        ],
+        "dlg_editor_deflect": [
+          {
+            "order": 1,
+            "text": "그걸로는 내가 해줄 말이 없어. 더 분명한 것이 있거든 들고 오게. 이걸로는 아무것도 움직이지 않아.",
+            "style": "normal",
+            "speaker_id": "Editor",
+            "emotion_type": "Angry",
+            "standing_slot": "Left",
+            "focus_type": "Speaker",
+            "effect_group_id": "eff_editor_wrong"
+          }
+        ]
+      }
     },
     "ch5_ritual_path": {
       "id": "ch5_ritual_path",
@@ -5162,7 +5610,7 @@ window.GAME_DATA = {
           "branch_id": "Br_ch6_ritual_scene_Default",
           "order": 1,
           "condition_group_id": null,
-          "next_scene": "ch6_outcome"
+          "next_scene": "ch6_article"
         }
       ],
       "dialogues": [
@@ -5822,14 +6270,7 @@ window.GAME_DATA = {
       "background": "assets/bg/ritual_room.jpg",
       "music": "assets/sfx/ending.mp3",
       "effect": null,
-      "branches": [
-        {
-          "branch_id": "Br_ch6_ending_a_Default",
-          "order": 1,
-          "condition_group_id": null,
-          "next_scene": "ch6_epilogue"
-        }
-      ],
+      "branches": [],
       "dialogues": [
         {
           "order": 1,
@@ -5928,14 +6369,7 @@ window.GAME_DATA = {
       "background": "assets/bg/ritual_room.jpg",
       "music": "assets/sfx/ending.mp3",
       "effect": null,
-      "branches": [
-        {
-          "branch_id": "Br_ch6_ending_b_Default",
-          "order": 1,
-          "condition_group_id": null,
-          "next_scene": "ch6_epilogue"
-        }
-      ],
+      "branches": [],
       "dialogues": [
         {
           "order": 1,
@@ -6013,6 +6447,12 @@ window.GAME_DATA = {
           "emotion_type": "Tense",
           "standing_slot": "Right",
           "focus_type": "Speaker"
+        },
+        {
+          "order": 10,
+          "text": "기사는 그 주 목요일 석간에 실렸다. 제목은 없었다. 이름이 먼저였고, 날짜가 그 다음이었다. 사람들은 읽었고, 일부는 오려두었다.",
+          "style": "narration",
+          "condition_group_id": "CG_EndingB_ErodedRecord"
         }
       ],
       "choices": [],
@@ -6025,14 +6465,7 @@ window.GAME_DATA = {
       "background": "assets/bg/ritual_room.jpg",
       "music": "assets/sfx/ending.mp3",
       "effect": 2,
-      "branches": [
-        {
-          "branch_id": "Br_ch6_ending_c_Default",
-          "order": 1,
-          "condition_group_id": null,
-          "next_scene": "ch6_epilogue"
-        }
-      ],
+      "branches": [],
       "dialogues": [
         {
           "order": 1,
@@ -6124,7 +6557,26 @@ window.GAME_DATA = {
       "background": "assets/bg/newsroom.jpeg",
       "music": "assets/sfx/ending.mp3",
       "effect": null,
-      "branches": [],
+      "branches": [
+        {
+          "branch_id": "Br_ch6_epilogue_EndingB",
+          "order": 1,
+          "condition_group_id": "CG_Epilogue_EndingB",
+          "next_scene": "ch6_ending_b"
+        },
+        {
+          "branch_id": "Br_ch6_epilogue_EndingA",
+          "order": 2,
+          "condition_group_id": "CG_Epilogue_EndingA",
+          "next_scene": "ch6_ending_a"
+        },
+        {
+          "branch_id": "Br_ch6_epilogue_Default",
+          "order": 3,
+          "condition_group_id": null,
+          "next_scene": "ch6_ending_c"
+        }
+      ],
       "dialogues": [
         {
           "order": 1,
@@ -6337,15 +6789,344 @@ window.GAME_DATA = {
     "scene_gameover_credibility": {
       "id": "scene_gameover_credibility",
       "chapter": 0,
-      "title": "게임 오버 - 신용",
+      "title": "평판 붕괴 — 게임오버",
       "background": "assets/bg/newsroom.jpeg",
       "music": "assets/sfx/ending.mp3",
       "effect": null,
-      "branches": [],
+      "branches": [
+        {
+          "branch_id": "Br_gameover_credibility_End",
+          "order": 1,
+          "condition_group_id": null,
+          "next_scene": null
+        }
+      ],
       "dialogues": [
         {
           "order": 1,
           "text": "기록은 남았지만 믿어 줄 사람은 없다. 기자로서의 발언권은 완전히 무너졌다.",
+          "style": "narration"
+        },
+        {
+          "order": 2,
+          "text": "평판이 바닥이야. 자네 기사는 더 이상 검토도 못 해. 아무도 이 신문에 실린 걸 믿지 않으니까.",
+          "style": "normal",
+          "speaker_id": "Editor",
+          "emotion_type": "Angry",
+          "standing_slot": "Left",
+          "focus_type": "Speaker"
+        },
+        {
+          "order": 3,
+          "text": "이렇게 끝날 줄은 몰랐다. 증거보다 신뢰가 먼저라는 걸, 뒤늦게야 깨달았다.",
+          "style": "thought",
+          "speaker_id": "Yuu",
+          "emotion_type": "Tense",
+          "standing_slot": "Right",
+          "focus_type": "Speaker"
+        },
+        {
+          "order": 4,
+          "text": "유웅룡의 이름은 지면에서 사라졌다. 기사는 쓰이지 않았고, 사건은 묻혔다.",
+          "style": "narration"
+        }
+      ],
+      "choices": [],
+      "evidence": []
+    },
+    "ch2_ipangyu": {
+      "id": "ch2_ipangyu",
+      "chapter": 2,
+      "title": "이판규의 혼잣말",
+      "background": "assets/bg/slum.jpeg",
+      "music": "assets/sfx/jazz_dark.mp3",
+      "effect": null,
+      "goal_kicker": "증거 제시",
+      "goal_text": "이판규가 숨긴 것을 끌어내라. 증거로 그의 입을 열어야 한다.",
+      "evidence_prompt_title": "이판규에게 증거를 제시하라",
+      "evidence_prompt_hint": "그가 아는 것과 연결된 증거만이 그의 말을 움직인다. 무관한 것엔 반응하지 않는다.",
+      "branches": [
+        {
+          "branch_id": "Br_ch2_ipangyu_Default",
+          "order": 1,
+          "condition_group_id": null,
+          "next_scene": "ch2_well"
+        }
+      ],
+      "dialogues": [
+        {
+          "order": 1,
+          "text": "낙원 외곽 판자촌 골목. 지붕 낮은 집들 사이로 등불 하나가 흔들린다. 이판규가 담벼락에 등을 기댄 채 혼자 중얼거리고 있다.",
+          "style": "narration"
+        },
+        {
+          "order": 2,
+          "text": "낙원 외곽 판잣집 골목. 이판규 — 낙원의 오래된 신도이자 교주의 그림자라고 불리는 자가 담벼락에 기대어 서 있다. 처음 보는 얼굴인데 눈빛이 이상하다.",
+          "style": "narration"
+        },
+        {
+          "order": 3,
+          "text": "왔군. 와야 할 사람이 왔어. 토요일이 지났으니, 문이 열렸으니, 이제 기자가 와야 했어.",
+          "style": "normal",
+          "speaker_id": "Ipangyu",
+          "emotion_type": "Crazy",
+          "standing_slot": "Center",
+          "focus_type": "Speaker"
+        },
+        {
+          "order": 4,
+          "text": "우리가 처음 만나는 거요. 당신이 나를 아는 척하는 이유가 뭐요.",
+          "style": "normal",
+          "speaker_id": "Yuu",
+          "emotion_type": "Neutral",
+          "standing_slot": "Right",
+          "focus_type": "Speaker"
+        },
+        {
+          "order": 5,
+          "text": "처음은 없어. 낙원에서 이어진 것들은 다 연결돼 있어. 나도, 송금도, 기자도. 끊어진 것처럼 보여도 이어진 거야.",
+          "style": "normal",
+          "speaker_id": "Ipangyu",
+          "emotion_type": "Crazy",
+          "standing_slot": "Center",
+          "focus_type": "Speaker"
+        },
+        {
+          "order": 6,
+          "text": "이판규 씨. 낙원에서 사라진 사람들을 알고 있겠지. 무엇을 봤는지 말해 주시오.",
+          "style": "thought",
+          "speaker_id": "Yuu",
+          "emotion_type": "Tense",
+          "standing_slot": "Right",
+          "focus_type": "Speaker"
+        }
+      ],
+      "evidence_dialogues": {
+        "dlg_ipangyu_reveal": [
+          {
+            "order": 1,
+            "text": "...이걸 어디서 구했어. 그날 거기 없었으면 못 얻는 거잖아.",
+            "style": "normal",
+            "speaker_id": "Ipangyu",
+            "emotion_type": "Crazy",
+            "standing_slot": "Center",
+            "focus_type": "Speaker"
+          },
+          {
+            "order": 2,
+            "text": "맞아. 나는 그날 창고에 있었어. 노래를 들었어. 다들 다른 걸 들었지만 나는 이름을 들었어. 사라진 사람들 이름을.",
+            "style": "normal",
+            "speaker_id": "Ipangyu",
+            "emotion_type": "Crazy",
+            "standing_slot": "Center",
+            "focus_type": "Speaker"
+          },
+          {
+            "order": 3,
+            "text": "이판규의 눈에 잠깐 초점이 돌아온다. 그 순간만큼은 무언가를 기억하는 사람의 얼굴이다.",
+            "style": "thought",
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
+          }
+        ],
+        "dlg_ipangyu_default": [
+          {
+            "order": 1,
+            "text": "그건 아냐, 기자. 그걸로는 문이 안 열려. 노래를 아는 것을 가져와야 이 자리가 이어진다.",
+            "style": "normal",
+            "speaker_id": "Ipangyu",
+            "emotion_type": "Crazy",
+            "standing_slot": "Center",
+            "focus_type": "Speaker",
+            "effect_group_id": "eff_ipangyu_wrong"
+          }
+        ]
+      },
+      "choices": [
+        {
+          "order": 101,
+          "choice_group_id": "ChoiceGroup_Ipangyu_Confront",
+          "choice_id": "Ch2IpangyuBlueCloth",
+          "text": "푸른 천 조각을 꺼낸다.",
+          "evidence_id": "EvBlueCloth",
+          "effect_group_id": "eff_ipangyu_correct",
+          "next_type": "Dialog",
+          "next_id": "dlg_ipangyu_reveal"
+        },
+        {
+          "order": 102,
+          "choice_group_id": "ChoiceGroup_Ipangyu_Confront",
+          "choice_id": "Ch2IpangyuScore",
+          "text": "의식 악보를 내민다.",
+          "evidence_id": "EvRitualScore",
+          "effect_group_id": "eff_ipangyu_correct",
+          "next_type": "Dialog",
+          "next_id": "dlg_ipangyu_reveal"
+        }
+      ],
+      "evidence": []
+    },
+    "ch6_article": {
+      "id": "ch6_article",
+      "chapter": 6,
+      "title": "기사 완성",
+      "background": "assets/bg/newsroom.jpeg",
+      "music": "assets/sfx/newsroom.mp3",
+      "effect": null,
+      "goal_kicker": "기사",
+      "goal_text": "기사의 세 항목을 증거로 뒷받침하라. 신용이 쌓여야 기사가 나온다.",
+      "evidence_prompt_title": "기사의 이 항목을 증거로 뒷받침하라",
+      "evidence_prompt_hint": "올바른 증거를 고르면 신용이 오른다. 맞지 않는 증거를 내밀면 기사의 신뢰가 흔들린다.",
+      "branches": [
+        {
+          "branch_id": "Br_ch6_article_Default",
+          "order": 1,
+          "condition_group_id": null,
+          "next_scene": "ch6_epilogue"
+        }
+      ],
+      "dialogues": [
+        {
+          "order": 1,
+          "text": "편집실 구석 자리. 유웅룡이 원고지를 앞에 펼쳐 두고 있다. 이 기사 하나를 위해 여기까지 왔다. 손이 잘 움직이지 않는다.",
+          "style": "narration"
+        },
+        {
+          "order": 2,
+          "text": "세 가지를 써야 한다. 피해자의 이름, 의식의 방법, 배후 세력의 실체. 증거가 없으면 기사가 아니라 소문이 된다.",
+          "style": "thought",
+          "speaker_id": "Yuu",
+          "emotion_type": "Tense",
+          "standing_slot": "Right",
+          "focus_type": "Speaker"
+        },
+        {
+          "order": 3,
+          "text": "이 기사 하나로 세상이 바뀌지는 않을 것이다. 그래도 남겨야 한다. 없던 일로는 못 넘기도록, 적어도 한 번은 제대로.",
+          "style": "narration"
+        }
+      ],
+      "evidence_dialogues": {
+        "article_q1_react": [
+          {
+            "order": 1,
+            "text": "됐다. 이름은 이걸로 특정된다. 일기장이 있으면 누가 부정해도 근거를 댈 수 있다. 첫 번째 항목은 통과다.",
+            "style": "normal",
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
+          }
+        ],
+        "article_q2_react": [
+          {
+            "order": 1,
+            "text": "의식 악보. 이걸 연결하면 방법이 선명해진다. 이해심이 어떻게 사람을 골라 의식에 썼는지, 이제 설명이 된다.",
+            "style": "normal",
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
+          }
+        ],
+        "article_q3_react": [
+          {
+            "order": 1,
+            "text": "1924년 기사. 편집장이 접어 둔 문장이 여기 있었다. 구 세력의 이름까지 이으면, 이번 사건이 처음이 아니라는 걸 증명할 수 있다.",
+            "style": "normal",
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
+          }
+        ],
+        "dlg_article_default": [
+          {
+            "order": 1,
+            "text": "이 증거로는 뒷받침이 안 된다. 다른 단서가 있을 것이다. 기사는 아직 완성되지 않았다.",
+            "style": "thought",
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker",
+            "effect_group_id": "eff_article_wrong"
+          }
+        ]
+      },
+      "choices": [
+        {
+          "order": 101,
+          "choice_group_id": "ChoiceGroup_ArticleQ1",
+          "choice_id": "article_q1_correct",
+          "text": "일기장을 근거로 피해자 이름을 특정한다.",
+          "evidence_id": "EvDiary",
+          "effect_group_id": "eff_article_correct",
+          "next_type": "Dialog",
+          "next_id": "article_q1_react"
+        },
+        {
+          "order": 102,
+          "choice_group_id": "ChoiceGroup_ArticleQ2",
+          "choice_id": "article_q2_correct",
+          "text": "의식 악보를 근거로 부적 제작 경위를 밝힌다.",
+          "evidence_id": "EvRitualScore",
+          "effect_group_id": "eff_article_correct",
+          "next_type": "Dialog",
+          "next_id": "article_q2_react"
+        },
+        {
+          "order": 103,
+          "choice_group_id": "ChoiceGroup_ArticleQ3",
+          "choice_id": "article_q3_correct",
+          "text": "1924년 구 기사를 근거로 구 세력의 실체를 폭로한다.",
+          "evidence_id": "EvOldArticles",
+          "effect_group_id": "eff_article_correct",
+          "next_type": "Dialog",
+          "next_id": "article_q3_react"
+        }
+      ],
+      "evidence": []
+    },
+    "scene_ending_erosion": {
+      "id": "scene_ending_erosion",
+      "chapter": 6,
+      "title": "침식의 끝",
+      "background": "assets/bg/ritual_room.jpg",
+      "music": "assets/sfx/ritual_climax.mp3",
+      "effect": null,
+      "branches": [
+        {
+          "branch_id": "Br_ending_erosion_End",
+          "order": 1,
+          "condition_group_id": null,
+          "next_scene": null
+        }
+      ],
+      "dialogues": [
+        {
+          "order": 1,
+          "text": "낙원 안쪽 깊은 방에서 의식이 끝났다. 불꽃은 꺼졌지만 공기는 아직 뜨겁고, 유웅룡은 그 자리에 무릎을 꿇고 있었다.",
+          "style": "narration"
+        },
+        {
+          "order": 2,
+          "text": "나는 더 이상 기록하지 않기로 한다. 이 사람들 곁에 남는 것이 내가 고른 길이다. 증거도, 기사도, 신용도 필요 없다.",
+          "style": "thought",
+          "speaker_id": "Yuu",
+          "emotion_type": "Tense",
+          "standing_slot": "Right",
+          "focus_type": "Speaker"
+        },
+        {
+          "order": 3,
+          "text": "기자 유웅룡은 그날 밤 사라졌다. 경성 어딘가에서 그를 봤다는 말이 돌았지만, 아무도 확인하지 않았다. 기사는 끝내 쓰이지 않았다.",
+          "style": "narration"
+        },
+        {
+          "order": 4,
+          "text": "낙원은 여전히 그 자리에 있었다. 불빛도, 노래도, 사람들도.",
           "style": "narration"
         }
       ],

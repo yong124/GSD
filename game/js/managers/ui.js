@@ -118,6 +118,22 @@ const UIManager = (() => {
       });
   }
 
+  function getGaugeDisplayLabel(gauge) {
+    if (!gauge) return '';
+    if (gauge.gauge_id === 'Credibility') return '\ud3c9\ud310';
+    return gauge.label || gauge.gauge_id || '';
+  }
+
+  function getGaugeStateDisplayLabel(gaugeId, state, value = 0) {
+    if (gaugeId === 'Credibility') {
+      const numericValue = Number(value || 0);
+      if (numericValue <= 0) return '\uc2e4\uac01';
+      if (numericValue <= 2) return '\ud754\ub4e4\ub9bc';
+      return '\uc548\uc815';
+    }
+    return state?.label || '';
+  }
+
   function renderGaugeHUD() {
     const container = $('hud-gauges');
     const gameContainer = $(Config.SELECTORS.GAME_CONTAINER);
@@ -128,16 +144,14 @@ const UIManager = (() => {
     const titleVisible = titleScreen && !titleScreen.classList.contains('hidden');
     container.innerHTML = rows.map(row => `
       <div class="hud-gauge-card" data-gauge-id="${row.gauge.gauge_id}">
-        <div class="hud-gauge-head">
-          <span class="hud-gauge-label">${row.gauge.label || row.gauge.gauge_id}</span>
-          <span class="hud-gauge-status">${row.currentState?.label || ''}</span>
-        </div>
+        <span class="hud-gauge-label">${getGaugeDisplayLabel(row.gauge)}</span>
         <div class="hud-gauge-bar">
           <div class="hud-gauge-fill" style="width:${row.pct}%; background:${row.currentState?.hud_color || '#6a9f6a'}"></div>
         </div>
-        <div class="hud-gauge-meta">
-          <span class="hud-gauge-value">${row.value} / ${Number(row.gauge.max_value ?? 0)}</span>
-        </div>
+        <span class="hud-gauge-value">
+          <span class="hud-gauge-status">${getGaugeStateDisplayLabel(row.gauge.gauge_id, row.currentState, row.value)}</span>
+          ${row.value}/${Number(row.gauge.max_value ?? 0)}
+        </span>
       </div>
     `).join('');
     gameContainer.classList.toggle('hud-hidden', !!titleVisible);
@@ -166,12 +180,13 @@ const UIManager = (() => {
         const fill = gaugeEl.querySelector('.hud-gauge-fill');
         const status = gaugeEl.querySelector('.hud-gauge-status');
         const valueEl = gaugeEl.querySelector('.hud-gauge-value');
+        const stateText = getGaugeStateDisplayLabel(gaugeId, currentState, nextValue);
         if (fill) {
           fill.style.width = `${getGaugePercent(gauge, nextValue)}%`;
           fill.style.background = currentState?.hud_color || '#6a9f6a';
         }
-        if (status) status.textContent = currentState?.label || '';
-        if (valueEl) valueEl.textContent = `${nextValue} / ${Number(gauge.max_value ?? 0)}`;
+        if (status) status.textContent = stateText;
+        if (valueEl) valueEl.innerHTML = `<span class="hud-gauge-status">${stateText}</span>${nextValue}/${Number(gauge.max_value ?? 0)}`;
       }
     }
 
