@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>경성뎐 : 여급 실종사건</title>
   <link rel="stylesheet" href="css/main.css?v=23">
-  <link rel="stylesheet" href="css/dialogue.css?v=13">
+  <link rel="stylesheet" href="css/dialogue.css?v=14">
   <link rel="stylesheet" href="css/effects.css?v=9">
 </head>
 <body>
@@ -114,10 +114,29 @@
   <div id="choice-box" class="hidden">
     <div id="choice-list"></div>
   </div>
+  <div id="evidence-inventory-backdrop" class="hidden"></div>
   <div id="evidence-inventory" class="hidden">
-    <div id="evidence-inventory-title"></div>
-    <div id="evidence-inventory-hint"></div>
-    <div id="evidence-inventory-list"></div>
+    <div id="evidence-inventory-header">
+      <div id="evidence-inventory-meta">
+        <div id="evidence-inventory-title"></div>
+        <div id="evidence-inventory-hint"></div>
+      </div>
+      <button id="evidence-inventory-close" title="닫기">✕</button>
+    </div>
+    <div id="evidence-inventory-body">
+      <div id="evidence-inventory-list"></div>
+      <div id="evidence-inventory-detail">
+        <div id="evidence-inventory-detail-img-wrap">
+          <img id="evidence-inventory-detail-img" src="" alt="">
+          <span id="evidence-inventory-detail-no-img" class="hidden">◈</span>
+        </div>
+        <div id="evidence-inventory-detail-copy">
+          <div id="evidence-inventory-detail-title"></div>
+          <div id="evidence-inventory-detail-desc"></div>
+        </div>
+        <button id="evidence-inventory-submit">이 증거를 제시한다</button>
+      </div>
+    </div>
   </div>
 
   <!-- ── 조사 수첩 버튼 ── -->
@@ -171,13 +190,13 @@
 <script src="js/config.js?v=10"></script>
 
 <!-- 데이터 (export_to_json.py 로 생성) -->
-<script src="data/game_data.js?v=2"></script>
+<script src="data/game_data.js?v=4"></script>
 
 <!-- 엔진 코어 -->
 <script src="js/core/engine.js?v=12"></script>
 <script src="js/managers/effects.js?v=10"></script>
 <script src="js/managers/audio.js?v=10"></script>
-<script src="js/managers/ui.js?v=17"></script>
+<script src="js/managers/ui.js?v=18"></script>
 <script src="js/managers/input.js?v=10"></script>
 
 <!-- 엔진 모듈 -->

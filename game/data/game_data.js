@@ -267,6 +267,24 @@ window.GAME_DATA = {
       "condition_group_id": null,
       "max_selectable": 1,
       "default_dialog_id": "dlg_article_default"
+    },
+    {
+      "choice_group_id": "ChoiceGroup_EditorOrder",
+      "type": "Normal",
+      "condition_group_id": null,
+      "max_selectable": 1
+    },
+    {
+      "choice_group_id": "ChoiceGroup_GuardedDoor",
+      "type": "Normal",
+      "condition_group_id": null,
+      "max_selectable": 1
+    },
+    {
+      "choice_group_id": "ChoiceGroup_IpangyuDeal",
+      "type": "Normal",
+      "condition_group_id": null,
+      "max_selectable": 1
     }
   ],
   "conditions": [
@@ -690,6 +708,14 @@ window.GAME_DATA = {
       "condition_target_id": "Ch3WarehouseTrustSongsoon|Ch3Room4ComfortSongsoon",
       "compare_type": "Equal",
       "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Epilogue_EndingA_03",
+      "condition_group_id": "CG_Epilogue_EndingA",
+      "condition_type": "ChoiceSelected",
+      "condition_target_id": "Ch5IpangyuDealAccept",
+      "compare_type": "Equal",
+      "condition_value": true
     }
   ],
   "evidence_categories": [
@@ -925,7 +951,7 @@ window.GAME_DATA = {
           },
           {
             "order": 2,
-            "text": "송순의 목소리가 허밍을 가르며 들어간다. 의식의 중심이 아주 잠깐 흔들린다.",
+            "text": "송순의 목소리가 콧노래를 가르며 들어간다. 의식의 중심이 아주 잠깐 흔들린다.",
             "style": "narration",
             "condition": null
           }
@@ -1724,6 +1750,51 @@ window.GAME_DATA = {
       "evidence_id": null,
       "trust_character_id": "Songsoon",
       "trust_delta": 1
+    },
+    {
+      "effect_group_id": "eff_editor_defy",
+      "effect_type": "GaugeChange",
+      "gauge_id": "Credibility",
+      "gauge_delta": -1,
+      "evidence_id": null,
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_ch5_observe",
+      "effect_type": "GaugeChange",
+      "gauge_id": "Credibility",
+      "gauge_delta": 1,
+      "evidence_id": null,
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_ch5_observe",
+      "effect_type": "GaugeChange",
+      "gauge_id": "Erosion",
+      "gauge_delta": 1,
+      "evidence_id": null,
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_ipangyu_deal_accept",
+      "effect_type": "GaugeChange",
+      "gauge_id": "Erosion",
+      "gauge_delta": 1,
+      "evidence_id": null,
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_ipangyu_deal_accept",
+      "effect_type": "EvidenceGain",
+      "gauge_id": null,
+      "gauge_delta": null,
+      "evidence_id": "EvIpangyuName",
+      "trust_character_id": null,
+      "trust_delta": null
     }
   ],
   "scenes": {
@@ -2336,7 +2407,7 @@ window.GAME_DATA = {
         },
         {
           "order": 6,
-          "text": "노래하는 여자, 푸른 옷, 문 앞의 숨… 거기서 다 비롯돼. 먼저 허밍이 들리고, 다음엔 아무도 열지 않은 문이 안에서부터 축축이 젖어 와.",
+          "text": "노래하는 여자, 푸른 옷, 문 앞의 숨… 거기서 다 비롯돼. 먼저 콧노래가 들리고, 다음엔 아무도 열지 않은 문이 안에서부터 축축이 젖어 와.",
           "style": "crazy",
           "speaker_id": "Ipangyu",
           "emotion_type": "Crazy",
@@ -2721,7 +2792,7 @@ window.GAME_DATA = {
         },
         {
           "order": 12,
-          "text": "담장 너머로 짧은 허밍이 지나간다. 둘 다 동시에 고개를 드는데, 이번엔 아무도 그 소리를 부정하지 않는다.",
+          "text": "담장 너머로 짧은 콧노래가 지나간다. 둘 다 동시에 고개를 드는데, 이번엔 아무도 그 소리를 부정하지 않는다.",
           "style": "narration"
         },
         {
@@ -2735,7 +2806,7 @@ window.GAME_DATA = {
         },
         {
           "order": 14,
-          "text": "허밍 소리가 들렸다는 게 거짓말이 아니다. 저 여자도 처음 듣는 소리라고 했지만, 표정은 아는 소리처럼 굳어 있다.",
+          "text": "콧노래 소리가 들렸다는 게 거짓말이 아니다. 저 여자도 처음 듣는 소리라고 했지만, 표정은 아는 소리처럼 굳어 있다.",
           "style": "thought",
           "speaker_id": "Yuu",
           "emotion_type": "Tense",
@@ -2790,7 +2861,7 @@ window.GAME_DATA = {
           },
           {
             "order": 3,
-            "text": "짧은 침묵이 지나간다. 허밍 소리는 이미 사라졌지만, 아무도 그것이 없었다고 말하지 않는다.",
+            "text": "짧은 침묵이 지나간다. 콧노래 소리는 이미 사라졌지만, 아무도 그것이 없었다고 말하지 않는다.",
             "style": "narration"
           }
         ],
@@ -2941,7 +3012,7 @@ window.GAME_DATA = {
         },
         {
           "order": 14,
-          "text": "(벽 너머에서 희미한 허밍이 스민다) …언니, 나 왔어. 이번엔 듣고도 모른 체하지 않을게.",
+          "text": "(벽 너머에서 희미한 콧노래가 스민다) …언니, 나 왔어. 이번엔 듣고도 모른 체하지 않을게.",
           "style": "normal",
           "speaker_id": "Songsoon",
           "emotion_type": "Uneasy",
@@ -3028,7 +3099,7 @@ window.GAME_DATA = {
         },
         {
           "order": 5,
-          "text": "악보를 끝까지 본 대가처럼, 유웅룡의 귓속에서 한동안 허밍이 가늘게 남는다. 그러나 이제 그 소리는 공포만이 아니라, 지워지는 순서를 적어 둔 증언처럼 들린다.",
+          "text": "악보를 끝까지 본 대가처럼, 유웅룡의 귓속에서 한동안 콧노래가 가늘게 남는다. 그러나 이제 그 소리는 공포만이 아니라, 지워지는 순서를 적어 둔 증언처럼 들린다.",
           "style": "narration"
         }
       ],
@@ -3129,7 +3200,7 @@ window.GAME_DATA = {
         },
         {
           "order": 3,
-          "text": "잠긴 문 앞에 서자, 아주 짧은 허밍이 복도 끝에서 흘렀다가 사라진다. 이번엔 방 안이 아니라 복도 자체가 따라 부른 것처럼 들린다.",
+          "text": "잠긴 문 앞에 서자, 아주 짧은 콧노래가 복도 끝에서 흘렀다가 사라진다. 이번엔 방 안이 아니라 복도 자체가 따라 부른 것처럼 들린다.",
           "style": "narration"
         },
         {
@@ -3322,7 +3393,7 @@ window.GAME_DATA = {
         },
         {
           "order": 13,
-          "text": "방 안 어딘가에서 다시 짧은 허밍이 스친다. 이번엔 송순의 손끝이 멈추지 않는다. 대신 벽지 아래, 누군가 손톱으로 긁어 남긴 듯한 문양이 처음으로 눈에 들어온다.",
+          "text": "방 안 어딘가에서 다시 짧은 콧노래가 스친다. 이번엔 송순의 손끝이 멈추지 않는다. 대신 벽지 아래, 누군가 손톱으로 긁어 남긴 듯한 문양이 처음으로 눈에 들어온다.",
           "style": "narration"
         },
         {
@@ -4362,7 +4433,7 @@ window.GAME_DATA = {
         },
         {
           "order": 5,
-          "text": "아주 멀리서, 익숙한 허밍 한 자락이 스친다. 이번엔 송순이 고개를 들고 그 소리를 외면하지 않는다.",
+          "text": "아주 멀리서, 익숙한 콧노래 한 자락이 스친다. 이번엔 송순이 고개를 들고 그 소리를 외면하지 않는다.",
           "style": "narration"
         },
         {
@@ -4780,9 +4851,42 @@ window.GAME_DATA = {
           "emotion_type": "Tense",
           "standing_slot": "Right",
           "focus_type": "Speaker"
+        },
+        {
+          "order": 6,
+          "text": "전화기 너머로 편집장의 목소리가 들렸다. 조용하고, 낮고, 평소와 달리 명령하는 어조였다.",
+          "style": "narration"
+        },
+        {
+          "order": 7,
+          "text": "유 기자. 거기서 멈춰라. 지금 당장 돌아와. 그 이상은 내가 감당할 수 없어.",
+          "style": "normal",
+          "speaker_id": "Editor",
+          "emotion_type": "Angry",
+          "standing_slot": "Left",
+          "focus_type": "Speaker"
         }
       ],
-      "choices": [],
+      "choices": [
+        {
+          "order": 1,
+          "choice_group_id": "ChoiceGroup_EditorOrder",
+          "choice_id": "Ch5EditorObey",
+          "text": "알겠습니다. 여기까지만 하지요.",
+          "next_type": "Scene",
+          "next_id": "ch5_descent",
+          "effect_group_id": null
+        },
+        {
+          "order": 2,
+          "choice_group_id": "ChoiceGroup_EditorOrder",
+          "choice_id": "Ch5EditorDefy",
+          "text": "죄송합니다. 여기까지 왔으니 끝냅니다.",
+          "next_type": "Scene",
+          "next_id": "ch5_descent",
+          "effect_group_id": "eff_editor_defy"
+        }
+      ],
       "evidence": []
     },
     "ch5_no_contact": {
@@ -4870,7 +4974,7 @@ window.GAME_DATA = {
       "dialogues": [
         {
           "order": 1,
-          "text": "문을 넘자 곧장 아래로 이어지는 돌계단이 나타난다. 촛농 냄새와 습기가 뒤섞인 공기가 폐로 스민다. 내려갈수록 바깥 도시의 소음은 얇아지고, 허밍만 남는다.",
+          "text": "문을 넘자 곧장 아래로 이어지는 돌계단이 나타난다. 촛농 냄새와 습기가 뒤섞인 공기가 폐로 스민다. 내려갈수록 바깥 도시의 소음은 얇아지고, 콧노래만 남는다.",
           "style": "narration"
         },
         {
@@ -5041,9 +5145,10 @@ window.GAME_DATA = {
           "order": 1,
           "choice_id": "Ch5GuardedDoorListen",
           "effect_group_id": "eff_ch5_guarded_door_listen",
-          "text": "허밍의 결을 끝까지 듣고, 문 안쪽 호흡을 짚어 본다.",
+          "text": "콧노래의 결을 끝까지 듣고, 문 안쪽 호흡을 짚어 본다.",
           "next_type": "Scene",
-          "next_id": "ch5_guarded_door_listen"
+          "next_id": "ch5_guarded_door_listen",
+          "choice_group_id": "ChoiceGroup_GuardedDoor"
         },
         {
           "order": 2,
@@ -5051,7 +5156,16 @@ window.GAME_DATA = {
           "effect_group_id": "eff_ch5_guarded_door_steady",
           "text": "송순과 숨을 고른 뒤, 함께 문을 민다.",
           "next_type": "Scene",
-          "next_id": "ch5_guarded_door_steady"
+          "next_id": "ch5_guarded_door_steady",
+          "choice_group_id": "ChoiceGroup_GuardedDoor"
+        },
+        {
+          "order": 3,
+          "choice_group_id": "ChoiceGroup_GuardedDoor",
+          "choice_id": "Ch5GuardedDoorObserve",
+          "text": "문 틈으로 안을 직접 들여다본다.",
+          "next_type": "Scene",
+          "next_id": "ch5_guarded_door_observe"
         }
       ],
       "evidence": []
@@ -5084,7 +5198,7 @@ window.GAME_DATA = {
         },
         {
           "order": 2,
-          "text": "유웅룡이 문 가까이 귀를 기울인다. 허밍은 더는 멀리서 들리지 않는다. 문 저편 누군가의 목구멍이 아니라, 바로 귓속 얇은 막을 안에서부터 문지르는 소리처럼 들린다.",
+          "text": "유웅룡이 문 가까이 귀를 기울인다. 콧노래는 더는 멀리서 들리지 않는다. 문 저편 누군가의 목구멍이 아니라, 바로 귓속 얇은 막을 안에서부터 문지르는 소리처럼 들린다.",
           "style": "narration"
         },
         {
@@ -5176,7 +5290,7 @@ window.GAME_DATA = {
           "branch_id": "Br_ch5_ritual_room_Default",
           "order": 1,
           "condition_group_id": null,
-          "next_scene": "ch6_threshold"
+          "next_scene": "ch5_ipangyu_deal"
         }
       ],
       "dialogues": [
@@ -5644,7 +5758,7 @@ window.GAME_DATA = {
         },
         {
           "order": 5,
-          "text": "그 순간 유웅룡의 귓속에서 문 앞 허밍이 다시 울린다. 방 안 노래와 어긋나지 않는다. 아까 문에 귀를 댄 뒤로, 이 공간은 이미 몸 안쪽까지 파고든 듯하다.",
+          "text": "그 순간 유웅룡의 귓속에서 문 앞 콧노래가 다시 울린다. 방 안 노래와 어긋나지 않는다. 아까 문에 귀를 댄 뒤로, 이 공간은 이미 몸 안쪽까지 파고든 듯하다.",
           "style": "narration",
           "condition_group_id": "CG_RitualScene_Resonance2"
         },
@@ -5839,7 +5953,7 @@ window.GAME_DATA = {
         },
         {
           "order": 2,
-          "text": "송순의 목소리가 허밍을 가르며 들어간다. 의식의 중심이 아주 잠깐 흔들리고, 송금의 음정이 처음으로 사람 쪽으로 기운다.",
+          "text": "송순의 목소리가 콧노래를 가르며 들어간다. 의식의 중심이 아주 잠깐 흔들리고, 송금의 음정이 처음으로 사람 쪽으로 기운다.",
           "style": "narration"
         }
       ],
@@ -5989,7 +6103,7 @@ window.GAME_DATA = {
     "ch6_path_a": {
       "id": "ch6_path_a",
       "chapter": 6,
-      "title": "허밍의 응답",
+      "title": "콧노래의 응답",
       "background": "assets/bg/ritual_room.jpg",
       "music": "assets/sfx/ritual_climax.mp3",
       "effect": null,
@@ -6018,7 +6132,7 @@ window.GAME_DATA = {
         },
         {
           "order": 2,
-          "text": "송순의 목소리가 허밍과 겹쳐지며 방 안 공기의 결이 미세하게 바뀐다. 처음으로 의식 한가운데 사람 체온이 끼어든다.",
+          "text": "송순의 목소리가 콧노래과 겹쳐지며 방 안 공기의 결이 미세하게 바뀐다. 처음으로 의식 한가운데 사람 체온이 끼어든다.",
           "style": "narration"
         }
       ],
@@ -6089,7 +6203,7 @@ window.GAME_DATA = {
         },
         {
           "order": 3,
-          "text": "문 앞에서부터 얽혀 든 허밍의 결이 이 순간 송순의 목소리와 포개진다. 파멸에 더 가까이 다가섰기에, 되려 무엇을 붙들어야 하는지도 더 선명하게 보인다.",
+          "text": "문 앞에서부터 얽혀 든 콧노래의 결이 이 순간 송순의 목소리와 포개진다. 파멸에 더 가까이 다가섰기에, 되려 무엇을 붙들어야 하는지도 더 선명하게 보인다.",
           "style": "narration",
           "condition_group_id": "CG_Threshold_Resonance2"
         },
@@ -6237,7 +6351,7 @@ window.GAME_DATA = {
         },
         {
           "order": 3,
-          "text": "허밍이 아직 귓가에서 가시지 않는다. 유웅룡은 자신 또한 저 문턱에서 아주 비켜 선 목격자만은 아니게 되었다는 사실을 안다. 그래서 더더욱, 본 자의 이름으로 적어 두어야 한다.",
+          "text": "콧노래가 아직 귓가에서 가시지 않는다. 유웅룡은 자신 또한 저 문턱에서 아주 비켜 선 목격자만은 아니게 되었다는 사실을 안다. 그래서 더더욱, 본 자의 이름으로 적어 두어야 한다.",
           "style": "narration",
           "condition_group_id": "CG_Threshold_Resonance2"
         },
@@ -6274,7 +6388,7 @@ window.GAME_DATA = {
       "dialogues": [
         {
           "order": 1,
-          "text": "(창고 벽 앞에서 들었던 그 멜로디로 응답한다. 언니의 노래에 맞서는 허밍)",
+          "text": "(창고 벽 앞에서 들었던 그 멜로디로 응답한다. 언니의 노래에 맞서는 콧노래)",
           "style": "normal",
           "speaker_id": "Songsoon",
           "emotion_type": "Uneasy",
@@ -6283,7 +6397,7 @@ window.GAME_DATA = {
         },
         {
           "order": 2,
-          "text": "감응이 흔들린다. 이해심이 비틀거리며 무너진다. 문은 반쯤 열린 채 억지로 닫힌다. 닫히는 마지막 순간까지 허밍은 한 사람의 이름을 놓치지 않으려는 것처럼 떨린다.",
+          "text": "감응이 흔들린다. 이해심이 비틀거리며 무너진다. 문은 반쯤 열린 채 억지로 닫힌다. 닫히는 마지막 순간까지 콧노래는 한 사람의 이름을 놓치지 않으려는 것처럼 떨린다.",
           "style": "narration"
         },
         {
@@ -6497,7 +6611,7 @@ window.GAME_DATA = {
         },
         {
           "order": 5,
-          "text": "대답 대신, 멀리서 아주 짧은 허밍이 한 번 더 스친다. 둘 다 그 소리를 들었는지조차 확신하지 못한다. 확신하지 못한다는 사실이 오히려 더 오래 남는다.",
+          "text": "대답 대신, 멀리서 아주 짧은 콧노래가 한 번 더 스친다. 둘 다 그 소리를 들었는지조차 확신하지 못한다. 확신하지 못한다는 사실이 오히려 더 오래 남는다.",
           "style": "narration"
         },
         {
@@ -6526,7 +6640,7 @@ window.GAME_DATA = {
         },
         {
           "order": 9,
-          "text": "귓가에 남은 허밍은 오래도록 사라지지 않는다. 들은 자만 알아볼 수 있는 미세한 떨림이, 평범한 밤의 공기 속에서도 가끔 문득 되살아난다.",
+          "text": "귓가에 남은 콧노래는 오래도록 사라지지 않는다. 들은 자만 알아볼 수 있는 미세한 떨림이, 평범한 밤의 공기 속에서도 가끔 문득 되살아난다.",
           "style": "narration",
           "condition_group_id": "CG_Threshold_Resonance2"
         },
@@ -6634,7 +6748,7 @@ window.GAME_DATA = {
         },
         {
           "order": 11,
-          "text": "그리고 아주 드문 밤이면, 바람결 어딘가에서 허밍이 짧게 스친다. 들은 사람만 잠깐 걸음을 늦춘다.",
+          "text": "그리고 아주 드문 밤이면, 바람결 어딘가에서 콧노래가 짧게 스친다. 들은 사람만 잠깐 걸음을 늦춘다.",
           "style": "narration",
           "condition_group_id": "CG_Threshold_Resonance2"
         },
@@ -6745,7 +6859,7 @@ window.GAME_DATA = {
         },
         {
           "order": 12,
-          "text": "문자열을 읽어내린 순간, 귓가를 스쳐가는 기묘한 불협화음이 아주 짧게 환청처럼 울린다. 입술 새로 새어나오는 '허밍' 소리 같다.",
+          "text": "문자열을 읽어내린 순간, 귓가를 스쳐가는 기묘한 불협화음이 아주 짧게 환청처럼 울린다. 입술 새로 새어나오는 '콧노래' 소리 같다.",
           "style": "narration"
         },
         {
@@ -7006,6 +7120,21 @@ window.GAME_DATA = {
           "order": 3,
           "text": "이 기사 하나로 세상이 바뀌지는 않을 것이다. 그래도 남겨야 한다. 없던 일로는 못 넘기도록, 적어도 한 번은 제대로.",
           "style": "narration"
+        },
+        {
+          "order": 4,
+          "text": "첫 번째 항목 — 피해자의 이름. 누가 이 의식에 불려 들어갔는지 특정할 근거가 필요하다.",
+          "style": "narration"
+        },
+        {
+          "order": 5,
+          "text": "두 번째 항목 — 의식의 방법. 어떤 수단으로 사람을 묶어 두었는지 입증할 근거가 필요하다.",
+          "style": "narration"
+        },
+        {
+          "order": 6,
+          "text": "세 번째 항목 — 배후 세력의 실체. 이번이 처음이 아니라는 걸 보여줄 근거가 필요하다.",
+          "style": "narration"
         }
       ],
       "evidence_dialogues": {
@@ -7060,7 +7189,7 @@ window.GAME_DATA = {
           "order": 101,
           "choice_group_id": "ChoiceGroup_ArticleQ1",
           "choice_id": "article_q1_correct",
-          "text": "일기장을 근거로 피해자 이름을 특정한다.",
+          "text": "일기장 — 피해자 이름을 직접 특정한다.",
           "evidence_id": "EvDiary",
           "effect_group_id": "eff_article_correct",
           "next_type": "Dialog",
@@ -7070,7 +7199,7 @@ window.GAME_DATA = {
           "order": 102,
           "choice_group_id": "ChoiceGroup_ArticleQ2",
           "choice_id": "article_q2_correct",
-          "text": "의식 악보를 근거로 부적 제작 경위를 밝힌다.",
+          "text": "의식 악보 — 부적 제작 경위와 감응 방법을 밝힌다.",
           "evidence_id": "EvRitualScore",
           "effect_group_id": "eff_article_correct",
           "next_type": "Dialog",
@@ -7080,7 +7209,7 @@ window.GAME_DATA = {
           "order": 103,
           "choice_group_id": "ChoiceGroup_ArticleQ3",
           "choice_id": "article_q3_correct",
-          "text": "1924년 구 기사를 근거로 구 세력의 실체를 폭로한다.",
+          "text": "1924년 구 기사 — 구 세력의 계보와 반복된 패턴을 폭로한다.",
           "evidence_id": "EvOldArticles",
           "effect_group_id": "eff_article_correct",
           "next_type": "Dialog",
@@ -7132,6 +7261,136 @@ window.GAME_DATA = {
       ],
       "choices": [],
       "evidence": []
+    },
+    "ch5_guarded_door_observe": {
+      "id": "ch5_guarded_door_observe",
+      "chapter": 5,
+      "title": "문 틈의 목격",
+      "background": "assets/bg/ritual_room.jpg",
+      "music": "assets/sfx/ritual_climax.mp3",
+      "effect": null,
+      "branches": [
+        {
+          "branch_id": "Br_ch5_observe_Default",
+          "order": 1,
+          "condition_group_id": null,
+          "next_scene": "ch5_ritual_room"
+        }
+      ],
+      "dialogues": [
+        {
+          "order": 1,
+          "text": "문 틈으로 본 것들이 수첩 위에 내려앉는다. 의식의 배치, 서 있는 위치, 노래의 방향. 기사로 쓸 수 있는 것들이다.",
+          "style": "thought",
+          "speaker_id": "Yuu",
+          "emotion_type": "Tense",
+          "standing_slot": "Right",
+          "focus_type": "Speaker",
+          "effect_group_id": "eff_ch5_observe"
+        },
+        {
+          "order": 2,
+          "text": "그러나 그 안에서 흘러나온 콧노래는 귓속에서 좀처럼 사라지지 않는다. 들은 것과 기록한 것이 같은 무게가 아니다.",
+          "style": "narration"
+        }
+      ],
+      "choices": [],
+      "evidence": []
+    },
+    "ch5_ipangyu_deal": {
+      "id": "ch5_ipangyu_deal",
+      "chapter": 5,
+      "title": "이판규의 거래",
+      "background": "assets/bg/ritual_room.jpg",
+      "music": "assets/sfx/jazz_dark.mp3",
+      "effect": null,
+      "branches": [
+        {
+          "branch_id": "Br_ch5_ipangyu_deal_Default",
+          "order": 1,
+          "condition_group_id": null,
+          "next_scene": "ch6_threshold"
+        }
+      ],
+      "dialogues": [
+        {
+          "order": 1,
+          "text": "의식실을 빠져나오는 길목. 이판규가 벽에 기댄 채 기다리고 있었다. 처음 만났을 때와 같은 눈빛이다. 다만 이번엔 웃지 않는다.",
+          "style": "narration"
+        },
+        {
+          "order": 2,
+          "text": "마지막 그릇의 이름을 알려줄게. 기사에 쓸 수 있는 이름이야. 그 대신 이 문구를 한 번만 따라 해봐.",
+          "style": "normal",
+          "speaker_id": "Ipangyu",
+          "emotion_type": "Crazy",
+          "standing_slot": "Center",
+          "focus_type": "Speaker"
+        },
+        {
+          "order": 3,
+          "text": "이판규가 무언가를 중얼거린다. 낙원의 의식에서 쓰이는 문구다. 유웅룡은 잠시 멈춘다.",
+          "style": "narration"
+        }
+      ],
+      "choices": [
+        {
+          "order": 1,
+          "choice_group_id": "ChoiceGroup_IpangyuDeal",
+          "choice_id": "Ch5IpangyuDealAccept",
+          "text": "문구를 따라 한다.",
+          "next_type": "Dialog",
+          "next_id": "dlg_ipangyu_deal_accept",
+          "effect_group_id": "eff_ipangyu_deal_accept"
+        },
+        {
+          "order": 2,
+          "choice_group_id": "ChoiceGroup_IpangyuDeal",
+          "choice_id": "Ch5IpangyuDealRefuse",
+          "text": "거절한다.",
+          "next_type": "Dialog",
+          "next_id": "dlg_ipangyu_deal_refuse",
+          "effect_group_id": null
+        }
+      ],
+      "evidence": [
+        {
+          "evidence_id": "EvIpangyuName",
+          "trigger": "Ch5IpangyuDealAccept",
+          "name": "이판규의 증언",
+          "description": "이판규가 넘겨준 이름. 낙원의 마지막 의식에서 노래한 사람의 이름이 적혀 있다.",
+          "image": "assets/items/records.png"
+        }
+      ],
+      "evidence_dialogues": {
+        "dlg_ipangyu_deal_accept": [
+          {
+            "order": 1,
+            "text": "…그래. 잘 따라 했어. 이름은 송금이야. 낙원에서 마지막으로 노래한 사람.",
+            "style": "normal",
+            "speaker_id": "Ipangyu",
+            "emotion_type": "Crazy",
+            "standing_slot": "Center",
+            "focus_type": "Speaker"
+          },
+          {
+            "order": 2,
+            "text": "이판규가 돌아선다. 이름 하나가 수첩에 남았다. 그리고 유웅룡의 입안에서 방금 따라 한 문구의 감촉이 좀처럼 사라지지 않는다.",
+            "style": "narration"
+          }
+        ],
+        "dlg_ipangyu_deal_refuse": [
+          {
+            "order": 1,
+            "text": "그렇군. 그럼 이름은 네가 직접 찾아야지. 나는 팔지 않는 걸 억지로 넘기진 않아.",
+            "style": "normal",
+            "speaker_id": "Ipangyu",
+            "emotion_type": "Crazy",
+            "standing_slot": "Center",
+            "focus_type": "Speaker"
+          }
+        ]
+      }
     }
   }
 };

@@ -71,6 +71,18 @@ const UIManager = (() => {
       }
     });
 
+    const closeBtn = $('evidence-inventory-close');
+    if (closeBtn) closeBtn.addEventListener('click', () => {
+      hideEvidenceInventory();
+      setChoiceBoxVisible(false);
+    });
+
+    const backdrop = $('evidence-inventory-backdrop');
+    if (backdrop) backdrop.addEventListener('click', () => {
+      hideEvidenceInventory();
+      setChoiceBoxVisible(false);
+    });
+
     console.log('[UIManager] Initialized');
   }
 
@@ -401,37 +413,79 @@ const UIManager = (() => {
 
   function showEvidenceInventory(entries, meta, onPick) {
     const panel = $('evidence-inventory');
+    const backdrop = $('evidence-inventory-backdrop');
     const list = $('evidence-inventory-list');
     const title = $('evidence-inventory-title');
     const hint = $('evidence-inventory-hint');
+    const detailImg = $('evidence-inventory-detail-img');
+    const detailNoImg = $('evidence-inventory-detail-no-img');
+    const detailTitle = $('evidence-inventory-detail-title');
+    const detailDesc = $('evidence-inventory-detail-desc');
+    const submitBtn = $('evidence-inventory-submit');
     if (!panel || !list) return;
 
     if (title) title.textContent = meta?.title || '증거 제시';
     if (hint) hint.textContent = meta?.hint || '';
 
-    if (!entries || entries.length === 0) {
-      list.innerHTML = '<div class="memo-empty">제시할 단서가 없습니다</div>';
-    } else {
-      list.innerHTML = entries.map(entry => `
-        <button class="choice-btn choice-evidence inventory-choice" data-evidence-id="${entry.evidence_id}">
-          ${entry.image ? `<img class="inventory-choice-image" src="${entry.image}" alt="${entry.text}">` : ''}
-          <span class="inventory-choice-copy">
-            <span class="inventory-choice-title">${entry.text}</span>
-            ${entry.detail ? `<span class="inventory-choice-detail">${entry.detail}</span>` : ''}
-          </span>
-        </button>
-      `).join('');
-      list.querySelectorAll('[data-evidence-id]').forEach(button => {
-        button.addEventListener('click', () => onPick?.(button.dataset.evidenceId));
+    let selectedId = entries && entries.length > 0 ? entries[0].evidence_id : null;
+
+    function selectEntry(id) {
+      selectedId = id;
+      list.querySelectorAll('.inventory-list-item').forEach(btn => {
+        btn.classList.toggle('selected', btn.dataset.evidenceId === id);
       });
+      const entry = (entries || []).find(e => e.evidence_id === id);
+      if (!entry) return;
+      if (detailImg && detailNoImg) {
+        if (entry.image) {
+          detailImg.src = entry.image;
+          detailImg.alt = entry.text;
+          detailImg.classList.remove('hidden');
+          detailNoImg.classList.add('hidden');
+        } else {
+          detailImg.classList.add('hidden');
+          detailNoImg.classList.remove('hidden');
+        }
+      }
+      if (detailTitle) detailTitle.textContent = entry.text;
+      if (detailDesc) detailDesc.textContent = entry.detail || '';
     }
 
+    if (!entries || entries.length === 0) {
+      list.innerHTML = '<div class="memo-empty" style="padding:20px 18px">제시할 단서가 없습니다</div>';
+      if (detailTitle) detailTitle.textContent = '';
+      if (detailDesc) detailDesc.textContent = '';
+      if (detailImg) detailImg.classList.add('hidden');
+      if (detailNoImg) detailNoImg.classList.remove('hidden');
+      if (submitBtn) submitBtn.disabled = true;
+    } else {
+      list.innerHTML = entries.map(entry => `
+        <button class="inventory-list-item" data-evidence-id="${entry.evidence_id}">
+          ${entry.image
+            ? `<img class="inventory-list-thumb" src="${entry.image}" alt="${entry.text}">`
+            : `<span class="inventory-list-no-thumb">◈</span>`}
+          <span>${entry.text}</span>
+        </button>
+      `).join('');
+      list.querySelectorAll('.inventory-list-item').forEach(btn => {
+        btn.addEventListener('click', () => selectEntry(btn.dataset.evidenceId));
+      });
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.onclick = () => { if (selectedId) onPick?.(selectedId); };
+      }
+      selectEntry(selectedId);
+    }
+
+    if (backdrop) backdrop.classList.remove('hidden');
     panel.classList.remove('hidden');
   }
 
   function hideEvidenceInventory() {
     const panel = $('evidence-inventory');
+    const backdrop = $('evidence-inventory-backdrop');
     if (panel) panel.classList.add('hidden');
+    if (backdrop) backdrop.classList.add('hidden');
   }
 
   function isEvidenceInventoryVisible() {

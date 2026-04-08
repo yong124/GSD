@@ -273,7 +273,7 @@ const Scene = (() => {
     return !!investigation && (Number(investigation.budget) || 0) > 0 && visibleChoices.length > 0;
   }
 
-  function getAvailableEvidenceChoices(scene) {
+  function getAvailableEvidenceChoiceGroups(scene) {
     const context = { sceneId: scene?.id };
     const groupedEvidenceChoices = (scene?.choices || []).filter(choice => {
       if (!passesConditionRef(choice, context)) return false;
@@ -282,14 +282,26 @@ const Scene = (() => {
       if (answerType !== 'Evidence') return false;
       return true;
     });
-    if (groupedEvidenceChoices.length > 0) return groupedEvidenceChoices;
+    if (groupedEvidenceChoices.length > 0) {
+      const grouped = new Map();
+      groupedEvidenceChoices.forEach(choice => {
+        const key = choice?.choice_group_id || `__ungrouped_${choice?.order || 0}`;
+        if (!grouped.has(key)) grouped.set(key, []);
+        grouped.get(key).push(choice);
+      });
 
-    return (scene.evidence_choices || []).filter(choice => {
+      return [...grouped.values()]
+        .map(groupChoices => [...groupChoices].sort((a, b) => (a?.order || 0) - (b?.order || 0)))
+        .sort((a, b) => ((a[0]?.order || 0) - (b[0]?.order || 0)));
+    }
+
+    const legacyChoices = (scene.evidence_choices || []).filter(choice => {
       if (!passesConditionRef(choice, context)) return false;
       const evidenceId = choice?.evidence_id;
       if (!evidenceId) return false;
       return State.getFlag(`HasEvidence_${evidenceId}`) === true || State.getEvidence().includes(evidenceId);
     });
+    return legacyChoices.length > 0 ? [legacyChoices] : [];
   }
 
   function playContainerTransition(durationMs, onDone) {
@@ -357,7 +369,7 @@ const Scene = (() => {
       Evidence.collectOnClick(scene);
       const choices = getAvailableChoices(scene, 'Normal');
       const investigationChoices = getAvailableChoices(scene, 'Investigation');
-      const evidenceChoices = getAvailableEvidenceChoices(scene);
+      const evidenceChoiceGroups = getAvailableEvidenceChoiceGroups(scene);
       const investigation = resolveInvestigation(scene);
 
       const continueAfterEvidence = () => {
@@ -381,21 +393,32 @@ const Scene = (() => {
         }
       };
 
-      if (evidenceChoices.length > 0) {
+      const runEvidenceGroup = index => {
+        if (index >= evidenceChoiceGroups.length) {
+          continueAfterEvidence();
+          return;
+        }
+
+        const evidenceChoices = evidenceChoiceGroups[index];
         Choice.showEvidence(scene, evidenceChoices, chosen => {
           const { nextDialogue } = resolveChoiceNavigation(chosen);
           const branchLines = (scene.evidence_dialogues || {})[nextDialogue || ''] || [];
           if (branchLines.length > 0) {
-            Dialogue.start(branchLines, continueAfterEvidence, null);
+            Dialogue.start(branchLines, () => runEvidenceGroup(index + 1), null);
           } else if (nextDialogue) {
-            Dialogue.start(scene.dialogues || [], continueAfterEvidence, nextDialogue);
+            Dialogue.start(scene.dialogues || [], () => runEvidenceGroup(index + 1), nextDialogue);
           } else {
-            continueAfterEvidence();
+            runEvidenceGroup(index + 1);
           }
         });
-      } else {
-        continueAfterEvidence();
+      };
+
+      if (evidenceChoiceGroups.length > 0) {
+        runEvidenceGroup(0);
+        return;
       }
+
+      continueAfterEvidence();
     }
 
     Dialogue.start(scene.dialogues || [], afterDialogue, fromLabel, restoreProgress && !fromLabel);
