@@ -1,3 +1,11 @@
 Microsoft/
 .claude/settings.local.json
 .qa/
+content/docs/portfolio/node_modules/
+content/docs/portfolio/screenshots/
+content/docs/portfolio/slides/
+content/docs/portfolio/slides_v2/
+content/docs/portfolio/unpacked_v2/
+content/docs/portfolio/fonts/
+content/docs/portfolio/*.pptx
+game/assets/Backup/

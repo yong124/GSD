@@ -1,91 +1,186 @@
-# 경성뎐
+# 경성뎐 프로젝트
 
-1930년대 경성을 배경으로 한 `조사형 내러티브 어드벤처`입니다.  
-현재 프로젝트의 핵심은 단순한 비주얼노벨 제작이 아니라, `조사`, `단서`, `질문 해결`, `모순 판별`, `증거 제시`를 데이터 구조와 런타임 규칙으로 운영하는 시스템 기획 포트폴리오를 만드는 데 있습니다.
+브라우저 기반 ADV 프로젝트와 그 제작 환경을 함께 관리하는 저장소입니다.
 
-## 프로젝트 목표
+이 저장소는 단순히 게임 런타임만 담고 있지 않고, 아래 작업을 한 번에 포함합니다.
 
-- 조사형 게임의 핵심 루프를 `질문 해결 -> 단서 연결 -> 증거 제시 -> 모순 판별` 구조로 구현
-- 선택, 신뢰, 공명, 조사 상태를 조건 테이블과 런타임 상태로 연결
-- `game_data.js`, `EditorNode`, generated xlsx, validation 스크립트를 잇는 제작 파이프라인 구축
-- AI를 텍스트 생성기가 아니라 `문체 보강`, `정합성 검수`, `반복 작업 자동화`, `툴 개선`에 실무적으로 활용
+- 실제 플레이 가능한 게임 런타임
+- 콘텐츠 데이터를 편집하는 노드 에디터
+- 데이터 변환 / 검증 파이프라인
+- 시스템 구조 문서
+- 포트폴리오 및 프로젝트 정리 문서
 
-## 현재 구현된 핵심 요소
+즉, `게임 결과물 + 제작 도구 + 데이터 구조 + 문서`를 함께 운영하는 프로젝트입니다.
 
-- 씬/대사/선택지/분기 기반 내러티브 런타임
-- `ConditionGroup`, `ChoiceSelected`, 상태 타입 기반 조건 평가
-- `SpeakerID`, `EmotionType`, `StandingSlot`, `FocusType` 기반 스테이징
-- 스탠딩 캐릭터, 화자 강조, 간단한 모션/FX
-- `priority_budget` 기반 조사 우선순위 시스템
-- 조사 수첩 UI
-  - 상태 / 인물 / 단서 / 질문 탭
-  - 질문 해결 / 단서 연결 / 모순 판별
-- 증거 제시가 실제 씬 행동으로 이어지는 추리 루프
-- 3슬롯 저장/불러오기
-- 조사 HUD, 목표 카드, 시스템 토스트
-- `EditorNode` 기반 데이터 편집
-- 브라우저 자동 QA 래퍼
+---
 
-## 폴더 구조
+## 핵심 폴더
 
 ```text
-game/                 런타임 게임
-EditorNode/           노드형 데이터 편집기
-content/tools/        export / validate / QA 스크립트
-content/docs/         시스템 문서 / 포트폴리오 문서
-.claude/              프로젝트 전용 Claude rule / skill / command
+G:/GSD/
+├─ game/                       # 실제 게임 런타임
+│  ├─ data/                    # 최종 게임 데이터
+│  ├─ js/                      # 런타임 로직
+│  └─ assets/                  # 게임 에셋
+├─ EditorNode/                 # 메인 노드 에디터
+├─ content/
+│  ├─ generated/               # 생성된 테이블 산출물
+│  ├─ tools/                   # 변환 / 검증 도구
+│  └─ docs/                    # 시스템 / 에디터 / 포트폴리오 문서
+├─ .qa/                        # QA 및 플레이테스트 관련 로컬 폴더
+└─ README.md
 ```
 
-## 실행 방법
+---
 
-정적 서버로 `game` 폴더를 띄우면 됩니다.
+## 지금 프로젝트를 이해하는 가장 빠른 경로
 
-```powershell
-cd G:\GSD\game
-py -m http.server 4173
+처음 보는 사람이라면 아래 순서로 보면 됩니다.
+
+1. 이 `README.md`
+2. [content/docs/system/README.md](/G:/GSD/content/docs/system/README.md)
+3. [content/docs/editor/DATA_EDIT_REVIEW_PROCESS.md](/G:/GSD/content/docs/editor/DATA_EDIT_REVIEW_PROCESS.md)
+4. `EditorNode/`와 `game/` 구조 확인
+
+포트폴리오 문서까지 보고 싶다면 아래도 이어서 보면 됩니다.
+
+5. [content/docs/portfolio/PPT_PDF_포트폴리오_작성_가이드.md](/G:/GSD/content/docs/portfolio/PPT_PDF_포트폴리오_작성_가이드.md)
+6. [content/docs/portfolio/제출용_포트폴리오_장표_초안.md](/G:/GSD/content/docs/portfolio/제출용_포트폴리오_장표_초안.md)
+7. [content/docs/portfolio/제출용_포트폴리오_슬라이드별_문구_초안.md](/G:/GSD/content/docs/portfolio/제출용_포트폴리오_슬라이드별_문구_초안.md)
+8. [content/docs/portfolio/클로드_PPT_제작_브리프.md](/G:/GSD/content/docs/portfolio/클로드_PPT_제작_브리프.md)
+
+---
+
+## 주요 구성 설명
+
+### `game/`
+
+실제 플레이어가 실행하는 게임 쪽입니다.
+
+- `game/data/game_data.js`
+  현재 런타임이 직접 읽는 핵심 데이터입니다.
+- `game/js/`
+  상태, 분기, UI, 조사, 증거 등 런타임 로직이 들어 있습니다.
+- `game/assets/`
+  배경, 인물, 아이템 등 게임 에셋이 들어 있습니다.
+
+### `EditorNode/`
+
+콘텐츠 편집을 위한 메인 노드 에디터입니다.
+
+- 씬 연결 구조를 시각적으로 편집
+- 선택지 / 분기 / 데이터 연결 수정
+- 데이터 패널 기반 세부 편집
+- 현재 프로젝트의 핵심 작업 도구
+
+### `content/generated/`
+
+테이블 기반 생성 산출물이 들어 있습니다.
+
+- delimited CSV/TSV
+- generated xlsx
+- 데이터 구조 검토 및 산출물 확인용
+
+### `content/tools/`
+
+데이터 변환, 검증, 보조 스크립트가 들어 있습니다.
+
+대표적으로 아래 스크립트를 많이 사용합니다.
+
+- `export_to_json.py`
+  테이블/중간 데이터에서 런타임 데이터로 변환
+- `json_to_generated_xlsx.py`
+  런타임 데이터에서 generated xlsx 생성
+- `validate_game_data.py`
+  FK, Enum, 연결 구조 등 데이터 검증
+- `check_story_flow.py`
+  스토리 흐름 점검용 보조 도구
+
+### `content/docs/`
+
+문서 저장 위치입니다.
+
+- `system/`
+  시스템 구조와 데이터 구조 문서
+- `editor/`
+  에디터 사용 및 리뷰 프로세스 문서
+- `portfolio/`
+  포트폴리오/PPT 제작용 문서와 관련 자료
+
+---
+
+## 현재 데이터 운영 기준
+
+현재 프로젝트는 아래 흐름으로 이해하면 됩니다.
+
+```text
+EditorNode / content tools / generated tables / game_data.js / runtime
 ```
 
-브라우저에서 아래 주소로 접속:
+조금 더 실무적으로 보면 아래와 같습니다.
 
-- `http://127.0.0.1:4173`
+- 구조 검토와 콘텐츠 편집은 `EditorNode` 중심
+- 런타임 기준 데이터는 `game/data/game_data.js`
+- 변환 / 검증은 `content/tools/`
+- 생성 산출물 확인은 `content/generated/`
 
-## 브라우저 QA
+즉, 지금은 `에디터 + 런타임 데이터 + 검증 도구`가 운영의 중심입니다.
 
-자동 QA는 아래 래퍼를 사용합니다.
+---
 
-```powershell
-powershell -ExecutionPolicy Bypass -File G:\GSD\content\tools\run_browser_playtest_save_flow.ps1
-powershell -ExecutionPolicy Bypass -File G:\GSD\content\tools\run_browser_playtest_full_run.ps1
-```
+## 현재 구조의 핵심 포인트
 
-관련 문서:
+이 프로젝트는 최근 구조 정리를 거치면서 아래 방향으로 맞춰져 있습니다.
 
-- `content/docs/system/core/브라우저_QA_실행_가이드.md`
-- `content/docs/system/core/브라우저_QA_결과_요약.md`
+- 레거시 `Flag` / `Rule` 중심 구조 축소
+- `Condition` 중심 분기 구조로 통합
+- 상태, 게이지, 조사, 증거 관련 데이터 재정리
+- 에디터와 런타임이 같은 구조를 바라보도록 정비
+- 검증과 생성 파이프라인 강화
 
-## 주요 문서
+즉, 단순 기능 추가보다 `구조 일관성`과 `콘텐츠 생산성`을 더 중요하게 정리한 상태입니다.
 
-포트폴리오 관점:
+---
 
-- [시스템_기획자_AI_포트폴리오_포지셔닝.md](/G:/GSD/content/docs/portfolio/시스템_기획자_AI_포트폴리오_포지셔닝.md)
-- [포트폴리오_프로젝트_스토리.md](/G:/GSD/content/docs/portfolio/포트폴리오_프로젝트_스토리.md)
-- [프로젝트_개발_과정.md](/G:/GSD/content/docs/portfolio/프로젝트_개발_과정.md)
+## 포트폴리오 관련 문서
 
-시스템/구조 관점:
+포트폴리오 작업은 `content/docs/portfolio/` 아래에 정리되어 있습니다.
 
-- [DATA_STRUCTURE.md](/G:/GSD/content/docs/system/core/DATA_STRUCTURE.md)
-- [TABLE_SPEC.md](/G:/GSD/content/docs/system/core/TABLE_SPEC.md)
-- [브라우저_QA_실행_가이드.md](/G:/GSD/content/docs/system/core/브라우저_QA_실행_가이드.md)
-- [새_테이블_구조_전환_계획.md](/G:/GSD/content/docs/system/core/새_테이블_구조_전환_계획.md)
+중요 문서는 아래입니다.
 
-## 작업 원칙
+- [PPT_PDF_포트폴리오_작성_가이드.md](/G:/GSD/content/docs/portfolio/PPT_PDF_포트폴리오_작성_가이드.md)
+- [제출용_포트폴리오_장표_초안.md](/G:/GSD/content/docs/portfolio/제출용_포트폴리오_장표_초안.md)
+- [제출용_포트폴리오_슬라이드별_문구_초안.md](/G:/GSD/content/docs/portfolio/제출용_포트폴리오_슬라이드별_문구_초안.md)
+- [클로드_PPT_제작_브리프.md](/G:/GSD/content/docs/portfolio/클로드_PPT_제작_브리프.md)
 
-- 빠르게 움직이는 기준 데이터는 현재 `game/data/game_data.js`
-- 브라우저 로드 자산을 바꾸면 `game/index.html`의 `?v=`도 같이 갱신
-- 한국어 데이터 확인은 UTF-8 기준으로 검증
-- QA 런타임 폴더(`.qa-*`)는 Git 추적 대상이 아니라 로컬 실행 환경
+이 문서들은 `발표용 슬라이드`보다 `문서형 PPT 포트폴리오`를 만드는 기준에 맞춰 정리되어 있습니다.
 
-## 상태
+---
 
-현재 프로젝트는 `프로토타입을 넘어 시스템 포트폴리오로 고도화하는 단계`입니다.  
-기본 ADV 흐름, 조사 시스템, 추리 루프, 스테이징, 저장/불러오기, 자동 QA까지 연결된 상태이며, 이후 작업은 주로 `Question / Rule / StateDescriptor` 구조 정리와 전체 문서 마감, 포트폴리오 포장 강화 쪽으로 이어집니다.
+## QA 관련 폴더
+
+QA/브라우저 플레이테스트 관련 로컬 폴더는 `.qa/` 아래에 모아뒀습니다.
+
+예시:
+
+- `.qa/browsers/`
+- `.qa/node/`
+- `.qa/artifacts/`
+- `.qa/playtest/`
+
+이 폴더는 작업 환경과 테스트 산출물 보관용입니다.
+
+---
+
+## 작업할 때 참고 사항
+
+- 제품 코드와 포트폴리오 문서는 성격이 다르므로 분리해서 보는 것이 좋습니다.
+- `game_data.js`는 현재 런타임 기준 데이터이므로 수정 시 영향 범위를 항상 같이 봐야 합니다.
+- 에디터, 생성 산출물, 런타임 데이터는 서로 연결되어 있으므로 한쪽만 보고 판단하면 안 됩니다.
+- 포트폴리오 자료는 `content/docs/portfolio/` 기준으로 따로 관리합니다.
+
+---
+
+## 한 줄 요약
+
+`경성뎐 프로젝트는 브라우저 ADV 게임 자체뿐 아니라, 그 게임을 계속 만들 수 있는 데이터 구조, 에디터, 검증 파이프라인까지 함께 운영하는 저장소입니다.`
