@@ -1,5 +1,3 @@
 Microsoft/
 .claude/settings.local.json
-.qa-browsers/
-.qa-node/
-.qa-artifacts/
+.qa/
