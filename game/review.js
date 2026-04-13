@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 try {
-  const code = fs.readFileSync('data/game_data.js', 'utf8');
+  const code = fs.readFileSync('data/game_data.js', 'utf8').replace(/^\uFEFF/, '');
   const sandbox = { window: {} };
   eval(`(function(window) { ${code} })(sandbox.window)`);
   const data = sandbox.window.GAME_DATA;
@@ -118,7 +118,7 @@ try {
 
   // Balance
   questions.forEach(q => {
-    if (q.reward_flag_id === 'ResonanceLevel') {
+    if (q.reward_state_id === 'ResonanceLevel') {
        let cat = q.category || 'Unknown';
        report.balance.resonanceDistribution[cat] = (report.balance.resonanceDistribution[cat] || 0) + (q.reward_value || 0);
     }
