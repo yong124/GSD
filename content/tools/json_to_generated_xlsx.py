@@ -28,6 +28,15 @@ SHEET_DEFS = {
     "ConditionTable": {
         "headers": ["ConditionID", "ConditionGroupID", "ConditionType", "ConditionTargetID", "CompareType", "ConditionValue"],
     },
+    "GaugeTable": {
+        "headers": ["GaugeID", "Label", "MinValue", "MaxValue", "DefaultValue", "HudVisible", "HudOrder"],
+    },
+    "GaugeStateTable": {
+        "headers": ["GaugeID", "MinValue", "MaxValue", "Label", "HudColor", "Detail", "TriggerSceneID"],
+    },
+    "EffectTable": {
+        "headers": ["EffectGroupID", "EffectType", "GaugeID", "GaugeDelta", "EvidenceID", "TrustCharacterID", "TrustDelta"],
+    },
     "SceneTable": {
         "headers": ["SceneID", "Chapter", "Title", "Background", "Music", "Effect", "GoalKicker", "GoalText", "EvidencePromptTitle", "EvidencePromptHint"],
     },
@@ -44,7 +53,7 @@ SHEET_DEFS = {
         "headers": ["BranchID", "SceneID", "Order", "ConditionGroupID", "NextSceneID"],
     },
     "EvidenceTable": {
-        "headers": ["EvidenceID", "Name", "Description", "Image", "CategoryID", "SceneId", "Trigger", "CategoryTitle", "CategoryHint"],
+        "headers": ["EvidenceID", "Name", "Description", "Image", "CategoryID", "SceneId", "Trigger"],
     },
     "EvidenceCategoryTable": {
         "headers": ["CategoryID", "CategoryTitle", "CategoryHint"],
@@ -59,13 +68,10 @@ SHEET_DEFS = {
         "headers": ["InvestigationID", "Title", "Hint", "Budget", "ChoiceGroupID"],
     },
     "QuestionTable": {
-        "headers": ["QuestionID", "Title", "Detail", "SortOrder", "Category", "ResolutionType", "VisibleRuleID", "StateRuleID", "RelatedEvidenceIDs", "SolutionEvidenceIDs", "SolutionMode", "ContradictionPrompt", "ContradictionStatement", "SolvedFlagID", "ResolvedDetail", "SuccessToast", "FailureToast", "RewardFlagID", "RewardValue", "RewardMode"],
+        "headers": ["QuestionID", "Title", "Detail", "SortOrder", "Category", "ResolutionType", "VisibleConditionGroupIDs", "StateConditionsJSON", "RelatedEvidenceIDs", "SolutionEvidenceIDs", "SolutionMode", "ContradictionPrompt", "ContradictionStatement", "SolvedStateID", "ResolvedDetail", "SuccessToast", "FailureToast", "RewardStateID", "RewardValue", "RewardMode"],
     },
     "StateDescriptorTable": {
-        "headers": ["DescriptorID", "TargetFlagID", "MinValue", "MaxValue", "Label", "Detail"],
-    },
-    "RuleTable": {
-        "headers": ["RuleRowID", "RuleID", "RuleKind", "FactType", "FactKey", "Operator", "Value", "ResultValue", "Priority"],
+        "headers": ["DescriptorID", "TargetStateType", "TargetStateID", "MinValue", "MaxValue", "Label", "Detail"],
     },
 }
 
@@ -88,7 +94,7 @@ def parse_args():
 
 
 def read_text(path):
-    with open(path, "r", encoding="utf-8") as f:
+    with open(path, "r", encoding="utf-8-sig") as f:
         return f.read()
 
 
@@ -183,6 +189,54 @@ def build_dialog_rows(data):
     return rows
 
 
+def build_gauge_rows(data):
+    rows = []
+    for item in data.get("gauges", []) or []:
+        rows.append({
+            "GaugeID": item.get("gauge_id"),
+            "Label": item.get("label"),
+            "MinValue": item.get("min_value"),
+            "MaxValue": item.get("max_value"),
+            "DefaultValue": item.get("default_value"),
+            "HudVisible": item.get("hud_visible"),
+            "HudOrder": item.get("hud_order"),
+        })
+    rows.sort(key=lambda x: (x.get("HudOrder") if x.get("HudOrder") is not None else 9999, x.get("GaugeID") or ""))
+    return rows
+
+
+def build_gauge_state_rows(data):
+    rows = []
+    for item in data.get("gauge_states", []) or []:
+        rows.append({
+            "GaugeID": item.get("gauge_id"),
+            "MinValue": item.get("min_value"),
+            "MaxValue": item.get("max_value"),
+            "Label": item.get("label"),
+            "HudColor": item.get("hud_color"),
+            "Detail": item.get("detail"),
+            "TriggerSceneID": item.get("trigger_scene_id"),
+        })
+    rows.sort(key=lambda x: (x.get("GaugeID") or "", x.get("MinValue") if x.get("MinValue") is not None else 0))
+    return rows
+
+
+def build_effect_rows(data):
+    rows = []
+    for item in data.get("effects", []) or []:
+        rows.append({
+            "EffectGroupID": item.get("effect_group_id"),
+            "EffectType": item.get("effect_type"),
+            "GaugeID": item.get("gauge_id"),
+            "GaugeDelta": item.get("gauge_delta"),
+            "EvidenceID": item.get("evidence_id"),
+            "TrustCharacterID": item.get("trust_character_id"),
+            "TrustDelta": item.get("trust_delta"),
+        })
+    rows.sort(key=lambda x: ((x.get("EffectGroupID") or ""), (x.get("EffectType") or "")))
+    return rows
+
+
 def build_choice_group_rows(data):
     rows = []
     for item in data.get("choice_groups", []) or []:
@@ -251,8 +305,6 @@ def build_evidence_rows(data):
                 "CategoryID": ev.get("category_id"),
                 "SceneId": scene_id,
                 "Trigger": normalize_value(ev.get("trigger")),
-                "CategoryTitle": ev.get("category_title"),
-                "CategoryHint": ev.get("category_hint"),
             })
     rows.sort(key=lambda x: ((x.get("SceneId") or ""), (x.get("EvidenceID") or "")))
     return rows
@@ -325,18 +377,18 @@ def build_question_rows(data):
             "SortOrder": question.get("sort_order"),
             "Category": question.get("category"),
             "ResolutionType": question.get("resolution_type"),
-            "VisibleRuleID": question.get("visible_rule_id"),
-            "StateRuleID": question.get("state_rule_id"),
+            "VisibleConditionGroupIDs": ", ".join(question.get("visible_condition_group_ids", []) or []),
+            "StateConditionsJSON": json.dumps(question.get("state_conditions", []) or [], ensure_ascii=False),
             "RelatedEvidenceIDs": ", ".join(question.get("related_evidence_ids", []) or []),
             "SolutionEvidenceIDs": ", ".join(question.get("solution_evidence_ids", []) or []),
             "SolutionMode": question.get("solution_mode"),
             "ContradictionPrompt": question.get("contradiction_prompt"),
             "ContradictionStatement": question.get("contradiction_statement"),
-            "SolvedFlagID": question.get("solved_flag_id"),
+            "SolvedStateID": question.get("solved_state_id"),
             "ResolvedDetail": question.get("resolved_detail"),
             "SuccessToast": question.get("success_toast"),
             "FailureToast": question.get("failure_toast"),
-            "RewardFlagID": question.get("reward_flag_id"),
+            "RewardStateID": question.get("reward_state_id"),
             "RewardValue": question.get("reward_value"),
             "RewardMode": question.get("reward_mode"),
         })
@@ -349,37 +401,21 @@ def build_state_descriptor_rows(data):
     for descriptor in data.get("state_descriptors", []) or []:
         rows.append({
             "DescriptorID": descriptor.get("descriptor_id"),
-            "TargetFlagID": descriptor.get("target_flag_id"),
+            "TargetStateType": descriptor.get("target_state_type") or ("Derived" if descriptor.get("target_state_id") == "InvestigationProgress" else "Numeric"),
+            "TargetStateID": descriptor.get("target_state_id"),
             "MinValue": descriptor.get("min_value"),
             "MaxValue": descriptor.get("max_value"),
             "Label": descriptor.get("label"),
             "Detail": descriptor.get("detail"),
         })
-    rows.sort(key=lambda x: (x.get("TargetFlagID") or "", x.get("MinValue") if x.get("MinValue") is not None else 0, x.get("DescriptorID") or ""))
+    rows.sort(key=lambda x: (x.get("TargetStateID") or "", x.get("MinValue") if x.get("MinValue") is not None else 0, x.get("DescriptorID") or ""))
     return rows
-
-
-def build_rule_rows(data):
-    rows = []
-    for rule in data.get("rules", []) or []:
-        rows.append({
-            "RuleRowID": rule.get("rule_row_id"),
-            "RuleID": rule.get("rule_id"),
-            "RuleKind": rule.get("rule_kind"),
-            "FactType": rule.get("fact_type"),
-            "FactKey": rule.get("fact_key"),
-            "Operator": rule.get("operator"),
-            "Value": rule.get("value"),
-            "ResultValue": rule.get("result_value"),
-            "Priority": rule.get("priority"),
-        })
-    rows.sort(key=lambda x: ((x.get("RuleID") or ""), (x.get("Priority") if x.get("Priority") is not None else 0), (x.get("RuleRowID") or "")))
-    return rows
-
-
 def build_sheet_rows(data):
     return {
         "ConditionTable": build_condition_rows(data),
+        "GaugeTable": build_gauge_rows(data),
+        "GaugeStateTable": build_gauge_state_rows(data),
+        "EffectTable": build_effect_rows(data),
         "SceneTable": build_scene_rows(data),
         "DialogTable": build_dialog_rows(data),
         "ChoiceGroupTable": build_choice_group_rows(data),
@@ -392,7 +428,6 @@ def build_sheet_rows(data):
         "InvestigationTable": build_investigation_rows(data),
         "QuestionTable": build_question_rows(data),
         "StateDescriptorTable": build_state_descriptor_rows(data),
-        "RuleTable": build_rule_rows(data),
     }
 
 

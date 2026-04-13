@@ -1,0 +1,12 @@
+﻿DescriptorID	TargetStateType	TargetStateID	MinValue	MaxValue	Label	Detail
+SD_Investigation_0	Derived	InvestigationProgress	0	0	초기	아직 증언과 단서가 충분히 엮이지 않은 상태입니다.
+SD_Investigation_1	Derived	InvestigationProgress	1	1	추적	사건의 외곽선을 따라가며 주요 흔적을 모으는 단계입니다.
+SD_Investigation_2	Derived	InvestigationProgress	2	3	접근	단서가 서로 이어지기 시작했고 질문의 결이 또렷해졌습니다.
+SD_Investigation_4	Derived	InvestigationProgress	4	99	심층	표면을 지나 사건의 구조와 의식을 함께 추적하는 단계입니다.
+SD_Resonance_0	Numeric	ResonanceLevel	0	0	안정	아직은 현실 감각이 우세한 상태입니다.
+SD_Resonance_1	Numeric	ResonanceLevel	1	1	전조	조사 과정 곳곳에서 침식의 낌새가 드러납니다.
+SD_Resonance_2	Numeric	ResonanceLevel	2	2	심화	위험을 감수한 만큼 비현실의 결이 짙어졌습니다.
+SD_Resonance_3	Numeric	ResonanceLevel	3	99	침식	현실과 침식의 경계가 크게 흔들리고 있습니다.
+SD_Trust_0	Numeric	SongsoonTrust	0	0	경계	섣부른 추궁은 관계를 닫아버릴 가능성이 큽니다.
+SD_Trust_1	Numeric	SongsoonTrust	1	1	동행	경계는 남아 있지만 함께 움직일 정도의 틈은 생겼습니다.
+SD_Trust_2	Numeric	SongsoonTrust	2	99	신뢰	송순이 등을 돌리지 않고 같은 방향을 보고 있습니다.

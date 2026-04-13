@@ -42,13 +42,13 @@
 플래그는 기본적으로 `ChoiceTable`에서 아래 컬럼으로 기록한다.
 
 - `FlagKey`
-- `FlagValue`
+- `StateValue`
 
 기록 흐름은 다음과 같다.
 
 ```text
 플레이어 선택
-→ Choice.FlagKey / FlagValue 저장
+→ Choice.StateKey / StateValue 저장
 → 이후 Dialogue.condition / Branch 에서 읽음
 ```
 
@@ -74,7 +74,7 @@
 `BranchTable`의 아래 컬럼을 사용한다.
 
 - `FlagKey`
-- `FlagValue`
+- `StateValue`
 - `NextScene`
 
 용도:

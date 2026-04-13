@@ -1,4 +1,4 @@
-window.GAME_DATA = {
+﻿window.GAME_DATA = {
   "first_scene": "ch1_court",
   "characters": {
     "Yuu": {
@@ -740,6 +740,166 @@ window.GAME_DATA = {
       "condition_target_id": "Erosion",
       "compare_type": "GreaterEqual",
       "condition_value": 7
+    },
+    {
+      "condition_type": "RevealedCharacter",
+      "condition_target_id": "Ipangyu",
+      "compare_type": "Equal",
+      "condition_value": true,
+      "condition_id": "Cond_RR_QIpangyuSeen_01",
+      "condition_group_id": "CG_QR_IpangyuSeen_01"
+    },
+    {
+      "condition_type": "EvidenceOwned",
+      "condition_target_id": "EvDiary",
+      "compare_type": "Equal",
+      "condition_value": true,
+      "condition_id": "Cond_RR_QSonggeumOpen_01",
+      "condition_group_id": "CG_QR_SonggeumOpen_01"
+    },
+    {
+      "condition_type": "EvidenceOwned",
+      "condition_target_id": "EvOldArticles",
+      "compare_type": "Equal",
+      "condition_value": true,
+      "condition_id": "Cond_RR_QSonggeumOpen_02",
+      "condition_group_id": "CG_QR_SonggeumOpen_02"
+    },
+    {
+      "condition_type": "SceneProgressIndex",
+      "condition_target_id": null,
+      "compare_type": "GreaterEqual",
+      "condition_value": 24,
+      "condition_id": "Cond_RR_QSonggeumOpen_03",
+      "condition_group_id": "CG_QR_SonggeumOpen_03"
+    },
+    {
+      "condition_type": "RevealedCharacter",
+      "condition_target_id": "Songgeum",
+      "compare_type": "Equal",
+      "condition_value": true,
+      "condition_id": "Cond_RR_QSonggeumOpen_04",
+      "condition_group_id": "CG_QR_SonggeumOpen_04"
+    },
+    {
+      "condition_type": "GaugeValue",
+      "condition_target_id": "ReadRitualScore",
+      "compare_type": "GreaterEqual",
+      "condition_value": 1,
+      "condition_id": "Cond_RR_QRitualOpen_01",
+      "condition_group_id": "CG_QR_RitualOpen_01"
+    },
+    {
+      "condition_type": "RevealedCharacter",
+      "condition_target_id": "Haesim",
+      "compare_type": "Equal",
+      "condition_value": true,
+      "condition_id": "Cond_RR_QRitualOpen_02",
+      "condition_group_id": "CG_QR_RitualOpen_02"
+    },
+    {
+      "condition_type": "SceneProgressIndex",
+      "condition_target_id": null,
+      "compare_type": "GreaterEqual",
+      "condition_value": 31,
+      "condition_id": "Cond_RR_QRitualOpen_03",
+      "condition_group_id": "CG_QR_RitualOpen_03"
+    },
+    {
+      "condition_type": "ChoiceSelected",
+      "condition_target_id": "QuestionSolved_QIpangyuCall",
+      "compare_type": "Equal",
+      "condition_value": true,
+      "condition_id": "Cond_RR_QIpangyuState_00",
+      "condition_group_id": "CG_QS_IpangyuCall_01"
+    },
+    {
+      "condition_type": "GaugeValue",
+      "condition_target_id": "Erosion",
+      "compare_type": "GreaterEqual",
+      "condition_value": 1,
+      "condition_id": "Cond_RR_QIpangyuState_01",
+      "condition_group_id": "CG_QS_IpangyuCall_02"
+    },
+    {
+      "condition_type": "ChoiceSelected",
+      "condition_target_id": "QuestionSolved_QIpangyuMadness",
+      "compare_type": "Equal",
+      "condition_value": true,
+      "condition_id": "Cond_RR_QIpangyuMadnessState_00",
+      "condition_group_id": "CG_QS_IpangyuMadness_01"
+    },
+    {
+      "condition_type": "EvidenceOwned",
+      "condition_target_id": "EvNote",
+      "compare_type": "Equal",
+      "condition_value": true,
+      "condition_id": "Cond_RR_QIpangyuMadnessState_01",
+      "condition_group_id": "CG_QS_IpangyuMadness_02"
+    },
+    {
+      "condition_type": "ChoiceSelected",
+      "condition_target_id": "QuestionSolved_QSonggeumMissing",
+      "compare_type": "Equal",
+      "condition_value": true,
+      "condition_id": "Cond_RR_QSonggeumState_00",
+      "condition_group_id": "CG_QS_SonggeumMissing_01"
+    },
+    {
+      "condition_type": "EvidenceOwned",
+      "condition_target_id": "EvDiary",
+      "compare_type": "Equal",
+      "condition_value": true,
+      "condition_id": "Cond_RR_QSonggeumState_01",
+      "condition_group_id": "CG_QS_SonggeumMissing_02"
+    },
+    {
+      "condition_type": "ChoiceSelected",
+      "condition_target_id": "QuestionSolved_QSonggeumRunaway",
+      "compare_type": "Equal",
+      "condition_value": true,
+      "condition_id": "Cond_RR_QSonggeumRunawayState_00",
+      "condition_group_id": "CG_QS_SonggeumRunaway_01"
+    },
+    {
+      "condition_type": "EvidenceOwned",
+      "condition_target_id": "EvDiary",
+      "compare_type": "Equal",
+      "condition_value": true,
+      "condition_id": "Cond_RR_QSonggeumRunawayState_01",
+      "condition_group_id": "CG_QS_SonggeumRunaway_02"
+    },
+    {
+      "condition_type": "ChoiceSelected",
+      "condition_target_id": "QuestionSolved_QRitualLead",
+      "compare_type": "Equal",
+      "condition_value": true,
+      "condition_id": "Cond_RR_QRitualState_00",
+      "condition_group_id": "CG_QS_RitualLead_01"
+    },
+    {
+      "condition_type": "GaugeValue",
+      "condition_target_id": "ReadRitualScore",
+      "compare_type": "GreaterEqual",
+      "condition_value": 1,
+      "condition_id": "Cond_RR_QRitualState_01",
+      "condition_group_id": "CG_QS_RitualLead_02"
+    },
+    {
+      "condition_type": "ChoiceSelected",
+      "condition_target_id": "QuestionSolved_QRitualAccident",
+      "compare_type": "Equal",
+      "condition_value": true,
+      "condition_id": "Cond_RR_QRitualAccidentState_00",
+      "condition_group_id": "CG_QS_RitualAccident_01"
+    },
+    {
+      "condition_type": "EvidenceOwned",
+      "condition_target_id": "EvRitualNote",
+      "compare_type": "Equal",
+      "condition_value": true,
+      "condition_id": "Cond_RR_QRitualAccidentState_01",
+      "condition_group_id": "CG_QS_RitualAccident_02"
     }
   ],
   "evidence_categories": [
@@ -1027,8 +1187,6 @@ window.GAME_DATA = {
       "detail": "광기처럼 보이는 말들이 실제로는 사건의 중심을 향한 반응일 수 있다.",
       "sort_order": 10,
       "category": "Witness",
-      "visible_rule_id": "QR_IpangyuSeen",
-      "state_rule_id": "QS_IpangyuCall",
       "related_evidence_ids": [
         "EvNote",
         "EvBlueCloth",
@@ -1037,13 +1195,28 @@ window.GAME_DATA = {
       "solution_evidence_ids": [
         "EvNote"
       ],
-      "solved_flag_id": "QuestionSolved_QIpangyuCall",
+      "solved_state_id": "QuestionSolved_QIpangyuCall",
       "resolved_detail": "붉은 쪽지는 이판규가 우연히 뛰쳐나간 것이 아니라, 낙원 쪽의 호출에 떠밀려 움직였다는 직접적인 흔적이다. 그의 광기는 불려간 자의 잔향에 가깝다.",
       "success_toast": "질문 정리: 이판규를 부른 흔적을 붙들었다.",
       "failure_toast": "아직은 호출의 근거를 바로 묶기 어렵다.",
-      "reward_flag_id": "InvestigationScore",
+      "reward_state_id": "InvestigationScore",
       "reward_value": 1,
-      "reward_mode": "Add"
+      "reward_mode": "Add",
+      "visible_condition_group_ids": [
+        "CG_QR_IpangyuSeen_01"
+      ],
+      "state_conditions": [
+        {
+          "condition_group_id": "CG_QS_IpangyuCall_01",
+          "result_value": "해결됨",
+          "priority": 1
+        },
+        {
+          "condition_group_id": "CG_QS_IpangyuCall_02",
+          "result_value": "공명 전조 확인",
+          "priority": 10
+        }
+      ]
     },
     {
       "question_id": "QIpangyuMadness",
@@ -1052,8 +1225,6 @@ window.GAME_DATA = {
       "sort_order": 15,
       "category": "Witness",
       "resolution_type": "Contradiction",
-      "visible_rule_id": "QR_IpangyuSeen",
-      "state_rule_id": "QS_IpangyuMadness",
       "related_evidence_ids": [
         "EvNote",
         "EvBlueCloth",
@@ -1064,13 +1235,28 @@ window.GAME_DATA = {
       ],
       "contradiction_prompt": "이 진술을 뒤집을 근거를 골라야 한다.",
       "contradiction_statement": "이판규는 그저 미쳐 날뛴 거요. 누가 불렀다느니, 문이 열린다느니 하는 말은 전부 죄를 피하려고 지어낸 소리였지.",
-      "solved_flag_id": "QuestionSolved_QIpangyuMadness",
+      "solved_state_id": "QuestionSolved_QIpangyuMadness",
       "resolved_detail": "붉은 쪽지는 이판규의 발작적 발언이 꾸며낸 말이 아니라, 실제 호출의 흔적과 맞닿아 있었음을 보여준다. 그의 말은 헛소리가 아니라 사건의 반향이었다.",
       "success_toast": "모순 판별: 이판규의 말이 단순한 헛소리가 아니었다.",
       "failure_toast": "이 근거만으로는 이판규의 말을 거짓이라 뒤집을 수 없다.",
-      "reward_flag_id": "InvestigationScore",
+      "reward_state_id": "InvestigationScore",
       "reward_value": 1,
-      "reward_mode": "Add"
+      "reward_mode": "Add",
+      "visible_condition_group_ids": [
+        "CG_QR_IpangyuSeen_01"
+      ],
+      "state_conditions": [
+        {
+          "condition_group_id": "CG_QS_IpangyuMadness_01",
+          "result_value": "해결됨",
+          "priority": 1
+        },
+        {
+          "condition_group_id": "CG_QS_IpangyuMadness_02",
+          "result_value": "반박 가능",
+          "priority": 10
+        }
+      ]
     },
     {
       "question_id": "QSonggeumMissing",
@@ -1078,8 +1264,6 @@ window.GAME_DATA = {
       "detail": "송금이 자발적으로 사라진 것인지, 의식의 일부로 지워진 것인지가 핵심이다.",
       "sort_order": 20,
       "category": "Missing",
-      "visible_rule_id": "QR_SonggeumOpen",
-      "state_rule_id": "QS_SonggeumMissing",
       "related_evidence_ids": [
         "EvDiary",
         "EvBlueHanbok",
@@ -1088,13 +1272,31 @@ window.GAME_DATA = {
       "solution_evidence_ids": [
         "EvDiary"
       ],
-      "solved_flag_id": "QuestionSolved_QSonggeumMissing",
+      "solved_state_id": "QuestionSolved_QSonggeumMissing",
       "resolved_detail": "숨겨진 일기장은 송금의 실종이 단순 도피가 아니라, 의례 속 역할로 밀려 들어간 소거였음을 보여준다. 사라짐은 계획된 순서의 일부다.",
       "success_toast": "질문 정리: 송금의 실종이 의례와 이어진다는 근거를 확보했다.",
       "failure_toast": "이 단서만으로는 송금의 실종 이유를 단정하기 어렵다.",
-      "reward_flag_id": "ReadRitualScore",
+      "reward_state_id": "ReadRitualScore",
       "reward_value": 1,
-      "reward_mode": "Add"
+      "reward_mode": "Add",
+      "visible_condition_group_ids": [
+        "CG_QR_SonggeumOpen_01",
+        "CG_QR_SonggeumOpen_02",
+        "CG_QR_SonggeumOpen_03",
+        "CG_QR_SonggeumOpen_04"
+      ],
+      "state_conditions": [
+        {
+          "condition_group_id": "CG_QS_SonggeumMissing_01",
+          "result_value": "해결됨",
+          "priority": 1
+        },
+        {
+          "condition_group_id": "CG_QS_SonggeumMissing_02",
+          "result_value": "단서 확보",
+          "priority": 10
+        }
+      ]
     },
     {
       "question_id": "QSonggeumRunaway",
@@ -1103,8 +1305,6 @@ window.GAME_DATA = {
       "sort_order": 25,
       "category": "Missing",
       "resolution_type": "Contradiction",
-      "visible_rule_id": "QR_SonggeumOpen",
-      "state_rule_id": "QS_SonggeumRunaway",
       "related_evidence_ids": [
         "EvDiary",
         "EvBlueHanbok",
@@ -1115,13 +1315,31 @@ window.GAME_DATA = {
       ],
       "contradiction_prompt": "도피로 포장된 설명을 뒤집을 근거를 골라야 한다.",
       "contradiction_statement": "송금은 겁이 나서 스스로 달아난 거야. 낙원에 남을 이유가 없었으니, 다들 없어진 뒤에 제 발로 도망친 거지.",
-      "solved_flag_id": "QuestionSolved_QSonggeumRunaway",
+      "solved_state_id": "QuestionSolved_QSonggeumRunaway",
       "resolved_detail": "일기장은 송금이 도망칠 여유조차 없이 의례의 배역으로 밀려 들어갔음을 드러낸다. 이 실종은 도피가 아니라 선택당한 소거였다.",
       "success_toast": "모순 판별: 송금의 실종이 자발적 도피가 아니었다.",
       "failure_toast": "이 근거만으로는 송금이 스스로 달아났다는 말을 뒤집기 어렵다.",
-      "reward_flag_id": "ReadRitualScore",
+      "reward_state_id": "ReadRitualScore",
       "reward_value": 1,
-      "reward_mode": "Add"
+      "reward_mode": "Add",
+      "visible_condition_group_ids": [
+        "CG_QR_SonggeumOpen_01",
+        "CG_QR_SonggeumOpen_02",
+        "CG_QR_SonggeumOpen_03",
+        "CG_QR_SonggeumOpen_04"
+      ],
+      "state_conditions": [
+        {
+          "condition_group_id": "CG_QS_SonggeumRunaway_01",
+          "result_value": "해결됨",
+          "priority": 1
+        },
+        {
+          "condition_group_id": "CG_QS_SonggeumRunaway_02",
+          "result_value": "반박 가능",
+          "priority": 10
+        }
+      ]
     },
     {
       "question_id": "QRitualLead",
@@ -1129,8 +1347,6 @@ window.GAME_DATA = {
       "detail": "무녀, 악보, 기록, 기사 사이를 연결해 의식의 실제 주체를 좁혀야 한다.",
       "sort_order": 30,
       "category": "Ritual",
-      "visible_rule_id": "QR_RitualOpen",
-      "state_rule_id": "QS_RitualLead",
       "related_evidence_ids": [
         "EvRitualScore",
         "EvOldArticles",
@@ -1142,13 +1358,30 @@ window.GAME_DATA = {
         "EvRitualNote"
       ],
       "solution_mode": "All",
-      "solved_flag_id": "QuestionSolved_QRitualLead",
+      "solved_state_id": "QuestionSolved_QRitualLead",
       "resolved_detail": "의례실 종이는 낙원의 의식이 우발적 소문이 아니라, 그릇과 순서를 세어가며 밀어붙인 구조적 의례였음을 드러낸다. 누군가 끝까지 판을 쥐고 있었다.",
       "success_toast": "질문 정리: 낙원의 의식이 계획된 구조였다는 근거를 붙들었다.",
       "failure_toast": "악보와 의례실 기록이 함께 이어져야 의식의 구조를 단정할 수 있다.",
-      "reward_flag_id": "ResonanceLevel",
+      "reward_state_id": "ResonanceLevel",
       "reward_value": 1,
-      "reward_mode": "Add"
+      "reward_mode": "Add",
+      "visible_condition_group_ids": [
+        "CG_QR_RitualOpen_01",
+        "CG_QR_RitualOpen_02",
+        "CG_QR_RitualOpen_03"
+      ],
+      "state_conditions": [
+        {
+          "condition_group_id": "CG_QS_RitualLead_01",
+          "result_value": "해결됨",
+          "priority": 1
+        },
+        {
+          "condition_group_id": "CG_QS_RitualLead_02",
+          "result_value": "의식 구조 접근",
+          "priority": 10
+        }
+      ]
     },
     {
       "question_id": "QRitualAccident",
@@ -1157,8 +1390,6 @@ window.GAME_DATA = {
       "sort_order": 35,
       "category": "Ritual",
       "resolution_type": "Contradiction",
-      "visible_rule_id": "QR_RitualOpen",
-      "state_rule_id": "QS_RitualAccident",
       "related_evidence_ids": [
         "EvRitualScore",
         "EvOldArticles",
@@ -1170,19 +1401,37 @@ window.GAME_DATA = {
       ],
       "contradiction_prompt": "우발적 광신이라는 설명을 뒤집을 근거를 골라야 한다.",
       "contradiction_statement": "그날 벌어진 일은 다들 넋이 나간 채 벌인 우발적 광신이었어. 순서도, 준비도, 누가 판을 쥐었는지도 없었지.",
-      "solved_flag_id": "QuestionSolved_QRitualAccident",
+      "solved_state_id": "QuestionSolved_QRitualAccident",
       "resolved_detail": "의례실 종이는 이 모든 일이 우발적 집단 광기가 아니라, 순서와 몫을 세어가며 준비한 구조적 의례였음을 못 박는다. 누군가 처음부터 끝까지 판을 짠 것이다.",
       "success_toast": "모순 판별: 낙원의 의식이 우발적 광신이 아니었다.",
       "failure_toast": "이 근거만으로는 의식이 즉흥적 광신이 아니었다고 단정하기 어렵다.",
-      "reward_flag_id": "ResonanceLevel",
+      "reward_state_id": "ResonanceLevel",
       "reward_value": 1,
-      "reward_mode": "Add"
+      "reward_mode": "Add",
+      "visible_condition_group_ids": [
+        "CG_QR_RitualOpen_01",
+        "CG_QR_RitualOpen_02",
+        "CG_QR_RitualOpen_03"
+      ],
+      "state_conditions": [
+        {
+          "condition_group_id": "CG_QS_RitualAccident_01",
+          "result_value": "해결됨",
+          "priority": 1
+        },
+        {
+          "condition_group_id": "CG_QS_RitualAccident_02",
+          "result_value": "반박 가능",
+          "priority": 10
+        }
+      ]
     }
   ],
   "state_descriptors": [
     {
       "descriptor_id": "SD_Resonance_0",
-      "target_flag_id": "ResonanceLevel",
+      "target_state_type": "Numeric",
+      "target_state_id": "ResonanceLevel",
       "min_value": 0,
       "max_value": 0,
       "label": "안정",
@@ -1190,7 +1439,8 @@ window.GAME_DATA = {
     },
     {
       "descriptor_id": "SD_Resonance_1",
-      "target_flag_id": "ResonanceLevel",
+      "target_state_type": "Numeric",
+      "target_state_id": "ResonanceLevel",
       "min_value": 1,
       "max_value": 1,
       "label": "전조",
@@ -1198,7 +1448,8 @@ window.GAME_DATA = {
     },
     {
       "descriptor_id": "SD_Resonance_2",
-      "target_flag_id": "ResonanceLevel",
+      "target_state_type": "Numeric",
+      "target_state_id": "ResonanceLevel",
       "min_value": 2,
       "max_value": 2,
       "label": "심화",
@@ -1206,7 +1457,8 @@ window.GAME_DATA = {
     },
     {
       "descriptor_id": "SD_Resonance_3",
-      "target_flag_id": "ResonanceLevel",
+      "target_state_type": "Numeric",
+      "target_state_id": "ResonanceLevel",
       "min_value": 3,
       "max_value": 99,
       "label": "침식",
@@ -1214,7 +1466,8 @@ window.GAME_DATA = {
     },
     {
       "descriptor_id": "SD_Trust_0",
-      "target_flag_id": "SongsoonTrust",
+      "target_state_type": "Numeric",
+      "target_state_id": "SongsoonTrust",
       "min_value": 0,
       "max_value": 0,
       "label": "경계",
@@ -1222,7 +1475,8 @@ window.GAME_DATA = {
     },
     {
       "descriptor_id": "SD_Trust_1",
-      "target_flag_id": "SongsoonTrust",
+      "target_state_type": "Numeric",
+      "target_state_id": "SongsoonTrust",
       "min_value": 1,
       "max_value": 1,
       "label": "동행",
@@ -1230,7 +1484,8 @@ window.GAME_DATA = {
     },
     {
       "descriptor_id": "SD_Trust_2",
-      "target_flag_id": "SongsoonTrust",
+      "target_state_type": "Numeric",
+      "target_state_id": "SongsoonTrust",
       "min_value": 2,
       "max_value": 99,
       "label": "신뢰",
@@ -1238,7 +1493,8 @@ window.GAME_DATA = {
     },
     {
       "descriptor_id": "SD_Investigation_0",
-      "target_flag_id": "InvestigationProgress",
+      "target_state_type": "Derived",
+      "target_state_id": "InvestigationProgress",
       "min_value": 0,
       "max_value": 0,
       "label": "초기",
@@ -1246,7 +1502,8 @@ window.GAME_DATA = {
     },
     {
       "descriptor_id": "SD_Investigation_1",
-      "target_flag_id": "InvestigationProgress",
+      "target_state_type": "Derived",
+      "target_state_id": "InvestigationProgress",
       "min_value": 1,
       "max_value": 1,
       "label": "추적",
@@ -1254,7 +1511,8 @@ window.GAME_DATA = {
     },
     {
       "descriptor_id": "SD_Investigation_2",
-      "target_flag_id": "InvestigationProgress",
+      "target_state_type": "Derived",
+      "target_state_id": "InvestigationProgress",
       "min_value": 2,
       "max_value": 3,
       "label": "접근",
@@ -1262,233 +1520,12 @@ window.GAME_DATA = {
     },
     {
       "descriptor_id": "SD_Investigation_4",
-      "target_flag_id": "InvestigationProgress",
+      "target_state_type": "Derived",
+      "target_state_id": "InvestigationProgress",
       "min_value": 4,
       "max_value": 99,
       "label": "심층",
       "detail": "표면을 지나 사건의 구조와 의식을 함께 추적하는 단계입니다."
-    }
-  ],
-  "rules": [
-    {
-      "rule_row_id": "RR_QIpangyuSeen_01",
-      "rule_id": "QR_IpangyuSeen",
-      "rule_kind": "Visible",
-      "fact_type": "RevealedCharacter",
-      "fact_key": "Ipangyu",
-      "operator": "Equals",
-      "value": true,
-      "result_value": "",
-      "priority": 10
-    },
-    {
-      "rule_row_id": "RR_QSonggeumOpen_01",
-      "rule_id": "QR_SonggeumOpen",
-      "rule_kind": "Visible",
-      "fact_type": "HasEvidence",
-      "fact_key": "EvDiary",
-      "operator": "Equals",
-      "value": true,
-      "result_value": "",
-      "priority": 10
-    },
-    {
-      "rule_row_id": "RR_QSonggeumOpen_02",
-      "rule_id": "QR_SonggeumOpen",
-      "rule_kind": "Visible",
-      "fact_type": "HasEvidence",
-      "fact_key": "EvOldArticles",
-      "operator": "Equals",
-      "value": true,
-      "result_value": "",
-      "priority": 20
-    },
-    {
-      "rule_row_id": "RR_QSonggeumOpen_03",
-      "rule_id": "QR_SonggeumOpen",
-      "rule_kind": "Visible",
-      "fact_type": "SceneProgressIndex",
-      "fact_key": "",
-      "operator": "Gte",
-      "value": 24,
-      "result_value": "",
-      "priority": 30
-    },
-    {
-      "rule_row_id": "RR_QSonggeumOpen_04",
-      "rule_id": "QR_SonggeumOpen",
-      "rule_kind": "Visible",
-      "fact_type": "RevealedCharacter",
-      "fact_key": "Songgeum",
-      "operator": "Equals",
-      "value": true,
-      "result_value": "",
-      "priority": 40
-    },
-    {
-      "rule_row_id": "RR_QRitualOpen_01",
-      "rule_id": "QR_RitualOpen",
-      "rule_kind": "Visible",
-      "fact_type": "FlagValue",
-      "fact_key": "ReadRitualScore",
-      "operator": "Gte",
-      "value": 1,
-      "result_value": "",
-      "priority": 10
-    },
-    {
-      "rule_row_id": "RR_QRitualOpen_02",
-      "rule_id": "QR_RitualOpen",
-      "rule_kind": "Visible",
-      "fact_type": "RevealedCharacter",
-      "fact_key": "Haesim",
-      "operator": "Equals",
-      "value": true,
-      "result_value": "",
-      "priority": 20
-    },
-    {
-      "rule_row_id": "RR_QRitualOpen_03",
-      "rule_id": "QR_RitualOpen",
-      "rule_kind": "Visible",
-      "fact_type": "SceneProgressIndex",
-      "fact_key": "",
-      "operator": "Gte",
-      "value": 31,
-      "result_value": "",
-      "priority": 30
-    },
-    {
-      "rule_row_id": "RR_QIpangyuState_00",
-      "rule_id": "QS_IpangyuCall",
-      "rule_kind": "State",
-      "fact_type": "FlagValue",
-      "fact_key": "QuestionSolved_QIpangyuCall",
-      "operator": "Equals",
-      "value": true,
-      "result_value": "해결됨",
-      "priority": 1
-    },
-    {
-      "rule_row_id": "RR_QIpangyuState_01",
-      "rule_id": "QS_IpangyuCall",
-      "rule_kind": "State",
-      "fact_type": "FlagValue",
-      "fact_key": "ResonanceLevel",
-      "operator": "Gte",
-      "value": 1,
-      "result_value": "공명 전조 확인",
-      "priority": 10
-    },
-    {
-      "rule_row_id": "RR_QIpangyuMadnessState_00",
-      "rule_id": "QS_IpangyuMadness",
-      "rule_kind": "State",
-      "fact_type": "FlagValue",
-      "fact_key": "QuestionSolved_QIpangyuMadness",
-      "operator": "Equals",
-      "value": true,
-      "result_value": "해결됨",
-      "priority": 1
-    },
-    {
-      "rule_row_id": "RR_QIpangyuMadnessState_01",
-      "rule_id": "QS_IpangyuMadness",
-      "rule_kind": "State",
-      "fact_type": "HasEvidence",
-      "fact_key": "EvNote",
-      "operator": "Equals",
-      "value": true,
-      "result_value": "반박 가능",
-      "priority": 10
-    },
-    {
-      "rule_row_id": "RR_QSonggeumState_00",
-      "rule_id": "QS_SonggeumMissing",
-      "rule_kind": "State",
-      "fact_type": "FlagValue",
-      "fact_key": "QuestionSolved_QSonggeumMissing",
-      "operator": "Equals",
-      "value": true,
-      "result_value": "해결됨",
-      "priority": 1
-    },
-    {
-      "rule_row_id": "RR_QSonggeumState_01",
-      "rule_id": "QS_SonggeumMissing",
-      "rule_kind": "State",
-      "fact_type": "HasEvidence",
-      "fact_key": "EvDiary",
-      "operator": "Equals",
-      "value": true,
-      "result_value": "단서 확보",
-      "priority": 10
-    },
-    {
-      "rule_row_id": "RR_QSonggeumRunawayState_00",
-      "rule_id": "QS_SonggeumRunaway",
-      "rule_kind": "State",
-      "fact_type": "FlagValue",
-      "fact_key": "QuestionSolved_QSonggeumRunaway",
-      "operator": "Equals",
-      "value": true,
-      "result_value": "해결됨",
-      "priority": 1
-    },
-    {
-      "rule_row_id": "RR_QSonggeumRunawayState_01",
-      "rule_id": "QS_SonggeumRunaway",
-      "rule_kind": "State",
-      "fact_type": "HasEvidence",
-      "fact_key": "EvDiary",
-      "operator": "Equals",
-      "value": true,
-      "result_value": "반박 가능",
-      "priority": 10
-    },
-    {
-      "rule_row_id": "RR_QRitualState_00",
-      "rule_id": "QS_RitualLead",
-      "rule_kind": "State",
-      "fact_type": "FlagValue",
-      "fact_key": "QuestionSolved_QRitualLead",
-      "operator": "Equals",
-      "value": true,
-      "result_value": "해결됨",
-      "priority": 1
-    },
-    {
-      "rule_row_id": "RR_QRitualState_01",
-      "rule_id": "QS_RitualLead",
-      "rule_kind": "State",
-      "fact_type": "FlagValue",
-      "fact_key": "ReadRitualScore",
-      "operator": "Gte",
-      "value": 1,
-      "result_value": "의식 구조 접근",
-      "priority": 10
-    },
-    {
-      "rule_row_id": "RR_QRitualAccidentState_00",
-      "rule_id": "QS_RitualAccident",
-      "rule_kind": "State",
-      "fact_type": "FlagValue",
-      "fact_key": "QuestionSolved_QRitualAccident",
-      "operator": "Equals",
-      "value": true,
-      "result_value": "해결됨",
-      "priority": 1
-    },
-    {
-      "rule_row_id": "RR_QRitualAccidentState_01",
-      "rule_id": "QS_RitualAccident",
-      "rule_kind": "State",
-      "fact_type": "HasEvidence",
-      "fact_key": "EvRitualNote",
-      "operator": "Equals",
-      "value": true,
-      "result_value": "반박 가능",
-      "priority": 10
     }
   ],
   "gauges": [
@@ -2584,7 +2621,7 @@ window.GAME_DATA = {
           "text": "시신의 찢겨진 흉곽 안쪽을 홀린 듯 쳐다본다.",
           "type": "choice-risk",
           "kicker": "위험",
-          "reward_flag_id": "ResonanceLevel",
+          "reward_state_id": "ResonanceLevel",
           "reward_value": 1,
           "reward_mode": "Add",
           "next_type": "Scene",
@@ -7436,3 +7473,4 @@ window.GAME_DATA = {
     }
   }
 };
+

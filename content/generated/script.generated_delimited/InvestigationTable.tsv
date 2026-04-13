@@ -1,0 +1,4 @@
+﻿InvestigationID	Title	Hint	Budget	ChoiceGroupID
+Investigation_CafeNakwon	낙원에서 무엇을 먼저 볼 것인가	남은 조사 기회 안에서 현장과 사람의 결 중 무엇을 먼저 붙들지 정하세요.	2	ChoiceGroup_CafeInvestigation
+Investigation_RitualFinal	마지막으로 무엇을 택할 것인가	답할지, 막을지, 머뭇거릴지. 이번 선택은 엔딩의 기울기를 바꿉니다.	1	ChoiceGroup_RitualFinal
+Investigation_Room4	방 안의 어떤 흔적을 먼저 붙들 것인가	벽의 반응, 남겨진 기록, 송순의 마음 가운데 먼저 확인할 결을 고르세요.	2	ChoiceGroup_Room4Investigation

@@ -29,7 +29,7 @@ def parse_args():
 
 
 def read_text(path):
-    with open(path, "r", encoding="utf-8") as f:
+    with open(path, "r", encoding="utf-8-sig") as f:
         return f.read()
 
 
@@ -139,9 +139,9 @@ def validate_conditions(data, issues):
         if choice.get("choice_id")
     }
     choice_ids.update({
-        question.get("solved_flag_id")
+        question.get("solved_state_id")
         for question in (data.get("questions", []) or [])
-        if question.get("solved_flag_id")
+        if question.get("solved_state_id")
     })
     evidence_ids = {
         evidence.get("evidence_id")
@@ -345,21 +345,17 @@ def validate_dialogue_character_refs(scene_id, scene, data, issues):
 
 def validate_questions(data, issues):
     questions = data.get("questions", []) or []
+    numeric_state_ids = {"ResonanceLevel", "InvestigationScore", "SongsoonTrust", "ReadRitualScore", "SolvedQuestionCount"}
     evidence_ids = {
         evidence.get("evidence_id")
         for scene in (data.get("scenes", {}) or {}).values()
         for evidence in (scene.get("evidence", []) or [])
         if evidence.get("evidence_id")
     }
-    visible_rule_ids = {
-        rule.get("rule_id")
-        for rule in (data.get("rules", []) or [])
-        if rule.get("rule_id") and rule.get("rule_kind") == "Visible"
-    }
-    state_rule_ids = {
-        rule.get("rule_id")
-        for rule in (data.get("rules", []) or [])
-        if rule.get("rule_id") and rule.get("rule_kind") == "State"
+    condition_group_ids = {
+        condition.get("condition_group_id")
+        for condition in (data.get("conditions", []) or [])
+        if condition.get("condition_group_id")
     }
     question_ids = [question.get("question_id") for question in questions if question.get("question_id")]
     duplicates = find_duplicates(question_ids)
@@ -374,12 +370,28 @@ def validate_questions(data, issues):
         resolution_type = question.get("resolution_type") or "Evidence"
         if resolution_type not in {"Evidence", "Contradiction"}:
             issues.append(f"[Question.resolution_type] {question.get('question_id') or '(unknown)'} invalid ResolutionType: {resolution_type}")
-        visible_rule_id = question.get("visible_rule_id")
-        state_rule_id = question.get("state_rule_id")
-        if visible_rule_id and visible_rule_id not in visible_rule_ids:
-            issues.append(f"[Question.visible_rule_id] {question.get('question_id') or '(unknown)'} -> {visible_rule_id} (missing Visible RuleID)")
-        if state_rule_id and state_rule_id not in state_rule_ids:
-            issues.append(f"[Question.state_rule_id] {question.get('question_id') or '(unknown)'} -> {state_rule_id} (missing State RuleID)")
+        visible_condition_group_ids = question.get("visible_condition_group_ids") or []
+        if not isinstance(visible_condition_group_ids, list):
+            issues.append(f"[Question.visible_condition_group_ids] {question.get('question_id') or '(unknown)'} must be a list")
+        else:
+            for condition_group_id in visible_condition_group_ids:
+                if condition_group_id not in condition_group_ids:
+                    issues.append(f"[Question.visible_condition_group_ids] {question.get('question_id') or '(unknown)'} -> {condition_group_id} (missing ConditionGroupID)")
+        state_conditions = question.get("state_conditions") or []
+        if not isinstance(state_conditions, list):
+            issues.append(f"[Question.state_conditions] {question.get('question_id') or '(unknown)'} must be a list")
+        else:
+            for index, item in enumerate(state_conditions):
+                if not isinstance(item, dict):
+                    issues.append(f"[Question.state_conditions] {question.get('question_id') or '(unknown)'}[{index}] must be an object")
+                    continue
+                condition_group_id = item.get("condition_group_id")
+                if not condition_group_id:
+                    issues.append(f"[Question.state_conditions] {question.get('question_id') or '(unknown)'}[{index}] missing condition_group_id")
+                elif condition_group_id not in condition_group_ids:
+                    issues.append(f"[Question.state_conditions] {question.get('question_id') or '(unknown)'}[{index}] -> {condition_group_id} (missing ConditionGroupID)")
+                if not item.get("result_value"):
+                    issues.append(f"[Question.state_conditions] {question.get('question_id') or '(unknown)'}[{index}] missing result_value")
         related_ids = question.get("related_evidence_ids") or []
         for evidence_id in related_ids:
             if evidence_id not in evidence_ids:
@@ -393,6 +405,12 @@ def validate_questions(data, issues):
         solution_mode = question.get("solution_mode")
         if solution_mode and solution_mode not in {"Any", "All"}:
             issues.append(f"[Question.solution_mode] {question.get('question_id') or '(unknown)'} invalid SolutionMode: {solution_mode}")
+        solved_state_id = question.get("solved_state_id")
+        if solved_state_id and not str(solved_state_id).startswith("QuestionSolved_"):
+            issues.append(f"[Question.solved_state_id] {question.get('question_id') or '(unknown)'} invalid SolvedStateID: {solved_state_id}")
+        reward_state_id = question.get("reward_state_id")
+        if reward_state_id and reward_state_id not in numeric_state_ids:
+            issues.append(f"[Question.reward_state_id] {question.get('question_id') or '(unknown)'} invalid RewardStateID: {reward_state_id}")
         if resolution_type == "Contradiction":
             if not question.get("contradiction_prompt"):
                 issues.append(f"[Question.contradiction_prompt] {question.get('question_id') or '(unknown)'} missing ContradictionPrompt")
@@ -402,6 +420,8 @@ def validate_questions(data, issues):
 
 def validate_state_descriptors(data, issues):
     descriptors = data.get("state_descriptors", []) or []
+    numeric_state_ids = {"ResonanceLevel", "InvestigationScore", "SongsoonTrust", "ReadRitualScore", "SolvedQuestionCount"}
+    derived_state_ids = {"InvestigationProgress"}
     descriptor_ids = [descriptor.get("descriptor_id") for descriptor in descriptors if descriptor.get("descriptor_id")]
     duplicates = find_duplicates(descriptor_ids)
     for dup in duplicates:
@@ -409,34 +429,22 @@ def validate_state_descriptors(data, issues):
 
     for descriptor in descriptors:
         descriptor_id = descriptor.get("descriptor_id") or "(unknown)"
-        if not descriptor.get("target_flag_id"):
-            issues.append(f"[StateDescriptor.target_flag_id] {descriptor_id} missing TargetFlagID")
+        target_state_type = descriptor.get("target_state_type") or ("Derived" if descriptor.get("target_state_id") == "InvestigationProgress" else "Numeric")
+        target_state_id = descriptor.get("target_state_id")
+        if target_state_type not in {"Numeric", "Derived"}:
+            issues.append(f"[StateDescriptor.target_state_type] {descriptor_id} invalid TargetStateType: {target_state_type}")
+        if not descriptor.get("target_state_id"):
+            issues.append(f"[StateDescriptor.target_state_id] {descriptor_id} missing TargetStateID")
+        elif target_state_type == "Numeric" and target_state_id not in numeric_state_ids:
+            issues.append(f"[StateDescriptor.target_state_id] {descriptor_id} invalid numeric TargetStateID: {target_state_id}")
+        elif target_state_type == "Derived" and target_state_id not in derived_state_ids:
+            issues.append(f"[StateDescriptor.target_state_id] {descriptor_id} invalid derived TargetStateID: {target_state_id}")
         if descriptor.get("min_value") is None:
             issues.append(f"[StateDescriptor.min_value] {descriptor_id} missing MinValue")
         if descriptor.get("max_value") is None:
             issues.append(f"[StateDescriptor.max_value] {descriptor_id} missing MaxValue")
         if not descriptor.get("label"):
             issues.append(f"[StateDescriptor.label] {descriptor_id} missing Label")
-
-
-def validate_rules(data, issues):
-    rules = data.get("rules", []) or []
-    rule_row_ids = [rule.get("rule_row_id") for rule in rules if rule.get("rule_row_id")]
-    duplicates = find_duplicates(rule_row_ids)
-    for dup in duplicates:
-        issues.append(f"[Duplicate.rule_row_id] {dup}")
-
-    for rule in rules:
-        rule_row_id = rule.get("rule_row_id") or "(unknown)"
-        if not rule.get("rule_id"):
-            issues.append(f"[Rule.rule_id] {rule_row_id} missing RuleID")
-        if not rule.get("rule_kind"):
-            issues.append(f"[Rule.rule_kind] {rule_row_id} missing RuleKind")
-        if not rule.get("fact_type"):
-            issues.append(f"[Rule.fact_type] {rule_row_id} missing FactType")
-        if not rule.get("operator"):
-            issues.append(f"[Rule.operator] {rule_row_id} missing Operator")
-
 
 def main():
     args = parse_args()
@@ -473,7 +481,6 @@ def main():
     validate_effects(data, issues)
     validate_questions(data, issues)
     validate_state_descriptors(data, issues)
-    validate_rules(data, issues)
 
     print(f"검수 대상: {input_path}")
     print(f"씬 수: {len(scenes)}")

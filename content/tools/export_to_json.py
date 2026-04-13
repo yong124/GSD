@@ -21,9 +21,8 @@ Excel 컬럼 규칙 (PascalCase):
   CharacterTable / Characters
   CharacterEmotionTable / CharacterEmotions
   InvestigationTable / Investigations
-  QuestionTable / Questions : QuestionID, Title, Detail, SortOrder, Category, ResolutionType, VisibleRuleID, StateRuleID, RelatedEvidenceIDs, SolutionEvidenceIDs, SolutionMode, ContradictionPrompt, ContradictionStatement, SolvedFlagID, ResolvedDetail, SuccessToast, FailureToast, RewardFlagID, RewardValue, RewardMode
-  StateDescriptorTable / StateDescriptors : DescriptorID, TargetFlagID, MinValue, MaxValue, Label, Detail
-  RuleTable / Rules : RuleRowID, RuleID, RuleKind, FactType, FactKey, Operator, Value, ResultValue, Priority
+  QuestionTable / Questions : QuestionID, Title, Detail, SortOrder, Category, ResolutionType, VisibleConditionGroupIDs, StateConditionsJSON, RelatedEvidenceIDs, SolutionEvidenceIDs, SolutionMode, ContradictionPrompt, ContradictionStatement, SolvedStateID, ResolvedDetail, SuccessToast, FailureToast, RewardStateID, RewardValue, RewardMode
+  StateDescriptorTable / StateDescriptors : DescriptorID, TargetStateID, MinValue, MaxValue, Label, Detail
 
 무시 규칙:
   시트명이 $로 시작하면 export 대상에서 제외
@@ -149,7 +148,6 @@ def build_game_data(wb):
     investigations_raw = read_sheet(resolve_sheet(wb, "InvestigationTable", "Investigations")) if "InvestigationTable" in wb.sheetnames or "Investigations" in wb.sheetnames else []
     questions_raw = read_sheet(resolve_sheet(wb, "QuestionTable", "Questions")) if "QuestionTable" in wb.sheetnames or "Questions" in wb.sheetnames else []
     state_descriptors_raw = read_sheet(resolve_sheet(wb, "StateDescriptorTable", "StateDescriptors")) if "StateDescriptorTable" in wb.sheetnames or "StateDescriptors" in wb.sheetnames else []
-    rules_raw = read_sheet(resolve_sheet(wb, "RuleTable", "Rules")) if "RuleTable" in wb.sheetnames or "Rules" in wb.sheetnames else []
     gauges_ws = resolve_optional_sheet(wb, "GaugeTable", "Gauges")
     gauge_states_ws = resolve_optional_sheet(wb, "GaugeStateTable", "GaugeStates")
     effects_ws = resolve_optional_sheet(wb, "EffectTable", "Effects")
@@ -260,8 +258,6 @@ def build_game_data(wb):
                 "description": e.get("Description") or "",
                 "image":       e.get("Image"),
                 "category_id": e.get("CategoryID"),
-                "category_title": e.get("CategoryTitle"),
-                "category_hint": e.get("CategoryHint"),
             })
 
     characters = {}
@@ -350,6 +346,14 @@ def build_game_data(wb):
         question_id = q.get("QuestionID")
         if not question_id:
             continue
+        state_conditions_raw = str(q.get("StateConditionsJSON") or "").strip()
+        state_conditions = []
+        if state_conditions_raw:
+            try:
+                parsed = json.loads(state_conditions_raw)
+            except json.JSONDecodeError as exc:
+                raise ValueError(f"QuestionID={question_id} StateConditionsJSON 파싱 실패: {exc}") from exc
+            state_conditions = parsed if isinstance(parsed, list) else []
         questions.append({
             "question_id": question_id,
             "title": q.get("Title") or "",
@@ -357,18 +361,18 @@ def build_game_data(wb):
             "sort_order": q.get("SortOrder"),
             "category": q.get("Category"),
             "resolution_type": q.get("ResolutionType") or "Evidence",
-            "visible_rule_id": q.get("VisibleRuleID"),
-            "state_rule_id": q.get("StateRuleID"),
+            "visible_condition_group_ids": [part.strip() for part in str(q.get("VisibleConditionGroupIDs") or "").split(",") if part and part.strip()],
+            "state_conditions": state_conditions,
             "related_evidence_ids": [part.strip() for part in str(q.get("RelatedEvidenceIDs") or "").split(",") if part and part.strip()],
             "solution_evidence_ids": [part.strip() for part in str(q.get("SolutionEvidenceIDs") or "").split(",") if part and part.strip()],
             "solution_mode": q.get("SolutionMode") or "",
             "contradiction_prompt": q.get("ContradictionPrompt") or "",
             "contradiction_statement": q.get("ContradictionStatement") or "",
-            "solved_flag_id": q.get("SolvedFlagID") or "",
+            "solved_state_id": q.get("SolvedStateID") or "",
             "resolved_detail": q.get("ResolvedDetail") or "",
             "success_toast": q.get("SuccessToast") or "",
             "failure_toast": q.get("FailureToast") or "",
-            "reward_flag_id": q.get("RewardFlagID") or "",
+            "reward_state_id": q.get("RewardStateID") or "",
             "reward_value": q.get("RewardValue"),
             "reward_mode": q.get("RewardMode") or "",
         })
@@ -380,28 +384,12 @@ def build_game_data(wb):
             continue
         state_descriptors.append({
             "descriptor_id": descriptor_id,
-            "target_flag_id": row.get("TargetFlagID"),
+            "target_state_type": row.get("TargetStateType") or ("Derived" if row.get("TargetStateID") == "InvestigationProgress" else "Numeric"),
+            "target_state_id": row.get("TargetStateID"),
             "min_value": row.get("MinValue"),
             "max_value": row.get("MaxValue"),
             "label": row.get("Label") or "",
             "detail": row.get("Detail") or "",
-        })
-
-    rules = []
-    for row in rules_raw:
-        rule_row_id = row.get("RuleRowID")
-        if not rule_row_id:
-            continue
-        rules.append({
-            "rule_row_id": rule_row_id,
-            "rule_id": row.get("RuleID"),
-            "rule_kind": row.get("RuleKind"),
-            "fact_type": row.get("FactType"),
-            "fact_key": row.get("FactKey"),
-            "operator": row.get("Operator"),
-            "value": row.get("Value"),
-            "result_value": row.get("ResultValue"),
-            "priority": row.get("Priority"),
         })
 
     gauges = []
@@ -459,7 +447,6 @@ def build_game_data(wb):
         "investigations": investigations,
         "questions": questions,
         "state_descriptors": state_descriptors,
-        "rules": rules,
         "gauges": gauges,
         "gauge_states": gauge_states,
         "effects": effects,

@@ -27,7 +27,7 @@
 
 - `Text`
 - `FlagKey`
-- `FlagValue`
+- `StateValue`
 - `NextScene`
 - `NextDialogue`
 
@@ -45,7 +45,7 @@
 
 - `Order`
 - `FlagKey`
-- `FlagValue`
+- `StateValue`
 - `NextScene`
 
 ---
@@ -107,7 +107,7 @@ flowchart TD
 - 씬 간 연결선 확인
 - 선택지 연결 확인
 - 분기 연결 확인
-- 현재 씬이 읽는 플래그 / 쓰는 플래그 확인
+- 현재 씬이 읽는 상태 참조 / 쓰는 상태 결과 확인
 - 이전 연결 / 다음 연결 확인
 - 미참조 씬 확인
 

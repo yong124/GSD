@@ -7,7 +7,7 @@
 - [WORLDVIEW_BIBLE.md](/G:/GSD/content/docs/system/core/WORLDVIEW_BIBLE.md)
 - [DATA_STRUCTURE.md](/G:/GSD/content/docs/system/core/DATA_STRUCTURE.md)
 - [TABLE_SPEC.md](/G:/GSD/content/docs/system/core/TABLE_SPEC.md)
-- [FLAG_SPEC.md](/G:/GSD/content/docs/system/core/FLAG_SPEC.md)
+- [STATE_SPEC.md](/G:/GSD/content/docs/system/core/STATE_SPEC.md)
 - [NARRATIVE_SYSTEM_DESIGN.md](/G:/GSD/content/docs/system/core/NARRATIVE_SYSTEM_DESIGN.md)
 - [NARRATIVE_VARIABLE_SPEC.md](/G:/GSD/content/docs/system/core/NARRATIVE_VARIABLE_SPEC.md)
 - [BRANCH_DESIGN.md](/G:/GSD/content/docs/system/core/BRANCH_DESIGN.md)

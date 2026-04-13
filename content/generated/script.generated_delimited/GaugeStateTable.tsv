@@ -1,0 +1,9 @@
+﻿GaugeID	MinValue	MaxValue	Label	HudColor	Detail	TriggerSceneID
+Credibility	0	0	실각	#8b2020		scene_gameover_credibility
+Credibility	1	2	흔들림	#c8a84b	압박을 받는 순간 평판이 빠르게 깎이고 있다.	
+Credibility	3	10	안정	#6a9f6a	기자로서의 평판이 아직 버티고 있다.	
+Erosion	0	2	안정	#6a9f6a	아직은 이성을 붙들고 사건을 따라갈 수 있는 상태다.	
+Erosion	3	5	위조	#c8a84b	조사 과정 곳곳에서 의식의 균열이 스며든다.	
+Erosion	6	8	심화	#b06040	위협을 감수한 만큼 비현실의 결이 짙어진다.	
+Erosion	9	9	침식	#8b2020	이성과 의식의 경계가 크게 흔들리고 있다.	
+Erosion	10	10	붕괴	#4a0000		scene_ending_erosion

@@ -291,7 +291,7 @@
 
 아래 필드는 새 구조 전환 후 제거 대상이다.
 
-- `Choice.FlagKey` / `Choice.FlagValue`
+- `Choice.StateKey` / `Choice.StateValue`
 - `Choice.NextScene` / `Choice.NextDialogue`
 - `Choice.PriorityCost` / `Choice.ExtraFlags`
 - `Choice.TrustCharacterID` / `Choice.TrustValue`
@@ -301,4 +301,4 @@
 - `Scene.NextScene`
 - `Scene.PriorityTitle` / `Scene.PriorityHint` / `Scene.PriorityBudget`
 - `Scene.PriorityAfterDialogues`
-- `Branch.FlagKey` / `Branch.FlagValue`
+- `Branch.ConditionGroupID`

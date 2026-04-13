@@ -1,0 +1,16 @@
+﻿CharacterID,DisplayName,DefaultEmotionType,DefaultImagePath,RoleText,NotebookSummary1,NotebookSummary2
+Cheonyonghae,천용해,Neutral,,문턱의 인도자,의식이 가장 깊어지는 지점에서 모습을 드러내는 인물.,"사람을 데려가는 쪽인지, 이미 건너간 쪽인지 끝내 분간하기 어렵다."
+Editor,편집장,Angry,assets/portraits/editor.jpeg,기록의 문지기,무엇이 기사로 남고 무엇이 묻히는지 결정하는 편집장.,바깥에 흔적을 남길지 말지의 축과 연결된다.
+Elder,노인,Neutral,assets/portraits/elder_slum.jpeg,,,
+Haesim,이해심,Trance,assets/portraits/haesim.jpeg,의식의 중심,공명과 의식의 중심축에 선 인물.,신념인지 광기인지 분간하기 어려운 확신을 가진다.
+Ipangyu,이판규,Crazy,assets/portraits/pan_crazy.png,문턱의 죄수,광기와 교리 사이를 오가며 사건의 단어를 흘리는 인물.,헛소리처럼 들리지만 사건의 방향을 먼저 암시한다.
+Judge,재판관,Neutral,assets/portraits/judge.jpeg,,,
+Lawyer,변호인,Neutral,assets/portraits/lawyer.jpeg,,,
+Manager,점장,Neutral,assets/portraits/manager.jpeg,,,
+Okryeon,옥련,Afraid,assets/portraits/kum_fixed.png,생존자,낙원에서 벌어진 일을 견디고 살아남은 여급.,압박보다 보호에 가까운 태도에서 더 많은 진실이 새어 나온다.
+Policeman,경찰,Neutral,assets/portraits/policeman.jpeg,,,
+Prosecutor,검사,Neutral,assets/portraits/prosecutor.jpeg,,,
+Songgeum,송금,Trance,assets/portraits/songgeum.jpeg,실종자,사건의 핵심에서 사라진 여급.,사람들이 입을 다무는 이유가 이 인물과 맞물려 있다.
+Songsoon,송순,Uneasy,assets/portraits/songsoon.jpeg,증언자,낙원 안쪽 사정을 알고 있지만 쉽게 입을 열지 않는다.,신뢰를 얻을수록 더 깊은 증언에 접근할 수 있다.
+Waitress,여급,Neutral,assets/portraits/waitress_generic.jpeg,,,
+Yuu,유웅룡,Neutral,assets/portraits/yuu.jpeg,기록자,법정에서 시작된 실종 사건을 끝까지 물고 늘어지는 기자.,기록과 은폐의 경계에서 사건을 붙들고 있다.
