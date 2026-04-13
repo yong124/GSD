@@ -215,9 +215,9 @@ const UIManager = (() => {
 
   function _getStateReadout() {
     const parts = [];
-    const erosion = Number(State.getGauge?.('Erosion') || State.getFlag('ResonanceLevel') || 0);
-    const trust = Number(State.getTrust?.('Songsoon') || State.getFlag('SongsoonTrust') || 0);
-    const credibility = Number(State.getGauge?.('Credibility') || State.getFlag('InvestigationScore') || 0);
+    const erosion = State.getResonanceValue();
+    const trust = State.getSongsoonTrustValue();
+    const credibility = State.getCredibilityValue();
 
     if (credibility >= 3) parts.push('조사 진척');
     else if (credibility >= 1) parts.push('조사 진행');
@@ -233,8 +233,8 @@ const UIManager = (() => {
 
   function applyStateMood() {
     const container = $(Config.SELECTORS.GAME_CONTAINER);
-    const resonance = Number(State.getFlag('ResonanceLevel') || State.getGauge?.('Erosion') || 0);
-    const trust = Number(State.getFlag('SongsoonTrust') || State.getTrust?.('Songsoon') || 0);
+    const resonance = State.getResonanceValue();
+    const trust = State.getSongsoonTrustValue();
     if (!container) return;
 
     container.classList.remove('state-resonance-low', 'state-resonance-high', 'state-trust-high');

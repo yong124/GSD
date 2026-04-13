@@ -182,7 +182,7 @@ const Scene = (() => {
         return Number(State.getTrust?.(characterId) || 0);
       }
       case 'EvidenceOwned':
-        return State.getFlag(`HasEvidence_${targetId}`) === true || State.getEvidence().includes(targetId);
+        return State.getEvidenceOwned(targetId);
       case 'ChoiceSelected': {
         const choiceIds = String(targetId || '')
           .split('|')
@@ -299,7 +299,7 @@ const Scene = (() => {
       if (!passesConditionRef(choice, context)) return false;
       const evidenceId = choice?.evidence_id;
       if (!evidenceId) return false;
-      return State.getFlag(`HasEvidence_${evidenceId}`) === true || State.getEvidence().includes(evidenceId);
+      return State.getEvidenceOwned(evidenceId);
     });
     return legacyChoices.length > 0 ? [legacyChoices] : [];
   }

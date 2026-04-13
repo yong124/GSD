@@ -2,25 +2,25 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>경성뎐 — Node Editor</title>
+  <title>경성????Node Editor</title>
   <link rel="stylesheet" href="editor.css">
 </head>
 <body>
   <div id="toolbar">
-    <span class="logo">경성뎐 Node Editor</span>
-    <button id="btn-add-node">+ 씬 추가</button>
-    <button id="btn-undo">실행 취소</button>
-    <button id="btn-redo">다시 실행</button>
-    <input id="field-search" type="text" placeholder="씬 / 라벨 / 조건 / 단서 검색">
+    <span class="logo">경성??Node Editor</span>
+    <button id="btn-add-node">+ ??추�?</button>
+    <button id="btn-undo">?�행 취소</button>
+    <button id="btn-redo">?�시 ?�행</button>
+    <input id="field-search" type="text" placeholder="�˻� / �ι� / ���� / �ܼ� �˻�">
     <select id="field-filter-chapter">
-      <option value="">전체 챕터</option>
+      <option value="">?�체 챕터</option>
     </select>
-    <button id="btn-auto-layout">자동 정렬</button>
+    <button id="btn-auto-layout">?�동 ?�렬</button>
     <button id="btn-zoom-out">-</button>
     <span id="zoom-label">100%</span>
     <button id="btn-zoom-in">+</button>
-    <button id="btn-load">불러오기</button>
-    <button id="btn-export">내보내기</button>
+    <button id="btn-load">불러?�기</button>
+    <button id="btn-export">?�보?�기</button>
     <span id="status"></span>
   </div>
 
@@ -34,34 +34,33 @@
     </div>
 
     <div id="panel">
-      <div id="panel-empty">씬을 선택하세요</div>
+      <div id="panel-empty">?�을 ?�택?�세??/div>
       <div id="panel-content" class="hidden">
         <div id="panel-tabs">
-          <button id="tab-node-editor" class="panel-tab active" type="button">노드 편집</button>
-          <button id="tab-data-editor" class="panel-tab" type="button">데이터 편집</button>
+          <button id="tab-node-editor" class="panel-tab active" type="button">?�드 ?�집</button>
+          <button id="tab-data-editor" class="panel-tab" type="button">?�이???�집</button>
         </div>
         <div id="data-panel-tabs" class="hidden" data-panel-tab="data">
-          <button class="data-tab active" type="button" data-data-tab="characters">캐릭터</button>
+          <button class="data-tab active" type="button" data-data-tab="characters">캐릭??/button>
           <button class="data-tab" type="button" data-data-tab="character-emotions">감정</button>
           <button class="data-tab" type="button" data-data-tab="conditions">조건</button>
           <button class="data-tab" type="button" data-data-tab="gauges">게이지</button>
-          <button class="data-tab" type="button" data-data-tab="gauge-states">게이지상태</button>
-          <button class="data-tab" type="button" data-data-tab="effects">이펙트</button>
-          <button class="data-tab" type="button" data-data-tab="choice-groups">선택그룹</button>
-          <button class="data-tab" type="button" data-data-tab="evidence-categories">단서분류</button>
+          <button class="data-tab" type="button" data-data-tab="gauge-states">게이지?�태</button>
+          <button class="data-tab" type="button" data-data-tab="effects">?�펙??/button>
+          <button class="data-tab" type="button" data-data-tab="choice-groups">?�택그룹</button>
+          <button class="data-tab" type="button" data-data-tab="evidence-categories">?�서분류</button>
           <button class="data-tab" type="button" data-data-tab="investigations">조사</button>
           <button class="data-tab" type="button" data-data-tab="questions">질문</button>
-          <button class="data-tab" type="button" data-data-tab="state-descriptors">상태</button>
-          <button class="data-tab" type="button" data-data-tab="rules">룰</button>
+          <button class="data-tab" type="button" data-data-tab="state-descriptors">?�태</button>
         </div>
         <div id="panel-header" data-panel-tab="node">
-          <input id="field-title" type="text" placeholder="씬 제목">
-          <button id="btn-duplicate-scene">씬 복제</button>
-          <button id="btn-delete-scene" class="danger">씬 삭제</button>
+          <input id="field-title" type="text" placeholder="???�목">
+          <button id="btn-duplicate-scene">??복제</button>
+          <button id="btn-delete-scene" class="danger">????��</button>
         </div>
         <div class="panel-section" data-panel-tab="node">
-          <div class="section-label">씬 ID</div>
-          <input id="field-scene-id" type="text" placeholder="씬 ID (영문, 언더스코어)">
+          <div class="section-label">??ID</div>
+          <input id="field-scene-id" type="text" placeholder="??ID (?�문, ?�더?�코??">
         </div>
 
         <div class="panel-section" data-panel-tab="node">
@@ -71,53 +70,53 @@
 
         <div class="panel-section" data-panel-tab="node">
           <div class="section-label">챕터</div>
-          <input id="field-chapter" type="number" min="1" step="1" placeholder="예: 3">
+          <input id="field-chapter" type="number" min="1" step="1" placeholder="?? 3">
         </div>
 
         <div class="panel-section" data-panel-tab="node">
-          <div class="section-label">음악</div>
+          <div class="section-label">?�악</div>
           <input id="field-music" type="text" placeholder="assets/sfx/...">
         </div>
 
         <div class="panel-section" data-panel-tab="node">
-          <div class="section-label">이펙트</div>
-          <input id="field-effect" type="text" placeholder="예: flicker, resonance, shake, blood">
+          <div class="section-label">?�펙??/div>
+          <input id="field-effect" type="text" placeholder="?? flicker, resonance, shake, blood">
         </div>
 
         <div class="panel-section" data-panel-tab="node">
-          <div class="section-label">씬 목표</div>
-          <input id="field-goal-kicker" type="text" placeholder="예: 현재 목표">
-          <textarea id="field-goal-text" rows="3" placeholder="이 씬에서 플레이어가 붙들어야 할 목표 문장"></textarea>
+          <div class="section-label">??목표</div>
+          <input id="field-goal-kicker" type="text" placeholder="?? ?�재 목표">
+          <textarea id="field-goal-text" rows="3" placeholder="???�에???�레?�어가 붙들?�야 ??목표 문장"></textarea>
         </div>
 
         <div class="panel-section" data-panel-tab="node">
-          <div class="section-label">조사 연결</div>
+          <div class="section-label">조사 ?�결</div>
           <select id="field-investigation-id">
             <option value="">(none)</option>
           </select>
         </div>
 
         <div class="panel-section" data-panel-tab="node">
-          <div class="section-label">증거 제시 UI</div>
-          <input id="field-evidence-prompt-title" type="text" placeholder="증거 제시 패널 제목">
-          <textarea id="field-evidence-prompt-hint" rows="2" placeholder="증거 제시 안내 문구"></textarea>
+          <div class="section-label">증거 ?�시 UI</div>
+          <input id="field-evidence-prompt-title" type="text" placeholder="증거 ?�시 ?�널 ?�목">
+          <textarea id="field-evidence-prompt-hint" rows="2" placeholder="증거 ?�시 ?�내 문구"></textarea>
         </div>
 
         <div class="panel-section" data-panel-tab="node">
-          <div class="section-label">대사 프리뷰</div>
+          <div class="section-label">?�???�리�?/div>
           <div class="qa-toggle-list">
-            <label class="qa-toggle"><input id="field-qa-current-dialog" type="checkbox"> 현재 미리보기 대사부터 시작</label>
-            <label class="qa-toggle"><input id="field-qa-all-evidence" type="checkbox" checked> 전체 단서 지급</label>
+            <label class="qa-toggle"><input id="field-qa-current-dialog" type="checkbox"> ?�재 미리보기 ?�?��????�작</label>
+            <label class="qa-toggle"><input id="field-qa-all-evidence" type="checkbox" checked> ?�체 ?�서 지�?/label>
           </div>
           <div class="qa-action-row">
-            <button id="btn-open-scene-qa" type="button">선택 씬 실행</button>
+            <button id="btn-open-scene-qa" type="button">?�택 ???�행</button>
             <button id="btn-copy-scene-qa" type="button" class="small">URL 복사</button>
           </div>
-          <div class="section-hint">현재 저장된 game_data.js 기준으로 새 탭에서 실행됩니다.</div>
+          <div class="section-hint">?�재 ?�?�된 game_data.js 기�??�로 ????��???�행?�니??</div>
         </div>
 
         <div class="panel-section" data-panel-tab="node">
-          <div class="section-label">대사 프리뷰</div>
+          <div class="section-label">?�???�리�?/div>
           <div id="dialogue-preview" class="dialogue-preview">
             <div id="preview-background" class="preview-background">
               <div class="preview-overlay"></div>
@@ -127,46 +126,39 @@
               </div>
               <div class="preview-dialogue-box">
                 <div id="preview-speaker" class="preview-speaker"></div>
-                <div id="preview-text" class="preview-text">대사를 선택하거나 입력하면 여기서 바로 확인할 수 있습니다.</div>
+                <div id="preview-text" class="preview-text">?�?��? ?�택?�거???�력?�면 ?�기??바로 ?�인?????�습?�다.</div>
               </div>
             </div>
             <div class="preview-toolbar">
-              <button id="btn-preview-prev" type="button" class="small">이전</button>
+              <button id="btn-preview-prev" type="button" class="small">?�전</button>
               <span id="preview-index-label">0 / 0</span>
-              <button id="btn-preview-next" type="button" class="small">다음</button>
+              <button id="btn-preview-next" type="button" class="small">?�음</button>
             </div>
             <div id="preview-choice-list" class="preview-choice-list"></div>
           </div>
         </div>
 
         <div class="panel-section" data-panel-tab="node">
-          <div class="section-label">대사
+          <div class="section-label">?�??
             <button id="btn-add-dialogue" class="small">+</button>
           </div>
           <div id="dialogue-list"></div>
         </div>
 
         <div class="panel-section" data-panel-tab="node">
-          <div class="section-label">선택지
+          <div class="section-label">?�택지
             <button id="btn-add-choice" class="small">+</button>
           </div>
           <div id="choice-list"></div>
         </div>
 
         <div class="panel-section" data-panel-tab="node">
-          <div class="section-label">조사 분기 대사 (priority_dialogues)
+          <div class="section-label">조사 분기 ?�??(priority_dialogues)
             <button id="btn-add-priority-group" class="small">+</button>
           </div>
           <div id="priority-dialogue-list"></div>
         </div>
 
-        <div class="panel-section" data-panel-tab="node">
-          <div class="section-label">조사 분기 대사 JSON
-            <span class="section-hint">고급 편집용</span>
-          </div>
-          <textarea id="field-priority-dialogues" rows="6" placeholder='{"after_key": [{"order":1,"speaker":"","text":"...","style":"narration"}]}'></textarea>
-          <button id="btn-apply-priority-dialogues" class="small" style="margin-top:4px">적용</button>
-        </div>
 
         <div class="panel-section" data-panel-tab="node">
           <div class="section-label">분기
@@ -176,21 +168,20 @@
         </div>
 
         <div class="panel-section" data-panel-tab="node">
-          <div class="section-label">단서
+          <div class="section-label">?�서
             <button id="btn-add-evidence" class="small">+</button>
           </div>
           <div id="evidence-list"></div>
         </div>
 
         <div class="panel-section" data-panel-tab="data" data-data-tab="characters">
-          <div class="section-label">캐릭터
-            <button id="btn-add-character" class="small">+</button>
+          <div class="section-label">캐릭??            <button id="btn-add-character" class="small">+</button>
           </div>
           <div id="character-list"></div>
         </div>
 
         <div class="panel-section" data-panel-tab="data" data-data-tab="character-emotions">
-          <div class="section-label">감정 이미지
+          <div class="section-label">감정 ?��?지
             <button id="btn-add-character-emotion" class="small">+</button>
           </div>
           <div id="character-emotion-list"></div>
@@ -211,28 +202,27 @@
         </div>
 
         <div class="panel-section" data-panel-tab="data" data-data-tab="gauge-states">
-          <div class="section-label">게이지 상태
+          <div class="section-label">게이지 ?�태
             <button id="btn-add-gauge-state" class="small">+</button>
           </div>
           <div id="gauge-state-list"></div>
         </div>
 
         <div class="panel-section" data-panel-tab="data" data-data-tab="effects">
-          <div class="section-label">이펙트
-            <button id="btn-add-effect" class="small">+</button>
+          <div class="section-label">?�펙??            <button id="btn-add-effect" class="small">+</button>
           </div>
           <div id="effect-list"></div>
         </div>
 
         <div class="panel-section" data-panel-tab="data" data-data-tab="choice-groups">
-          <div class="section-label">선택 그룹
+          <div class="section-label">?�택 그룹
             <button id="btn-add-choice-group" class="small">+</button>
           </div>
           <div id="choice-group-list"></div>
         </div>
 
         <div class="panel-section" data-panel-tab="data" data-data-tab="evidence-categories">
-          <div class="section-label">단서 분류
+          <div class="section-label">?�서 분류
             <button id="btn-add-evidence-category" class="small">+</button>
           </div>
           <div id="evidence-category-list"></div>
@@ -253,34 +243,27 @@
         </div>
 
         <div class="panel-section" data-panel-tab="data" data-data-tab="state-descriptors">
-          <div class="section-label">상태 설명
+          <div class="section-label">?�태 ?�명
             <button id="btn-add-state-descriptor" class="small">+</button>
           </div>
           <div id="state-descriptor-list"></div>
         </div>
 
-        <div class="panel-section" data-panel-tab="data" data-data-tab="rules">
-          <div class="section-label">룰
-            <button id="btn-add-rule" class="small">+</button>
-          </div>
-          <div id="rule-list"></div>
-        </div>
-
         <div class="panel-section" data-panel-tab="node">
-          <div class="section-label">구조 검수</div>
+          <div class="section-label">구조 검??/div>
           <div id="analysis-summary" class="validation-summary"></div>
           <div id="validation-summary" class="validation-summary"></div>
           <div id="validation-list" class="validation-list"></div>
         </div>
 
         <div class="panel-section" data-panel-tab="node">
-          <div class="section-label">준대량 편집</div>
-          <label><span>필터된 씬 배경 일괄 변경</span>
+          <div class="section-label">준?�???�집</div>
+          <label><span>?�터????배경 ?�괄 변�?/span>
             <input id="field-batch-background" type="text" placeholder="assets/bg/..."></label>
-          <button id="btn-apply-batch-background" type="button">현재 필터된 씬에 적용</button>
-          <label><span>필터된 씬 대사 스타일 일괄 변경</span>
+          <button id="btn-apply-batch-background" type="button">?�재 ?�터???�에 ?�용</button>
+          <label><span>?�터?????�???��????�괄 변�?/span>
             <select id="field-batch-style">
-              <option value="">스타일 선택</option>
+              <option value="">?��????�택</option>
               <option value="normal">normal</option>
               <option value="narration">narration</option>
               <option value="thought">thought</option>
@@ -288,18 +271,18 @@
               <option value="scared">scared</option>
               <option value="magic">magic</option>
             </select></label>
-          <button id="btn-apply-batch-style" type="button">필터된 씬 대사에 적용</button>
-          <label><span>플래그 키 일괄 치환 - 기존</span>
-            <input id="field-batch-flag-old" type="text" placeholder="예: old_flag"></label>
-          <label><span>플래그 키 일괄 치환 - 신규</span>
-            <input id="field-batch-flag-new" type="text" placeholder="예: new_flag"></label>
-          <button id="btn-apply-batch-flag" type="button">프로젝트 전체 치환</button>
-          <label><span>문자열 일괄 치환 - 기존</span>
-            <input id="field-batch-text-old" type="text" placeholder="예: 청의교"></label>
-          <label><span>문자열 일괄 치환 - 신규</span>
-            <input id="field-batch-text-new" type="text" placeholder="예: 청의단"></label>
-          <button id="btn-apply-batch-text" type="button">텍스트/제목/단서 일괄 치환</button>
-          <button id="btn-sort-scenes" type="button">챕터 기준 정렬 보조 적용</button>
+          <button id="btn-apply-batch-style" type="button">?�터?????�?�에 ?�용</button>
+          <label><span>?�래�????�괄 치환 - 기존</span>
+            <input id="field-batch-flag-old" type="text" placeholder="?? old_flag"></label>
+          <label><span>?�래�????�괄 치환 - ?�규</span>
+            <input id="field-batch-flag-new" type="text" placeholder="?? new_flag"></label>
+          <button id="btn-apply-batch-flag" type="button">?�로?�트 ?�체 치환</button>
+          <label><span>문자???�괄 치환 - 기존</span>
+            <input id="field-batch-text-old" type="text" placeholder="?? �?���?></label>
+          <label><span>문자???�괄 치환 - ?�규</span>
+            <input id="field-batch-text-new" type="text" placeholder="?? �?��??></label>
+          <button id="btn-apply-batch-text" type="button">?�스???�목/?�서 ?�괄 치환</button>
+          <button id="btn-sort-scenes" type="button">챕터 기�? ?�렬 보조 ?�용</button>
         </div>
       </div>
     </div>
@@ -310,6 +293,8 @@
   </div>
 
   <script src="editor-data-ui.js"></script>
+  <script src="editor-card-ui.js"></script>
+  <script src="editor-data-panels.js"></script>
   <script src="editor.js"></script>
 </body>
 </html>

@@ -58,9 +58,9 @@ const Evidence = (() => {
     };
   }
 
-  function resolveStateDescriptor(targetFlagId, rawValue, fallbackResolver) {
+  function resolveStateDescriptor(targetStateId, rawValue, fallbackResolver) {
     const descriptors = (Engine.data?.state_descriptors || [])
-      .filter(descriptor => descriptor?.target_flag_id === targetFlagId)
+      .filter(descriptor => descriptor?.target_state_id === targetStateId)
       .sort((a, b) => Number(a?.min_value || 0) - Number(b?.min_value || 0));
 
     const numericValue = Number(rawValue || 0);
@@ -81,7 +81,7 @@ const Evidence = (() => {
   }
 
   function getResonanceState() {
-    const value = Number(State.getFlag('ResonanceLevel') || 0);
+    const value = State.getResonanceValue();
     return resolveStateDescriptor('ResonanceLevel', value, () => {
       if (value >= 3) return { value: '침식', detail: '현실과 공명의 경계가 크게 흔들리고 있습니다.' };
       if (value >= 2) return { value: '심화', detail: '위험을 감수한 만큼 비현실의 결이 짙어졌습니다.' };
@@ -91,7 +91,7 @@ const Evidence = (() => {
   }
 
   function getTrustState() {
-    const trust = Number(State.getFlag('SongsoonTrust') || 0);
+    const trust = State.getSongsoonTrustValue();
     return resolveStateDescriptor('SongsoonTrust', trust, () => {
       if (trust >= 2) return { value: '신뢰', detail: '송순이 등을 돌리지 않고 같은 방향을 보고 있습니다.' };
       if (trust >= 1) return { value: '동행', detail: '경계는 남아 있지만 함께 움직일 정도의 틈은 생겼습니다.' };
@@ -100,9 +100,7 @@ const Evidence = (() => {
   }
 
   function getInvestigationState() {
-    const investigation = Number(State.getFlag('InvestigationScore') || 0);
-    const readScore = Number(State.getFlag('ReadRitualScore') || 0);
-    const combined = investigation + readScore;
+    const combined = State.getDerivedStateValue('InvestigationProgress');
     return resolveStateDescriptor('InvestigationProgress', combined, () => {
       if (combined >= 4) return { value: '심층', detail: '표면을 지나 사건의 구조와 의식을 함께 추적하는 단계입니다.' };
       if (combined >= 2) return { value: '접근', detail: '단서가 서로 이어지기 시작했고 질문의 결이 또렷해졌습니다.' };
@@ -111,7 +109,7 @@ const Evidence = (() => {
     });
   }
 
-  function parseRuleValue(value) {
+  function parseConditionValue(value) {
     if (value === null || value === undefined) return null;
     if (typeof value === 'boolean' || typeof value === 'number') return value;
     const text = String(value).trim();
@@ -122,56 +120,20 @@ const Evidence = (() => {
     return Number.isNaN(numeric) ? text : numeric;
   }
 
-  function getRuleFactValue(rule, context) {
-    const factType = rule?.fact_type;
-    const factKey = rule?.fact_key;
-    switch (factType) {
-      case 'RevealedCharacter':
-        return context.revealedCharacters.has(factKey);
-      case 'HasEvidence':
-        return State.getFlag(`HasEvidence_${factKey}`) === true;
-      case 'SceneProgressIndex':
-        return context.sceneProgressIndex;
-      case 'FlagValue':
-        return State.getFlag(factKey);
-      default:
-        return null;
-    }
+  function evaluateQuestionVisible(conditionGroupIds, context) {
+    const ids = Array.isArray(conditionGroupIds)
+      ? conditionGroupIds.filter(Boolean)
+      : [conditionGroupIds].filter(Boolean);
+    if (ids.length === 0) return true;
+    return ids.some(conditionGroupId => Scene.passesConditionGroup(conditionGroupId, context));
   }
 
-  function compareRuleValue(actualValue, operator, expectedValue) {
-    if (operator === 'Gte') {
-      return Number(actualValue) >= Number(expectedValue);
-    }
-    return actualValue === expectedValue;
-  }
-
-  function getRulesById(ruleId, ruleKind = null) {
-    return (Engine.data?.rules || [])
-      .filter(rule => rule?.rule_id === ruleId && (!ruleKind || rule?.rule_kind === ruleKind))
-      .slice()
-      .sort((a, b) => Number(a?.priority || 0) - Number(b?.priority || 0));
-  }
-
-  function evaluateQuestionVisible(ruleId, context) {
-    const rules = getRulesById(ruleId, 'Visible');
-    if (rules.length === 0) return true;
-    return rules.some(rule => compareRuleValue(
-      getRuleFactValue(rule, context),
-      rule.operator,
-      parseRuleValue(rule.value)
-    ));
-  }
-
-  function evaluateQuestionState(ruleId, context) {
-    const rules = getRulesById(ruleId, 'State');
-    if (rules.length === 0) return '추적 중';
-    const matched = rules.find(rule => compareRuleValue(
-      getRuleFactValue(rule, context),
-      rule.operator,
-      parseRuleValue(rule.value)
-    ));
-    return matched?.result_value || '추적 중';
+  function evaluateQuestionState(stateConditions, context) {
+    const rows = Array.isArray(stateConditions) ? stateConditions.slice() : [];
+    const matched = rows
+      .sort((a, b) => Number(a?.priority || 0) - Number(b?.priority || 0))
+      .find(entry => entry?.condition_group_id && Scene.passesConditionGroup(entry.condition_group_id, context));
+    return matched?.result_value || '?? ?';
   }
 
   function getStatusCards() {
@@ -190,7 +152,7 @@ const Evidence = (() => {
     if (characterId === 'Songsoon') return getTrustState().value;
     if (characterId === 'Yuu') return getInvestigationState().value;
     if (['Ipangyu', 'Haesim', 'Songgeum'].includes(characterId)) return getResonanceState().value;
-    if (characterId === 'Editor') return State.getFlag('CalledEditor') ? '연결됨' : '거리 유지';
+    if (characterId === 'Editor') return State.getBooleanState('CalledEditor') ? '연결됨' : '거리 유지';
     return '추적 중';
   }
 
@@ -243,7 +205,7 @@ const Evidence = (() => {
     const dataQuestions = (Engine.data?.questions || []).slice().sort((a, b) => Number(a?.sort_order || 0) - Number(b?.sort_order || 0));
     if (dataQuestions.length > 0) {
       return dataQuestions
-        .filter(question => evaluateQuestionVisible(question.visible_rule_id, context))
+        .filter(question => evaluateQuestionVisible(question.visible_condition_group_ids, context))
         .map(question => {
         const relatedEvidenceIds = Array.isArray(question.related_evidence_ids) ? question.related_evidence_ids : [];
         const relatedEvidence = relatedEvidenceIds.map(evidenceId => {
@@ -251,19 +213,19 @@ const Evidence = (() => {
           return {
             evidenceId,
             name: ev?.name || evidenceId,
-            isOwned: State.getFlag(`HasEvidence_${evidenceId}`) === true || State.getEvidence().includes(evidenceId),
+            isOwned: State.getEvidenceOwned(evidenceId),
           };
         });
         const ownedEvidence = relatedEvidence.filter(item => item.isOwned);
-        const solvedFlagId = question.solved_flag_id || '';
-        const isSolved = solvedFlagId ? State.getFlag(solvedFlagId) === true : false;
+        const solvedStateId = question.solved_state_id || '';
+        const isSolved = solvedStateId ? State.isQuestionSolved(solvedStateId) : false;
         const solutionEvidenceIds = Array.isArray(question.solution_evidence_ids)
           ? question.solution_evidence_ids.filter(Boolean)
           : [];
         return {
           questionId: question.question_id || '',
           title: question.title || '',
-          state: evaluateQuestionState(question.state_rule_id, context),
+          state: evaluateQuestionState(question.state_conditions, context),
           detail: question.detail || '',
           category: question.category || '',
           resolutionType: question.resolution_type || 'Evidence',
@@ -275,8 +237,8 @@ const Evidence = (() => {
           solutionMode: question.solution_mode || (solutionEvidenceIds.length > 1 ? 'All' : 'Any'),
           contradictionPrompt: question.contradiction_prompt || '',
           contradictionStatement: question.contradiction_statement || '',
-          solvedFlagId,
-          rewardFlagId: question.reward_flag_id || '',
+          solvedStateId,
+          rewardStateId: question.reward_state_id || '',
           rewardValue: question.reward_value,
           rewardMode: question.reward_mode || 'Set',
           relatedEvidence,
@@ -288,20 +250,16 @@ const Evidence = (() => {
   }
 
   function applyQuestionReward(question) {
-    if (!question?.rewardFlagId) return;
+    if (!question?.rewardStateId) return;
     if (question.rewardMode === 'Add') {
-      const currentValue = State.getFlag(question.rewardFlagId);
-      const base = Number(currentValue || 0);
-      const delta = Number(question.rewardValue || 0);
-      State.setFlag(question.rewardFlagId, base + delta);
+      State.incrementNumericState(question.rewardStateId, question.rewardValue);
       return;
     }
-    State.setFlag(question.rewardFlagId, question.rewardValue);
+    State.setNumericState(question.rewardStateId, question.rewardValue);
   }
 
   function incrementSolvedQuestionCount() {
-    const currentValue = Number(State.getFlag('SolvedQuestionCount') || 0);
-    State.setFlag('SolvedQuestionCount', currentValue + 1);
+    State.incrementNumericState('SolvedQuestionCount', 1);
   }
 
   function toggleQuestionEvidence(questionId, evidenceId) {
@@ -365,8 +323,8 @@ const Evidence = (() => {
     }
 
     if (isQuestionSolved(question, pickedIds)) {
-      if (question.solvedFlagId) {
-        State.setFlag(question.solvedFlagId, true);
+      if (question.solvedStateId) {
+        State.markQuestionSolved(question.solvedStateId);
       }
       incrementSolvedQuestionCount();
       applyQuestionReward(question);
@@ -448,7 +406,7 @@ const Evidence = (() => {
       const isNew = State.addEvidence(evidenceId);
       if (isNew) {
         UIManager.showToast(`단서 획득: 『${ev.name}』`, 'toast-save');
-        State.setFlag(`HasEvidence_${evidenceId}`, true);
+        State.setBooleanState(`HasEvidence_${evidenceId}`, true);
         updateBadge();
         if (this.isOpen()) renderNotebook();
       }

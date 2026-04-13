@@ -17,20 +17,36 @@
   const EXIT_MOTION_OPTIONS = ['None', 'FadeOut', 'SlideOutLeft', 'SlideOutRight'];
   const IDLE_MOTION_OPTIONS = ['None', 'Tremble', 'ShakeLight', 'ShakeHard'];
   const FX_TYPE_OPTIONS = ['None', 'Fog', 'BlueTrace', 'BloodSmear', 'Flicker', 'RitualGlow'];
-  const RULE_KIND_OPTIONS = ['Visible', 'State'];
   const QUESTION_RESOLUTION_TYPE_OPTIONS = ['Evidence', 'Contradiction'];
   const EDITOR_DATA_UI = window.EditorDataUI || {};
-  const RULE_FACT_TYPE_OPTIONS = EDITOR_DATA_UI.RULE_FACT_TYPE_OPTIONS || ['RevealedCharacter', 'HasEvidence', 'SceneProgressIndex', 'FlagValue'];
-  const RULE_OPERATOR_OPTIONS = ['Equals', 'Gte'];
+  const EDITOR_CARD_UI = window.EditorCardUI || {};
+  const EDITOR_DATA_PANELS = window.EditorDataPanels || {};
   const CONDITION_TYPE_OPTIONS = EDITOR_DATA_UI.CONDITION_TYPE_OPTIONS || ['GaugeValue', 'Trust', 'EvidenceOwned', 'ChoiceSelected', 'RevealedCharacter', 'SceneProgressIndex', 'SceneVisited'];
-  const STATE_TYPE_OPTIONS = EDITOR_DATA_UI.STATE_TYPE_OPTIONS || ['Erosion', 'Credibility', 'ReadRitualScore', 'SolvedQuestionCount'];
+  const NUMERIC_STATE_OPTIONS = EDITOR_DATA_UI.NUMERIC_STATE_OPTIONS || ['ResonanceLevel', 'InvestigationScore', 'SongsoonTrust', 'ReadRitualScore', 'SolvedQuestionCount'];
+  const DERIVED_STATE_OPTIONS = EDITOR_DATA_UI.DERIVED_STATE_OPTIONS || ['InvestigationProgress'];
+  const STATE_DESCRIPTOR_TYPE_OPTIONS = EDITOR_DATA_UI.STATE_DESCRIPTOR_TYPE_OPTIONS || ['Numeric', 'Derived'];
   const COMPARE_TYPE_OPTIONS = ['Equal', 'NotEqual', 'Greater', 'GreaterEqual', 'Less', 'LessEqual'];
   const CHOICE_GROUP_TYPE_OPTIONS = ['Normal', 'Investigation', 'Evidence'];
   const NEXT_TYPE_OPTIONS = ['Scene', 'Dialog', 'None'];
+  const EMPTY_DATA = {
+    first_scene: '',
+    characters: {},
+    character_emotions: {},
+    conditions: [],
+    gauges: [],
+    gauge_states: [],
+    effects: [],
+    choice_groups: [],
+    evidence_categories: [],
+    investigations: [],
+    questions: [],
+    state_descriptors: [],
+    scenes: {},
+  };
 
   // ── 상태 ──────────────────────────────────────────────
   const state = {
-    data: { first_scene: '', characters: {}, character_emotions: {}, conditions: [], choice_groups: [], evidence_categories: [], investigations: [], questions: [], state_descriptors: [], rules: [], scenes: {} },
+    data: structuredClone(EMPTY_DATA),
     layout: {},       // { sceneId: { x, y } }
     selectedId: null,
     selectedIds: new Set(),
@@ -52,6 +68,14 @@
   // ── DOM 참조 ──────────────────────────────────────────
   const $ = id => document.getElementById(id);
   const els = {};
+  const INVESTIGATION_DATALIST_ID = 'field-investigation-id-options';
+  let renderSelectOptions;
+  let replaceEnumInputs;
+  let replaceSelectInputs;
+  let replaceComboboxInputs;
+  let replaceMultiSelectInputs;
+  let makeCard;
+  let rebindCardCollection;
 
   function bindElements() {
     els.workspace    = $('workspace');
@@ -88,8 +112,6 @@
     els.fieldQaAllEvidence = $('field-qa-all-evidence');
     els.btnOpenSceneQa = $('btn-open-scene-qa');
     els.btnCopySceneQa = $('btn-copy-scene-qa');
-    els.fieldPriorityDialogues = $('field-priority-dialogues');
-    els.btnApplyPriorityDialogues = $('btn-apply-priority-dialogues');
     els.btnAddPriorityGroup = $('btn-add-priority-group');
     els.priorityDialogueList = $('priority-dialogue-list');
     els.fieldSceneId = $('field-scene-id');
@@ -97,12 +119,14 @@
     els.characterList = $('character-list');
     els.characterEmotionList = $('character-emotion-list');
     els.conditionList = $('condition-list');
+    els.gaugeList = $('gauge-list');
+    els.gaugeStateList = $('gauge-state-list');
+    els.effectList = $('effect-list');
     els.choiceGroupList = $('choice-group-list');
     els.evidenceCategoryList = $('evidence-category-list');
     els.investigationList = $('investigation-list');
     els.questionList = $('question-list');
     els.stateDescriptorList = $('state-descriptor-list');
-    els.ruleList = $('rule-list');
     els.analysisSummary = $('analysis-summary');
     els.validationSummary = $('validation-summary');
     els.validationList = $('validation-list');
@@ -131,6 +155,29 @@
     els.choiceList   = $('choice-list');
     els.branchList   = $('branch-list');
     els.status       = $('status');
+  }
+
+  function ensureStandaloneCombobox(inputEl, listId) {
+    if (!inputEl) return null;
+    if (inputEl.tagName === 'INPUT') return inputEl;
+
+    const combo = document.createElement('input');
+    combo.type = 'text';
+    combo.id = inputEl.id;
+    combo.className = inputEl.className || '';
+    combo.placeholder = inputEl.getAttribute('placeholder') || '';
+    combo.value = inputEl.value || '';
+    combo.setAttribute('list', listId);
+
+    let datalist = $(listId);
+    if (!datalist) {
+      datalist = document.createElement('datalist');
+      datalist.id = listId;
+    }
+
+    inputEl.replaceWith(combo);
+    combo.insertAdjacentElement('afterend', datalist);
+    return combo;
   }
 
   // ── 유틸 ──────────────────────────────────────────────
@@ -190,27 +237,6 @@
     window.open(buildSceneQaUrl(sceneId), '_blank', 'noopener');
   }
 
-  function renderSelectOptions(options, selectedValue, includeBlank = true) {
-    const normalized = selectedValue ?? '';
-    const items = [];
-    if (includeBlank) {
-      items.push(`<option value="">(none)</option>`);
-    }
-    options.forEach(option => {
-      items.push(`<option value="${escapeAttr(option)}"${normalized === option ? ' selected' : ''}>${escapeHtml(option)}</option>`);
-    });
-    return items.join('');
-  }
-  function replaceEnumInputs(container, mappings) {
-    mappings.forEach(({ field, options, includeBlank = true }) => {
-      container.querySelectorAll(`input[data-field="${field}"]`).forEach(input => {
-        const select = document.createElement('select');
-        select.dataset.field = field;
-        select.innerHTML = renderSelectOptions(options, input.value || '', includeBlank);
-        input.replaceWith(select);
-      });
-    });
-  }
   function getDataOptions(type) {
     const ui = EDITOR_DATA_UI;
     if (type === 'characterIds' && typeof ui.collectCharacterIds === 'function') return ui.collectCharacterIds(state.data);
@@ -218,32 +244,110 @@
     if (type === 'dialogIds' && typeof ui.collectDialogIds === 'function') return ui.collectDialogIds(state.data);
     if (type === 'sceneIds' && typeof ui.collectSceneIds === 'function') return ui.collectSceneIds(state.data);
     if (type === 'evidenceIds' && typeof ui.collectEvidenceIds === 'function') return ui.collectEvidenceIds(state.data);
-    if (type === 'ruleIds' && typeof ui.collectRuleIds === 'function') return ui.collectRuleIds(state.data);
     if (type === 'conditionGroupIds' && typeof ui.collectConditionGroupIds === 'function') return ui.collectConditionGroupIds(state.data);
     if (type === 'choiceGroupIds' && typeof ui.collectChoiceGroupIds === 'function') return ui.collectChoiceGroupIds(state.data);
     if (type === 'investigationIds' && typeof ui.collectInvestigationIds === 'function') return ui.collectInvestigationIds(state.data);
     if (type === 'evidenceCategoryIds' && typeof ui.collectEvidenceCategoryIds === 'function') return ui.collectEvidenceCategoryIds(state.data);
+    if (type === 'gaugeIds' && typeof ui.collectGaugeIds === 'function') return ui.collectGaugeIds(state.data);
+    if (type === 'booleanStateIds' && typeof ui.collectBooleanStateIds === 'function') return ui.collectBooleanStateIds(state.data);
+    if (type === 'numericStateIds' && typeof ui.collectNumericStateIds === 'function') return ui.collectNumericStateIds(state.data);
+    if (type === 'derivedStateIds' && typeof ui.collectDerivedStateIds === 'function') return ui.collectDerivedStateIds(state.data);
+    if (type === 'effectGroupIds' && typeof ui.collectEffectGroupIds === 'function') return ui.collectEffectGroupIds(state.data);
     return [];
   }
 
+  function getOptionObjects(type) {
+    if (type === 'characterIds') {
+      return getDataOptions('characterIds').map(characterId => ({
+        value: characterId,
+        label: state.data.characters?.[characterId]?.display_name
+          ? `${state.data.characters[characterId].display_name} (${characterId})`
+          : characterId,
+      }));
+    }
+    return getDataOptions(type);
+  }
+
   function replaceCharacterIdInputs(container, fieldName = 'CharacterID') {
-    const characterIds = getDataOptions('characterIds');
-    container.querySelectorAll(`input[data-field="${fieldName}"]`).forEach(input => {
-      const select = document.createElement('select');
-      select.dataset.field = fieldName;
-      select.innerHTML = renderSelectOptions(characterIds, input.value || '', false);
-      if (!characterIds.includes(input.value || '')) {
-        const custom = document.createElement('option');
-        custom.value = input.value || '';
-        custom.textContent = input.value || '(none)';
-        custom.selected = true;
-        select.prepend(custom);
-      }
-      input.replaceWith(select);
-    });
+    replaceComboboxInputs(container, [
+      { field: fieldName, options: () => getOptionObjects('characterIds') },
+    ]);
   }
   function uid() {
     return 'scene_' + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+  }
+
+  function resolveAssetPreviewUrl(assetPath) {
+    const raw = String(assetPath || '').trim();
+    if (!raw) return '';
+    if (/^(https?:|data:|blob:|file:|\/)/i.test(raw)) return raw;
+    return `../game/${raw.replace(/^\.?[\\/]+/, '').replace(/\\/g, '/')}`;
+  }
+
+  function attachAssetPreviews(container, fields) {
+    (fields || []).forEach(field => {
+      container.querySelectorAll(`input[data-field="${field}"]`).forEach(input => {
+        const preview = input.parentElement?.querySelector(`img[data-preview-for="${field}"]`);
+        if (!preview) return;
+
+        const syncPreview = () => {
+          const src = resolveAssetPreviewUrl(input.value);
+          if (!src) {
+            preview.removeAttribute('src');
+            preview.classList.add('hidden');
+            return;
+          }
+          preview.src = src;
+          preview.classList.remove('hidden');
+        };
+
+        if (preview.dataset.previewBound !== '1') {
+          preview.addEventListener('error', () => {
+            preview.classList.add('hidden');
+          });
+          preview.addEventListener('load', () => {
+            if (preview.getAttribute('src')) preview.classList.remove('hidden');
+          });
+          preview.dataset.previewBound = '1';
+        }
+
+        if (input.dataset.previewBound !== '1') {
+          input.addEventListener('input', syncPreview);
+          input.addEventListener('change', syncPreview);
+          input.dataset.previewBound = '1';
+        }
+
+        syncPreview();
+      });
+    });
+  }
+  function ensureDataShape(rawData) {
+    const data = rawData && typeof rawData === 'object'
+      ? { ...rawData }
+      : {};
+    data.first_scene = data.first_scene || '';
+    if (!data.characters || typeof data.characters !== 'object' || Array.isArray(data.characters)) data.characters = {};
+    if (!data.character_emotions || typeof data.character_emotions !== 'object' || Array.isArray(data.character_emotions)) data.character_emotions = {};
+    ['conditions', 'gauges', 'gauge_states', 'effects', 'choice_groups', 'evidence_categories', 'investigations', 'questions', 'state_descriptors'].forEach((key) => {
+      if (!Array.isArray(data[key])) data[key] = [];
+    });
+    if (!data.scenes || typeof data.scenes !== 'object' || Array.isArray(data.scenes)) data.scenes = {};
+    return data;
+  }
+  function registerCollectionAddButton(buttonId, collectionKey, factory, idField, prefix) {
+    $(buttonId).addEventListener('click', () => {
+      pushHistory();
+      state.data[collectionKey] = state.data[collectionKey] || [];
+      const row = factory();
+      if (idField && prefix) {
+        let suffix = state.data[collectionKey].length + 1;
+        do {
+          row[idField] = `${prefix}${suffix++}`;
+        } while (state.data[collectionKey].some(item => item?.[idField] === row[idField]));
+      }
+      state.data[collectionKey].push(row);
+      afterChange();
+    });
   }
   function setStatus(msg, err) {
     els.status.textContent = msg;
@@ -396,17 +500,7 @@
 
   function restoreSnapshot(snapshot) {
     const parsed = JSON.parse(snapshot);
-    state.data = parsed.data || { first_scene: '', characters: {}, character_emotions: {}, conditions: [], choice_groups: [], evidence_categories: [], investigations: [], questions: [], state_descriptors: [], rules: [], scenes: {} };
-    if (!state.data.characters) state.data.characters = {};
-    if (!state.data.character_emotions) state.data.character_emotions = {};
-    if (!Array.isArray(state.data.conditions)) state.data.conditions = [];
-    if (!Array.isArray(state.data.choice_groups)) state.data.choice_groups = [];
-    if (!Array.isArray(state.data.evidence_categories)) state.data.evidence_categories = [];
-    if (!Array.isArray(state.data.investigations)) state.data.investigations = [];
-    if (!Array.isArray(state.data.questions)) state.data.questions = [];
-    if (!Array.isArray(state.data.state_descriptors)) state.data.state_descriptors = [];
-    if (!Array.isArray(state.data.rules)) state.data.rules = [];
-    if (!state.data.scenes) state.data.scenes = {};
+    state.data = ensureDataShape(parsed.data);
     state.layout = parsed.layout || {};
   }
 
@@ -415,6 +509,20 @@
     if (state.history.length > 30) state.history.shift();
     state.future = [];
   }
+  const cardUi = typeof EDITOR_CARD_UI.create === 'function'
+    ? EDITOR_CARD_UI.create({ escapeAttr, escapeHtml, pushHistory })
+    : null;
+  if (!cardUi) {
+    throw new Error('EditorCardUI.create is not available');
+  }
+    renderSelectOptions = cardUi.renderSelectOptions;
+    replaceEnumInputs = cardUi.replaceEnumInputs;
+    replaceSelectInputs = cardUi.replaceSelectInputs;
+    replaceComboboxInputs = cardUi.replaceComboboxInputs;
+    replaceMultiSelectInputs = cardUi.replaceMultiSelectInputs;
+    makeCard = cardUi.makeCard;
+    rebindCardCollection = cardUi.rebindCardCollection;
+
   function undo() {
     if (state.history.length === 0) { setStatus('더 이상 되돌릴 수 없습니다', true); return; }
     state.future.push(snapshotState());
@@ -963,6 +1071,22 @@
     setStatus('? 자동 정렬 적용 완료');
   }
 
+  function renderDataEditors() {
+    [
+      renderCharacterList,
+      renderCharacterEmotionList,
+      renderConditionList,
+      renderGaugeList,
+      renderGaugeStateList,
+      renderEffectList,
+      renderChoiceGroupList,
+      renderEvidenceCategoryList,
+      renderInvestigationList,
+      renderQuestionList,
+      renderStateDescriptorList,
+    ].forEach((renderSection) => renderSection());
+  }
+
   // ── 오른쪽 패널 ───────────────────────────────────────
   function renderPanel() {
     ensurePrimarySelection();
@@ -970,15 +1094,7 @@
     const hasScene = Boolean(id && state.data.scenes[id]);
 
     if (state.panelTab === 'data') {
-      renderCharacterList();
-      renderCharacterEmotionList();
-      renderConditionList();
-      renderChoiceGroupList();
-      renderEvidenceCategoryList();
-      renderInvestigationList();
-      renderQuestionList();
-      renderStateDescriptorList();
-      renderRuleList();
+      renderDataEditors();
       els.panelEmpty.classList.add('hidden');
       els.panelContent.classList.remove('hidden');
       applyPanelTabVisibility();
@@ -1012,13 +1128,19 @@
     els.fieldGoalKicker.value = scene.goal_kicker || '';
     els.fieldGoalText.value = scene.goal_text || '';
     if (els.fieldInvestigationId) {
-      els.fieldInvestigationId.innerHTML = renderSelectOptions(getDataOptions('investigationIds'), scene.investigation_id || '', true);
+      const investigationOptions = getDataOptions('investigationIds');
+      const investigationValue = scene.investigation_id || '';
+      const optionList = $(INVESTIGATION_DATALIST_ID);
+      if (optionList) {
+        const uniqueOptions = investigationValue && !investigationOptions.includes(investigationValue)
+          ? [investigationValue, ...investigationOptions]
+          : investigationOptions;
+        optionList.innerHTML = uniqueOptions.map(option => `<option value="${escapeAttr(option)}"></option>`).join('');
+      }
+      els.fieldInvestigationId.value = investigationValue;
     }
     els.fieldEvidencePromptTitle.value = scene.evidence_prompt_title || '';
     els.fieldEvidencePromptHint.value = scene.evidence_prompt_hint || '';
-    els.fieldPriorityDialogues.value = scene.priority_dialogues
-      ? JSON.stringify(scene.priority_dialogues, null, 2)
-      : '';
     els.fieldSceneId.value = id;
 
     renderDialoguePreview(scene);
@@ -1091,65 +1213,6 @@
     markDirty();
     render();
     renderPanel();
-  }
-
-  function makeCard(labelText, items, template, onAdd, onDelete, onUp, onDown, onChange) {
-    const wrap = document.createElement('div');
-    wrap.style.display = 'flex';
-    wrap.style.flexDirection = 'column';
-    wrap.style.gap = '6px';
-
-    items.forEach((item, i) => {
-      const card = document.createElement('div');
-      card.className = 'pcard';
-      card.innerHTML = `
-        <div class="pcard-toolbar">
-          <span>${labelText} ${i + 1}</span>
-          <div class="actions">
-            <button data-action="up">↑</button>
-            <button data-action="down">↓</button>
-            <button data-action="delete" class="danger">×</button>
-          </div>
-        </div>
-        ${template(item, i)}
-      `;
-
-      card.querySelector('[data-action="up"]').addEventListener('click', () => { pushHistory(); onUp(i); });
-      card.querySelector('[data-action="down"]').addEventListener('click', () => { pushHistory(); onDown(i); });
-      card.querySelector('[data-action="delete"]').addEventListener('click', () => { pushHistory(); onDelete(i); });
-
-      bindCardFieldEvents(card, item, onChange);
-
-      wrap.appendChild(card);
-    });
-
-    return wrap;
-  }
-
-  function bindCardFieldEvents(card, item, onChange) {
-    card.querySelectorAll('input,textarea,select').forEach(el => {
-      if (el.dataset.bound === '1') return;
-      const ev = el.tagName === 'SELECT' ? 'change' : 'input';
-      const beginSnapshot = () => {
-        if (card.dataset.historyCaptured === '1') return;
-        pushHistory();
-        card.dataset.historyCaptured = '1';
-      };
-      el.addEventListener('focus', beginSnapshot, { once: false });
-      el.addEventListener(ev, () => {
-        onChange(item, el.dataset.field, el.value);
-      });
-      el.addEventListener('blur', () => {
-        card.dataset.historyCaptured = '0';
-      });
-      el.dataset.bound = '1';
-    });
-  }
-
-  function rebindCardCollection(container, items, onChange) {
-    container.querySelectorAll('.pcard').forEach((card, index) => {
-      bindCardFieldEvents(card, items[index], onChange);
-    });
   }
 
   function swap(arr, i, j) {
@@ -1231,48 +1294,16 @@
       { field: 'fx_type', options: FX_TYPE_OPTIONS },
     ]);
 
-    cards.querySelectorAll('input[data-field="condition_group_id"]').forEach(input => {
-      const select = document.createElement('select');
-      select.dataset.field = 'condition_group_id';
-      select.innerHTML = renderSelectOptions(getDataOptions('conditionGroupIds'), input.value || '', true);
-      input.replaceWith(select);
-    });
-
-    cards.querySelectorAll('input[data-field="choice_group_id"]').forEach(input => {
-      const select = document.createElement('select');
-      select.dataset.field = 'choice_group_id';
-      select.innerHTML = renderSelectOptions(getDataOptions('choiceGroupIds'), input.value || '', true);
-      input.replaceWith(select);
-    });
-
-    cards.querySelectorAll('input[data-field="next_dialog_id"]').forEach(input => {
-      const select = document.createElement('select');
-      select.dataset.field = 'next_dialog_id';
-      select.innerHTML = renderSelectOptions(getDataOptions('dialogIds'), input.value || '', true);
-      input.replaceWith(select);
-    });
-
-    // speaker_id → 캐릭터 드롭다운 교체
-    const characterIds = getDataOptions('characterIds');
-    cards.querySelectorAll('input[data-field="speaker_id"]').forEach(input => {
-      const sel = document.createElement('select');
-      sel.dataset.field = 'speaker_id';
-      const blank = document.createElement('option');
-      blank.value = ''; blank.textContent = '?';
-      sel.appendChild(blank);
-      characterIds.forEach(cid => {
-        const opt = document.createElement('option');
-        opt.value = cid;
-        opt.textContent = state.data.characters[cid]?.display_name || cid;
-        if (input.value === cid) opt.selected = true;
-        sel.appendChild(opt);
-      });
-      input.replaceWith(sel);
-    });
+    replaceComboboxInputs(cards, [
+      { field: 'condition_group_id', options: () => getDataOptions('conditionGroupIds') },
+      { field: 'choice_group_id', options: () => getDataOptions('choiceGroupIds') },
+      { field: 'next_dialog_id', options: () => getDataOptions('dialogIds') },
+      { field: 'speaker_id', options: () => getOptionObjects('characterIds') },
+    ]);
 
     // speaker_id 변경 시 emotion_type 선택지 연동
-    cards.querySelectorAll('select[data-field="speaker_id"]').forEach(speakerSel => {
-      speakerSel.addEventListener('change', () => {
+    cards.querySelectorAll('input[data-field="speaker_id"]').forEach(speakerSel => {
+      const syncEmotionOptions = () => {
         const sid = speakerSel.value;
         const card = speakerSel.closest('.pcard');
         const emotionSel = card?.querySelector('select[data-field="emotion_type"]');
@@ -1284,7 +1315,9 @@
         const opts = emotions.length > 0 ? emotions : EMOTION_TYPE_OPTIONS;
         emotionSel.innerHTML = '<option value="">?</option>' +
           opts.map(e => `<option value="${e}"${cur === e ? ' selected' : ''}>${e}</option>`).join('');
-      });
+      };
+      speakerSel.addEventListener('input', syncEmotionOptions);
+      speakerSel.addEventListener('change', syncEmotionOptions);
     });
 
     rebindCardCollection(cards, scene.dialogues, handleDialogueChange);
@@ -1335,38 +1368,19 @@
       { field: 'next_type', options: NEXT_TYPE_OPTIONS },
     ]);
 
-    cards.querySelectorAll('input[data-field="choice_group_id"]').forEach(input => {
-      const select = document.createElement('select');
-      select.dataset.field = 'choice_group_id';
-      select.innerHTML = renderSelectOptions(getDataOptions('choiceGroupIds'), input.value || '', true);
-      input.replaceWith(select);
-    });
-    cards.querySelectorAll('input[data-field="condition_group_id"]').forEach(input => {
-      const select = document.createElement('select');
-      select.dataset.field = 'condition_group_id';
-      select.innerHTML = renderSelectOptions(getDataOptions('conditionGroupIds'), input.value || '', true);
-      input.replaceWith(select);
-    });
-    cards.querySelectorAll('input[data-field="evidence_id"]').forEach(input => {
-      const select = document.createElement('select');
-      select.dataset.field = 'evidence_id';
-      select.innerHTML = renderSelectOptions(getDataOptions('evidenceIds'), input.value || '', true);
-      input.replaceWith(select);
-    });
-    cards.querySelectorAll('input[data-field="effect_group_id"]').forEach(input => {
-      const select = document.createElement('select');
-      select.dataset.field = 'effect_group_id';
-      select.innerHTML = renderSelectOptions(getDataOptions('effectGroupIds'), input.value || '', true);
-      input.replaceWith(select);
-    });
+    replaceComboboxInputs(cards, [
+      { field: 'choice_group_id', options: () => getDataOptions('choiceGroupIds') },
+      { field: 'condition_group_id', options: () => getDataOptions('conditionGroupIds') },
+      { field: 'evidence_id', options: () => getDataOptions('evidenceIds') },
+      { field: 'effect_group_id', options: () => getDataOptions('effectGroupIds') },
+    ]);
     cards.querySelectorAll('input[data-field="next_id"]').forEach(input => {
       const row = input.closest('.pcard');
       const nextType = row?.querySelector('[data-field="next_type"]')?.value || '';
       const options = nextType === 'Scene' ? getDataOptions('sceneIds') : nextType === 'Dialog' ? getDataOptions('dialogIds') : [];
-      const select = document.createElement('select');
-      select.dataset.field = 'next_id';
-      select.innerHTML = renderSelectOptions(options, input.value || '', true);
-      input.replaceWith(select);
+      replaceComboboxInputs(row, [
+        { field: 'next_id', options },
+      ]);
     });
 
     rebindCardCollection(cards, scene.choices, handleChoiceChange);
@@ -1514,7 +1528,6 @@
         (line, field, value) => {
           line[field] = value || (field === 'style' ? 'narration' : '');
           markDirty();
-          els.fieldPriorityDialogues.value = JSON.stringify(scene.priority_dialogues, null, 2);
         }
       );
 
@@ -1522,13 +1535,9 @@
         { field: 'emotion_type', options: EMOTION_TYPE_OPTIONS },
       ]);
 
-      const characterIds = Object.keys(state.data.characters || {}).sort();
-      lineCards.querySelectorAll('input[data-field="speaker_id"]').forEach(input => {
-        const select = document.createElement('select');
-        select.dataset.field = 'speaker_id';
-        select.innerHTML = renderSelectOptions(characterIds, input.value || '', true);
-        input.replaceWith(select);
-      });
+      replaceComboboxInputs(lineCards, [
+        { field: 'speaker_id', options: () => getOptionObjects('characterIds') },
+      ]);
 
       lineWrap.appendChild(lineCards);
       wrap.appendChild(groupCard);
@@ -1559,18 +1568,10 @@
       (b, field, value) => { b[field] = value; markDirty(); render(); renderValidationPanel(); }
     );
 
-    cards.querySelectorAll('input[data-field="condition_group_id"]').forEach(input => {
-      const select = document.createElement('select');
-      select.dataset.field = 'condition_group_id';
-      select.innerHTML = renderSelectOptions(getDataOptions('conditionGroupIds'), input.value || '', true);
-      input.replaceWith(select);
-    });
-    cards.querySelectorAll('input[data-field="next_scene"]').forEach(input => {
-      const select = document.createElement('select');
-      select.dataset.field = 'next_scene';
-      select.innerHTML = renderSelectOptions(getDataOptions('sceneIds'), input.value || '', true);
-      input.replaceWith(select);
-    });
+    replaceComboboxInputs(cards, [
+      { field: 'condition_group_id', options: () => getDataOptions('conditionGroupIds') },
+      { field: 'next_scene', options: () => getDataOptions('sceneIds') },
+    ]);
 
     els.branchList.appendChild(cards);
   }
@@ -1590,13 +1591,10 @@
         <label><span>설명</span>
           <textarea data-field="description">${escapeHtml(e.description || '')}</textarea></label>
         <label><span>이미지</span>
-          <input data-field="image" value="${escapeAttr(e.image || '')}"></label>
+          <input data-field="image" value="${escapeAttr(e.image || '')}">
+          <img data-preview-for="image" class="asset-thumb hidden" alt="증거 이미지 미리보기"></label>
         <label><span>카테고리 ID</span>
           <input data-field="category_id" value="${escapeAttr(e.category_id || '')}" placeholder="예: ritual"></label>
-        <label><span>카테고리명</span>
-          <input data-field="category_title" value="${escapeAttr(e.category_title || '')}" placeholder="예: 의례와 공명"></label>
-        <label><span>카테고리 설명</span>
-          <input data-field="category_hint" value="${escapeAttr(e.category_hint || '')}" placeholder="예: 문, 무녀, 감응과 연결된 흔적"></label>
         <label><span>트리거</span>
           <select data-field="trigger">
             <option value="auto"${(e.trigger || 'auto') === 'auto' ? ' selected' : ''}>auto</option>
@@ -1619,128 +1617,12 @@
       }
     );
 
-    cards.querySelectorAll('input[data-field="category_id"]').forEach(input => {
-      const select = document.createElement('select');
-      select.dataset.field = 'category_id';
-      select.innerHTML = renderSelectOptions(getDataOptions('evidenceCategoryIds'), input.value || '', true);
-      input.replaceWith(select);
-    });
+    replaceComboboxInputs(cards, [
+      { field: 'category_id', options: () => getDataOptions('evidenceCategoryIds') },
+    ]);
+    attachAssetPreviews(cards, ['image']);
 
     els.evidenceList.appendChild(cards);
-  }
-
-  function getCharacterRows() {
-    return Object.entries(state.data.characters || {}).map(([characterId, character]) => ({
-      CharacterID: characterId,
-      DisplayName: character?.display_name || '',
-      DefaultEmotionType: character?.default_emotion_type || '',
-      DefaultImagePath: character?.default_image_path || '',
-      RoleText: character?.role_text || '',
-      NotebookSummary1: character?.notebook_summary1 || '',
-      NotebookSummary2: character?.notebook_summary2 || '',
-    }));
-  }
-
-  function getCharacterEmotionRows() {
-    const rows = [];
-    Object.entries(state.data.character_emotions || {}).forEach(([characterId, emotionMap]) => {
-      Object.entries(emotionMap || {}).forEach(([emotionType, imagePath]) => {
-        rows.push({
-          CharacterID: characterId,
-          EmotionType: emotionType,
-          ImagePath: imagePath || '',
-        });
-      });
-    });
-    return rows;
-  }
-
-  function getQuestionRows() {
-    return (state.data.questions || []).map(question => ({
-      QuestionID: question?.question_id || '',
-      Title: question?.title || '',
-      Detail: question?.detail || '',
-      SortOrder: question?.sort_order ?? '',
-      Category: question?.category || '',
-      ResolutionType: question?.resolution_type || 'Evidence',
-      VisibleRuleID: question?.visible_rule_id || '',
-      StateRuleID: question?.state_rule_id || '',
-      RelatedEvidenceIDs: Array.isArray(question?.related_evidence_ids) ? question.related_evidence_ids.join(', ') : '',
-      SolutionEvidenceIDs: Array.isArray(question?.solution_evidence_ids) ? question.solution_evidence_ids.join(', ') : '',
-      SolutionMode: question?.solution_mode || '',
-      ContradictionPrompt: question?.contradiction_prompt || '',
-      ContradictionStatement: question?.contradiction_statement || '',
-      SolvedFlagID: question?.solved_flag_id || '',
-      ResolvedDetail: question?.resolved_detail || '',
-      SuccessToast: question?.success_toast || '',
-      FailureToast: question?.failure_toast || '',
-      RewardFlagID: question?.reward_flag_id || '',
-      RewardValue: question?.reward_value ?? '',
-      RewardMode: question?.reward_mode || '',
-    }));
-  }
-
-  function getConditionRows() {
-    return (state.data.conditions || []).map(item => ({
-      ConditionID: item?.condition_id || '',
-      ConditionGroupID: item?.condition_group_id || '',
-      ConditionType: item?.condition_type || '',
-      ConditionTargetID: item?.condition_target_id ?? '',
-      CompareType: item?.compare_type || '',
-      ConditionValue: item?.condition_value ?? '',
-    }));
-  }
-
-  function getChoiceGroupRows() {
-    return (state.data.choice_groups || []).map(item => ({
-      ChoiceGroupID: item?.choice_group_id || '',
-      Type: item?.type || 'Normal',
-      ConditionGroupID: item?.condition_group_id || '',
-      MaxSelectable: item?.max_selectable ?? '',
-    }));
-  }
-
-  function getEvidenceCategoryRows() {
-    return (state.data.evidence_categories || []).map(item => ({
-      CategoryID: item?.category_id || '',
-      CategoryTitle: item?.category_title || '',
-      CategoryHint: item?.category_hint || '',
-    }));
-  }
-
-  function getInvestigationRows() {
-    return (state.data.investigations || []).map(item => ({
-      InvestigationID: item?.investigation_id || '',
-      Title: item?.title || '',
-      Hint: item?.hint || '',
-      Budget: item?.budget ?? '',
-      ChoiceGroupID: item?.choice_group_id || '',
-    }));
-  }
-
-  function getStateDescriptorRows() {
-    return (state.data.state_descriptors || []).map(descriptor => ({
-      DescriptorID: descriptor?.descriptor_id || '',
-      TargetFlagID: descriptor?.target_flag_id || '',
-      MinValue: descriptor?.min_value ?? '',
-      MaxValue: descriptor?.max_value ?? '',
-      Label: descriptor?.label || '',
-      Detail: descriptor?.detail || '',
-    }));
-  }
-
-  function getRuleRows() {
-    return (state.data.rules || []).map(rule => ({
-      RuleRowID: rule?.rule_row_id || '',
-      RuleID: rule?.rule_id || '',
-      RuleKind: rule?.rule_kind || '',
-      FactType: rule?.fact_type || '',
-      FactKey: rule?.fact_key || '',
-      Operator: rule?.operator || '',
-      Value: rule?.value ?? '',
-      ResultValue: rule?.result_value || '',
-      Priority: rule?.priority ?? '',
-    }));
   }
 
   function syncCharacterEmotionBuckets() {
@@ -1799,588 +1681,206 @@
   }
 
   function renderCharacterList() {
-    els.characterList.innerHTML = '';
-    const rows = getCharacterRows();
-    const handleCharacterChange = (row, field, value) => {
-      const currentId = row.CharacterID;
-      if (!state.data.characters[currentId]) {
-        state.data.characters[currentId] = {
-          id: currentId,
-          display_name: '',
-          default_emotion_type: '',
-          default_image_path: '',
-          role_text: '',
-          notebook_summary1: '',
-          notebook_summary2: '',
-        };
-      }
-
-      if (field === 'CharacterID') {
-        const nextId = (value || '').trim();
-        if (!nextId) return;
-        if (!renameCharacterId(currentId, nextId)) {
-          setStatus('이미 존재하는 CharacterID입니다', true);
-          renderPanel();
-          return;
-        }
-        row.CharacterID = nextId;
-        markDirty();
-        renderPanel();
-        return;
-      } else {
-        const target = state.data.characters[row.CharacterID];
-        if (field === 'DisplayName') target.display_name = value || '';
-        if (field === 'DefaultEmotionType') target.default_emotion_type = value || '';
-        if (field === 'DefaultImagePath') target.default_image_path = value || '';
-        if (field === 'RoleText') target.role_text = value || '';
-        if (field === 'NotebookSummary1') target.notebook_summary1 = value || '';
-        if (field === 'NotebookSummary2') target.notebook_summary2 = value || '';
-      }
-
-      markDirty();
-      renderNodes();
-      renderAnalysisPanel();
-      renderValidationPanel();
-    };
-
-    const cards = makeCard(
-      'Character', rows,
-        (row) => `
-        <label><span>CharacterID</span>
-          <input data-field="CharacterID" value="${escapeAttr(row.CharacterID || '')}" placeholder="예: Yuu"></label>
-        <label><span>DisplayName</span>
-          <input data-field="DisplayName" value="${escapeAttr(row.DisplayName || '')}" placeholder="예: 유웅룡"></label>
-        <label><span>DefaultEmotionType</span>
-          <input data-field="DefaultEmotionType" value="${escapeAttr(row.DefaultEmotionType || '')}" placeholder="예: Neutral"></label>
-        <label><span>DefaultImagePath</span>
-          <input data-field="DefaultImagePath" value="${escapeAttr(row.DefaultImagePath || '')}" placeholder="assets/standing/..."></label>
-        <label><span>RoleText</span>
-          <input data-field="RoleText" value="${escapeAttr(row.RoleText || '')}" placeholder="예: 증언자"></label>
-        <label><span>NotebookSummary1</span>
-          <textarea data-field="NotebookSummary1" rows="2">${escapeHtml(row.NotebookSummary1 || '')}</textarea></label>
-        <label><span>NotebookSummary2</span>
-          <textarea data-field="NotebookSummary2" rows="2">${escapeHtml(row.NotebookSummary2 || '')}</textarea></label>
-      `,
-      () => {
-        const characterId = `Character${rows.length + 1}`;
-        if (!state.data.characters) state.data.characters = {};
-        state.data.characters[characterId] = {
-          id: characterId,
-          display_name: '',
-          default_emotion_type: 'Neutral',
-          default_image_path: '',
-          role_text: '',
-          notebook_summary1: '',
-          notebook_summary2: '',
-        };
-        afterChange();
-      },
-      (i) => {
-        const target = rows[i];
-        if (!target) return;
-        delete state.data.characters[target.CharacterID];
-        delete state.data.character_emotions[target.CharacterID];
-        Object.values(state.data.scenes || {}).forEach(scene => {
-          (scene.dialogues || []).forEach(dialogue => {
-            if (dialogue.speaker_id === target.CharacterID) dialogue.speaker_id = null;
-          });
-        });
-        afterChange();
-      },
-      () => {},
-      () => {},
-      handleCharacterChange
-    );
-
-    replaceEnumInputs(cards, [
-      { field: 'DefaultEmotionType', options: EMOTION_TYPE_OPTIONS },
-    ]);
-
-    rebindCardCollection(cards, rows, handleCharacterChange);
-
-    els.characterList.appendChild(cards);
+    return EDITOR_DATA_PANELS.renderCharacterList({
+      els,
+      state,
+      makeCard,
+      rebindCardCollection,
+      replaceEnumInputs,
+      escapeAttr,
+      escapeHtml,
+      markDirty,
+      afterChange,
+      setStatus,
+      renderPanel,
+      renderNodes,
+      renderAnalysisPanel,
+      renderValidationPanel,
+      renameCharacterId,
+      emotionTypeOptions: EMOTION_TYPE_OPTIONS,
+      attachAssetPreviews,
+    });
   }
 
   function renderCharacterEmotionList() {
-    els.characterEmotionList.innerHTML = '';
-    const rows = getCharacterEmotionRows();
-    const handleCharacterEmotionChange = (row, field, value) => {
-      const currentCharacterId = row.CharacterID;
-      const currentEmotionType = row.EmotionType;
-
-      if (field === 'ImagePath') {
-        if (!state.data.character_emotions[currentCharacterId]) state.data.character_emotions[currentCharacterId] = {};
-        state.data.character_emotions[currentCharacterId][currentEmotionType] = value || '';
-      } else {
-        const nextCharacterId = field === 'CharacterID' ? value : row.CharacterID;
-        const nextEmotionType = field === 'EmotionType' ? value : row.EmotionType;
-        const imagePath = state.data.character_emotions?.[currentCharacterId]?.[currentEmotionType] || row.ImagePath || '';
-        if (!moveCharacterEmotion(currentCharacterId, currentEmotionType, nextCharacterId, nextEmotionType, imagePath)) {
-          setStatus('CharacterID와 EmotionType은 비워둘 수 없습니다', true);
-          renderPanel();
-          return;
-        }
-        row.CharacterID = (nextCharacterId || '').trim();
-        row.EmotionType = (nextEmotionType || '').trim();
-        syncCharacterEmotionBuckets();
-        markDirty();
-        renderPanel();
-        return;
-      }
-
-      syncCharacterEmotionBuckets();
-      markDirty();
-    };
-
-    const cards = makeCard(
-      'CharacterEmotion', rows,
-      (row) => `
-        <label><span>CharacterID</span>
-          <input data-field="CharacterID" value="${escapeAttr(row.CharacterID || '')}" placeholder="예: Yuu"></label>
-        <label><span>EmotionType</span>
-          <input data-field="EmotionType" value="${escapeAttr(row.EmotionType || '')}" placeholder="예: Neutral"></label>
-        <label><span>ImagePath</span>
-          <input data-field="ImagePath" value="${escapeAttr(row.ImagePath || '')}" placeholder="assets/standing/..."></label>
-      `,
-      () => {
-        if (!state.data.character_emotions) state.data.character_emotions = {};
-        if (!state.data.character_emotions.__NewCharacter__) state.data.character_emotions.__NewCharacter__ = {};
-        state.data.character_emotions.__NewCharacter__.Neutral = '';
-        afterChange();
-      },
-      (i) => {
-        const target = rows[i];
-        if (!target) return;
-        if (state.data.character_emotions?.[target.CharacterID]) {
-          delete state.data.character_emotions[target.CharacterID][target.EmotionType];
-          if (Object.keys(state.data.character_emotions[target.CharacterID]).length === 0) {
-            delete state.data.character_emotions[target.CharacterID];
-          }
-        }
-        afterChange();
-      },
-      () => {},
-      () => {},
-      handleCharacterEmotionChange
-    );
-
-    replaceCharacterIdInputs(cards, 'CharacterID');
-    replaceEnumInputs(cards, [
-      { field: 'EmotionType', options: EMOTION_TYPE_OPTIONS, includeBlank: false },
-    ]);
-
-    rebindCardCollection(cards, rows, handleCharacterEmotionChange);
-
-    els.characterEmotionList.appendChild(cards);
+    return EDITOR_DATA_PANELS.renderCharacterEmotionList({
+      els,
+      state,
+      makeCard,
+      rebindCardCollection,
+      replaceEnumInputs,
+      replaceCharacterIdInputs,
+      escapeAttr,
+      markDirty,
+      afterChange,
+      setStatus,
+      renderPanel,
+      moveCharacterEmotion,
+      syncCharacterEmotionBuckets,
+      emotionTypeOptions: EMOTION_TYPE_OPTIONS,
+      attachAssetPreviews,
+    });
   }
 
   function renderQuestionList() {
-    els.questionList.innerHTML = '';
-    const rows = getQuestionRows();
-    const handleQuestionChange = (row, field, value) => {
-      const target = state.data.questions.find(question => (question.question_id || '') === row.QuestionID) || state.data.questions.find((_, idx) => rows[idx] === row);
-      if (!target) return;
-      if (field === 'QuestionID') target.question_id = value || '';
-      if (field === 'Title') target.title = value || '';
-      if (field === 'Detail') target.detail = value || '';
-      if (field === 'SortOrder') target.sort_order = value === '' ? null : Number.parseInt(value, 10);
-      if (field === 'Category') target.category = value || '';
-      if (field === 'ResolutionType') target.resolution_type = value || 'Evidence';
-      if (field === 'VisibleRuleID') target.visible_rule_id = value || '';
-      if (field === 'StateRuleID') target.state_rule_id = value || '';
-      if (field === 'RelatedEvidenceIDs') target.related_evidence_ids = String(value || '').split(',').map(part => part.trim()).filter(Boolean);
-      if (field === 'SolutionEvidenceIDs') target.solution_evidence_ids = String(value || '').split(',').map(part => part.trim()).filter(Boolean);
-      if (field === 'SolutionMode') target.solution_mode = value || '';
-      if (field === 'ContradictionPrompt') target.contradiction_prompt = value || '';
-      if (field === 'ContradictionStatement') target.contradiction_statement = value || '';
-      if (field === 'SolvedFlagID') target.solved_flag_id = value || '';
-      if (field === 'ResolvedDetail') target.resolved_detail = value || '';
-      if (field === 'SuccessToast') target.success_toast = value || '';
-      if (field === 'FailureToast') target.failure_toast = value || '';
-      if (field === 'RewardFlagID') target.reward_flag_id = value || '';
-      if (field === 'RewardValue') target.reward_value = value === '' ? null : (/^-?\d+(\.\d+)?$/.test(String(value)) ? Number(value) : value);
-      if (field === 'RewardMode') target.reward_mode = value || '';
-      markDirty();
-    };
-
-    const cards = makeCard(
-      'Question', rows,
-      (row) => `
-        <label><span>QuestionID</span>
-          <input data-field="QuestionID" value="${escapeAttr(row.QuestionID || '')}" placeholder="예: QSonggeumMissing"></label>
-        <label><span>Title</span>
-          <input data-field="Title" value="${escapeAttr(row.Title || '')}" placeholder="질문 제목"></label>
-        <label><span>Detail</span>
-          <textarea data-field="Detail" rows="3">${escapeHtml(row.Detail || '')}</textarea></label>
-        <label><span>SortOrder</span>
-          <input data-field="SortOrder" type="number" min="0" step="1" value="${escapeAttr(row.SortOrder != null ? String(row.SortOrder) : '')}"></label>
-        <label><span>Category</span>
-          <input data-field="Category" value="${escapeAttr(row.Category || '')}" placeholder="예: Missing"></label>
-        <label><span>ResolutionType</span>
-          <input data-field="ResolutionType" value="${escapeAttr(row.ResolutionType || 'Evidence')}" placeholder="Evidence / Contradiction"></label>
-        <label><span>VisibleRuleID</span>
-          <input data-field="VisibleRuleID" value="${escapeAttr(row.VisibleRuleID || '')}" placeholder="예: QR_SonggeumOpen"></label>
-          <label><span>StateRuleID</span>
-            <input data-field="StateRuleID" value="${escapeAttr(row.StateRuleID || '')}" placeholder="예: QS_SonggeumMissing"></label>
-          <label><span>RelatedEvidenceIDs</span>
-            <input data-field="RelatedEvidenceIDs" value="${escapeAttr(row.RelatedEvidenceIDs || '')}" placeholder="예: EvDiary, EvOldArticles"></label>
-          <label><span>SolutionEvidenceIDs</span>
-            <input data-field="SolutionEvidenceIDs" value="${escapeAttr(row.SolutionEvidenceIDs || '')}" placeholder="예: EvRitualScore, EvRitualNote"></label>
-          <label><span>SolutionMode</span>
-            <input data-field="SolutionMode" value="${escapeAttr(row.SolutionMode || '')}" placeholder="Any / All"></label>
-          <label><span>ContradictionPrompt</span>
-            <textarea data-field="ContradictionPrompt" rows="2">${escapeHtml(row.ContradictionPrompt || '')}</textarea></label>
-          <label><span>ContradictionStatement</span>
-            <textarea data-field="ContradictionStatement" rows="3">${escapeHtml(row.ContradictionStatement || '')}</textarea></label>
-          <label><span>SolvedFlagID</span>
-            <input data-field="SolvedFlagID" value="${escapeAttr(row.SolvedFlagID || '')}" placeholder="예: QuestionSolved_QSonggeumMissing"></label>
-          <label><span>ResolvedDetail</span>
-            <textarea data-field="ResolvedDetail" rows="3">${escapeHtml(row.ResolvedDetail || '')}</textarea></label>
-          <label><span>SuccessToast</span>
-            <textarea data-field="SuccessToast" rows="2">${escapeHtml(row.SuccessToast || '')}</textarea></label>
-          <label><span>FailureToast</span>
-            <textarea data-field="FailureToast" rows="2">${escapeHtml(row.FailureToast || '')}</textarea></label>
-          <label><span>RewardFlagID</span>
-            <input data-field="RewardFlagID" value="${escapeAttr(row.RewardFlagID || '')}" placeholder="예: InvestigationScore"></label>
-          <label><span>RewardValue</span>
-            <input data-field="RewardValue" value="${escapeAttr(row.RewardValue != null ? String(row.RewardValue) : '')}" placeholder="예: 1"></label>
-          <label><span>RewardMode</span>
-            <input data-field="RewardMode" value="${escapeAttr(row.RewardMode || '')}" placeholder="Set / Add"></label>
-        `,
-      () => {
-        state.data.questions = state.data.questions || [];
-        state.data.questions.push(newQuestion());
-        afterChange();
-      },
-      (i) => {
-        state.data.questions.splice(i, 1);
-        afterChange();
-      },
-      (i) => { if (swap(state.data.questions, i - 1, i)) afterChange(); },
-      (i) => { if (swap(state.data.questions, i, i + 1)) afterChange(); },
-      handleQuestionChange
-    );
-
-    replaceEnumInputs(cards, [
-      { field: 'ResolutionType', options: QUESTION_RESOLUTION_TYPE_OPTIONS, includeBlank: false },
-    ]);
-
-    cards.querySelectorAll('input[data-field="VisibleRuleID"]').forEach(input => {
-      const select = document.createElement('select');
-      select.dataset.field = 'VisibleRuleID';
-      select.innerHTML = renderSelectOptions(getDataOptions('ruleIds'), input.value || '', true);
-      input.replaceWith(select);
+    return EDITOR_DATA_PANELS.renderQuestionList({
+      els,
+      state,
+      makeCard,
+      rebindCardCollection,
+      replaceEnumInputs,
+      replaceComboboxInputs,
+      replaceMultiSelectInputs,
+      getDataOptions,
+      escapeAttr,
+      escapeHtml,
+      markDirty,
+      afterChange,
+      swap,
+      newQuestion,
+      setStatus,
+      questionResolutionTypeOptions: QUESTION_RESOLUTION_TYPE_OPTIONS,
+      questionSolutionModeOptions: EDITOR_DATA_UI.QUESTION_SOLUTION_MODE_OPTIONS || ['Any', 'All'],
+      questionRewardModeOptions: EDITOR_DATA_UI.QUESTION_REWARD_MODE_OPTIONS || ['Set', 'Add'],
     });
-    cards.querySelectorAll('input[data-field="StateRuleID"]').forEach(input => {
-      const select = document.createElement('select');
-      select.dataset.field = 'StateRuleID';
-      select.innerHTML = renderSelectOptions(getDataOptions('ruleIds'), input.value || '', true);
-      input.replaceWith(select);
-    });
-
-    rebindCardCollection(cards, rows, handleQuestionChange);
-
-    els.questionList.appendChild(cards);
   }
 
   function renderConditionList() {
-    els.conditionList.innerHTML = '';
-    const rows = getConditionRows();
-    const handleConditionChange = (row, field, value) => {
-      const target = state.data.conditions.find(item => (item.condition_id || '') === row.ConditionID) || state.data.conditions.find((_, idx) => rows[idx] === row);
-      if (!target) return;
-      if (field === 'ConditionID') target.condition_id = value || '';
-      if (field === 'ConditionGroupID') target.condition_group_id = value || '';
-      if (field === 'ConditionType') target.condition_type = value || '';
-      if (field === 'ConditionTargetID') target.condition_target_id = value === '' ? null : value;
-      if (field === 'CompareType') target.compare_type = value || '';
-      if (field === 'ConditionValue') target.condition_value = value === '' ? null : value;
-      markDirty();
-      if (field === 'ConditionType') renderConditionList();
-    };
-
-    const cards = makeCard(
-      'Condition', rows,
-      (row) => `
-        <label><span>ConditionID</span>
-          <input data-field="ConditionID" value="${escapeAttr(row.ConditionID || '')}" placeholder="예: C0001"></label>
-        <label><span>ConditionGroupID</span>
-          <input data-field="ConditionGroupID" value="${escapeAttr(row.ConditionGroupID || '')}" placeholder="예: CG_SonggeumOpen"></label>
-        <label><span>ConditionType</span>
-          <input data-field="ConditionType" value="${escapeAttr(row.ConditionType || '')}" placeholder="예: EvidenceOwned"></label>
-        <label><span>ConditionTargetID</span>
-          <input data-field="ConditionTargetID" value="${escapeAttr(row.ConditionTargetID != null ? String(row.ConditionTargetID) : '')}" placeholder="예: EvDiary"></label>
-        <label><span>CompareType</span>
-          <input data-field="CompareType" value="${escapeAttr(row.CompareType || '')}" placeholder="예: Equal"></label>
-        <label><span>ConditionValue</span>
-          <input data-field="ConditionValue" value="${escapeAttr(row.ConditionValue != null ? String(row.ConditionValue) : '')}" placeholder="예: true"></label>
-      `,
-      () => { state.data.conditions.push(newCondition()); afterChange(); },
-      (i) => { state.data.conditions.splice(i, 1); afterChange(); },
-      (i) => { if (swap(state.data.conditions, i - 1, i)) afterChange(); },
-      (i) => { if (swap(state.data.conditions, i, i + 1)) afterChange(); },
-      handleConditionChange
-    );
-
-    replaceEnumInputs(cards, [
-      { field: 'ConditionType', options: CONDITION_TYPE_OPTIONS, includeBlank: false },
-      { field: 'CompareType', options: COMPARE_TYPE_OPTIONS, includeBlank: false },
-    ]);
-
-    cards.querySelectorAll('.pcard').forEach(card => {
-      const typeSelect = card.querySelector('[data-field="ConditionType"]');
-      const targetInput = card.querySelector('[data-field="ConditionTargetID"]');
-      if (!typeSelect || !targetInput) return;
-      const options = typeof EDITOR_DATA_UI.getConditionTargetOptions === 'function'
-        ? EDITOR_DATA_UI.getConditionTargetOptions(state.data, typeSelect.value)
-        : [];
-      if (options.length === 0) return;
-      const select = document.createElement('select');
-      select.dataset.field = 'ConditionTargetID';
-      select.innerHTML = renderSelectOptions(options, targetInput.value || '', true);
-      targetInput.replaceWith(select);
+    return EDITOR_DATA_PANELS.renderConditionList({
+      els,
+      state,
+      makeCard,
+      rebindCardCollection,
+      replaceEnumInputs,
+      replaceComboboxInputs,
+      renderSelectOptions,
+      escapeAttr,
+      markDirty,
+      afterChange,
+      swap,
+      newCondition,
+      editorDataUi: EDITOR_DATA_UI,
+      conditionTypeOptions: CONDITION_TYPE_OPTIONS,
+      compareTypeOptions: COMPARE_TYPE_OPTIONS,
     });
+  }
 
-    rebindCardCollection(cards, rows, handleConditionChange);
+  function renderGaugeList() {
+    return EDITOR_DATA_PANELS.renderGaugeList({
+      els,
+      state,
+      makeCard,
+      rebindCardCollection,
+      replaceEnumInputs,
+      escapeAttr,
+      markDirty,
+      afterChange,
+      swap,
+      newGauge,
+    });
+  }
 
-    els.conditionList.appendChild(cards);
+  function renderGaugeStateList() {
+    return EDITOR_DATA_PANELS.renderGaugeStateList({
+      els,
+      state,
+      makeCard,
+      rebindCardCollection,
+      replaceComboboxInputs,
+      getDataOptions,
+      escapeAttr,
+      escapeHtml,
+      markDirty,
+      afterChange,
+      swap,
+      newGaugeState,
+    });
+  }
+
+  function renderEffectList() {
+    return EDITOR_DATA_PANELS.renderEffectList({
+      els,
+      state,
+      makeCard,
+      rebindCardCollection,
+      replaceEnumInputs,
+      replaceComboboxInputs,
+      getDataOptions,
+      escapeAttr,
+      markDirty,
+      afterChange,
+      swap,
+      newEffect,
+      editorDataUi: EDITOR_DATA_UI,
+    });
   }
 
   function renderChoiceGroupList() {
-    els.choiceGroupList.innerHTML = '';
-    const rows = getChoiceGroupRows();
-    const handleChoiceGroupChange = (row, field, value) => {
-      const target = state.data.choice_groups.find(item => (item.choice_group_id || '') === row.ChoiceGroupID) || state.data.choice_groups.find((_, idx) => rows[idx] === row);
-      if (!target) return;
-      if (field === 'ChoiceGroupID') target.choice_group_id = value || '';
-      if (field === 'Type') target.type = value || 'Normal';
-      if (field === 'ConditionGroupID') target.condition_group_id = value || '';
-      if (field === 'MaxSelectable') target.max_selectable = value === '' ? null : Number.parseInt(value, 10);
-      markDirty();
-    };
-    const cards = makeCard(
-      'ChoiceGroup', rows,
-      (row) => `
-        <label><span>ChoiceGroupID</span>
-          <input data-field="ChoiceGroupID" value="${escapeAttr(row.ChoiceGroupID || '')}" placeholder="예: CG_CafeInvestigation"></label>
-        <label><span>Type</span>
-          <input data-field="Type" value="${escapeAttr(row.Type || '')}" placeholder="예: Investigation"></label>
-        <label><span>ConditionGroupID</span>
-          <input data-field="ConditionGroupID" value="${escapeAttr(row.ConditionGroupID || '')}" placeholder="예: CG_Visible"></label>
-        <label><span>MaxSelectable</span>
-          <input data-field="MaxSelectable" type="number" min="0" step="1" value="${escapeAttr(row.MaxSelectable != null ? String(row.MaxSelectable) : '')}"></label>
-      `,
-      () => { state.data.choice_groups.push(newChoiceGroup()); afterChange(); },
-      (i) => { state.data.choice_groups.splice(i, 1); afterChange(); },
-      (i) => { if (swap(state.data.choice_groups, i - 1, i)) afterChange(); },
-      (i) => { if (swap(state.data.choice_groups, i, i + 1)) afterChange(); },
-      handleChoiceGroupChange
-    );
-    replaceEnumInputs(cards, [
-      { field: 'Type', options: CHOICE_GROUP_TYPE_OPTIONS, includeBlank: false },
-    ]);
-    cards.querySelectorAll('input[data-field="ConditionGroupID"]').forEach(input => {
-      const select = document.createElement('select');
-      select.dataset.field = 'ConditionGroupID';
-      select.innerHTML = renderSelectOptions(getDataOptions('conditionGroupIds'), input.value || '', true);
-      input.replaceWith(select);
+    return EDITOR_DATA_PANELS.renderChoiceGroupList({
+      els,
+      state,
+      makeCard,
+      rebindCardCollection,
+      replaceEnumInputs,
+      replaceComboboxInputs,
+      getDataOptions,
+      escapeAttr,
+      markDirty,
+      afterChange,
+      swap,
+      newChoiceGroup,
+      choiceGroupTypeOptions: CHOICE_GROUP_TYPE_OPTIONS,
     });
-    rebindCardCollection(cards, rows, handleChoiceGroupChange);
-    els.choiceGroupList.appendChild(cards);
   }
 
   function renderEvidenceCategoryList() {
-    els.evidenceCategoryList.innerHTML = '';
-    const rows = getEvidenceCategoryRows();
-    const cards = makeCard(
-      'EvidenceCategory', rows,
-      (row) => `
-        <label><span>CategoryID</span>
-          <input data-field="CategoryID" value="${escapeAttr(row.CategoryID || '')}" placeholder="예: ritual"></label>
-        <label><span>CategoryTitle</span>
-          <input data-field="CategoryTitle" value="${escapeAttr(row.CategoryTitle || '')}" placeholder="예: 의례와 공명"></label>
-        <label><span>CategoryHint</span>
-          <textarea data-field="CategoryHint" rows="2">${escapeHtml(row.CategoryHint || '')}</textarea></label>
-      `,
-      () => { state.data.evidence_categories.push(newEvidenceCategory()); afterChange(); },
-      (i) => { state.data.evidence_categories.splice(i, 1); afterChange(); },
-      (i) => { if (swap(state.data.evidence_categories, i - 1, i)) afterChange(); },
-      (i) => { if (swap(state.data.evidence_categories, i, i + 1)) afterChange(); },
-      (row, field, value) => {
-        const target = state.data.evidence_categories.find(item => (item.category_id || '') === row.CategoryID) || state.data.evidence_categories.find((_, idx) => rows[idx] === row);
-        if (!target) return;
-        if (field === 'CategoryID') target.category_id = value || '';
-        if (field === 'CategoryTitle') target.category_title = value || '';
-        if (field === 'CategoryHint') target.category_hint = value || '';
-        markDirty();
-      }
-    );
-    els.evidenceCategoryList.appendChild(cards);
+    return EDITOR_DATA_PANELS.renderEvidenceCategoryList({
+      els,
+      state,
+      makeCard,
+      escapeAttr,
+      escapeHtml,
+      markDirty,
+      afterChange,
+      swap,
+      newEvidenceCategory,
+    });
   }
 
   function renderInvestigationList() {
-    els.investigationList.innerHTML = '';
-    const rows = getInvestigationRows();
-    const handleInvestigationChange = (row, field, value) => {
-      const target = state.data.investigations.find(item => (item.investigation_id || '') === row.InvestigationID) || state.data.investigations.find((_, idx) => rows[idx] === row);
-      if (!target) return;
-      if (field === 'InvestigationID') target.investigation_id = value || '';
-      if (field === 'Title') target.title = value || '';
-      if (field === 'Hint') target.hint = value || '';
-      if (field === 'Budget') target.budget = value === '' ? null : Number.parseInt(value, 10);
-      if (field === 'ChoiceGroupID') target.choice_group_id = value || '';
-      markDirty();
-    };
-    const cards = makeCard(
-      'Investigation', rows,
-      (row) => `
-        <label><span>InvestigationID</span>
-          <input data-field="InvestigationID" value="${escapeAttr(row.InvestigationID || '')}" placeholder="예: INV_Cafe"></label>
-        <label><span>Title</span>
-          <input data-field="Title" value="${escapeAttr(row.Title || '')}" placeholder="조사 제목"></label>
-        <label><span>Hint</span>
-          <textarea data-field="Hint" rows="2">${escapeHtml(row.Hint || '')}</textarea></label>
-        <label><span>Budget</span>
-          <input data-field="Budget" type="number" min="0" step="1" value="${escapeAttr(row.Budget != null ? String(row.Budget) : '')}"></label>
-        <label><span>ChoiceGroupID</span>
-          <input data-field="ChoiceGroupID" value="${escapeAttr(row.ChoiceGroupID || '')}" placeholder="예: CG_CafeInvestigation"></label>
-      `,
-      () => { state.data.investigations.push(newInvestigation()); afterChange(); },
-      (i) => { state.data.investigations.splice(i, 1); afterChange(); },
-      (i) => { if (swap(state.data.investigations, i - 1, i)) afterChange(); },
-      (i) => { if (swap(state.data.investigations, i, i + 1)) afterChange(); },
-      handleInvestigationChange
-    );
-
-    cards.querySelectorAll('input[data-field="ChoiceGroupID"]').forEach(input => {
-      const select = document.createElement('select');
-      select.dataset.field = 'ChoiceGroupID';
-      select.innerHTML = renderSelectOptions(getDataOptions('choiceGroupIds'), input.value || '', true);
-      input.replaceWith(select);
+    return EDITOR_DATA_PANELS.renderInvestigationList({
+      els,
+      state,
+      makeCard,
+      rebindCardCollection,
+      replaceComboboxInputs,
+      getDataOptions,
+      escapeAttr,
+      escapeHtml,
+      markDirty,
+      afterChange,
+      swap,
+      newInvestigation,
     });
-    rebindCardCollection(cards, rows, handleInvestigationChange);
-    els.investigationList.appendChild(cards);
   }
 
   function renderStateDescriptorList() {
-    els.stateDescriptorList.innerHTML = '';
-    const rows = getStateDescriptorRows();
-    const handleStateDescriptorChange = (row, field, value) => {
-      const target = state.data.state_descriptors.find(descriptor => (descriptor.descriptor_id || '') === row.DescriptorID) || state.data.state_descriptors.find((_, idx) => rows[idx] === row);
-      if (!target) return;
-      if (field === 'DescriptorID') target.descriptor_id = value || '';
-      if (field === 'TargetFlagID') target.target_flag_id = value || '';
-      if (field === 'MinValue') target.min_value = value === '' ? null : Number(value);
-      if (field === 'MaxValue') target.max_value = value === '' ? null : Number(value);
-      if (field === 'Label') target.label = value || '';
-      if (field === 'Detail') target.detail = value || '';
-      markDirty();
-    };
-
-    const cards = makeCard(
-      'StateDescriptor', rows,
-      (row) => `
-        <label><span>DescriptorID</span>
-          <input data-field="DescriptorID" value="${escapeAttr(row.DescriptorID || '')}" placeholder="예: SD_Resonance_0"></label>
-        <label><span>TargetFlagID</span>
-          <input data-field="TargetFlagID" value="${escapeAttr(row.TargetFlagID || '')}" placeholder="예: ResonanceLevel"></label>
-        <label><span>MinValue</span>
-          <input data-field="MinValue" type="number" step="1" value="${escapeAttr(row.MinValue != null ? String(row.MinValue) : '')}"></label>
-        <label><span>MaxValue</span>
-          <input data-field="MaxValue" type="number" step="1" value="${escapeAttr(row.MaxValue != null ? String(row.MaxValue) : '')}"></label>
-        <label><span>Label</span>
-          <input data-field="Label" value="${escapeAttr(row.Label || '')}" placeholder="예: 전조"></label>
-        <label><span>Detail</span>
-          <textarea data-field="Detail" rows="3">${escapeHtml(row.Detail || '')}</textarea></label>
-      `,
-      () => {
-        state.data.state_descriptors = state.data.state_descriptors || [];
-        state.data.state_descriptors.push(newStateDescriptor());
-        afterChange();
-      },
-      (i) => {
-        state.data.state_descriptors.splice(i, 1);
-        afterChange();
-      },
-      (i) => { if (swap(state.data.state_descriptors, i - 1, i)) afterChange(); },
-      (i) => { if (swap(state.data.state_descriptors, i, i + 1)) afterChange(); },
-      handleStateDescriptorChange
-    );
-
-    cards.querySelectorAll('input[data-field="TargetFlagID"]').forEach(input => {
-      const select = document.createElement('select');
-      select.dataset.field = 'TargetFlagID';
-      select.innerHTML = renderSelectOptions(STATE_TYPE_OPTIONS, input.value || '', true);
-      input.replaceWith(select);
+    return EDITOR_DATA_PANELS.renderStateDescriptorList({
+      els,
+      state,
+      makeCard,
+      rebindCardCollection,
+      replaceEnumInputs,
+      replaceComboboxInputs,
+      escapeAttr,
+      escapeHtml,
+      markDirty,
+      afterChange,
+      swap,
+      newStateDescriptor,
+      stateTypeOptions: (targetType) => targetType === 'Derived' ? DERIVED_STATE_OPTIONS : NUMERIC_STATE_OPTIONS,
+      stateDescriptorTypeOptions: STATE_DESCRIPTOR_TYPE_OPTIONS,
     });
-    rebindCardCollection(cards, rows, handleStateDescriptorChange);
-
-    els.stateDescriptorList.appendChild(cards);
-  }
-
-  function renderRuleList() {
-    els.ruleList.innerHTML = '';
-    const rows = getRuleRows();
-    const handleRuleChange = (row, field, value) => {
-      const target = state.data.rules.find(rule => (rule.rule_row_id || '') === row.RuleRowID) || state.data.rules.find((_, idx) => rows[idx] === row);
-      if (!target) return;
-      if (field === 'RuleRowID') target.rule_row_id = value || '';
-      if (field === 'RuleID') target.rule_id = value || '';
-      if (field === 'RuleKind') target.rule_kind = value || '';
-      if (field === 'FactType') target.fact_type = value || '';
-      if (field === 'FactKey') target.fact_key = value || '';
-      if (field === 'Operator') target.operator = value || '';
-      if (field === 'Value') target.value = value === '' ? null : value;
-      if (field === 'ResultValue') target.result_value = value || '';
-      if (field === 'Priority') target.priority = value === '' ? null : Number.parseInt(value, 10);
-      markDirty();
-    };
-
-    const cards = makeCard(
-      'Rule', rows,
-      (row) => `
-        <label><span>RuleRowID</span>
-          <input data-field="RuleRowID" value="${escapeAttr(row.RuleRowID || '')}" placeholder="예: RR_QSonggeum_01"></label>
-        <label><span>RuleID</span>
-          <input data-field="RuleID" value="${escapeAttr(row.RuleID || '')}" placeholder="예: QR_SonggeumOpen"></label>
-        <label><span>RuleKind</span>
-          <input data-field="RuleKind" value="${escapeAttr(row.RuleKind || '')}" placeholder="Visible / State"></label>
-        <label><span>FactType</span>
-          <input data-field="FactType" value="${escapeAttr(row.FactType || '')}" placeholder="예: HasEvidence"></label>
-        <label><span>FactKey</span>
-          <input data-field="FactKey" value="${escapeAttr(row.FactKey || '')}" placeholder="예: EvDiary"></label>
-        <label><span>Operator</span>
-          <input data-field="Operator" value="${escapeAttr(row.Operator || '')}" placeholder="Equals / Gte"></label>
-        <label><span>Value</span>
-          <input data-field="Value" value="${escapeAttr(row.Value != null ? String(row.Value) : '')}" placeholder="예: true 또는 1"></label>
-        <label><span>ResultValue</span>
-          <input data-field="ResultValue" value="${escapeAttr(row.ResultValue || '')}" placeholder="State 규칙 결과"></label>
-        <label><span>Priority</span>
-          <input data-field="Priority" type="number" step="1" value="${escapeAttr(row.Priority != null ? String(row.Priority) : '')}"></label>
-      `,
-      () => {
-        state.data.rules = state.data.rules || [];
-        state.data.rules.push(newRule());
-        afterChange();
-      },
-      (i) => {
-        state.data.rules.splice(i, 1);
-        afterChange();
-      },
-      (i) => { if (swap(state.data.rules, i - 1, i)) afterChange(); },
-      (i) => { if (swap(state.data.rules, i, i + 1)) afterChange(); },
-      handleRuleChange
-    );
-
-    replaceEnumInputs(cards, [
-      { field: 'RuleKind', options: RULE_KIND_OPTIONS, includeBlank: false },
-      { field: 'FactType', options: RULE_FACT_TYPE_OPTIONS, includeBlank: false },
-      { field: 'Operator', options: RULE_OPERATOR_OPTIONS, includeBlank: false },
-    ]);
-
-    rebindCardCollection(cards, rows, handleRuleChange);
-
-    els.ruleList.appendChild(cards);
   }
 
   function afterChange() {
@@ -2429,7 +1929,7 @@
     return { branch_id: '', condition_group_id: '', next_scene: '' };
   }
   function newEvidence() {
-    return { evidence_id: '', trigger: 'auto', name: '', description: '', image: '', category_id: '', category_title: '', category_hint: '' };
+    return { evidence_id: '', trigger: 'auto', name: '', description: '', image: '', category_id: '' };
   }
   function newCharacter() {
     return { CharacterID: '', DisplayName: '', DefaultEmotionType: 'Neutral', DefaultImagePath: '', RoleText: '', NotebookSummary1: '', NotebookSummary2: '' };
@@ -2439,6 +1939,15 @@
   }
   function newCondition() {
     return { condition_id: '', condition_group_id: '', condition_type: 'EvidenceOwned', condition_target_id: '', compare_type: 'Equal', condition_value: '' };
+  }
+  function newGauge() {
+    return { gauge_id: '', label: '', min_value: 0, max_value: 10, default_value: 0, hud_visible: true, hud_order: 0 };
+  }
+  function newGaugeState() {
+    return { gauge_id: '', min_value: 0, max_value: 0, label: '', hud_color: '', detail: '', trigger_scene_id: null };
+  }
+  function newEffect() {
+    return { effect_group_id: '', effect_type: 'GaugeChange', gauge_id: null, gauge_delta: null, evidence_id: null, trust_character_id: null, trust_delta: null };
   }
   function newChoiceGroup() {
     return { choice_group_id: '', type: 'Normal', condition_group_id: '', max_selectable: null };
@@ -2457,27 +1966,24 @@
       sort_order: null,
       category: '',
       resolution_type: 'Evidence',
-      visible_rule_id: '',
-      state_rule_id: '',
+      visible_condition_group_ids: [],
+      state_conditions: [],
       related_evidence_ids: [],
       solution_evidence_ids: [],
       solution_mode: '',
       contradiction_prompt: '',
       contradiction_statement: '',
-      solved_flag_id: '',
+      solved_state_id: '',
       resolved_detail: '',
       success_toast: '',
       failure_toast: '',
-      reward_flag_id: '',
+      reward_state_id: '',
       reward_value: null,
       reward_mode: '',
     };
   }
   function newStateDescriptor() {
-    return { descriptor_id: '', target_flag_id: '', min_value: 0, max_value: 0, label: '', detail: '' };
-  }
-  function newRule() {
-    return { rule_row_id: '', rule_id: '', rule_kind: 'Visible', fact_type: 'FlagValue', fact_key: '', operator: 'Equals', value: '', result_value: '', priority: 0 };
+    return { descriptor_id: '', target_state_type: 'Numeric', target_state_id: '', min_value: 0, max_value: 0, label: '', detail: '' };
   }
   function newScene(id) {
     return {
@@ -2493,7 +1999,7 @@
     return Number.isFinite(parsed) ? parsed : fallback;
   }
 
-  function normalizeFlagValue(value) {
+  function normalizeStateValue(value) {
     if (value === '' || value == null) return null;
     return value;
   }
@@ -2563,8 +2069,6 @@
       description: evidence.description || '',
       image: evidence.image || null,
       category_id: evidence.category_id || null,
-      category_title: evidence.category_title || null,
-      category_hint: evidence.category_hint || null,
     }));
 
     const result = {
@@ -2605,12 +2109,14 @@
       characters: state.data.characters || {},
       character_emotions: state.data.character_emotions || {},
       conditions: state.data.conditions || [],
+      gauges: state.data.gauges || [],
+      gauge_states: state.data.gauge_states || [],
+      effects: state.data.effects || [],
       choice_groups: state.data.choice_groups || [],
       evidence_categories: state.data.evidence_categories || [],
       investigations: state.data.investigations || [],
       questions: state.data.questions || [],
       state_descriptors: state.data.state_descriptors || [],
-      rules: state.data.rules || [],
       scenes: normalizedScenes,
     };
   }
@@ -2998,8 +2504,8 @@
       `도달 가능: ${reachable.has(sceneId) || sceneId === state.data.first_scene ? '예' : '아니오'}`,
       `이전 연결: ${incoming.length ? incoming.join(', ') : '없음'}`,
       `다음 연결: ${nextTargets.length ? nextTargets.join(', ') : '없음'}`,
-      `읽는 플래그: ${readsFlags.size ? [...readsFlags].join(', ') : '없음'}`,
-      `쓰는 플래그: ${writesFlags.size ? [...writesFlags].join(', ') : '없음'}`,
+      `읽는 상태 참조: ${readsFlags.size ? [...readsFlags].join(', ') : '없음'}`,
+      `쓰는 상태 결과: ${writesFlags.size ? [...writesFlags].join(', ') : '없음'}`,
     ];
 
     els.analysisSummary.innerHTML = lines.map(line => `<div>${escapeHtml(line)}</div>`).join('');
@@ -3083,17 +2589,7 @@
         setStatus('오류: GAME_DATA 없음', true);
         return;
       }
-        state.data = window.GAME_DATA;
-        if (!state.data.characters) state.data.characters = {};
-        if (!state.data.character_emotions) state.data.character_emotions = {};
-        if (!Array.isArray(state.data.conditions)) state.data.conditions = [];
-        if (!Array.isArray(state.data.choice_groups)) state.data.choice_groups = [];
-        if (!Array.isArray(state.data.evidence_categories)) state.data.evidence_categories = [];
-        if (!Array.isArray(state.data.investigations)) state.data.investigations = [];
-        if (!Array.isArray(state.data.questions)) state.data.questions = [];
-      if (!Array.isArray(state.data.state_descriptors)) state.data.state_descriptors = [];
-      if (!Array.isArray(state.data.rules)) state.data.rules = [];
-      if (!state.data.scenes) state.data.scenes = {};
+      state.data = ensureDataShape(window.GAME_DATA);
       state.layout = {};
       state.history = [];
       state.future = [];
@@ -3209,11 +2705,11 @@
     els.btnAutoLayout.addEventListener('click', resetAutoLayout);
     els.btnZoomOut.addEventListener('click', () => setZoom(state.camera.scale * 0.9));
     els.btnZoomIn.addEventListener('click', () => setZoom(state.camera.scale * 1.1));
-    els.btnApplyBatchBackground.addEventListener('click', applyBatchBackground);
-    els.btnApplyBatchStyle.addEventListener('click', applyBatchStyle);
-    els.btnApplyBatchFlag.addEventListener('click', replaceFlagKeyEverywhere);
-    els.btnApplyBatchText.addEventListener('click', replaceTextEverywhere);
-    els.btnSortScenes.addEventListener('click', sortScenesByChapter);
+    if (els.btnApplyBatchBackground) els.btnApplyBatchBackground.addEventListener('click', applyBatchBackground);
+    if (els.btnApplyBatchStyle) els.btnApplyBatchStyle.addEventListener('click', applyBatchStyle);
+    if (els.btnApplyBatchFlag) els.btnApplyBatchFlag.addEventListener('click', replaceFlagKeyEverywhere);
+    if (els.btnApplyBatchText) els.btnApplyBatchText.addEventListener('click', replaceTextEverywhere);
+    if (els.btnSortScenes) els.btnSortScenes.addEventListener('click', sortScenesByChapter);
     if (els.tabNodeEditor) els.tabNodeEditor.addEventListener('click', () => setPanelTab('node'));
     if (els.tabDataEditor) els.tabDataEditor.addEventListener('click', () => setPanelTab('data'));
     (els.dataTabButtons || []).forEach(button => {
@@ -3290,83 +2786,15 @@
       state.data.character_emotions[row.CharacterID][emotionType] = row.ImagePath;
       afterChange();
     });
-    $('btn-add-question').addEventListener('click', () => {
-      pushHistory();
-      state.data.questions = state.data.questions || [];
-      const row = newQuestion();
-      let suffix = state.data.questions.length + 1;
-      do {
-        row.question_id = `Question${suffix++}`;
-      } while (state.data.questions.some(question => question.question_id === row.question_id));
-      state.data.questions.push(row);
-      afterChange();
-    });
-    $('btn-add-state-descriptor').addEventListener('click', () => {
-      pushHistory();
-      state.data.state_descriptors = state.data.state_descriptors || [];
-      const row = newStateDescriptor();
-      let suffix = state.data.state_descriptors.length + 1;
-      do {
-        row.descriptor_id = `Descriptor${suffix++}`;
-      } while (state.data.state_descriptors.some(descriptor => descriptor.descriptor_id === row.descriptor_id));
-      state.data.state_descriptors.push(row);
-      afterChange();
-    });
-    $('btn-add-rule').addEventListener('click', () => {
-      pushHistory();
-      state.data.rules = state.data.rules || [];
-      const row = newRule();
-      let suffix = state.data.rules.length + 1;
-      do {
-        row.rule_row_id = `RuleRow${suffix++}`;
-      } while (state.data.rules.some(rule => rule.rule_row_id === row.rule_row_id));
-      state.data.rules.push(row);
-      afterChange();
-    });
-    $('btn-add-condition').addEventListener('click', () => {
-      pushHistory();
-      state.data.conditions = state.data.conditions || [];
-      const row = newCondition();
-      let suffix = state.data.conditions.length + 1;
-      do {
-        row.condition_id = `Condition${suffix++}`;
-      } while (state.data.conditions.some(item => item.condition_id === row.condition_id));
-      state.data.conditions.push(row);
-      afterChange();
-    });
-    $('btn-add-choice-group').addEventListener('click', () => {
-      pushHistory();
-      state.data.choice_groups = state.data.choice_groups || [];
-      const row = newChoiceGroup();
-      let suffix = state.data.choice_groups.length + 1;
-      do {
-        row.choice_group_id = `ChoiceGroup${suffix++}`;
-      } while (state.data.choice_groups.some(item => item.choice_group_id === row.choice_group_id));
-      state.data.choice_groups.push(row);
-      afterChange();
-    });
-    $('btn-add-evidence-category').addEventListener('click', () => {
-      pushHistory();
-      state.data.evidence_categories = state.data.evidence_categories || [];
-      const row = newEvidenceCategory();
-      let suffix = state.data.evidence_categories.length + 1;
-      do {
-        row.category_id = `Category${suffix++}`;
-      } while (state.data.evidence_categories.some(item => item.category_id === row.category_id));
-      state.data.evidence_categories.push(row);
-      afterChange();
-    });
-    $('btn-add-investigation').addEventListener('click', () => {
-      pushHistory();
-      state.data.investigations = state.data.investigations || [];
-      const row = newInvestigation();
-      let suffix = state.data.investigations.length + 1;
-      do {
-        row.investigation_id = `Investigation${suffix++}`;
-      } while (state.data.investigations.some(item => item.investigation_id === row.investigation_id));
-      state.data.investigations.push(row);
-      afterChange();
-    });
+    registerCollectionAddButton('btn-add-question', 'questions', newQuestion, 'question_id', 'Question');
+    registerCollectionAddButton('btn-add-state-descriptor', 'state_descriptors', newStateDescriptor, 'descriptor_id', 'Descriptor');
+    registerCollectionAddButton('btn-add-condition', 'conditions', newCondition, 'condition_id', 'Condition');
+    registerCollectionAddButton('btn-add-gauge', 'gauges', newGauge, 'gauge_id', 'Gauge');
+    registerCollectionAddButton('btn-add-gauge-state', 'gauge_states', newGaugeState);
+    registerCollectionAddButton('btn-add-effect', 'effects', newEffect, 'effect_group_id', 'Effect');
+    registerCollectionAddButton('btn-add-choice-group', 'choice_groups', newChoiceGroup, 'choice_group_id', 'ChoiceGroup');
+    registerCollectionAddButton('btn-add-evidence-category', 'evidence_categories', newEvidenceCategory, 'category_id', 'Category');
+    registerCollectionAddButton('btn-add-investigation', 'investigations', newInvestigation, 'investigation_id', 'Investigation');
 
     // 패널 필드
     els.fieldTitle.addEventListener('input', () => {
@@ -3440,31 +2868,6 @@
       markDirty();
       refreshMetaViews();
     });
-
-    if (els.btnApplyPriorityDialogues) {
-      const replacement = els.btnApplyPriorityDialogues.cloneNode(true);
-      els.btnApplyPriorityDialogues.replaceWith(replacement);
-      els.btnApplyPriorityDialogues = replacement;
-      els.btnApplyPriorityDialogues.addEventListener('click', () => {
-        const scene = state.data.scenes[state.selectedId];
-        if (!scene) return;
-        const raw = els.fieldPriorityDialogues.value.trim();
-        if (!raw) {
-          scene.priority_dialogues = null;
-          markDirty();
-          renderPanel();
-          return;
-        }
-        try {
-          scene.priority_dialogues = JSON.parse(raw);
-          markDirty();
-          renderPanel();
-          setStatus('priority_dialogues applied');
-        } catch (e) {
-          setStatus('Priority dialogue JSON parse error: ' + e.message, true);
-        }
-      });
-    }
 
     if (els.btnAddPriorityGroup) {
       els.btnAddPriorityGroup.addEventListener('click', () => {
@@ -3697,6 +3100,7 @@
   // ── 초기화 ────────────────────────────────────────────
   function init() {
     bindElements();
+    els.fieldInvestigationId = ensureStandaloneCombobox(els.fieldInvestigationId, INVESTIGATION_DATALIST_ID);
     bindEvents();
     applyCamera();
     renderPanel();

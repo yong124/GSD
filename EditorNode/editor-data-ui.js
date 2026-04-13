@@ -13,7 +13,6 @@
     { id: 'investigations', label: '조사' },
     { id: 'questions', label: '질문' },
     { id: 'state-descriptors', label: '상태' },
-    { id: 'rules', label: '룰' },
   ];
 
   const CONDITION_TYPE_OPTIONS = [
@@ -26,16 +25,20 @@
     'SceneVisited',
   ];
 
-  const STATE_TYPE_OPTIONS = [
-    'Erosion',
-    'Credibility',
+  const NUMERIC_STATE_OPTIONS = [
+    'ResonanceLevel',
+    'InvestigationScore',
+    'SongsoonTrust',
     'ReadRitualScore',
     'SolvedQuestionCount',
   ];
+  const DERIVED_STATE_OPTIONS = ['InvestigationProgress'];
+  const STATE_DESCRIPTOR_TYPE_OPTIONS = ['Numeric', 'Derived'];
 
   const ANSWER_TYPE_OPTIONS = ['Text', 'Evidence'];
   const EFFECT_TYPE_OPTIONS = ['GaugeChange', 'EvidenceGive', 'TrustChange'];
-  const RULE_FACT_TYPE_OPTIONS = ['RevealedCharacter', 'HasEvidence', 'SceneProgressIndex', 'FlagValue'];
+  const QUESTION_SOLUTION_MODE_OPTIONS = ['Any', 'All'];
+  const QUESTION_REWARD_MODE_OPTIONS = ['Set', 'Add'];
 
   function uniqueSorted(values) {
     return [...new Set(values.filter(Boolean))].sort();
@@ -49,7 +52,7 @@
       });
     });
     (data?.questions || []).forEach(question => {
-      if (question?.solved_flag_id) ids.push(question.solved_flag_id);
+      if (question?.solved_state_id) ids.push(question.solved_state_id);
     });
     return uniqueSorted(ids);
   }
@@ -82,10 +85,6 @@
     return uniqueSorted(ids);
   }
 
-  function collectRuleIds(data) {
-    return uniqueSorted((data?.rules || []).map(rule => rule?.rule_id));
-  }
-
   function collectConditionGroupIds(data) {
     return uniqueSorted((data?.conditions || []).map(condition => condition?.condition_group_id));
   }
@@ -104,6 +103,38 @@
 
   function collectGaugeIds(data) {
     return uniqueSorted((data?.gauges || []).map(item => item?.gauge_id));
+  }
+
+  function collectBooleanStateIds(data) {
+    const ids = [];
+    (data?.questions || []).forEach(question => {
+      if (question?.solved_state_id) ids.push(question.solved_state_id);
+    });
+    return uniqueSorted(ids);
+  }
+
+  function collectNumericStateIds(data) {
+    const ids = [...NUMERIC_STATE_OPTIONS];
+    (data?.questions || []).forEach(question => {
+      if (question?.reward_state_id) ids.push(question.reward_state_id);
+    });
+    return uniqueSorted(ids);
+  }
+
+  function collectDerivedStateIds(data) {
+    const ids = [...DERIVED_STATE_OPTIONS];
+    (data?.state_descriptors || []).forEach(descriptor => {
+      if ((descriptor?.target_state_type || '') === 'Derived' && descriptor?.target_state_id) ids.push(descriptor.target_state_id);
+    });
+    return uniqueSorted(ids);
+  }
+
+  function collectStateDescriptorTargetIds(data, targetType) {
+    const ids = targetType === 'Derived' ? collectDerivedStateIds(data) : collectNumericStateIds(data);
+    (data?.state_descriptors || []).forEach(descriptor => {
+      if ((descriptor?.target_state_type || 'Numeric') === (targetType || 'Numeric') && descriptor?.target_state_id) ids.push(descriptor.target_state_id);
+    });
+    return uniqueSorted(ids);
   }
 
   function collectEffectGroupIds(data) {
@@ -131,21 +162,27 @@
   window.EditorDataUI = {
     DATA_TABS,
     CONDITION_TYPE_OPTIONS,
-    STATE_TYPE_OPTIONS,
+    NUMERIC_STATE_OPTIONS,
+    DERIVED_STATE_OPTIONS,
+    STATE_DESCRIPTOR_TYPE_OPTIONS,
     ANSWER_TYPE_OPTIONS,
     EFFECT_TYPE_OPTIONS,
-    RULE_FACT_TYPE_OPTIONS,
+    QUESTION_SOLUTION_MODE_OPTIONS,
+    QUESTION_REWARD_MODE_OPTIONS,
     collectChoiceIds,
     collectDialogIds,
     collectSceneIds,
     collectCharacterIds,
     collectEvidenceIds,
-    collectRuleIds,
     collectConditionGroupIds,
     collectChoiceGroupIds,
     collectInvestigationIds,
     collectEvidenceCategoryIds,
     collectGaugeIds,
+    collectBooleanStateIds,
+    collectNumericStateIds,
+    collectDerivedStateIds,
+    collectStateDescriptorTargetIds,
     collectEffectGroupIds,
     getConditionTargetOptions,
   };

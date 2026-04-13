@@ -1,11 +1,11 @@
 const State = (() => {
-  const LEGACY_GAUGE_FLAG_MAP = {
+  const LEGACY_GAUGE_STATE_MAP = {
     ResonanceLevel: 'Erosion',
     InvestigationScore: 'Credibility',
     ReadRitualScore: 'ReadRitualScore',
     SolvedQuestionCount: 'SolvedQuestionCount',
   };
-  const GAUGE_LEGACY_FLAG_MAP = {
+  const GAUGE_LEGACY_STATE_MAP = {
     Erosion: 'ResonanceLevel',
     Credibility: 'InvestigationScore',
     ReadRitualScore: 'ReadRitualScore',
@@ -61,10 +61,26 @@ const State = (() => {
     return gauges;
   }
 
+  function toFiniteNumber(value, fallback = 0) {
+    const numericValue = Number(value);
+    return Number.isFinite(numericValue) ? numericValue : fallback;
+  }
+
+  function resolveGaugeIdForNumericKey(key) {
+    if (!key) return null;
+    if (getGaugeDefinition(key)) return key;
+    return LEGACY_GAUGE_STATE_MAP[key] || null;
+  }
+
+  function resolveTrustCharacterId(key) {
+    if (!key || typeof key !== 'string' || !key.endsWith('Trust')) return null;
+    return key.replace(/Trust$/, '');
+  }
+
   let _state = {
     currentSceneId: null,
     dialogueIndex: 0,
-    flags: {},
+    facts: {},
     gauges: {},
     trusts: {},
     visited_scenes: [],
@@ -105,11 +121,11 @@ const State = (() => {
     get chapter()  { return _state.chapter; },
     set chapter(v) { _state.chapter = v; },
 
-    setFlag(key, value) {
-      const prev = _state.flags[key];
-      _state.flags[key] = value;
+    setFact(key, value) {
+      const prev = _state.facts[key];
+      _state.facts[key] = value;
 
-      const mirroredGaugeId = LEGACY_GAUGE_FLAG_MAP[key];
+      const mirroredGaugeId = LEGACY_GAUGE_STATE_MAP[key];
       if (mirroredGaugeId) {
         const prevGaugeValue = this.getGauge(mirroredGaugeId);
         const nextGaugeValue = clampGaugeValue(mirroredGaugeId, Number(value || 0));
@@ -135,26 +151,114 @@ const State = (() => {
       }
     },
 
-    getFlag(key) {
-      return _state.flags[key] ?? null;
+    getFact(key) {
+      return _state.facts[key] ?? null;
     },
 
-    hasFlag(key) {
-      return key in _state.flags;
+    getFactState(key) {
+      return this.getFact(key);
+    },
+
+    setFactState(key, value) {
+      this.setFact(key, value);
+      return value;
+    },
+
+    getBooleanState(key) {
+      return this.getFactState(key) === true;
+    },
+
+    setBooleanState(key, value) {
+      return this.setFactState(key, value === true);
+    },
+
+    hasFact(key) {
+      return key in _state.facts;
     },
 
     getTrust(characterId) {
       if (!characterId) return 0;
       const trustValue = _state.trusts?.[characterId];
       if (trustValue !== undefined) return Number(trustValue) || 0;
-      return Number(this.getFlag(`${characterId}Trust`) || 0);
+      return Number(this.getFact(`${characterId}Trust`) || 0);
+    },
+
+    getNumericState(key) {
+      if (!key) return 0;
+
+      const gaugeId = resolveGaugeIdForNumericKey(key);
+      if (gaugeId) return toFiniteNumber(this.getGauge(gaugeId), 0);
+
+      const trustCharacterId = resolveTrustCharacterId(key);
+      if (trustCharacterId) return toFiniteNumber(this.getTrust(trustCharacterId), 0);
+
+      return toFiniteNumber(this.getFactState(key), 0);
+    },
+
+    setNumericState(key, value) {
+      if (!key) return 0;
+      const normalizedValue = toFiniteNumber(value, 0);
+
+      const gaugeId = resolveGaugeIdForNumericKey(key);
+      if (gaugeId) return this.setGauge(gaugeId, normalizedValue);
+
+      const trustCharacterId = resolveTrustCharacterId(key);
+      if (trustCharacterId) {
+        this.setFactState(key, normalizedValue);
+        return normalizedValue;
+      }
+
+      this.setFactState(key, normalizedValue);
+      return normalizedValue;
+    },
+
+    incrementNumericState(key, delta = 0) {
+      const nextValue = this.getNumericState(key) + toFiniteNumber(delta, 0);
+      return this.setNumericState(key, nextValue);
+    },
+
+    getDerivedStateValue(key) {
+      switch (key) {
+        case 'InvestigationProgress':
+          return this.getNumericState('InvestigationScore') + this.getNumericState('ReadRitualScore');
+        default:
+          return this.getNumericState(key);
+      }
+    },
+
+    getResonanceValue() {
+      return this.getNumericState('ResonanceLevel');
+    },
+
+    getCredibilityValue() {
+      return this.getNumericState('InvestigationScore');
+    },
+
+    getSongsoonTrustValue() {
+      return this.getNumericState('SongsoonTrust');
+    },
+
+    getEvidenceOwned(evidenceId) {
+      if (!evidenceId) return false;
+      return this.getBooleanState(`HasEvidence_${evidenceId}`) || _state.evidence.includes(evidenceId);
+    },
+
+    isQuestionSolved(stateKey) {
+      if (!stateKey) return false;
+      return this.getBooleanState(stateKey);
+    },
+
+    markQuestionSolved(stateKey) {
+      if (!stateKey) return false;
+      this.setBooleanState(stateKey, true);
+      return true;
     },
 
     addTrust(characterId, delta) {
       if (!characterId) return 0;
       const nextValue = this.getTrust(characterId) + Number(delta || 0);
       _state.trusts[characterId] = nextValue;
-      this.setFlag(`${characterId}Trust`, nextValue);
+      this.setFact(`${characterId}Trust`, nextValue);
       return nextValue;
     },
 
@@ -184,13 +288,13 @@ const State = (() => {
       const nextValue = clampGaugeValue(gaugeId, value);
       _state.gauges[gaugeId] = nextValue;
 
-      const mirroredFlagKey = GAUGE_LEGACY_FLAG_MAP[gaugeId];
-      if (mirroredFlagKey) {
-        const prevFlagValue = _state.flags[mirroredFlagKey];
-        _state.flags[mirroredFlagKey] = nextValue;
-        if (prevFlagValue !== nextValue) {
-          _emit(`change:${mirroredFlagKey}`, nextValue);
-          _emit('change', { key: mirroredFlagKey, value: nextValue });
+      const mirroredStateKey = GAUGE_LEGACY_STATE_MAP[gaugeId];
+      if (mirroredStateKey) {
+        const prevFactValue = _state.facts[mirroredStateKey];
+        _state.facts[mirroredStateKey] = nextValue;
+        if (prevFactValue !== nextValue) {
+          _emit(`change:${mirroredStateKey}`, nextValue);
+          _emit('change', { key: mirroredStateKey, value: nextValue });
         }
       }
 
@@ -257,10 +361,13 @@ const State = (() => {
     deserialize(json) {
       try {
         const parsed = JSON.parse(json);
+        const parsedFacts = parsed.facts && typeof parsed.facts === 'object'
+          ? parsed.facts
+          : (parsed.flags && typeof parsed.flags === 'object' ? parsed.flags : {});
         _state = {
           currentSceneId: parsed.currentSceneId ?? null,
           dialogueIndex: parsed.dialogueIndex ?? 0,
-          flags: parsed.flags && typeof parsed.flags === 'object' ? parsed.flags : {},
+          facts: parsedFacts,
           gauges: buildDefaultGauges(parsed.gauges && typeof parsed.gauges === 'object' ? parsed.gauges : {}),
           trusts: parsed.trusts && typeof parsed.trusts === 'object' ? parsed.trusts : {},
           visited_scenes: Array.isArray(parsed.visited_scenes) ? parsed.visited_scenes : [],
@@ -280,7 +387,7 @@ const State = (() => {
       _state = {
         currentSceneId: null,
         dialogueIndex: 0,
-        flags: {},
+        facts: {},
         gauges: buildDefaultGauges(),
         trusts: {},
         visited_scenes: [],

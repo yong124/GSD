@@ -52,7 +52,7 @@
       sceneId,
       dialogId,
       evidenceIds,
-      flags: parsePairMap(params.get('qa_flags')),
+      facts: parsePairMap(params.get('qa_facts') || params.get('qa_flags')),
       gauges: parsePairMap(params.get('qa_gauges')),
       trusts: parsePairMap(params.get('qa_trusts')),
       choices: parseCsvList(params.get('qa_choices')),
@@ -73,8 +73,8 @@
     Evidence.resetSession();
     State.chapter = targetScene.chapter || 0;
 
-    Object.entries(config.flags || {}).forEach(([flagKey, rawValue]) => {
-      if (!flagKey) return;
+    Object.entries(config.facts || {}).forEach(([factKey, rawValue]) => {
+      if (!factKey) return;
       const normalizedValue = rawValue === 'true'
         ? true
         : rawValue === 'false'
@@ -82,7 +82,13 @@
           : Number.isNaN(Number(rawValue))
             ? rawValue
             : Number(rawValue);
-      State.setFlag(flagKey, normalizedValue);
+      if (typeof normalizedValue === 'boolean') {
+        State.setBooleanState(factKey, normalizedValue);
+      } else if (typeof normalizedValue === 'number') {
+        State.setNumericState(factKey, normalizedValue);
+      } else {
+        State.setFactState(factKey, normalizedValue);
+      }
     });
 
     Object.entries(config.gauges || {}).forEach(([gaugeId, rawValue]) => {
@@ -92,7 +98,7 @@
 
     Object.entries(config.trusts || {}).forEach(([characterId, rawValue]) => {
       if (!characterId) return;
-      State.setFlag(`${characterId}Trust`, Number(rawValue || 0));
+      State.setNumericState(`${characterId}Trust`, Number(rawValue || 0));
     });
 
     (config.choices || []).forEach(choiceId => {
@@ -102,7 +108,7 @@
     (config.evidenceIds || []).forEach(evidenceId => {
       if (!evidenceId) return;
       State.addEvidence(evidenceId);
-      State.setFlag(`HasEvidence_${evidenceId}`, true);
+      State.setBooleanState(`HasEvidence_${evidenceId}`, true);
     });
 
     hideTitleScreen();
@@ -125,7 +131,7 @@
     url.searchParams.set('qa_scene', sceneId);
     if (options.dialogId) url.searchParams.set('qa_dialog_id', options.dialogId);
     if (options.evidence === 'all') url.searchParams.set('qa_evidence', 'all');
-    if (options.flags) url.searchParams.set('qa_flags', options.flags);
+    if (options.facts) url.searchParams.set('qa_facts', options.facts);
     if (options.gauges) url.searchParams.set('qa_gauges', options.gauges);
     if (options.trusts) url.searchParams.set('qa_trusts', options.trusts);
     if (options.choices) url.searchParams.set('qa_choices', options.choices);
@@ -214,7 +220,7 @@
         sceneId,
         dialogId: options.dialogId || null,
         evidenceIds: options.evidence === 'all' ? getAllEvidenceIds(data) : parseCsvList(options.evidence),
-        flags: options.flags || {},
+        facts: options.facts || {},
         gauges: options.gauges || {},
         trusts: options.trusts || {},
         choices: options.choices || [],
