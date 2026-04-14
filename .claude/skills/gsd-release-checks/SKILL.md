@@ -9,8 +9,8 @@ Use this skill near the end of a work round.
 
 ## Example prompts
 
-- `이번 라운드 마감 체크하고 handoff 갱신해줘`
-- `커밋 전에 validate랑 generated까지 정리해줘`
+- `이번 라운드 마감 체크하고 handoff 정리해줘`
+- `커밋 전에 validate와 generated까지 정리해줘`
 - `워크트리 마무리하고 남은 리스크까지 요약해줘`
 
 ## Checklist
@@ -32,7 +32,7 @@ py G:\GSD\content\tools\validate_game_data.py
 - verify touched JS with `node --check`
 - verify `game/index.html` version bumps when needed
 
-4. If pipeline/schema changed:
+4. If pipeline or schema changed:
 
 ```powershell
 py G:\GSD\content\tools\json_to_generated_xlsx.py
@@ -40,7 +40,7 @@ py G:\GSD\content\tools\json_to_generated_xlsx.py
 
 5. Update handoff when the thread materially changes project state:
 
-- `G:\GSD\content\docs\portfolio\다음_스레드_인수인계.md`
+- the active handoff note under `G:\GSD\content\docs\portfolio`
 
 6. Clean up temporary folders created for QA or tooling.
 7. If browser QA was part of the round:
@@ -51,7 +51,7 @@ py G:\GSD\content\tools\json_to_generated_xlsx.py
 
 ## Do not
 
-- do not leave cache/temp folders in the worktree
+- do not leave cache or test temp folders in the worktree
 - do not claim a browser fix without checking cache-bust handling
 - do not forget handoff updates after major project-state changes
 - do not mix unrelated work into a single vague commit if the scope is clearly separable
@@ -62,15 +62,15 @@ py G:\GSD\content\tools\json_to_generated_xlsx.py
 Prefer commit messages that reflect the actual slice of work, such as:
 
 - 조사 시스템 보강
-- UI UX 폴리시 개선
+- UI UX 흐름 개선
 - HUD 컨텍스트 수정
 - 에디터 파이프라인 확장
 
 ## Watchouts
 
-- Do not leave behind cache/test temp folders.
+- Do not leave behind cache or test temp folders.
 - Do not describe work as finished if browser cache can still hide the fix.
-- Browser QA depends on a live local server. Wrapper scripts are safer than raw `node` entrypoints.
+- Browser QA depends on a live local server.
 - For Korean choice text, prefer action indices over env-passed strings.
 
 ## Final response pattern
@@ -85,7 +85,7 @@ When wrapping up, prefer this order:
 
 - worktree state is understood
 - required validation has run for the touched layer
-- browser QA wrappers were used when browser automation was part of the task
+- browser QA used the lightest runner that can answer the current question
 - temporary artifacts are cleaned up
 - handoff is updated if needed
 - commit scope can be explained in one line
