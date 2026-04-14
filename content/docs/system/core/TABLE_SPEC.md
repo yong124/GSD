@@ -1,94 +1,94 @@
-# 경성뎐 데이터 테이블 명세
+﻿# 寃쎌꽦???곗씠???뚯씠釉?紐낆꽭
 
-> 범용 HTML ADV 엔진 기준 테이블 구조.
-> 설계 배경과 원칙은 `테이블_완전_새구조.md`를 참조한다.
+> 踰붿슜 HTML ADV ?붿쭊 湲곗? ?뚯씠釉?援ъ“.
+> ?ㅺ퀎 諛곌꼍怨??먯튃? `?뚯씠釉??꾩쟾_?덇뎄議?md`瑜?李몄“?쒕떎.
 
 ---
 
 ## 1. GaugeTable
 
-게임 내 수치를 정의한다.
+寃뚯엫 ???섏튂瑜??뺤쓽?쒕떎.
 
-| 컬럼 | 설명 |
+| 而щ읆 | ?ㅻ챸 |
 |---|---|
-| `GaugeID` | 수치 고유 ID |
-| `Label` | 표시 이름 |
-| `MinValue` | 최솟값 |
-| `MaxValue` | 최댓값 |
-| `DefaultValue` | 초기값 |
-| `HudVisible` | HUD 상시 표시 여부 |
-| `HudOrder` | HUD 표시 순서 |
+| `GaugeID` | ?섏튂 怨좎쑀 ID |
+| `Label` | ?쒖떆 ?대쫫 |
+| `MinValue` | 理쒖넖媛?|
+| `MaxValue` | 理쒕뙎媛?|
+| `DefaultValue` | 珥덇린媛?|
+| `HudVisible` | HUD ?곸떆 ?쒖떆 ?щ? |
+| `HudOrder` | HUD ?쒖떆 ?쒖꽌 |
 
-### 경성뎐 적용 예시
+### 寃쎌꽦???곸슜 ?덉떆
 
 | GaugeID | Label | Min | Max | Default | HudVisible |
 |---|---|---|---|---|---|
-| `Erosion` | 침식 | 0 | 10 | 0 | true |
-| `Credibility` | 신용 | 0 | 10 | 10 | true |
+| `Erosion` | 移⑥떇 | 0 | 10 | 0 | true |
+| `Credibility` | ?좎슜 | 0 | 10 | 10 | true |
 
 ---
 
 ## 2. GaugeStateTable
 
-수치 단계를 정의한다. 같은 `GaugeID`의 행들이 수치 범위별 상태를 구성한다.
+?섏튂 ?④퀎瑜??뺤쓽?쒕떎. 媛숈? `GaugeID`???됰뱾???섏튂 踰붿쐞蹂??곹깭瑜?援ъ꽦?쒕떎.
 
-| 컬럼 | 설명 |
+| 而щ읆 | ?ㅻ챸 |
 |---|---|
-| `GaugeID` | 소속 수치 |
-| `MinValue` | 이 상태 최솟값 |
-| `MaxValue` | 이 상태 최댓값 |
-| `Label` | 상태 이름 |
-| `HudColor` | HUD 표시 색상 |
-| `Detail` | 상태 설명 |
-| `TriggerSceneID` | 이 상태 진입 시 이동할 씬 (`None`이면 전환 없음) |
+| `GaugeID` | ?뚯냽 ?섏튂 |
+| `MinValue` | ???곹깭 理쒖넖媛?|
+| `MaxValue` | ???곹깭 理쒕뙎媛?|
+| `Label` | ?곹깭 ?대쫫 |
+| `HudColor` | HUD ?쒖떆 ?됱긽 |
+| `Detail` | ?곹깭 ?ㅻ챸 |
+| `TriggerSceneID` | ???곹깭 吏꾩엯 ???대룞????(`None`?대㈃ ?꾪솚 ?놁쓬) |
 
 ---
 
 ## 3. EffectTable
 
-효과 묶음을 정의한다. 같은 `EffectGroupID`를 가진 행은 동시에 실행된다.
+?④낵 臾띠쓬???뺤쓽?쒕떎. 媛숈? `EffectGroupID`瑜?媛吏??됱? ?숈떆???ㅽ뻾?쒕떎.
 
-| 컬럼 | 설명 |
+| 而щ읆 | ?ㅻ챸 |
 |---|---|
-| `EffectGroupID` | 묶음 ID |
-| `EffectType` | 효과 종류 |
-| `GaugeID` | `GaugeChange`일 때 대상 수치 |
-| `GaugeDelta` | `GaugeChange`일 때 변화값 |
-| `EvidenceID` | `EvidenceGive`일 때 획득 증거 |
-| `TrustCharacterID` | `TrustChange`일 때 대상 캐릭터 |
-| `TrustDelta` | `TrustChange`일 때 변화값 |
+| `EffectGroupID` | 臾띠쓬 ID |
+| `EffectType` | ?④낵 醫낅쪟 |
+| `GaugeID` | `GaugeChange`????????섏튂 |
+| `GaugeDelta` | `GaugeChange`????蹂?붽컪 |
+| `EvidenceID` | `EvidenceGive`?????띾뱷 利앷굅 |
+| `TrustCharacterID` | `TrustChange`???????罹먮┃??|
+| `TrustDelta` | `TrustChange`????蹂?붽컪 |
 
 ### EffectType
 
-- `GaugeChange` — 수치 변화
-- `EvidenceGive` — 증거 획득
-- `TrustChange` — 캐릭터 신뢰도 변화
+- `GaugeChange` ???섏튂 蹂??
+- `EvidenceGive` ??利앷굅 ?띾뱷
+- `TrustChange` ??罹먮┃???좊ː??蹂??
 
 ---
 
 ## 4. ConditionTable
 
-게임 내 표시/분기 조건을 공통으로 정의한다. 같은 `ConditionGroupID`를 가진 행은 모두 만족해야 한다(AND).
+寃뚯엫 ???쒖떆/遺꾧린 議곌굔??怨듯넻?쇰줈 ?뺤쓽?쒕떎. 媛숈? `ConditionGroupID`瑜?媛吏??됱? 紐⑤몢 留뚯”?댁빞 ?쒕떎(AND).
 
-| 컬럼 | 설명 |
+| 而щ읆 | ?ㅻ챸 |
 |---|---|
-| `ConditionID` | 조건 고유 ID |
-| `ConditionGroupID` | AND 조건 묶음 ID |
-| `ConditionType` | 검사 타입 |
-| `ConditionTargetID` | 검사 대상 ID |
-| `CompareType` | 비교 방식 |
-| `ConditionValue` | 비교값 |
+| `ConditionID` | 議곌굔 怨좎쑀 ID |
+| `ConditionGroupID` | AND 議곌굔 臾띠쓬 ID |
+| `ConditionType` | 寃?????|
+| `ConditionTargetID` | 寃?????ID |
+| `CompareType` | 鍮꾧탳 諛⑹떇 |
+| `ConditionValue` | 鍮꾧탳媛?|
 
 ### ConditionType
 
-| 타입 | ConditionTargetID |
+| ???| ConditionTargetID |
 |---|---|
 | `GaugeValue` | GaugeID |
 | `Trust` | CharacterID |
 | `EvidenceOwned` | EvidenceID |
 | `ChoiceSelected` | ChoiceID |
 | `RevealedCharacter` | CharacterID |
-| `SceneProgressIndex` | — |
+| `SceneProgressIndex` | ??|
 | `SceneVisited` | SceneID |
 
 ### ECompareType
@@ -104,68 +104,68 @@
 
 ## 5. SceneTable
 
-씬의 메타 정보를 정의한다.
+?ъ쓽 硫뷀? ?뺣낫瑜??뺤쓽?쒕떎.
 
-| 컬럼 | 설명 |
+| 而щ읆 | ?ㅻ챸 |
 |---|---|
-| `SceneID` | 씬 고유 ID |
-| `Chapter` | 챕터 번호 |
-| `Title` | 씬 제목 |
-| `Background` | 배경 경로 |
-| `Music` | BGM 경로 |
-| `Effect` | 씬 진입 효과 |
-| `GoalKicker` | 목표 UI 머리말 |
-| `GoalText` | 목표 문장 |
-| `EvidencePromptTitle` | 증거 제시 UI 제목 |
-| `EvidencePromptHint` | 증거 제시 UI 안내 문구 |
-| `InvestigationTitle` | 조사 씬 제목 |
-| `InvestigationHint` | 조사 씬 안내 문구 |
+| `SceneID` | ??怨좎쑀 ID |
+| `Chapter` | 梨뺥꽣 踰덊샇 |
+| `Title` | ???쒕ぉ |
+| `Background` | 諛곌꼍 寃쎈줈 |
+| `Music` | BGM 寃쎈줈 |
+| `Effect` | ??吏꾩엯 ?④낵 |
+| `GoalKicker` | 紐⑺몴 UI 癒몃━留?|
+| `GoalText` | 紐⑺몴 臾몄옣 |
+| `EvidencePromptTitle` | 利앷굅 ?쒖떆 UI ?쒕ぉ |
+| `EvidencePromptHint` | 利앷굅 ?쒖떆 UI ?덈궡 臾멸뎄 |
+| `InvestigationTitle` | 議곗궗 ???쒕ぉ |
+| `InvestigationHint` | 議곗궗 ???덈궡 臾멸뎄 |
 
-### 메모
+### 硫붾え
 
-- 씬 이동은 `BranchTable`에서 처리한다.
-- 씬 진입 시 효과가 필요하면 첫 번째 `DialogTable` 행에 `EffectGroupID`를 붙인다.
+- ???대룞? `BranchTable`?먯꽌 泥섎━?쒕떎.
+- ??吏꾩엯 ???④낵媛 ?꾩슂?섎㈃ 泥?踰덉㎏ `DialogTable` ?됱뿉 `EffectGroupID`瑜?遺숈씤??
 
 ---
 
 ## 6. DialogTable
 
-씬 안의 순차 대사 노드.
+???덉쓽 ?쒖감 ????몃뱶.
 
-| 컬럼 | 설명 |
+| 而щ읆 | ?ㅻ챸 |
 |---|---|
-| `DialogID` | 대사 고유 ID |
-| `SceneID` | 소속 씬 |
-| `Order` | 씬 내 기본 순서 |
-| `CharacterID` | 화자 캐릭터 |
-| `EmotionType` | 감정 타입 |
-| `StandingSlot` | 스탠딩 위치 |
-| `FocusType` | 포커스 타입 |
-| `EnterMotion` | 등장 모션 |
-| `ExitMotion` | 퇴장 모션 |
-| `IdleMotion` | 유지 모션 |
-| `FxType` | 순간 FX |
-| `Text` | 대사 본문 |
-| `Style` | 대사 스타일 |
-| `ConditionGroupID` | 대사 표시 조건 |
-| `ChoiceGroupID` | 이 시점에 호출할 선택지 그룹 |
-| `NextDialogID` | 강제 연결할 다음 대사 |
-| `EffectGroupID` | 이 대사 진행 시 발동할 효과 |
+| `DialogID` | ???怨좎쑀 ID |
+| `SceneID` | ?뚯냽 ??|
+| `Order` | ????湲곕낯 ?쒖꽌 |
+| `CharacterID` | ?붿옄 罹먮┃??|
+| `EmotionType` | 媛먯젙 ???|
+| `StandingSlot` | ?ㅽ깲???꾩튂 |
+| `FocusType` | ?ъ빱?????|
+| `EnterMotion` | ?깆옣 紐⑥뀡 |
+| `ExitMotion` | ?댁옣 紐⑥뀡 |
+| `IdleMotion` | ?좎? 紐⑥뀡 |
+| `FxType` | ?쒓컙 FX |
+| `Text` | ???蹂몃Ц |
+| `Style` | ????ㅽ???|
+| `ConditionGroupID` | ????쒖떆 議곌굔 |
+| `ChoiceGroupID` | ???쒖젏???몄텧???좏깮吏 洹몃９ |
+| `NextDialogID` | 媛뺤젣 ?곌껐???ㅼ쓬 ???|
+| `EffectGroupID` | ?????吏꾪뻾 ??諛쒕룞???④낵 |
 
 ---
 
 ## 7. ChoiceGroupTable
 
-한 번에 표시되는 선택지 묶음.
+??踰덉뿉 ?쒖떆?섎뒗 ?좏깮吏 臾띠쓬.
 
-| 컬럼 | 설명 |
+| 而щ읆 | ?ㅻ챸 |
 |---|---|
-| `ChoiceGroupID` | 선택지 그룹 ID |
-| `Type` | 그룹 종류 |
-| `AnswerType` | 입력 방식 |
-| `ConditionGroupID` | 그룹 표시 조건 |
-| `MaxSelectable` | 선택 가능 개수 |
-| `DefaultDialogID` | `AnswerType: Evidence`일 때 정의되지 않은 증거 제시 시 반응 대사 |
+| `ChoiceGroupID` | ?좏깮吏 洹몃９ ID |
+| `Type` | 洹몃９ 醫낅쪟 |
+| `AnswerType` | ?낅젰 諛⑹떇 |
+| `ConditionGroupID` | 洹몃９ ?쒖떆 議곌굔 |
+| `MaxSelectable` | ?좏깮 媛??媛쒖닔 |
+| `DefaultDialogID` | `AnswerType: Evidence`?????뺤쓽?섏? ?딆? 利앷굅 ?쒖떆 ??諛섏쓳 ???|
 
 ### EChoiceGroupType
 
@@ -175,26 +175,26 @@
 
 ### EAnswerType
 
-- `Text` — 텍스트 선택지 버튼
-- `Evidence` — 현재 보유한 증거 인벤토리 전체 표시
+- `Text` ???띿뒪???좏깮吏 踰꾪듉
+- `Evidence` ???꾩옱 蹂댁쑀??利앷굅 ?몃깽?좊━ ?꾩껜 ?쒖떆
 
 ---
 
 ## 8. ChoiceTable
 
-플레이어가 고르는 개별 선택지.
+?뚮젅?댁뼱媛 怨좊Ⅴ??媛쒕퀎 ?좏깮吏.
 
-| 컬럼 | 설명 |
+| 而щ읆 | ?ㅻ챸 |
 |---|---|
-| `ChoiceID` | 선택지 고유 ID |
-| `ChoiceGroupID` | 소속 그룹 ID |
-| `Order` | 그룹 내 순서 |
-| `Text` | 선택지 문구 (`AnswerType: Text`일 때) |
-| `EvidenceID` | 반응할 증거 ID (`AnswerType: Evidence`일 때) |
-| `ConditionGroupID` | 선택지 노출 조건 |
-| `NextType` | 이동 타입 |
-| `NextID` | 이동 대상 ID |
-| `EffectGroupID` | 선택 시 발동할 효과 |
+| `ChoiceID` | ?좏깮吏 怨좎쑀 ID |
+| `ChoiceGroupID` | ?뚯냽 洹몃９ ID |
+| `Order` | 洹몃９ ???쒖꽌 |
+| `Text` | ?좏깮吏 臾멸뎄 (`AnswerType: Text`???? |
+| `EvidenceID` | 諛섏쓳??利앷굅 ID (`AnswerType: Evidence`???? |
+| `ConditionGroupID` | ?좏깮吏 ?몄텧 議곌굔 |
+| `NextType` | ?대룞 ???|
+| `NextID` | ?대룞 ???ID |
+| `EffectGroupID` | ?좏깮 ??諛쒕룞???④낵 |
 
 ### ENextType
 
@@ -202,94 +202,94 @@
 - `Dialog`
 - `None`
 
-### 메모
+### 硫붾え
 
-- `AnswerType: Evidence`일 때 `Text`는 비워도 된다.
-- 효과는 `EffectTable`로 분리됐다. 기존 `TrustCharacterID`, `TrustValue`, `ResonanceValue`, `StateType`, `StateValue`는 제거됐다.
+- `AnswerType: Evidence`????`Text`??鍮꾩썙???쒕떎.
+- ?④낵??`EffectTable`濡?遺꾨━?먮떎. 湲곗〈 `TrustCharacterID`, `TrustValue`, `ResonanceValue`, `StateType`, `StateValue`???쒓굅?먮떎.
 
 ---
 
 ## 9. BranchTable
 
-씬 종료 후 자동 분기.
+??醫낅즺 ???먮룞 遺꾧린.
 
-| 컬럼 | 설명 |
+| 而щ읆 | ?ㅻ챸 |
 |---|---|
-| `BranchID` | 분기 고유 ID |
-| `SceneID` | 소속 씬 ID |
-| `Order` | 분기 평가 순서 |
-| `ConditionGroupID` | 분기 조건 |
-| `NextSceneID` | 이동할 다음 씬 |
+| `BranchID` | 遺꾧린 怨좎쑀 ID |
+| `SceneID` | ?뚯냽 ??ID |
+| `Order` | 遺꾧린 ?됯? ?쒖꽌 |
+| `ConditionGroupID` | 遺꾧린 議곌굔 |
+| `NextSceneID` | ?대룞???ㅼ쓬 ??|
 
 ---
 
 ## 10. EvidenceTable
 
-정적 증거 정의.
+?뺤쟻 利앷굅 ?뺤쓽.
 
-| 컬럼 | 설명 |
+| 而щ읆 | ?ㅻ챸 |
 |---|---|
-| `EvidenceID` | 증거 고유 ID |
-| `Name` | 증거 이름 |
-| `Description` | 증거 설명 |
-| `Image` | 증거 이미지 경로 |
-| `CategoryID` | UI 카테고리 ID |
+| `EvidenceID` | 利앷굅 怨좎쑀 ID |
+| `Name` | 利앷굅 ?대쫫 |
+| `Description` | 利앷굅 ?ㅻ챸 |
+| `Image` | 利앷굅 ?대?吏 寃쎈줈 |
+| `CategoryID` | UI 移댄뀒怨좊━ ID |
 
 ---
 
 ## 11. EvidenceCategoryTable
 
-단서 UI 카테고리 정의.
+?⑥꽌 UI 移댄뀒怨좊━ ?뺤쓽.
 
-| 컬럼 | 설명 |
+| 而щ읆 | ?ㅻ챸 |
 |---|---|
-| `CategoryID` | 카테고리 고유 ID |
-| `CategoryTitle` | 카테고리 이름 |
-| `CategoryHint` | 카테고리 설명 |
+| `CategoryID` | 移댄뀒怨좊━ 怨좎쑀 ID |
+| `CategoryTitle` | 移댄뀒怨좊━ ?대쫫 |
+| `CategoryHint` | 移댄뀒怨좊━ ?ㅻ챸 |
 
 ---
 
 ## 12. CharacterTable
 
-캐릭터 기본 정보와 수첩 정보.
+罹먮┃??湲곕낯 ?뺣낫? ?섏꺽 ?뺣낫.
 
-| 컬럼 | 설명 |
+| 而щ읆 | ?ㅻ챸 |
 |---|---|
-| `CharacterID` | 캐릭터 고유 ID |
-| `DisplayName` | 표시 이름 |
-| `DefaultTrust` | 게임 시작 시 기본 신뢰도 |
-| `NotebookSummary1` | 수첩 요약 1 |
-| `NotebookSummary2` | 수첩 요약 2 |
+| `CharacterID` | 罹먮┃??怨좎쑀 ID |
+| `DisplayName` | ?쒖떆 ?대쫫 |
+| `DefaultTrust` | 寃뚯엫 ?쒖옉 ??湲곕낯 ?좊ː??|
+| `NotebookSummary1` | ?섏꺽 ?붿빟 1 |
+| `NotebookSummary2` | ?섏꺽 ?붿빟 2 |
 
-### 메모
+### 硫붾え
 
-- `RoleText`는 런타임 전환 완료 전까지 보조 컬럼으로 허용한다.
+- `RoleText`???고????꾪솚 ?꾨즺 ?꾧퉴吏 蹂댁“ 而щ읆?쇰줈 ?덉슜?쒕떎.
 
 ---
 
 ## 13. CharacterEmotionTable
 
-감정별 이미지 매핑.
+媛먯젙蹂??대?吏 留ㅽ븨.
 
-| 컬럼 | 설명 |
+| 而щ읆 | ?ㅻ챸 |
 |---|---|
-| `CharacterID` | 캐릭터 ID |
-| `EmotionType` | 감정 타입 |
-| `ImagePath` | 감정별 이미지 경로 |
+| `CharacterID` | 罹먮┃??ID |
+| `EmotionType` | 媛먯젙 ???|
+| `ImagePath` | 媛먯젙蹂??대?吏 寃쎈줈 |
 
 ---
 
-## 제거된 테이블
+## ?쒓굅???뚯씠釉?
 
-| 테이블 | 제거 이유 |
+| ?뚯씠釉?| ?쒓굅 ?댁쑀 |
 |---|---|
-| `InvestigationTable` | `SceneTable` + `ChoiceGroupTable`로 완전히 흡수 |
+| `InvestigationTable` | `SceneTable` + `ChoiceGroupTable`로 완전 흡수 |
 
 ---
 
-## 레거시 제거 대상
+## 제거된 레거시 필드
 
-아래 필드는 새 구조 전환 후 제거 대상이다.
+아래 필드는 현재 구조에서 이미 쓰지 않는 레거시 필드다.
 
 - `Choice.StateKey` / `Choice.StateValue`
 - `Choice.NextScene` / `Choice.NextDialogue`
@@ -301,4 +301,3 @@
 - `Scene.NextScene`
 - `Scene.PriorityTitle` / `Scene.PriorityHint` / `Scene.PriorityBudget`
 - `Scene.PriorityAfterDialogues`
-- `Branch.ConditionGroupID`

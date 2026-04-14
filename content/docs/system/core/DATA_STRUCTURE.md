@@ -1,155 +1,147 @@
-# 경성뎐 데이터 구조 운영 문서
+﻿# 寃쎌꽦???곗씠??援ъ“ ?댁쁺 臾몄꽌
 
-## 목적
+## 紐⑹쟻
 
-이 문서는 현재 경성뎐 프로젝트의 데이터 운영 기준을 정리한다.
+??臾몄꽌???꾩옱 寃쎌꽦???꾨줈?앺듃???곗씠???댁쁺 湲곗????뺣━?쒕떎.
 
-이번 기준은 `테이블_완전_새구조.md`를 기반으로 한다.
+?대쾲 湲곗?? `?뚯씠釉??꾩쟾_?덇뎄議?md`瑜?湲곕컲?쇰줈 ?쒕떎.
 
 ---
 
-## 운영 원칙
+## ?댁쁺 ?먯튃
 
-### 1. 데이터 우선
+### 1. ?곗씠???곗꽑
 
-반복되거나 확장될 정보는 우선 테이블 구조로 뺀다.
+諛섎났?섍굅???뺤옣???뺣낫???곗꽑 ?뚯씠釉?援ъ“濡?類??
 
-우선순위는 아래와 같다.
+?곗꽑?쒖쐞???꾨옒? 媛숇떎.
 
-1. 기존 테이블 확장
-2. 새 테이블 추가
-3. 정말 필요한 런타임 파생 로직
+1. 湲곗〈 ?뚯씠釉??뺤옣
+2. ???뚯씠釉?異붽?
+3. ?뺣쭚 ?꾩슂???고????뚯깮 濡쒖쭅
 
-### 2. Flag 없음
+### 2. Flag ?놁쓬
 
-임의 키-값 플래그를 사용하지 않는다.
-모든 상태는 `ConditionType`으로 명시적으로 표현한다.
+?꾩쓽 ??媛??뚮옒洹몃? ?ъ슜?섏? ?딅뒗??
+紐⑤뱺 ?곹깭??`ConditionType`?쇰줈 紐낆떆?곸쑝濡??쒗쁽?쒕떎.
 
-| 기존 Flag 용도 | 대체 |
+| 湲곗〈 Flag ?⑸룄 | ?泥?|
 |---|---|
-| 행동 여부 | `ChoiceSelected` |
-| 증거 보유 | `EvidenceOwned` |
-| 누적 수치 | `GaugeValue` |
-| 씬 방문 여부 | `SceneVisited` |
+| ?됰룞 ?щ? | `ChoiceSelected` |
+| 利앷굅 蹂댁쑀 | `EvidenceOwned` |
+| ?꾩쟻 ?섏튂 | `GaugeValue` |
+| ??諛⑸Ц ?щ? | `SceneVisited` |
 
-### 3. Effect 분리
+### 3. Effect 遺꾨━
 
-선택지나 대사에 붙는 효과는 직접 컬럼으로 갖지 않는다.
-`EffectTable`에 정의하고 `EffectGroupID`로 참조한다.
+?좏깮吏????ъ뿉 遺숇뒗 ?④낵??吏곸젒 而щ읆?쇰줈 媛뽰? ?딅뒗??
+`EffectTable`???뺤쓽?섍퀬 `EffectGroupID`濡?李몄“?쒕떎.
 
-### 4. Choice 확장
+### 4. Choice ?뺤옣
 
-퍼즐, 증거 제시, 클라이맥스 조합 등 특수 인터랙션은 별도 테이블 없이 Choice 구조를 확장해서 처리한다.
-`ChoiceGroup.AnswerType`으로 UI 방식을 결정한다.
+?쇱쫹, 利앷굅 ?쒖떆, ?대씪?대㎘??議고빀 ???뱀닔 ?명꽣?숈뀡? 蹂꾨룄 ?뚯씠釉??놁씠 Choice 援ъ“瑜??뺤옣?댁꽌 泥섎━?쒕떎.
+`ChoiceGroup.AnswerType`?쇰줈 UI 諛⑹떇??寃곗젙?쒕떎.
 
-### 5. 진행 순서
+### 5. 吏꾪뻾 ?쒖꽌
 
-1. 문서
-2. 파이프라인
-3. 에디터
-4. 런타임
-5. 데이터 마이그레이션
-6. 검증
-
+1. 臾몄꽌
+2. ?뚯씠?꾨씪??3. ?먮뵒??4. ?고???5. ?곗씠??留덉씠洹몃젅?댁뀡
+6. 寃利?
 ---
 
-## 현재 운영 대상 테이블
-
-| 테이블 | 역할 |
+## ?꾩옱 ?댁쁺 ????뚯씠釉?
+| ?뚯씠釉?| ??븷 |
 |---|---|
-| `GaugeTable` | 수치 정의 |
-| `GaugeStateTable` | 수치 단계 및 진입 효과 |
-| `EffectTable` | 효과 묶음 |
-| `ConditionTable` | 공통 조건 판정 |
-| `SceneTable` | 씬 메타 |
-| `DialogTable` | 씬 내부 대사 노드 |
-| `ChoiceGroupTable` | 선택지 묶음 |
-| `ChoiceTable` | 개별 선택지 |
-| `BranchTable` | 씬 종료 후 자동 분기 |
-| `EvidenceTable` | 정적 증거 정의 |
-| `EvidenceCategoryTable` | 단서 UI 카테고리 |
-| `CharacterTable` | 캐릭터 기본/수첩 정보 |
-| `CharacterEmotionTable` | 감정별 이미지 |
+| `GaugeTable` | ?섏튂 ?뺤쓽 |
+| `GaugeStateTable` | ?섏튂 ?④퀎 諛?吏꾩엯 ?④낵 |
+| `EffectTable` | ?④낵 臾띠쓬 |
+| `ConditionTable` | 怨듯넻 議곌굔 ?먯젙 |
+| `SceneTable` | ??硫뷀? |
+| `DialogTable` | ???대? ????몃뱶 |
+| `ChoiceGroupTable` | ?좏깮吏 臾띠쓬 |
+| `ChoiceTable` | 媛쒕퀎 ?좏깮吏 |
+| `BranchTable` | ??醫낅즺 ???먮룞 遺꾧린 |
+| `EvidenceTable` | ?뺤쟻 利앷굅 ?뺤쓽 |
+| `EvidenceCategoryTable` | ?⑥꽌 UI 移댄뀒怨좊━ |
+| `CharacterTable` | 罹먮┃??湲곕낯/?섏꺽 ?뺣낫 |
+| `CharacterEmotionTable` | 媛먯젙蹂??대?吏 |
 
 ---
 
-## 관계 구조
+## 愿怨?援ъ“
 
 ```text
 GaugeTable
- └─ 1:N → GaugeStateTable
+ ?붴? 1:N ??GaugeStateTable
 
 EffectTable
- └─ N:1 (EffectGroupID로 묶임)
+ ?붴? N:1 (EffectGroupID濡?臾띠엫)
 
 SceneTable
- ├─ 1:N → DialogTable
- └─ 1:N → BranchTable
+ ?쒋? 1:N ??DialogTable
+ ?붴? 1:N ??BranchTable
 
 DialogTable
- ├─ 0..1 → ConditionTable.ConditionGroupID
- ├─ 0..1 → ChoiceGroupTable
- ├─ 0..1 → DialogTable.NextDialogID
- └─ 0..1 → EffectTable.EffectGroupID
+ ?쒋? 0..1 ??ConditionTable.ConditionGroupID
+ ?쒋? 0..1 ??ChoiceGroupTable
+ ?쒋? 0..1 ??DialogTable.NextDialogID
+ ?붴? 0..1 ??EffectTable.EffectGroupID
 
 ChoiceGroupTable
- ├─ 0..1 → ConditionTable.ConditionGroupID
- └─ 1:N  → ChoiceTable
+ ?쒋? 0..1 ??ConditionTable.ConditionGroupID
+ ?붴? 1:N  ??ChoiceTable
 
 ChoiceTable
- ├─ 0..1 → ConditionTable.ConditionGroupID
- ├─ 0..1 → SceneTable / DialogTable (NextType, NextID)
- ├─ 0..1 → EvidenceTable (EvidenceID, AnswerType: Evidence일 때)
- └─ 0..1 → EffectTable.EffectGroupID
+ ?쒋? 0..1 ??ConditionTable.ConditionGroupID
+ ?쒋? 0..1 ??SceneTable / DialogTable (NextType, NextID)
+ ?쒋? 0..1 ??EvidenceTable (EvidenceID, AnswerType: Evidence????
+ ?붴? 0..1 ??EffectTable.EffectGroupID
 
 BranchTable
- └─ 0..1 → ConditionTable.ConditionGroupID
+ ?붴? 0..1 ??ConditionTable.ConditionGroupID
 
 EvidenceTable
- └─ 0..1 → EvidenceCategoryTable
+ ?붴? 0..1 ??EvidenceCategoryTable
 
 CharacterTable
- └─ 1:N → CharacterEmotionTable
+ ?붴? 1:N ??CharacterEmotionTable
 ```
 
 ---
 
-## 런타임 상태와 테이블의 경계
+## ?고????곹깭? ?뚯씠釉붿쓽 寃쎄퀎
 
-### 테이블이 가지는 것
+### ?뚯씠釉붿씠 媛吏??寃?
+- ?뺤쟻 ?뺤쓽
+- 李몄“ 愿怨?- ?쒖떆 議곌굔
+- ?좏깮吏 ?대룞 援ъ“
+- ?섏튂/?④퀎 ?뺤쓽
+- ?④낵 ?뺤쓽
 
-- 정적 정의
-- 참조 관계
-- 표시 조건
-- 선택지 이동 구조
-- 수치/단계 정의
-- 효과 정의
+### ?고??꾩씠 媛吏??寃?
+- ?꾩옱 ??/ ?꾩옱 ????꾩튂
+- 利앷굅 蹂댁쑀 紐⑸줉
+- ?섏튂 ?꾩옱媛?(Gauge)
+- 罹먮┃?곕퀎 ?좊ː???꾩옱媛?(Trust)
+- ?좏깮 ?대젰
+- ??諛⑸Ц ?대젰
 
-### 런타임이 가지는 것
-
-- 현재 씬 / 현재 대사 위치
-- 증거 보유 목록
-- 수치 현재값 (Gauge)
-- 캐릭터별 신뢰도 현재값 (Trust)
-- 선택 이력
-- 씬 방문 이력
-
-즉 테이블은 **정의**, 런타임은 **현재 상태**를 담당한다.
+利??뚯씠釉붿? **?뺤쓽**, ?고??꾩? **?꾩옱 ?곹깭**瑜??대떦?쒕떎.
 
 ---
 
-## 레거시 구조 정리 방향
+## ?덇굅??援ъ“ ?뺣━ 諛⑺뼢
 
-현재 코드에 남아 있는 아래 구조는 새 테이블 구조로 옮기는 대상이다.
+?꾩옱 肄붾뱶???⑥븘 ?덈뒗 ?꾨옒 援ъ“?????뚯씠釉?援ъ“濡???린????곸씠??
 
-| 레거시 구조 | 이동 대상 |
+| ?덇굅??援ъ“ | ?대룞 ???|
 |---|---|
 | `Scene.next_scene` | `BranchTable.NextSceneID` |
 | `Scene.priority_*` | `SceneTable.InvestigationTitle/Hint` + `ChoiceGroupTable.MaxSelectable` |
-| `Scene.priority_after_dialogues` | `DialogTable` 흐름 |
+| `Scene.priority_after_dialogues` | `DialogTable` ?먮쫫 |
 | `Dialog.label` | `DialogID` / `NextDialogID` |
 | `Dialog.condition` | `ConditionTable` |
-| `Choice.flag_*` | 제거 — `EffectTable` 또는 `ConditionTable`로 대체 |
+| `Choice.flag_*` | ?쒓굅 ??`EffectTable` ?먮뒗 `ConditionTable`濡??泥?|
 | `Choice.next_scene / next_dialogue` | `ChoiceTable.NextType / NextID` |
 | `Choice.trust_*` / `resonance_value` | `EffectTable.TrustChange` / `GaugeChange` |
 | `Choice.state_type / state_value` | `EffectTable.GaugeChange` |
@@ -158,14 +150,13 @@ CharacterTable
 
 ---
 
-## 다음 작업 기준
+## 현재 운영 기준
 
-새 구조 전환 작업은 아래 순서로 진행한다.
+현재 기준 작업 순서는 아래와 같다.
 
-1. `TABLE_SPEC.md` 기준 확정 ✓
-2. `테이블_완전_새구조.md` 설계 확정 ✓
-3. `export_to_json.py`, `json_to_generated_xlsx.py`, `validate_game_data.py` 전환
-4. `EditorNode` 전환
-5. `scene.js`, `choice.js` 등 런타임 전환
-6. `game_data.js` 마이그레이션
-7. 브라우저 QA
+1. `game/data/game_data.js` 수정
+2. `validate_game_data.py` 실행
+3. `run_data_to_generated_xlsx.bat`로 `script.generated.xlsx` 갱신
+4. scene-local Playwright 러너로 대상 씬 QA
+
+추가로 `content/data/script.xlsx`를 원본으로 다시 반영해야 할 때만 `run_export.bat`를 사용한다.
