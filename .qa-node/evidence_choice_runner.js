@@ -7,6 +7,21 @@ const OUT_DIR = path.join(ROOT, '.qa-artifacts');
 const sceneId = String(process.env.QA_SCENE || 'ch2_well').trim();
 const actionIndex = Number(process.env.QA_ACTION_INDEX || '-1');
 const evidenceIndex = Number(process.env.QA_EVIDENCE_INDEX || '0');
+const qaFacts = String(process.env.QA_FACTS || '').trim();
+const qaGauges = String(process.env.QA_GAUGES || '').trim();
+const qaTrusts = String(process.env.QA_TRUSTS || '').trim();
+const qaChoices = String(process.env.QA_CHOICES || '').trim();
+
+function buildQaUrl() {
+  const url = new URL('http://127.0.0.1:4173/');
+  url.searchParams.set('qa_scene', sceneId);
+  url.searchParams.set('qa_evidence', 'all');
+  if (qaFacts) url.searchParams.set('qa_facts', qaFacts);
+  if (qaGauges) url.searchParams.set('qa_gauges', qaGauges);
+  if (qaTrusts) url.searchParams.set('qa_trusts', qaTrusts);
+  if (qaChoices) url.searchParams.set('qa_choices', qaChoices);
+  return url.toString();
+}
 
 function ensureOutDir() {
   fs.mkdirSync(OUT_DIR, { recursive: true });
@@ -127,7 +142,7 @@ async function main() {
   page.on('console', msg => logs.push(`console:${msg.type()}:${msg.text()}`));
   page.on('pageerror', err => logs.push(`pageerror:${err.message}`));
 
-  await page.goto(`http://127.0.0.1:4173/?qa_scene=${encodeURIComponent(sceneId)}&qa_evidence=all`, {
+  await page.goto(buildQaUrl(), {
     waitUntil: 'domcontentloaded',
     timeout: 15000,
   });
