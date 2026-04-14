@@ -9,11 +9,6 @@ Use this skill when the task spans authoring tools and data pipeline.
 
 Do not use this as the primary skill for narrative-only polishing or runtime-only HUD tweaks.
 
-Before choosing this skill over others, read:
-
-- `G:\GSD\.claude\references\작업_축_선택_가이드.md`
-- `G:\GSD\.claude\references\검증_체크리스트.md`
-
 ## Main files
 
 - `G:\GSD\EditorNode\index.html`
@@ -28,15 +23,15 @@ Before choosing this skill over others, read:
 ## Goals
 
 - keep authoring structures aligned with runtime structures
-- prevent silent data loss in export/import
+- prevent silent data loss in export or import
 - make enum-like fields safe to edit
-- preserve PascalCase schema conventions where applicable
+- preserve schema naming conventions where applicable
 
 ## Example prompts
 
-- `CharacterEmotion 구조를 export와 generated까지 같이 맞춰줘`
+- `CharacterEmotion 구조를 export부터 generated까지 같이 맞춰줘`
 - `EditorNode에서 enum 필드를 드롭다운으로 바꿔줘`
-- `priority_dialogues를 에디터에서 직접 편집 가능하게 해줘`
+- `조사 관련 필드를 에디터와 validate까지 한 번에 정리해줘`
 
 ## Workflow
 
@@ -46,8 +41,8 @@ Before choosing this skill over others, read:
    - schema-wide
 2. If schema-wide, update in this order:
    - runtime expectation
-   - EditorNode serialization/normalization
-   - export/import scripts
+   - EditorNode serialization or normalization
+   - export or import scripts
    - validation
    - docs
 3. If user-facing editor interaction changed, guard against focus loss and rerender loops.
@@ -70,8 +65,9 @@ py G:\GSD\content\tools\validate_game_data.py
 ## Watchouts
 
 - Do not add a field in only one layer.
-- Enum fields should prefer dropdown/select handling in EditorNode.
+- Enum-like fields should prefer dropdown or select handling in EditorNode.
 - If generated output changes, regenerate `script.generated.xlsx`.
+- If schema terms changed, update docs and validation wording together.
 
 ## Done when
 
@@ -82,8 +78,4 @@ py G:\GSD\content\tools\validate_game_data.py
 
 ## Data-first reminder
 
-- Do not leave authorable gameplay metadata trapped in runtime constants if tables can own it.
-- For new repeatable content, check this order:
-  1. extend an existing table
-  2. add a new table
-  3. keep it in runtime only if it is derived logic
+반복 가능한 게임 메타데이터는 런타임 하드코딩보다 테이블화가 우선이다. 순서는 기존 테이블 확장, 필요 시 신규 테이블 추가, 마지막에 파생 로직만 런타임 처리다.
