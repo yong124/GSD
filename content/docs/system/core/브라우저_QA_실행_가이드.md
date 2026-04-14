@@ -2,128 +2,201 @@
 
 ## 목적
 
-경성뎐 런타임을 브라우저에서 실제 플레이 기준으로 검증할 때 쓰는 기본 가이드입니다.
+경성뎐 브라우저 QA는 "게임이 끝까지 돌아가는가"만 보는 단일 풀런보다, 아래 순서로 얇게 쪼개서 확인하는 방식이 더 안정적이다.
 
-지금은 두 가지 자동 검증 스크립트를 둡니다.
+1. 씬 부팅 확인
+2. 텍스트 선택지 클릭 확인
+3. 증거 인벤토리 제출 확인
+4. 실패 경로만 재현
 
-- 저장/이어하기 검증
-- 첫 장면부터 엔딩까지 진행하는 전체 플레이 검증
+이 방식은 다음 장점이 있다.
 
-## 사전 조건
+- 어디서 멈췄는지 바로 알 수 있다
+- 씬 단위로 중간 저장이 가능하다
+- 토큰과 실행 시간을 아낄 수 있다
+- "선택지는 떴는데 눌러도 진행 안 됨" 같은 실제 진행 막힘을 잡기 쉽다
 
-다음 폴더를 QA 전용 런타임 폴더로 사용합니다.
+## 기준 프로세스
 
-- `G:\GSD\.qa-browsers`
-- `G:\GSD\.qa-node`
-- `G:\GSD\.qa-artifacts`
+QA 시작 전 기준 상태는 아래처럼 맞춘다.
 
-의미는 이렇게 나뉩니다.
+- 로컬 서버만 1개 유지
+- QA용 `node` / `chrome-headless-shell` 프로세스는 실행할 때만 생성
+- 이전에 실패한 Playwright 잔여 프로세스는 먼저 정리
 
-- `.qa-browsers`: Playwright 브라우저 바이너리
-- `.qa-node`: Playwright 패키지 런타임
-- `.qa-artifacts`: 스크린샷, 진행 로그 같은 산출물
-
-로컬 서버는 `game` 폴더 기준으로 켜져 있어야 합니다.
+서버 실행:
 
 ```powershell
 cd G:\GSD\game
 py -m http.server 4173
 ```
 
-브라우저 검증 스크립트는 기본적으로 아래 주소를 사용합니다.
-
-- `http://127.0.0.1:4173`
-
-가능하면 raw `node` 호출보다 `.ps1` 래퍼를 먼저 씁니다.
-현재 래퍼는 서버를 먼저 확인하고, 꺼져 있으면 자동으로 기동합니다.
-
-## 1. 저장 / 이어하기 검증
-
-이 스크립트는 아래 흐름을 자동으로 확인합니다.
-
-1. 너무 이른 저장이 차단되는지
-2. 장면 시작 후 저장이 정상 저장되는지
-3. 새로고침 후 `이어하기 -> 슬롯 선택`이 정상 복구되는지
-
-실행:
+서버 확인:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File G:\GSD\content\tools\run_browser_playtest_save_flow.ps1
+Invoke-WebRequest -Uri 'http://127.0.0.1:4173' -UseBasicParsing
 ```
 
-직접 실행 파일:
+## QA 환경
 
-- [browser_playtest_save_flow.js](/G:/GSD/content/tools/browser_playtest_save_flow.js)
-- [run_browser_playtest_save_flow.ps1](/G:/GSD/content/tools/run_browser_playtest_save_flow.ps1)
+Playwright 전용 환경:
 
-정상 기준:
+- `G:\GSD\.qa-node`
+- `G:\GSD\.qa-artifacts`
 
-- early save는 패널이 뜨지 않아야 함
-- `"장면이 시작된 뒤에 저장할 수 있습니다."` 토스트가 보여야 함
-- 정상 저장 후 슬롯 JSON에 `currentSceneId`가 들어가야 함
-- 로드 후 타이틀이 내려가고 대화창이 보여야 함
+핵심 스크립트:
 
-## 2. 전체 플레이 검증
+- [scene_boot_check.js](/G:/GSD/.qa-node/scene_boot_check.js)
+- [scene_choice_runner.js](/G:/GSD/.qa-node/scene_choice_runner.js)
+- [evidence_choice_runner.js](/G:/GSD/.qa-node/evidence_choice_runner.js)
+- [scene_choice_audit.js](/G:/GSD/.qa-node/scene_choice_audit.js)
 
-이 스크립트는 아래 흐름을 자동으로 확인합니다.
-
-1. 새 게임 시작
-2. 대사는 자동으로 넘김
-3. 선택지가 뜨면 첫 번째 선택지를 고름
-4. priority 조사 씬에서도 남은 선택지를 첫 번째부터 처리
-5. 엔딩 후 타이틀 복귀까지 확인
-
-실행:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File G:\GSD\content\tools\run_browser_playtest_full_run.ps1
-```
-
-직접 실행 파일:
+기존 스크립트:
 
 - [browser_playtest_full_run.js](/G:/GSD/content/tools/browser_playtest_full_run.js)
-- [run_browser_playtest_full_run.ps1](/G:/GSD/content/tools/run_browser_playtest_full_run.ps1)
+- [browser_playtest_save_flow.js](/G:/GSD/content/tools/browser_playtest_save_flow.js)
+- [browser_playtest_scene_jump.js](/G:/GSD/content/tools/browser_playtest_scene_jump.js)
 
-정상 기준:
+기존 풀런 스크립트는 여전히 유효하지만, 진행 막힘 탐지에는 씬 단위 러너가 우선이다.
 
-- 중간에 `pageerror`가 없어야 함
-- 선택지/대화가 멈추지 않고 끝까지 진행돼야 함
-- 엔딩 후 타이틀로 되돌아와야 함
+## 권장 순서
 
-## 로그와 산출물
+### 1. 씬 부팅 확인
 
-자동 QA 스크립트는 콘솔에 JSON 요약을 남깁니다.
+목적:
 
-스크린샷 산출 위치:
+- 특정 씬이 `qa_scene`로 정상 진입하는지 확인
+- 첫 `choice` 또는 `evidence` UI까지 도달하는지 확인
 
-- `G:\GSD\.qa-artifacts\qa-final.png`
-
-JSON 산출 위치:
-
-- `G:\GSD\.qa-artifacts\qa-save-flow.json`
-- `G:\GSD\.qa-artifacts\qa-full-run.json`
-
-현재 기본 운영은 아티팩트를 최소로 유지하는 방식입니다.
-
-- 저장 / 이어하기 QA: JSON만 남김
-- 전체 진행 QA: JSON 1개 + 최종 스크린샷 1장만 남김
-
-## 작업 원칙
-
-- 런타임 JS/CSS 수정 후에는 `game/index.html`의 `?v=`를 같이 올립니다.
-- 브라우저에서 안 바뀌면 코드보다 먼저 캐시를 의심합니다.
-- 한글 파일 확인은 UTF-8 기준으로 봅니다.
+예시:
 
 ```powershell
-chcp 65001 > $null
-[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
-Get-Content '경로' -Encoding utf8
+$env:QA_SCENE='ch1_court'
+node G:\GSD\.qa-node\scene_boot_check.js
+Remove-Item Env:QA_SCENE
 ```
 
-## 추천 순서
+출력:
 
-브라우저 관련 수정 후에는 아래 순서로 확인합니다.
+- `G:\GSD\.qa-artifacts\boot-<sceneId>.json`
+- `G:\GSD\.qa-artifacts\boot-<sceneId>.png`
 
-1. `run_browser_playtest_save_flow.ps1`
-2. `run_browser_playtest_full_run.ps1`
-3. 필요하면 수동 브라우저 플레이로 HUD / 패널 / 반응형 마감 QA
+성공 기준:
+
+- `ok: true`
+- `kind: choice` 또는 `kind: evidence`
+
+### 2. 텍스트 선택지 확인
+
+목적:
+
+- 선택지 클릭 후 다음 인터랙션으로 상태가 바뀌는지 확인
+
+중요:
+
+- PowerShell에서 한글 문자열 전달이 깨질 수 있으므로 선택지는 텍스트보다 인덱스로 넘기는 쪽이 안전하다
+
+예시:
+
+```powershell
+$env:QA_SCENE='ch1_court'
+$env:QA_ACTION_INDEX='0'
+node G:\GSD\.qa-node\scene_choice_runner.js
+Remove-Item Env:QA_SCENE, Env:QA_ACTION_INDEX
+```
+
+출력:
+
+- `G:\GSD\.qa-artifacts\choice-<sceneId>.json`
+- `G:\GSD\.qa-artifacts\choice-<sceneId>.png`
+
+성공 기준:
+
+- `ok: true`
+- 클릭 전후 state signature가 달라짐
+
+실패 기준:
+
+- `action-not-found`
+- `click-failed`
+- `same-state-after-click`
+- `interaction-timeout`
+
+### 3. 증거 인벤토리 확인
+
+목적:
+
+- 증거 제출 화면에서 실제 제출 후 다음 인터랙션으로 바뀌는지 확인
+
+예시:
+
+```powershell
+$env:QA_SCENE='ch2_well'
+$env:QA_ACTION_INDEX='-1'
+$env:QA_EVIDENCE_INDEX='0'
+node G:\GSD\.qa-node\evidence_choice_runner.js
+Remove-Item Env:QA_SCENE, Env:QA_ACTION_INDEX, Env:QA_EVIDENCE_INDEX
+```
+
+`QA_ACTION_INDEX=-1`은 씬이 바로 evidence 인벤토리로 시작하는 경우를 뜻한다.
+
+출력:
+
+- `G:\GSD\.qa-artifacts\evidence-<sceneId>-<actionIndex>-<evidenceIndex>.json`
+- `G:\GSD\.qa-artifacts\evidence-<sceneId>-<actionIndex>-<evidenceIndex>.png`
+
+성공 기준:
+
+- `ok: true`
+- 제출 전후 state signature가 달라짐
+
+### 4. 씬 전체 순회
+
+목적:
+
+- 씬의 가능한 선택지 노드를 넓게 훑고, 실패가 있는지 저장
+
+예시:
+
+```powershell
+node G:\GSD\.qa-node\scene_choice_audit.js
+```
+
+주의:
+
+- 이 스크립트는 가장 무겁다
+- 먼저 `scene_boot_check.js`와 `scene_choice_runner.js`로 기준을 잡은 뒤 사용한다
+
+## 토큰 절약 원칙
+
+브라우저 QA를 AI와 함께 돌릴 때는 아래 원칙을 따른다.
+
+1. 먼저 서버/프로세스 상태를 확인하고, 이상이 없을 때만 브라우저 러너를 돌린다.
+2. 전체 전수보다 `1씬 -> 3씬 -> 병렬 배치` 순서로 넓힌다.
+3. 한글 선택지는 텍스트 대신 인덱스를 사용한다.
+4. 실패 없는 정상 케이스는 한 줄 요약만 남긴다.
+5. 실패 케이스만 JSON과 스크린샷을 읽어 자세히 본다.
+6. 동일 증거 풀을 반복 제출하는 씬은 결과를 요약 집계로 압축한다.
+
+## 권장 보고 형식
+
+진행 중 보고:
+
+- 몇 씬 완료했는지
+- 실패가 있는지
+- 지금 어떤 씬/배치를 돌리는지
+
+최종 보고:
+
+1. 막힌 선택지 여부
+2. 재현 경로
+3. 수정 여부
+4. 남은 조건부 분기 또는 서사 QA 필요 사항
+
+## 이번 기준에서 확인된 실제 버그
+
+- `ch5_ipangyu_deal`
+  - 증상: `문구를 따라 한다.`, `거절한다.` 클릭 후 같은 선택지 화면으로 복귀
+  - 원인: 일반 choice의 `Dialog` 분기가 `scene.evidence_dialogues`를 보지 못함
+  - 조치: [scene.js](/G:/GSD/game/js/engine/scene.js) 수정
+  - 현재 상태: 재검증 통과
