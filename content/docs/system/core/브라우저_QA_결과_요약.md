@@ -1,87 +1,136 @@
 # 브라우저 QA 결과 요약
 
-## 범위
+## 이번 라운드 범위
 
-이번 자동 브라우저 QA는 두 축으로 검증했습니다.
+이번 QA는 아래 범위를 Playwright 기반으로 확인했다.
 
-- 저장 / 이어하기 플로우
-- 첫 장면부터 엔딩 복귀까지의 전체 진행
+- 씬 부팅
+- 텍스트 선택지 클릭
+- 조사형 choice 소진
+- evidence 인벤토리 제출
+- 진행 막힘 재현과 수정 후 재검증
 
-## 결과
+## 최종 결론
 
-### 1. 저장 / 이어하기 QA
+- 실제 진행 막힘은 `ch5_ipangyu_deal` 1건 확인
+- 해당 이슈는 수정 후 재검증 통과
+- 현재 기준으로는 진행 불가 선택지가 추가로 보이지 않음
 
-검증 스크립트:
+## 확인 방식
 
-- [run_browser_playtest_save_flow.ps1](/G:/GSD/content/tools/run_browser_playtest_save_flow.ps1)
+### 1. 씬 부팅
 
-통과 기준과 결과:
+사용 스크립트:
 
-- 장면 시작 전 저장 차단: 통과
-- 정상 저장 시 `currentSceneId` 포함 저장: 통과
-- `이어하기 -> 슬롯 선택 -> 복구`: 통과
-- 로드 후 타이틀 하강 및 대화 재개: 통과
+- [scene_boot_check.js](/G:/GSD/.qa-node/scene_boot_check.js)
 
-확인된 상태:
+확인 내용:
 
-- early save 토스트: `장면이 시작된 뒤에 저장할 수 있습니다.`
-- load 토스트: `슬롯 1번 기록을 불러왔습니다.`
+- `qa_scene` 진입 가능 여부
+- 첫 `choice` 또는 `evidence` UI 도달 여부
 
-### 2. 전체 진행 QA
+### 2. 텍스트 선택지
 
-검증 스크립트:
+사용 스크립트:
 
-- [run_browser_playtest_full_run.ps1](/G:/GSD/content/tools/run_browser_playtest_full_run.ps1)
+- [scene_choice_runner.js](/G:/GSD/.qa-node/scene_choice_runner.js)
 
-검증 방식:
+확인 내용:
 
-- 새 게임 시작
-- 대사는 자동 진행
-- 선택지와 priority 조사 선택지는 첫 번째 선택부터 처리
-- 엔딩 후 타이틀 복귀까지 확인
+- 선택지 클릭 후 다음 인터랙션으로 전이되는지
+- 같은 선택지 화면에 그대로 남지 않는지
 
-최종 결과:
+### 3. evidence 제출
 
-- `endedBackOnTitle: true`
-- `elapsedMs: 6185`
-- `traceCount: 349`
-- 브라우저 콘솔 `pageerror` 없음
+사용 스크립트:
 
-## 정리
+- [evidence_choice_runner.js](/G:/GSD/.qa-node/evidence_choice_runner.js)
 
-현재 자동 브라우저 QA 기준으로는
+확인 내용:
 
-- 저장 / 이어하기
-- 일반 선택지 진행
-- priority 조사 진행
-- 엔딩 복귀
+- 인벤토리 항목 제출 후 다음 인터랙션 변화 여부
 
-까지 모두 통과한 상태입니다.
+## 통과한 범주
 
-남는 QA는 자동화가 아니라 체감 영역입니다.
+### 일반 선택지
 
-- 연출 강약
-- 실제 플레이 리듬
-- 좁은 해상도 시인성
-- 메모장 / 패널 가독성 마감
+아래 씬들은 클릭 후 다음 인터랙션으로 정상 전이했다.
 
-## QA 런타임 폴더 메모
+- `ch1_court`
+- `ch1_newsroom`
+- `ch2_hospital`
+- `ch2_factory`
+- `ch2_cafe`
+- `ch3_warehouse`
+- `ch3_room4`
+- `ch5_ritual_path`
+- `ch5_contact_editor`
 
-자동 QA를 다시 돌리려면 아래 폴더를 유지합니다.
+### 조사형 / 반복 선택형
 
-- `G:\GSD\.qa-browsers`
-- `G:\GSD\.qa-node`
-- `G:\GSD\.qa-artifacts`
+- `ch2_cafe`
+- `ch3_room4`
 
-파일 수가 많은 이유는 다음과 같습니다.
+확인 결과:
 
-- `.qa-browsers`: Chromium / headless shell / ffmpeg 같은 Playwright 런타임 파일
-- `.qa-node`: `playwright` 패키지와 그 의존 파일
+- 누른 항목이 빠지고 남은 선택지가 다시 표시됨
+- 진행이 멈추는 현상 없음
 
-즉, “로그 임시파일 수천 개”가 아니라 브라우저 자동화 런타임 자체라고 보면 됩니다.
+### evidence 인벤토리형
 
-아티팩트 출력은 최소로 유지합니다.
+아래 씬들은 evidence 제출 후 다음 인터랙션 변화가 확인됐다.
 
-- `qa-save-flow.json`
-- `qa-full-run.json`
-- `qa-final.png`
+- `ch2_well`
+- `ch2_ipangyu`
+- `ch4a_library`
+- `ch4b_cafe`
+- `ch4a_editor_room`
+- `ch5_guarded_door`
+- `ch5_ritual_room`
+- `ch6_ritual_scene`
+- `ch6_article`
+
+## 발견된 진행 막힘
+
+### `ch5_ipangyu_deal`
+
+증상:
+
+- `문구를 따라 한다.`
+- `거절한다.`
+
+두 선택지 모두 클릭 후 같은 choice 화면으로 되돌아감
+
+원인:
+
+- 일반 choice의 `next_type: "Dialog"` 분기 처리 로직이 `scene.dialogues`만 조회
+- 실제 분기 대상 `dlg_ipangyu_deal_accept`, `dlg_ipangyu_deal_refuse`는 `scene.evidence_dialogues`에만 존재
+- 분기 대사 후 다음 씬으로 넘어가는 연결도 빠져 있었음
+
+수정:
+
+- [scene.js](/G:/GSD/game/js/engine/scene.js)
+
+현재 상태:
+
+- 수정 후 두 선택지 모두 정상 전이 확인
+
+## 조건부 주의 사항
+
+- `ch6_ritual_scene`의 4번째 선택지는 현재 QA 상태에선 비노출이었다
+- 이 항목은 이번 라운드에서 "진행 막힘"으로 판정하지 않았고, 조건부 노출 여부를 따로 보면 된다
+
+## 산출물 위치
+
+실행 결과는 아래 위치에 남긴다.
+
+- `G:\GSD\.qa-artifacts\boot-*.json`
+- `G:\GSD\.qa-artifacts\choice-*.json`
+- `G:\GSD\.qa-artifacts\evidence-*.json`
+- `G:\GSD\.qa-artifacts\*.png`
+
+## 운영 메모
+
+- 전체 풀런 1회보다 씬 단위 러너가 막힘 탐지에 더 유리하다
+- 실패 없는 정상 케이스는 요약만 보고, 상세 JSON은 실패 케이스 위주로 본다
+- 한글 선택지 전달은 문자열보다 인덱스가 안전하다

@@ -383,7 +383,14 @@ const Scene = (() => {
             if (nextScene) {
               Scene.load(nextScene, nextDialogue);
             } else if (nextDialogue) {
-              Dialogue.start(scene.dialogues || [], afterDialogue, nextDialogue);
+              const branchLines = (scene.evidence_dialogues || {})[nextDialogue || ''] || [];
+              if (branchLines.length > 0) {
+                Dialogue.start(branchLines, () => {
+                  loadResolvedNext(scene);
+                }, null);
+              } else {
+                Dialogue.start(scene.dialogues || [], afterDialogue, nextDialogue);
+              }
             } else {
               loadResolvedNext(scene);
             }

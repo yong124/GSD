@@ -7,10 +7,6 @@ description: Use when wrapping up a GSD work round, verifying data and runtime s
 
 Use this skill near the end of a work round.
 
-Before running this skill, read:
-
-- `G:\GSD\.claude\references\검증_체크리스트.md`
-
 ## Example prompts
 
 - `이번 라운드 마감 체크하고 handoff 갱신해줘`
@@ -49,7 +45,9 @@ py G:\GSD\content\tools\json_to_generated_xlsx.py
 6. Clean up temporary folders created for QA or tooling.
 7. If browser QA was part of the round:
    - confirm the local game server is reachable before the script runs
-   - prefer wrapper scripts that auto-check or auto-start the server
+   - prefer the scene-local Playwright runners before a giant full run
+   - use `G:\GSD\.claude\skills\gsd-browser-qa\SKILL.md` for progression QA
+   - keep `G:\GSD\content\docs\system\core\브라우저_QA_실행_가이드.md` in sync with the actual workflow
 
 ## Do not
 
@@ -73,6 +71,7 @@ Prefer commit messages that reflect the actual slice of work, such as:
 - Do not leave behind cache/test temp folders.
 - Do not describe work as finished if browser cache can still hide the fix.
 - Browser QA depends on a live local server. Wrapper scripts are safer than raw `node` entrypoints.
+- For Korean choice text, prefer action indices over env-passed strings.
 
 ## Final response pattern
 
