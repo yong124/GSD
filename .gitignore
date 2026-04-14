@@ -1,6 +1,8 @@
 Microsoft/
 .claude/settings.local.json
 .qa/
+.qa-artifacts/
+.qa-node/node_modules/
 content/docs/portfolio/node_modules/
 content/docs/portfolio/screenshots/
 content/docs/portfolio/slides/
