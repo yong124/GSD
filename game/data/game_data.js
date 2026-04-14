@@ -1,4 +1,4 @@
-﻿window.GAME_DATA = {
+window.GAME_DATA = {
   "first_scene": "ch1_court",
   "characters": {
     "Yuu": {
@@ -940,7 +940,7 @@
           },
           {
             "order": 2,
-            "text": "…그건 제가 드릴 말씀이 없습니다. 손님, 이런 말씀 계속하시면 나가주셔야 합니다.",
+            "text": "…그건 제가 드릴 말씀이 없습니다. 손님, 이런 말씀이 계속되면 자리를 비워드려야 하겠습니다.",
             "style": "normal",
             "condition": null,
             "speaker_id": "Manager",
@@ -962,13 +962,13 @@
         "inv_wtrs": [
           {
             "order": 1,
-            "text": "지나치던 여급이 눈을 피하며 카운터 쪽으로 향한다. 유웅룡이 시선으로 잡아채자 잠깐 멈춘다.",
+            "text": "지나치던 여급이 손님 상을 치우며 눈을 피한다. 반쯤 비운 술잔이 제 것인지 손님 것인지 구분이 안 간다. 유웅룡이 시선으로 잡아채자 잠깐 멈춘다.",
             "style": "narration",
             "condition": null
           },
           {
             "order": 2,
-            "text": "그런 건 이제 안 해요. 이름을 입에 올렸다가 되돌아오는 것도 있으니까…. 손님은 못 들은 셈 치세요.",
+            "text": "그런 건 이제 안 해요. 이름을 입에 올렸다가 되돌아오는 것도 있으니까…. (낮게) 저는 아직 빚이 남아서요. 손님은 못 들은 셈 치세요.",
             "style": "normal",
             "condition": null,
             "speaker_id": "Waitress",
@@ -978,7 +978,7 @@
           },
           {
             "order": 3,
-            "text": "이름을 올리면 되돌아온다. 경고인지 진심인지. 그리고 저 사람이 두려워하는 건 이름 자체인가, 아니면 이름 아는 사람인가.",
+            "text": "이름을 올리면 되돌아온다. 그리고 빚이 남아 있으면 입을 닫아야 한다. 저 아이들은 두 겹으로 묶여 있군.",
             "style": "thought",
             "condition": null,
             "speaker_id": "Yuu",
@@ -990,7 +990,7 @@
         "inv_obs": [
           {
             "order": 1,
-            "text": "구석 자리. 손을 모은 채 조용히 앉은 여자. 커피잔을 천천히 돌리면서 이쪽을 보지 않는다.",
+            "text": "구석 자리. 손을 모은 채 조용히 앉은 여자. 술잔을 천천히 밀어놓으면서 이쪽을 보지 않는다.",
             "style": "thought",
             "condition": null,
             "speaker_id": "Yuu",
@@ -1148,7 +1148,7 @@
             "standing_slot": "Right",
             "focus_type": "Speaker",
             "idle_motion": "ShakeLight",
-            "text": "이쯤 했으면 충분하잖아. 사람 갈아 넣고도 정화라 부를 셈이면, 그 입부터 막아야겠군.",
+            "text": "이쯤으로 충분할 터인데. 사람 갈아 넣고도 정화라 부를 셈이면, 그 입부터 막아야겠군.",
             "style": "normal",
             "condition": null
           },
@@ -1856,6 +1856,24 @@
       "evidence_id": "EvIpangyuName",
       "trust_character_id": null,
       "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_ch1_court_pursue",
+      "effect_type": "GaugeChange",
+      "gauge_id": "Credibility",
+      "gauge_delta": 1,
+      "evidence_id": null,
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_ch1_court_comply",
+      "effect_type": "TrustChange",
+      "gauge_id": null,
+      "gauge_delta": null,
+      "evidence_id": null,
+      "trust_character_id": "Editor",
+      "trust_delta": 1
     }
   ],
   "scenes": {
@@ -1990,7 +2008,24 @@
           "focus_type": "Speaker"
         }
       ],
-      "choices": [],
+      "choices": [
+        {
+          "order": 1,
+          "choice_id": "Ch1CourtPursue",
+          "effect_group_id": "eff_ch1_court_pursue",
+          "text": "이 판결, 기어이 물고 늘어진다.",
+          "next_type": "Scene",
+          "next_id": "ch1_newsroom"
+        },
+        {
+          "order": 2,
+          "choice_id": "Ch1CourtComply",
+          "effect_group_id": "eff_ch1_court_comply",
+          "text": "편집장이 원하는 기사를 먼저 써둔다. 그게 실리는 법이다.",
+          "next_type": "Scene",
+          "next_id": "ch1_newsroom"
+        }
+      ],
       "evidence": []
     },
     "ch1_newsroom": {
@@ -2092,14 +2127,20 @@
           "effect_group_id": "eff_ch1_newsroom_obedient",
           "text": "세간의 입에 오를 만한 글로 꾸며 보지요.",
           "next_type": "Scene",
-          "next_id": "ch1_newsroom_obedient"
+          "next_id": "ch1_newsroom_obedient",
+          "next_scene": "ch1_newsroom_obedient",
+          "flag_key": "ToneObedient",
+          "flag_value": 1
         },
         {
           "order": 2,
           "choice_id": "Ch1NewsroomDefiant",
           "text": "신문감은 되겠지만, 이대로 덮을 마음은 없습니다.",
           "next_type": "Scene",
-          "next_id": "ch1_newsroom_defiant"
+          "next_id": "ch1_newsroom_defiant",
+          "next_scene": "ch1_newsroom_defiant",
+          "flag_key": "ToneObedient",
+          "flag_value": 0
         }
       ],
       "evidence": []
@@ -2303,17 +2344,28 @@
           "choice_id": "Ch2HospitalAskRoot",
           "text": "그 망상의 근원부터 기어이 묻고 늘어진다.",
           "next_type": "Scene",
-          "next_id": "ch2_hospital_a"
+          "next_id": "ch2_hospital_a",
+          "next_scene": "ch2_hospital_a"
         },
         {
           "order": 2,
           "choice_id": "Ch2HospitalAskDoor",
           "text": "그가 벌벌 떠는 '문'의 정체부터 확인한다.",
           "next_type": "Scene",
-          "next_id": "ch2_hospital_b"
+          "next_id": "ch2_hospital_b",
+          "next_scene": "ch2_hospital_b"
         }
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "evidence_id": "EvIpangyuMemo",
+          "name": "접견 메모",
+          "description": "이판규가 접견 탁자 틈새에 밀어 넣은 작은 종이 조각. '문은 반드시 열린다. 노래가 준비되면.' 떨리는 손으로 쓰인 글자가 번져 있다.",
+          "image": "assets/items/note.png",
+          "category_id": "record",
+          "trigger": 2
+        }
+      ]
     },
     "ch2_hospital_a": {
       "id": "ch2_hospital_a",
@@ -2540,7 +2592,7 @@
         },
         {
           "order": 5,
-          "text": "문틈에서 손이 나와...! 무녀가 다시 노래하면, 이번엔 내 껍데기만 찢기고 진짜 열려 버린단 말—! 끄거오옥...!",
+          "text": "문틈에서 손이 나와...! 무녀가 다시 노래하면, 이번엔 내 껍데기만 찢기고 문이 기어이 열리고 마는 거야—! 끄거오옥...!",
           "style": "crazy",
           "speaker_id": "Ipangyu",
           "emotion_type": "Crazy",
@@ -2626,7 +2678,8 @@
           "reward_mode": "Add",
           "next_type": "Scene",
           "next_id": "ch2_factory_shock",
-          "order": 1
+          "order": 1,
+          "next_scene": "ch2_factory_shock"
         }
       ],
       "evidence": [
@@ -2683,7 +2736,7 @@
         },
         {
           "order": 3,
-          "text": "어서 오십시오. 커피로 하시겠습니까?",
+          "text": "어서 오십시오. 맥주로 드시겠습니까, 정종으로 드시겠습니까?",
           "style": "normal",
           "speaker_id": "Manager",
           "emotion_type": "Neutral",
@@ -2701,7 +2754,7 @@
         },
         {
           "order": 5,
-          "text": "아… 그런 이가 있긴 했지요. 요새는 무대에 세우지 않습니다. 집 안 공기가 좀 달라졌거든요. (잔을 내려놓으며 시선을 피한다)",
+          "text": "아… 그런 이가 있긴 했지요. 요새는 무대에 올리지 않습니다. 저 아이들 중에 어물쩡 나가려는 것들이 생겨서요. (잔을 내려놓으며 시선을 피한다)",
           "style": "normal",
           "speaker_id": "Manager",
           "emotion_type": "Neutral",
@@ -2714,7 +2767,7 @@
           "order": 1,
           "choice_group_id": "ChoiceGroup_CafeInvestigation",
           "choice_id": "Ch2CafeAskManager",
-          "text": "점장에게 더 캐묻는다",
+          "text": "점장에게 기어이 묻고 늘어진다",
           "next_type": "Dialog",
           "next_id": "inv_mgr"
         },
@@ -2844,7 +2897,7 @@
         },
         {
           "order": 11,
-          "text": "…처음이에요. 제 말 듣고 그런 식으로 답한 사람. 다들 미쳤다거나, 더럽다거나, 괜히 엮이지 말라고만 했거든요.",
+          "text": "…처음이에요. 제 말 듣고 그런 식으로 답한 사람. 다들 미쳤다거나, 더럽다거나, 괜히 엮이지 말라고만 했지요.",
           "style": "normal",
           "speaker_id": "Songsoon",
           "emotion_type": "Uneasy",
@@ -2929,7 +2982,7 @@
         "dlg_songsoon_skeptical": [
           {
             "order": 1,
-            "text": "그게 언니하고 무슨 상관이에요. 기자님이 진짜 알고 싶은 게 뭔지, 저는 아직 모르겠어요. 조금 더 보고 결정해도 될까요.",
+            "text": "그게 언니하고 무슨 상관이에요. 기자님이 정작 알고 싶으신 게 무엇인지, 저는 아직 모르겠어요. 조금 더 보고 결정해도 될까요.",
             "style": "normal",
             "speaker_id": "Songsoon",
             "emotion_type": "Uneasy",
@@ -2982,7 +3035,7 @@
         },
         {
           "order": 4,
-          "text": "그래도 와야 했어요. 언니는 인사 한마디 없이 끊겼으니까. 이런 일은 누군가 끝까지 붙들지 않으면, 금세 없던 날로 넘어가 버리잖아요.",
+          "text": "그래도 와야 했어요. 언니는 인사 한마디 없이 끊겼으니까. 이런 일은 누군가 끝까지 붙들지 않으면, 금세 없던 날로 넘어가 버리니까요.",
           "style": "normal",
           "speaker_id": "Songsoon",
           "emotion_type": "Uneasy",
@@ -3046,7 +3099,7 @@
         },
         {
           "order": 11,
-          "text": "무섭죠. 그런데 전… 이상하리만치 귀에 익어요. 예전부터 멀리서 듣던 소리 같아요. 그래서 더 서늘해요.",
+          "text": "무섭죠. 그런데 전… 기묘하리만치 귀에 익어요. 예전부터 멀리서 듣던 소리 같아요. 그래서 더 서늘해요.",
           "style": "scared",
           "speaker_id": "Songsoon",
           "emotion_type": "Afraid",
@@ -3655,7 +3708,7 @@
         },
         {
           "order": 2,
-          "text": "…그 말을 기다리고 있었는지도 몰라요. 내가 언니를 못 지켰단 마음이 자꾸 먼저 와서, 뭘 봐도 전부 내 탓처럼 보였거든요.",
+          "text": "…그 말을 기다리고 있었는지도 몰라요. 내가 언니를 못 지켰단 마음이 자꾸 먼저 와서, 뭘 봐도 전부 내 탓처럼 보였지요.",
           "style": "normal",
           "speaker_id": "Songsoon",
           "emotion_type": "Uneasy",
@@ -4090,7 +4143,7 @@
         },
         {
           "order": 3,
-          "text": "배고픈 사람들한텐 구원이란 말이 독보다 세지. 밥 한 그릇보다, 내일이 달라질 거라는 말이 더 위험하거든.",
+          "text": "배고픈 사람들한텐 구원이란 말이 독보다 세지. 밥 한 그릇보다, 내일이 달라질 거라는 말이 더 위험한 것이오.",
           "style": "normal",
           "speaker_id": "Elder",
           "emotion_type": "Neutral",
@@ -4117,7 +4170,7 @@
         },
         {
           "order": 6,
-          "text": "그 여잔 천국을 약속하지 않았어. 대신 조선을 구하려면 한 번 몽땅 썩은 살을 도려내야 한다고 했지. 기묘하지? 세상이 지나치게 기울어져 있으면, 구원보다 파멸이 더 공평해 보일 때가 있거든.",
+          "text": "그 여잔 천국을 약속하지 않았어. 대신 조선을 구하려면 한 번 몽땅 썩은 살을 도려내야 한다고 했지. 기묘하지 않은가. 세상이 지나치게 기울어져 있으면, 구원보다 파멸이 더 공평해 보일 때가 있는 법이오.",
           "style": "normal",
           "speaker_id": "Elder",
           "emotion_type": "Neutral",
@@ -4216,7 +4269,7 @@
         },
         {
           "order": 7,
-          "text": "그날 다들 노래를 듣긴 했어요. 그런데 아무도 같은 소릴 들은 것 같지가 않았어요. 누구는 어미 목소리 같다고 했고, 누구는 물 밑에서 누가 웃는 소리 같다 했어요. 그게 제일 무서웠어요.",
+          "text": "그날 다들 노래를 듣긴 했어요. 그런데 아무도 같은 소릴 들은 것 같지가 않았어요. 누구는 어미 목소리 같다고 했고, 누구는 물 밑에서 누가 웃는 소리 같다 했어요. 그 점이 더욱 소름이 끼쳤어요.",
           "style": "normal",
           "speaker_id": "Okryeon",
           "emotion_type": "Afraid",
@@ -4257,14 +4310,20 @@
           "choice_id": "Ch4BCafeHold",
           "text": "알겠어요. 더는 억지로 묻지 않을게요.",
           "next_type": "Scene",
-          "next_id": "ch4b_cafe_hold"
+          "next_id": "ch4b_cafe_hold",
+          "next_scene": "ch4b_cafe_hold",
+          "flag_key": "CafePressLevel",
+          "flag_value": 0
         },
         {
           "order": 2,
           "choice_id": "Ch4BCafePress",
           "text": "조금만 더 말해줘요. 여기서 멈출 순 없어요.",
           "next_type": "Scene",
-          "next_id": "ch4b_cafe_press"
+          "next_id": "ch4b_cafe_press",
+          "next_scene": "ch4b_cafe_press",
+          "flag_key": "CafePressLevel",
+          "flag_value": 1
         },
         {
           "order": 101,
@@ -4274,7 +4333,10 @@
           "evidence_id": "EvDiary",
           "effect_group_id": "eff_okryeon_diary",
           "next_type": "Dialog",
-          "next_id": "dlg_okryeon_reveal"
+          "next_id": "dlg_okryeon_reveal",
+          "next_scene": "ch4b_backroom",
+          "flag_key": "EvidenceShown",
+          "flag_value": 1
         },
         {
           "order": 102,
@@ -4284,7 +4346,10 @@
           "evidence_id": "EvBlueHanbok",
           "effect_group_id": "eff_okryeon_hanbok",
           "next_type": "Dialog",
-          "next_id": "dlg_okryeon_reveal"
+          "next_id": "dlg_okryeon_reveal",
+          "next_scene": "ch4b_backroom",
+          "flag_key": "EvidenceShown",
+          "flag_value": 2
         }
       ],
       "evidence": [],
@@ -6051,7 +6116,7 @@
       "dialogues": [
         {
           "order": 1,
-          "text": "이쯤 했으면 충분하잖아. 사람 갈아 넣고도 정화라 부를 셈이면, 그 입부터 막아야지.",
+          "text": "이쯤으로 충분할 터인데. 사람 갈아 넣고도 정화라 부를 셈이면, 그 입부터 막아야지.",
           "style": "normal",
           "speaker_id": "Yuu",
           "emotion_type": "Neutral",
@@ -7054,7 +7119,7 @@
         },
         {
           "order": 2,
-          "text": "낙원 외곽 판잣집 골목. 이판규 — 낙원의 오래된 신도이자 교주의 그림자라고 불리는 자가 담벼락에 기대어 서 있다. 처음 보는 얼굴인데 눈빛이 이상하다.",
+          "text": "낙원 외곽 판잣집 골목. 이판규 — 낙원의 오래된 신도이자 교주의 그림자라고 불리는 자가 담벼락에 기대어 서 있다. 처음 보는 얼굴인데 눈빛이 심상치 않다.",
           "style": "narration"
         },
         {
@@ -7098,7 +7163,7 @@
         "dlg_ipangyu_reveal": [
           {
             "order": 1,
-            "text": "...이걸 어디서 구했어. 그날 거기 없었으면 못 얻는 거잖아.",
+            "text": "...이걸 어디서 구했어. 그날 거기 없었으면 손에 쥘 수 없는 물건인데.",
             "style": "normal",
             "speaker_id": "Ipangyu",
             "emotion_type": "Crazy",
@@ -7309,7 +7374,7 @@
           "branch_id": "Br_ending_erosion_End",
           "order": 1,
           "condition_group_id": null,
-          "next_scene": null
+          "next_scene": "ch6_ending_b"
         }
       ],
       "dialogues": [
@@ -7473,4 +7538,3 @@
     }
   }
 };
-
