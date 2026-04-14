@@ -922,8 +922,8 @@ window.GAME_DATA = {
   "investigations": [
     {
       "investigation_id": "Investigation_CafeNakwon",
-      "title": "낙원에서 무엇을 먼저 볼 것인가",
-      "hint": "남은 조사 기회 안에서 현장과 사람의 결 중 무엇을 먼저 붙들지 정하세요.",
+      "title": "낙원에서 먼저 흔들어 볼 결은 무엇인가",
+      "hint": "점장의 입, 여급들의 빚, 구석 손님의 침묵 가운데 어디를 먼저 건드릴지 정하세요.",
       "budget": 2,
       "choice_group_id": "ChoiceGroup_CafeInvestigation",
       "priority_dialogues": {
@@ -950,7 +950,7 @@ window.GAME_DATA = {
           },
           {
             "order": 3,
-            "text": "겁먹은 건지, 감추는 건지. 혹은 둘 다인지. 어느 쪽이든 이 사람은 알고 있다.",
+            "text": "점장은 이미 겁을 먹고 있다. 여기서 더 밀면 입을 닫겠지만, 낙원 안쪽 질서가 누구를 숨기고 있는지는 더 또렷해졌어.",
             "style": "thought",
             "condition": null,
             "speaker_id": "Yuu",
@@ -978,7 +978,7 @@ window.GAME_DATA = {
           },
           {
             "order": 3,
-            "text": "이름을 올리면 되돌아온다. 그리고 빚이 남아 있으면 입을 닫아야 한다. 저 아이들은 두 겹으로 묶여 있군.",
+            "text": "이름을 올리면 되돌아오고, 빚이 남아 있으면 입을 닫는다. 낙원은 노래보다 빚으로 사람을 붙들고 있군. 다음엔 그 빚의 주인을 쫓아야겠어.",
             "style": "thought",
             "condition": null,
             "speaker_id": "Yuu",
@@ -1000,7 +1000,7 @@ window.GAME_DATA = {
           },
           {
             "order": 2,
-            "text": "하지만 저 눈은 전부 듣고 있다. 등이 굳어 있고, 숨이 얕다. 조용하지만 이미 알고 있는 사람의 자세다.",
+            "text": "하지만 저 눈은 전부 듣고 있다. 조용히 웅크렸을 뿐, 이미 안쪽 사정을 아는 사람의 자세다. 오늘 밤 낙원엔 말 안 하는 증인이 더 있군.",
             "style": "thought",
             "condition": null,
             "speaker_id": "Yuu",
@@ -1013,8 +1013,8 @@ window.GAME_DATA = {
     },
     {
       "investigation_id": "Investigation_Room4",
-      "title": "방 안의 어떤 흔적을 먼저 붙들 것인가",
-      "hint": "벽의 반응, 남겨진 기록, 송순의 마음 가운데 먼저 확인할 결을 고르세요.",
+      "title": "이 방에서 먼저 붙들 진실은 무엇인가",
+      "hint": "벽의 흔적, 남겨진 기록, 송순의 흔들림 가운데 어디부터 잡아야 사건의 구조가 드러나는지 고르세요.",
       "budget": 2,
       "choice_group_id": "ChoiceGroup_Room4Investigation",
       "priority_dialogues": {
@@ -1116,8 +1116,8 @@ window.GAME_DATA = {
     },
     {
       "investigation_id": "Investigation_RitualFinal",
-      "title": "마지막으로 무엇을 택할 것인가",
-      "hint": "답할지, 막을지, 머뭇거릴지. 이번 선택은 엔딩의 기울기를 바꿉니다.",
+      "title": "이 방에서 무엇을 사람으로 남길 것인가",
+      "hint": "구해 붙들지, 몸으로 끊을지, 공포에 멈출지, 쌓아 온 질문으로 폭로할지 선택하세요.",
       "budget": 1,
       "choice_group_id": "ChoiceGroup_RitualFinal",
       "priority_dialogues": {
@@ -2709,7 +2709,7 @@ window.GAME_DATA = {
       "music": "assets/sfx/jazz.mp3",
       "effect": null,
       "goal_kicker": "조사 목표",
-      "goal_text": "카페 낙원에서 먼저 붙잡을 단서를 가려내고, 송순이 숨기는 결을 읽어낸다.",
+      "goal_text": "낙원 안에서 누구의 입을 먼저 흔들어야 송금과 낙원의 연결고리가 드러나는지 가려낸다.",
       "investigation_id": "Investigation_CafeNakwon",
       "branches": [
         {
@@ -2767,7 +2767,7 @@ window.GAME_DATA = {
           "order": 1,
           "choice_group_id": "ChoiceGroup_CafeInvestigation",
           "choice_id": "Ch2CafeAskManager",
-          "text": "점장에게 기어이 묻고 늘어진다",
+          "text": "점장을 몰아세워 낙원 안쪽 규칙을 흔든다",
           "next_type": "Dialog",
           "next_id": "inv_mgr"
         },
@@ -2775,7 +2775,7 @@ window.GAME_DATA = {
           "order": 2,
           "choice_group_id": "ChoiceGroup_CafeInvestigation",
           "choice_id": "Ch2CafeAskWaitress",
-          "text": "지나치는 여급의 반응을 확인한다",
+          "text": "여급들의 빚과 눈치를 읽어 낸다",
           "next_type": "Dialog",
           "next_id": "inv_wtrs"
         },
@@ -2783,7 +2783,7 @@ window.GAME_DATA = {
           "order": 3,
           "choice_group_id": "ChoiceGroup_CafeInvestigation",
           "choice_id": "Ch2CafeAskObserver",
-          "text": "구석에 앉은 여자를 살핀다",
+          "text": "구석 손님의 침묵을 정면으로 살핀다",
           "next_type": "Dialog",
           "next_id": "inv_obs"
         }
@@ -3390,7 +3390,7 @@ window.GAME_DATA = {
       "music": "assets/sfx/sad.mp3",
       "effect": null,
       "goal_kicker": "조사 목표",
-      "goal_text": "사라진 언니의 방에서 무엇이 지워졌고 무엇이 남았는지, 제한된 기회 안에 가려낸다.",
+      "goal_text": "방 안에 남은 흔적 중 무엇이 의식의 구조를 밝히고, 무엇이 송금의 마지막 저항을 보여 주는지 가려낸다.",
       "investigation_id": "Investigation_Room4",
       "branches": [
         {
@@ -3537,7 +3537,7 @@ window.GAME_DATA = {
           "choice_group_id": "ChoiceGroup_Room4Investigation",
           "choice_id": "Ch3Room4TouchWall",
           "effect_group_id": "eff_ch3_room4_touch_wall",
-          "text": "위험을 감수하고 벽의 문양에 직접 손을 댄다.",
+          "text": "위험을 감수하고 벽 문양이 남긴 저항 흔적을 짚는다.",
           "next_type": "Scene",
           "next_id": "ch3_room4_touch"
         },
@@ -3546,7 +3546,7 @@ window.GAME_DATA = {
           "choice_group_id": "ChoiceGroup_Room4Investigation",
           "choice_id": "Ch3Room4ReadRecord",
           "effect_group_id": "eff_ch3_room4_read_record",
-          "text": "공포보다 기록을 우선하고 일기장의 다음 장을 더 읽는다.",
+          "text": "공포보다 기록을 택하고 일기의 구조를 끝까지 읽는다.",
           "next_type": "Scene",
           "next_id": "ch3_room4_record"
         },
@@ -3554,7 +3554,7 @@ window.GAME_DATA = {
           "order": 3,
           "choice_group_id": "ChoiceGroup_Room4Investigation",
           "choice_id": "Ch3Room4ComfortSongsoon",
-          "text": "증거보다 먼저 송순에게 혼자 떠맡지 말자고 말한다.",
+          "text": "증거보다 먼저 송순의 무너지는 마음을 붙든다.",
           "next_type": "Scene",
           "next_id": "ch3_room4_comfort"
         }
@@ -3618,7 +3618,7 @@ window.GAME_DATA = {
         },
         {
           "order": 3,
-          "text": "그걸 직접 만지고도 그런 소릴 하세요? 기자님도 참…. 그런데 이제 저도 못 물러가겠어요.",
+          "text": "그걸 직접 만지고도 그런 소릴 하세요? 기자님도 참…. 그런데 이제 저도 못 물러가겠어요. 언니가 안에서 한 번은 버티려 했다는 거잖아요.",
           "style": "normal",
           "speaker_id": "Songsoon",
           "emotion_type": "Uneasy",
@@ -3674,7 +3674,7 @@ window.GAME_DATA = {
         },
         {
           "order": 4,
-          "text": "종이 위 문장을 따라갈수록 방 안의 공포는 도리어 또렷한 순서를 갖추기 시작한다. 유웅룡은 처음으로 이 사건이 괴담이 아니라 설계된 삭제라는 감각을 붙든다.",
+          "text": "종이 위 문장을 따라갈수록 방 안의 공포는 도리어 또렷한 순서를 갖추기 시작한다. 유웅룡은 처음으로 이 사건이 괴담이 아니라 설계된 삭제라는 감각을 붙든다. 다음엔 그 삭제를 누가 지휘했는지 쫓아야 한다.",
           "style": "narration"
         }
       ],
@@ -3726,7 +3726,7 @@ window.GAME_DATA = {
         },
         {
           "order": 4,
-          "text": "그 말 이후 송순의 시선은 죄책감에 붙들리지 않고 방 안 증거들로 다시 옮겨 간다. 서로의 몫을 나눠 든다는 감각이 처음 분명해진다.",
+          "text": "그 말 이후 송순의 시선은 죄책감에 붙들리지 않고 방 안 증거들로 다시 옮겨 간다. 서로의 몫을 나눠 든다는 감각이 처음 분명해진다. 이제는 언니를 잃은 이유가 아니라, 누가 언니를 가져갔는지 묻는 쪽으로 나아갈 수 있다.",
           "style": "narration"
         }
       ],
@@ -5180,6 +5180,8 @@ window.GAME_DATA = {
       "background": "assets/bg/storage.jpeg",
       "music": "assets/sfx/creepy_2.mp3",
       "effect": null,
+      "goal_kicker": "결단 목표",
+      "goal_text": "문 안의 의식으로 들어가기 전, 두려움에 끌려가지 않고 어떤 태도로 버틸지 결정한다.",
       "branches": [
         {
           "branch_id": "Br_ch5_guarded_door_Default",
@@ -5289,7 +5291,7 @@ window.GAME_DATA = {
           "order": 3,
           "choice_group_id": "ChoiceGroup_GuardedDoor",
           "choice_id": "Ch5GuardedDoorObserve",
-          "text": "문 틈으로 안을 직접 들여다본다.",
+          "text": "문 틈으로 안의 배치와 위험을 직접 읽어 낸다.",
           "next_type": "Scene",
           "next_id": "ch5_guarded_door_observe"
         }
@@ -5855,7 +5857,7 @@ window.GAME_DATA = {
       "music": "assets/sfx/ritual_climax.mp3",
       "effect": 4,
       "goal_kicker": "결단 목표",
-      "goal_text": "이 방에서 무엇을 사람으로 남길지 결정한다. 망설일 시간은 길지 않다.",
+      "goal_text": "송금, 이해심, 그리고 이 방에 쌓인 질문들 사이에서 무엇을 사람 쪽으로 남길지 지금 결정한다.",
       "investigation_id": "Investigation_RitualFinal",
       "branches": [
         {
@@ -5992,7 +5994,7 @@ window.GAME_DATA = {
           "order": 1,
           "choice_group_id": "ChoiceGroup_RitualFinal",
           "choice_id": "Ch6FinalAnswer",
-          "text": "송순이 언니의 노래에 응답한다.",
+          "text": "송순이 언니를 사람의 이름으로 붙들어 세운다.",
           "next_type": "Scene",
           "next_id": "ch6_choice_a",
           "impact_text": "마지막 결단의 무게가 기울기 시작합니다."
@@ -6001,7 +6003,7 @@ window.GAME_DATA = {
           "order": 2,
           "choice_group_id": "ChoiceGroup_RitualFinal",
           "choice_id": "Ch6FinalBlock",
-          "text": "유웅룡이 이해심을 막으러 달려간다.",
+          "text": "유웅룡이 제단으로 뛰어들어 의식을 몸으로 끊는다.",
           "next_type": "Scene",
           "next_id": "ch6_choice_b",
           "impact_text": "마지막 결단의 무게가 기울기 시작합니다."
@@ -6010,7 +6012,7 @@ window.GAME_DATA = {
           "order": 3,
           "choice_group_id": "ChoiceGroup_RitualFinal",
           "choice_id": "Ch6FinalHesitate",
-          "text": "아무것도 하지 않고 지켜본다.",
+          "text": "공포에 얼어붙은 채 아무 선택도 하지 못한다.",
           "next_type": "Scene",
           "next_id": "ch6_choice_c",
           "impact_text": "마지막 결단의 무게가 기울기 시작합니다."
@@ -6019,7 +6021,7 @@ window.GAME_DATA = {
           "order": 4,
           "choice_group_id": "ChoiceGroup_RitualFinal",
           "choice_id": "Ch6FinalExpose",
-          "text": "지금까지 붙든 질문과 단서를 들이밀며 이해심을 몰아세운다.",
+          "text": "지금까지 쌓은 질문과 단서를 들이밀어 이해심의 거짓을 폭로한다.",
           "next_type": "Dialog",
           "next_id": "ritual_expose",
           "condition_group_id": "CG_RitualScene_SolvedHigh",
@@ -6082,7 +6084,7 @@ window.GAME_DATA = {
       "dialogues": [
         {
           "order": 1,
-          "text": "언니, 그 소리 따라가지 마. 나 봐. 나 아직 여기 있어. 네 이름 아직 여기 남아 있어.",
+          "text": "언니, 그 소리 따라가지 마. 나 봐. 나 아직 여기 있어. 네 이름 아직 여기 남아 있어. 저 사람들 입에서 지워지기 전에 내가 먼저 부를게.",
           "style": "normal",
           "speaker_id": "Songsoon",
           "emotion_type": "Uneasy",
@@ -6116,7 +6118,7 @@ window.GAME_DATA = {
       "dialogues": [
         {
           "order": 1,
-          "text": "이쯤으로 충분할 터인데. 사람 갈아 넣고도 정화라 부를 셈이면, 그 입부터 막아야지.",
+          "text": "이쯤이면 충분하겠지. 사람 갈아 넣고도 정화라 부를 셈이면, 이번엔 글이 아니라 몸으로라도 그 입부터 막아야지.",
           "style": "normal",
           "speaker_id": "Yuu",
           "emotion_type": "Neutral",
@@ -6150,7 +6152,7 @@ window.GAME_DATA = {
       "dialogues": [
         {
           "order": 1,
-          "text": "두 사람은 아주 짧은 순간, 아무 쪽도 택하지 못하고 얼어붙는다. 공포는 때로 물러서는 감정보다 먼저 사람 몸을 멈추게 한다.",
+          "text": "두 사람은 아주 짧은 순간, 아무 쪽도 택하지 못하고 얼어붙는다. 공포는 때로 물러서는 감정보다 먼저 사람 몸을 멈추게 한다. 아무것도 하지 않은 대가가 무엇인지, 바로 다음 순간 몸으로 알게 된다.",
           "style": "narration"
         },
         {
@@ -7100,9 +7102,9 @@ window.GAME_DATA = {
       "music": "assets/sfx/jazz_dark.mp3",
       "effect": null,
       "goal_kicker": "증거 제시",
-      "goal_text": "이판규가 숨긴 것을 끌어내라. 증거로 그의 입을 열어야 한다.",
+      "goal_text": "이판규를 압박해 송금과 의식에 닿는 이름을 토하게 만든다. 맞는 증거만이 그의 기억을 흔든다.",
       "evidence_prompt_title": "이판규에게 증거를 제시하라",
-      "evidence_prompt_hint": "그가 아는 것과 연결된 증거만이 그의 말을 움직인다. 무관한 것엔 반응하지 않는다.",
+      "evidence_prompt_hint": "이판규가 직접 봤거나 들은 것과 이어지는 증거만이 통한다. 맞는 걸 내밀면 그의 미친 말에도 방향이 생긴다.",
       "branches": [
         {
           "branch_id": "Br_ch2_ipangyu_Default",
@@ -7181,7 +7183,7 @@ window.GAME_DATA = {
           },
           {
             "order": 3,
-            "text": "이판규의 눈에 잠깐 초점이 돌아온다. 그 순간만큼은 무언가를 기억하는 사람의 얼굴이다.",
+            "text": "이판규의 눈에 잠깐 초점이 돌아온다. 그 순간만큼은 무언가를 기억하는 사람의 얼굴이다. 여기서 더 밀면, 우물터와 송금의 이름을 직접 묶을 수 있겠군.",
             "style": "thought",
             "speaker_id": "Yuu",
             "emotion_type": "Tense",
@@ -7207,7 +7209,7 @@ window.GAME_DATA = {
           "order": 101,
           "choice_group_id": "ChoiceGroup_Ipangyu_Confront",
           "choice_id": "Ch2IpangyuBlueCloth",
-          "text": "푸른 천 조각을 꺼낸다.",
+          "text": "푸른 천 조각으로 그날 현장에 있었음을 들이민다.",
           "evidence_id": "EvBlueCloth",
           "effect_group_id": "eff_ipangyu_correct",
           "next_type": "Dialog",
@@ -7217,7 +7219,7 @@ window.GAME_DATA = {
           "order": 102,
           "choice_group_id": "ChoiceGroup_Ipangyu_Confront",
           "choice_id": "Ch2IpangyuScore",
-          "text": "의식 악보를 내민다.",
+          "text": "의식 악보를 내밀어 그가 들은 노래를 찌른다.",
           "evidence_id": "EvRitualScore",
           "effect_group_id": "eff_ipangyu_correct",
           "next_type": "Dialog",
@@ -7234,7 +7236,7 @@ window.GAME_DATA = {
       "music": "assets/sfx/newsroom.mp3",
       "effect": null,
       "goal_kicker": "기사",
-      "goal_text": "기사의 세 항목을 증거로 뒷받침하라. 신용이 쌓여야 기사가 나온다.",
+      "goal_text": "피해자, 의식, 배후를 각각 입증해 기사 한 장으로 끝까지 몰아붙일 근거를 완성한다.",
       "evidence_prompt_title": "기사의 이 항목을 증거로 뒷받침하라",
       "evidence_prompt_hint": "올바른 증거를 고르면 신용이 오른다. 맞지 않는 증거를 내밀면 기사의 신뢰가 흔들린다.",
       "branches": [
@@ -7285,7 +7287,7 @@ window.GAME_DATA = {
         "article_q1_react": [
           {
             "order": 1,
-            "text": "됐다. 이름은 이걸로 특정된다. 일기장이 있으면 누가 부정해도 근거를 댈 수 있다. 첫 번째 항목은 통과다.",
+            "text": "됐다. 이름은 이걸로 특정된다. 일기장이 있으면 누가 부정해도 근거를 댈 수 있다. 첫 번째 항목은 통과다. 이제 송금을 없던 사람 취급한 자들부터 막아 세울 수 있다.",
             "style": "normal",
             "speaker_id": "Yuu",
             "emotion_type": "Tense",
@@ -7296,7 +7298,7 @@ window.GAME_DATA = {
         "article_q2_react": [
           {
             "order": 1,
-            "text": "의식 악보. 이걸 연결하면 방법이 선명해진다. 이해심이 어떻게 사람을 골라 의식에 썼는지, 이제 설명이 된다.",
+            "text": "의식 악보. 이걸 연결하면 방법이 선명해진다. 이해심이 어떻게 사람을 골라 의식에 썼는지, 이제 설명이 된다. 기사에서 가장 먼저 궤변을 잘라 낼 수 있는 대목이다.",
             "style": "normal",
             "speaker_id": "Yuu",
             "emotion_type": "Tense",
@@ -7307,7 +7309,7 @@ window.GAME_DATA = {
         "article_q3_react": [
           {
             "order": 1,
-            "text": "1924년 기사. 편집장이 접어 둔 문장이 여기 있었다. 구 세력의 이름까지 이으면, 이번 사건이 처음이 아니라는 걸 증명할 수 있다.",
+            "text": "1924년 기사. 편집장이 접어 둔 문장이 여기 있었다. 구 세력의 이름까지 이으면, 이번 사건이 처음이 아니라는 걸 증명할 수 있다. 이제 이해심 뒤에 선 얼굴까지 기사에 끌어낼 수 있다.",
             "style": "normal",
             "speaker_id": "Yuu",
             "emotion_type": "Tense",
@@ -7448,6 +7450,8 @@ window.GAME_DATA = {
       "background": "assets/bg/ritual_room.jpg",
       "music": "assets/sfx/jazz_dark.mp3",
       "effect": null,
+      "goal_kicker": "결단 목표",
+      "goal_text": "이판규의 거래를 받아들여 이름을 얻을지, 거절하고 더 어두운 길을 감수할지 결정한다.",
       "branches": [
         {
           "branch_id": "Br_ch5_ipangyu_deal_Default",
@@ -7482,7 +7486,7 @@ window.GAME_DATA = {
           "order": 1,
           "choice_group_id": "ChoiceGroup_IpangyuDeal",
           "choice_id": "Ch5IpangyuDealAccept",
-          "text": "문구를 따라 한다.",
+          "text": "오염을 감수하고 문구를 따라 해 이름을 받아낸다.",
           "next_type": "Dialog",
           "next_id": "dlg_ipangyu_deal_accept",
           "effect_group_id": "eff_ipangyu_deal_accept"
@@ -7491,7 +7495,7 @@ window.GAME_DATA = {
           "order": 2,
           "choice_group_id": "ChoiceGroup_IpangyuDeal",
           "choice_id": "Ch5IpangyuDealRefuse",
-          "text": "거절한다.",
+          "text": "거래를 끊고 이름 없는 어둠을 감수한다.",
           "next_type": "Dialog",
           "next_id": "dlg_ipangyu_deal_refuse",
           "effect_group_id": null
@@ -7519,7 +7523,7 @@ window.GAME_DATA = {
           },
           {
             "order": 2,
-            "text": "이판규가 돌아선다. 이름 하나가 수첩에 남았다. 그리고 유웅룡의 입안에서 방금 따라 한 문구의 감촉이 좀처럼 사라지지 않는다.",
+            "text": "이판규가 돌아선다. 이름 하나가 수첩에 남았다. 그러나 유웅룡의 입안에는 방금 따라 한 문구의 감촉이 좀처럼 사라지지 않는다. 알아낸 만큼, 저쪽도 기자를 안으로 한 걸음 더 끌어들였다.",
             "style": "narration"
           }
         ],
@@ -7532,6 +7536,11 @@ window.GAME_DATA = {
             "emotion_type": "Crazy",
             "standing_slot": "Center",
             "focus_type": "Speaker"
+          },
+          {
+            "order": 2,
+            "text": "정보는 비어 버렸지만, 적어도 저 문장을 입에 올리지는 않았다. 유웅룡은 이름 대신 결심을 챙긴 채 방 안으로 더 깊이 들어갈 준비를 한다.",
+            "style": "narration"
           }
         ]
       }
