@@ -374,8 +374,22 @@ const Scene = (() => {
 
       const continueAfterEvidence = () => {
         if (hasPriorityMode(scene, investigationChoices)) {
-          Choice.showPriority({ ...scene, choices: investigationChoices, investigation }, () => {
-            loadResolvedNext(scene);
+          Choice.showPriority({ ...scene, choices: investigationChoices, investigation }, chosen => {
+            const { nextScene, nextDialogue } = resolveChoiceNavigation(chosen);
+            if (nextScene) {
+              Scene.load(nextScene, nextDialogue);
+            } else if (nextDialogue) {
+              const branchLines = (scene.evidence_dialogues || {})[nextDialogue || ''] || [];
+              if (branchLines.length > 0) {
+                Dialogue.start(branchLines, () => {
+                  loadResolvedNext(scene);
+                }, null);
+              } else {
+                Dialogue.start(scene.dialogues || [], afterDialogue, nextDialogue);
+              }
+            } else {
+              loadResolvedNext(scene);
+            }
           });
         } else if (choices.length > 0) {
           Choice.show(choices, chosen => {

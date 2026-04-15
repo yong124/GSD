@@ -139,8 +139,9 @@ async function clickAction(page, state, target) {
 
 async function main() {
   ensureOutDir();
-  const outPath = path.join(OUT_DIR, `choice-${sceneId}.json`);
-  const shotPath = path.join(OUT_DIR, `choice-${sceneId}.png`);
+  const suffix = actionIndex >= 0 ? `-${actionIndex}` : '';
+  const outPath = String(process.env.QA_OUT_PATH || path.join(OUT_DIR, `choice-${sceneId}${suffix}.json`)).trim();
+  const shotPath = String(process.env.QA_SHOT_PATH || path.join(OUT_DIR, `choice-${sceneId}${suffix}.png`)).trim();
 
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });

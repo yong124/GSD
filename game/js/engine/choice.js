@@ -163,7 +163,7 @@ const Choice = (() => {
 
         if (remaining.length === 0 || spent >= budget) {
           Choice.hide();
-          if (onDone) onDone();
+          if (onDone) onDone(null);
           return;
         }
 
@@ -194,6 +194,11 @@ const Choice = (() => {
 
             const branchKey = choice.next_type === 'Dialog' ? choice.next_id : '';
             const branchLines = (priorityDialogues || {})[branchKey || ''] || [];
+            if (choice.next_type === 'Scene' && choice.next_id) {
+              Choice.hide();
+              if (onDone) onDone(choice);
+              return;
+            }
             if (branchLines.length > 0) {
               UIManager.setChoiceBoxVisible(false);
               Dialogue.start(branchLines, render, null);

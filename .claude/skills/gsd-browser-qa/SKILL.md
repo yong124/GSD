@@ -45,6 +45,7 @@ Use these first:
 - `G:\GSD\.qa-node\scene_boot_check.js`
 - `G:\GSD\.qa-node\scene_choice_runner.js`
 - `G:\GSD\.qa-node\evidence_choice_runner.js`
+- `G:\GSD\.qa-node\qa_fast_batch.js`
 
 Use this last:
 
@@ -69,6 +70,7 @@ Good:
 - run one scene
 - summarize pass/fail in one line
 - inspect JSON only when something fails
+- or run `qa_fast_batch.js` to parallelize the same lightweight checks across many scenes
 
 ### 2. Use indices instead of Korean choice text
 
@@ -135,6 +137,36 @@ Remove-Item Env:QA_SCENE, Env:QA_ACTION_INDEX, Env:QA_EVIDENCE_INDEX
 ```
 
 Pass when the post-submit state signature changes.
+
+### Fast batch
+
+```powershell
+$env:QA_SCENES='ch2_cafe,ch3_room4,ch5_ipangyu_deal'
+$env:QA_CONCURRENCY='4'
+node G:\GSD\.qa-node\qa_fast_batch.js
+Remove-Item Env:QA_SCENES, Env:QA_CONCURRENCY
+```
+
+Use this for the default broad pass:
+
+- scene boot
+- root choice progression
+- root evidence submission
+- evidence checks reachable from one root choice click
+
+Then use `scene_choice_audit.js` only on scenes that failed or still look suspicious.
+
+### Deep audit
+
+```powershell
+$env:QA_SCENES='ch2_cafe'
+$env:QA_OUT_PATH='G:\GSD\.qa-artifacts\audit-ch2_cafe.json'
+$env:QA_INCLUDE_EVIDENCE='0'
+node G:\GSD\.qa-node\scene_choice_audit.js
+Remove-Item Env:QA_SCENES, Env:QA_OUT_PATH, Env:QA_INCLUDE_EVIDENCE
+```
+
+Use `QA_INCLUDE_EVIDENCE='0'` when you want a faster choice-only crawl before looking at evidence branches.
 
 ## Reporting format
 

@@ -98,8 +98,8 @@ async function advanceDialogue(page) {
 
 async function run() {
   ensureOutDir();
-  const outPath = path.join(OUT_DIR, `boot-${sceneId}.json`);
-  const shotPath = path.join(OUT_DIR, `boot-${sceneId}.png`);
+  const outPath = String(process.env.QA_OUT_PATH || path.join(OUT_DIR, `boot-${sceneId}.json`)).trim();
+  const shotPath = String(process.env.QA_SHOT_PATH || path.join(OUT_DIR, `boot-${sceneId}.png`)).trim();
 
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });

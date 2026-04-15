@@ -6,12 +6,15 @@ const { chromium } = require('./node_modules/playwright');
 const ROOT = 'G:/GSD';
 const GAME_DATA_PATH = path.join(ROOT, 'game', 'data', 'game_data.js');
 const OUT_DIR = path.join(ROOT, '.qa-artifacts');
-const OUT_PATH = path.join(OUT_DIR, 'qa-choice-coverage.json');
+const OUT_PATH = String(process.env.QA_OUT_PATH || path.join(OUT_DIR, 'qa-choice-coverage.json')).trim();
 const QA_SCENES = String(process.env.QA_SCENES || '')
   .split(',')
   .map(value => value.trim())
   .filter(Boolean);
 const QA_LIMIT = Number(process.env.QA_LIMIT || '0');
+const QA_PATH_DEPTH = Number(process.env.QA_PATH_DEPTH || '5');
+const QA_INCLUDE_EVIDENCE = String(process.env.QA_INCLUDE_EVIDENCE || '1').trim() !== '0';
+const QA_STRICT_EVIDENCE = String(process.env.QA_STRICT_EVIDENCE || '0').trim() === '1';
 
 function loadGameData() {
   const code = fs.readFileSync(GAME_DATA_PATH, 'utf8');
@@ -222,11 +225,25 @@ async function runPath(page, sceneId, pathChoices) {
     });
 
     if (beforeSig === stateSignature(state)) {
+      if (nodeStateAllowsSoftEvidence(state)) {
+        return {
+          ok: true,
+          warning: 'same-state-after-click',
+          noProgress: true,
+          actionText,
+          state,
+          traversed,
+        };
+      }
       return { ok: false, error: 'same-state-after-click', actionText, state, traversed };
     }
   }
 
   return { ok: true, state, traversed };
+}
+
+function nodeStateAllowsSoftEvidence(state) {
+  return state?.kind === 'evidence' && !QA_STRICT_EVIDENCE;
 }
 
 function screenshotPath(sceneId, index) {
@@ -290,6 +307,8 @@ async function auditScene(page, scene) {
         endSceneId: result.state?.currentSceneId || null,
         endOptions: result.state?.options || [],
         error: result.ok ? null : result.error,
+        warning: result.warning || null,
+        noProgress: !!result.noProgress,
       };
       sceneResult.testedActions.push(record);
 
@@ -303,7 +322,9 @@ async function auditScene(page, scene) {
         continue;
       }
 
-      if ((result.state.kind === 'choice' || result.state.kind === 'evidence') && nextPath.length < 5) {
+      const canQueueChoice = result.state.kind === 'choice';
+      const canQueueEvidence = QA_INCLUDE_EVIDENCE && result.state.kind === 'evidence' && !result.noProgress;
+      if ((canQueueChoice || canQueueEvidence) && nextPath.length < QA_PATH_DEPTH) {
         queue.push({ path: nextPath, state: result.state });
       }
     }

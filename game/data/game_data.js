@@ -132,7 +132,8 @@ window.GAME_DATA = {
     "Ipangyu": {
       "Neutral": "assets/portraits/ipangyu.png",
       "Crazy": "assets/portraits/ipangyu.png",
-      "Trance": "assets/portraits/ipangyu.png"
+      "Trance": "assets/portraits/ipangyu.png",
+      "Corpse": "assets/portraits/ipangyu_corpse.png"
     },
     "Editor": {
       "Neutral": "assets/portraits/editor.png",
@@ -3156,7 +3157,7 @@ window.GAME_DATA = {
           "evidence_id": "EvRitualScore",
           "name": "감응 악보",
           "description": "주문이 음표 사이에 숨겨진 기묘한 악보. 유웅룡에게만 이명과 고통을 유발한다.",
-          "image": "assets/items/scores.png",
+          "image": "assets/ev/score.jpeg",
           "category_id": "ritual",
           "trigger": 2
         }
@@ -3564,7 +3565,7 @@ window.GAME_DATA = {
           "evidence_id": "EvBlueHanbok",
           "name": "청색 비단 한복",
           "description": "송금의 방에서 발견된 의례용 한복. 소매 안쪽에 바느질 자국과 작은 상처 자국들.",
-          "image": "assets/items/hanbok.png",
+          "image": "assets/ev/hanbok.jpeg",
           "category_id": "ritual",
           "trigger": 1
         },
@@ -3572,7 +3573,7 @@ window.GAME_DATA = {
           "evidence_id": "EvMask",
           "name": "오징어 가면",
           "description": "눈 구멍이 네 개 달린 기괴한 가면. 청의동자의 눈 네 개를 상징한다.",
-          "image": "assets/items/mask.png",
+          "image": "assets/ev/mask.jpeg",
           "category_id": "ritual",
           "trigger": 1
         },
@@ -3580,7 +3581,7 @@ window.GAME_DATA = {
           "evidence_id": "EvDiary",
           "name": "숨겨진 일기장",
           "description": "송금의 일기장. '청의의 무녀', '노래가 곧 감응', '문 앞에서 노래를 부를 것'.",
-          "image": "assets/items/diary.png",
+          "image": "assets/ev/diary.jpeg",
           "category_id": "record",
           "trigger": 2
         }
@@ -3982,7 +3983,7 @@ window.GAME_DATA = {
           "evidence_id": "EvOldArticles",
           "name": "1924년 기사 뭉치",
           "description": "과거에 발생한 유사 사건의 기록. 편집장이 직접 작성했다. 일부 문장이 삭제되어 있다.",
-          "image": "assets/items/records.png",
+          "image": "assets/ev/note.jpeg",
           "category_id": "record",
           "trigger": 1
         }
@@ -5475,19 +5476,35 @@ window.GAME_DATA = {
         },
         {
           "order": 7,
+          "text": "제단 기둥 너머 검은 얼룩 하나가 순간 사람 형상처럼 일그러진다. 폐공장에서 본 이판규의 꺾인 목과 비슷한 윤곽이 스쳤다가, 촛농과 그을음이 엉긴 얼룩으로 다시 흩어진다. 시체가 다시 여기 있을 리는 없다. 다만 그 죽음이 이 방 안에 아직 눌어붙어 있는 것처럼 보인다.",
+          "style": "narration",
+          "fx_type": "BloodSmear"
+        },
+        {
+          "order": 8,
+          "text": "그 사람은 이미 죽었잖아요. 그런데 왜 여기까지 와서도 그 사람 목소리가 아직 벽에 남아 있는 것 같죠?",
+          "style": "normal",
+          "speaker_id": "Songsoon",
+          "emotion_type": "Afraid",
+          "standing_slot": "Left",
+          "focus_type": "Speaker",
+          "idle_motion": "Tremble"
+        },
+        {
+          "order": 9,
           "text": "그때, 더 깊은 곳에서 여성의 노랫소리가 흘러나온다. 표정 없는, 감정 없는 노래. 기도를 흉내 내지만 기원은 없고, 위로를 흉내 내지만 사람 숨을 더 얇게 만드는 소리다.",
           "style": "narration",
           "fx_type": "RitualGlow"
         },
         {
-          "order": 8,
+          "order": 10,
           "text": "유웅룡은 문 앞에서 귀에 남았던 결을 떠올린다. 이제는 저 노래의 음정만이 아니라, 그 밑에 숨은 낯선 호흡까지 희미하게 구분된다. 가까워졌다는 뜻이고, 동시에 지나치게 깊이 들였다는 뜻이기도 하다.",
           "style": "narration",
           "condition_group_id": "CG_Threshold_Resonance2",
           "fx_type": "BlueTrace"
         },
         {
-          "order": 9,
+          "order": 11,
           "text": "이 노래는 사람을 부르는 게 아닙니다. 제 발로 안쪽으로 걸어 들어가게 만드는 소리지. 불려 간 줄도 모른 채 스스로 문턱을 넘게 만드는.",
           "style": "thought",
           "speaker_id": "Yuu",
@@ -5498,7 +5515,7 @@ window.GAME_DATA = {
           "idle_motion": "ShakeLight"
         },
         {
-          "order": 10,
+          "order": 12,
           "text": "그래도 전 저 안에서 언니를 찾을 수 있어요. 기자님은 기록을 놓치지 말고, 전 목소리를 놓치지 않을게요.",
           "style": "normal",
           "condition_group_id": "CG_Threshold_TrustedSongsoon",
@@ -5510,14 +5527,14 @@ window.GAME_DATA = {
           "idle_motion": "ShakeHard"
         },
         {
-          "order": 11,
+          "order": 13,
           "text": "어딘가 위쪽, 닿을 듯 말 듯 먼 곳에선 아직도 도시의 숨이 남아 있다. 유웅룡은 편집장에게 남긴 한 줄이 문득 떠오르지만, 이제 그 문장은 퇴로가 아니라 증인 하나를 더 만드는 장치에 가깝다.",
           "style": "narration",
           "condition_group_id": "CG_Descent_CalledEditorTrue",
           "fx_type": "Flicker"
         },
         {
-          "order": 12,
+          "order": 14,
           "text": "그래도 가야 해요. 저 안에 언니가 있다면, 그 목소리라도 붙잡아야 하니까.",
           "style": "normal",
           "speaker_id": "Songsoon",
@@ -5528,13 +5545,13 @@ window.GAME_DATA = {
           "idle_motion": "Tremble"
         },
         {
-          "order": 13,
+          "order": 15,
           "text": "바닥 가장자리엔 누군가 남긴 손자국들이 겹겹이 말라 있다. 올라오려던 사람도 있었고, 마지막까지 붙잡히지 않으려 버틴 사람도 있었다는 뜻이다.",
           "style": "narration",
           "fx_type": "BloodSmear"
         },
         {
-          "order": 14,
+          "order": 16,
           "speaker_id": "Yuu",
           "emotion_type": "Tense",
           "standing_slot": "Right",
@@ -5544,7 +5561,7 @@ window.GAME_DATA = {
           "condition_group_id": "CG_RitualRoom_RitualScore"
         },
         {
-          "order": 15,
+          "order": 17,
           "speaker_id": "Yuu",
           "emotion_type": "Tense",
           "standing_slot": "Right",
@@ -5554,7 +5571,7 @@ window.GAME_DATA = {
           "condition_group_id": "CG_RitualRoom_OldArticles"
         },
         {
-          "order": 16,
+          "order": 18,
           "text": "이걸 우발적 광신쯤으로 넘기긴 어렵습니다. 종이에 적힌 순서와 남은 몫이 전부 맞아떨어져요. 저들은 처음부터 사람 수까지 세며 판을 굴렸습니다.",
           "style": "thought",
           "condition_group_id": "CG_RitualRoom_QRitualAccident",
@@ -7107,14 +7124,14 @@ window.GAME_DATA = {
     "ch2_ipangyu": {
       "id": "ch2_ipangyu",
       "chapter": 2,
-      "title": "이판규의 혼잣말",
+      "title": "이판규의 잔향",
       "background": "assets/bg/slum.jpeg",
       "music": "assets/sfx/jazz_dark.mp3",
       "effect": null,
       "goal_kicker": "증거 제시",
-      "goal_text": "이판규를 압박해 송금과 의식에 닿는 이름을 토하게 만든다. 맞는 증거만이 그의 기억을 흔든다.",
-      "evidence_prompt_title": "이판규에게 증거를 제시하라",
-      "evidence_prompt_hint": "이판규가 직접 봤거나 들은 것과 이어지는 증거만이 통한다. 맞는 걸 내밀면 그의 미친 말에도 방향이 생긴다.",
+      "goal_text": "죽은 이판규 뒤에 남은 잔향을 흔들어 송금과 의식에 닿는 이름을 끌어낸다. 맞는 증거만이 사후의 기억을 붙잡는다.",
+      "evidence_prompt_title": "이판규의 잔향에 증거를 들이민다",
+      "evidence_prompt_hint": "이미 죽은 이판규가 남긴 말의 결과 이어지는 증거만이 통한다. 맞는 걸 내밀면 흐릿한 잔향에도 방향이 생긴다.",
       "branches": [
         {
           "branch_id": "Br_ch2_ipangyu_Default",
@@ -7126,12 +7143,12 @@ window.GAME_DATA = {
       "dialogues": [
         {
           "order": 1,
-          "text": "낙원 외곽 판자촌 골목. 지붕 낮은 집들 사이로 등불 하나가 흔들린다. 이판규가 담벼락에 등을 기댄 채 혼자 중얼거리고 있다.",
+          "text": "낙원 외곽 판자촌 골목. 폐공장에서 분명 이판규의 시체를 보고 돌아왔는데, 지붕 낮은 집들 사이로 낯익은 실루엣이 또 한 번 흔들린다. 사람 하나가 담벼락에 등을 기댄 채 혼자 중얼거리고 있다.",
           "style": "narration"
         },
         {
           "order": 2,
-          "text": "낙원 외곽 판잣집 골목. 이판규 — 낙원의 오래된 신도이자 교주의 그림자라고 불리는 자가 담벼락에 기대어 서 있다. 처음 보는 얼굴인데 눈빛이 심상치 않다.",
+          "text": "얼굴은 이판규가 맞다. 하지만 폐공장에서 본 시신처럼 목이 어딘가 부자연스럽게 비틀려 있고, 발치엔 그림자도 없다. 살아 있는 사람이라기보다 막 죽은 자리에 눌어붙은 소문과 죄책감이 사람 모양을 흉내 낸 것에 가깝다.",
           "style": "narration"
         },
         {
@@ -7139,31 +7156,31 @@ window.GAME_DATA = {
           "text": "왔군. 와야 할 사람이 왔어. 토요일이 지났으니, 문이 열렸으니, 이제 기자가 와야 했어.",
           "style": "normal",
           "speaker_id": "Ipangyu",
-          "emotion_type": "Crazy",
+          "emotion_type": "Corpse",
           "standing_slot": "Center",
           "focus_type": "Speaker"
         },
         {
           "order": 4,
-          "text": "우리가 처음 만나는 거요. 당신이 나를 아는 척하는 이유가 뭐요.",
+          "text": "말도 안 돼… 당신은 이미 죽었소. 내가 당신 시체를 보고 왔는데, 지금 여기서 뭘 흉내 내고 있는 거요.",
           "style": "normal",
           "speaker_id": "Yuu",
-          "emotion_type": "Neutral",
+          "emotion_type": "Shaken",
           "standing_slot": "Right",
           "focus_type": "Speaker"
         },
         {
           "order": 5,
-          "text": "처음은 없어. 낙원에서 이어진 것들은 다 연결돼 있어. 나도, 송금도, 기자도. 끊어진 것처럼 보여도 이어진 거야.",
+          "text": "죽은 건 껍데기지. 이어진 건 아직 안 끊겼어. 나도, 송금도, 기자도. 한 번 문턱을 넘은 것들은 죽어도 한동안 같은 자리를 맴돌아.",
           "style": "normal",
           "speaker_id": "Ipangyu",
-          "emotion_type": "Crazy",
+          "emotion_type": "Corpse",
           "standing_slot": "Center",
           "focus_type": "Speaker"
         },
         {
           "order": 6,
-          "text": "이판규 씨. 낙원에서 사라진 사람들을 알고 있겠지. 무엇을 봤는지 말해 주시오.",
+          "text": "좋아. 산 사람으로 대하진 않겠소. 대신 당신 뒤에 남은 것에 묻지. 낙원에서 사라진 사람들, 송금, 그리고 그날 노래. 무엇을 본 거요.",
           "style": "thought",
           "speaker_id": "Yuu",
           "emotion_type": "Tense",
@@ -7175,25 +7192,25 @@ window.GAME_DATA = {
         "dlg_ipangyu_reveal": [
           {
             "order": 1,
-            "text": "...이걸 어디서 구했어. 그날 거기 없었으면 손에 쥘 수 없는 물건인데.",
+            "text": "...이걸 어디서 구했어. 그날 거기 없었으면 손에 쥘 수 없는 물건인데. 죽은 뒤에도 이 결만은 속일 수가 없네.",
             "style": "normal",
             "speaker_id": "Ipangyu",
-            "emotion_type": "Crazy",
+            "emotion_type": "Corpse",
             "standing_slot": "Center",
             "focus_type": "Speaker"
           },
           {
             "order": 2,
-            "text": "맞아. 나는 그날 창고에 있었어. 노래를 들었어. 다들 다른 걸 들었지만 나는 이름을 들었어. 사라진 사람들 이름을.",
+            "text": "맞아. 나는 그날 창고에 있었어. 노래를 들었어. 다들 다른 걸 들었지만 나는 이름을 들었어. 사라진 사람들 이름을. 송금도 그 안에 있었지. 문이 열릴 때 제일 또렷했던 이름이었어.",
             "style": "normal",
             "speaker_id": "Ipangyu",
-            "emotion_type": "Crazy",
+            "emotion_type": "Corpse",
             "standing_slot": "Center",
             "focus_type": "Speaker"
           },
           {
             "order": 3,
-            "text": "이판규의 눈에 잠깐 초점이 돌아온다. 그 순간만큼은 무언가를 기억하는 사람의 얼굴이다. 여기서 더 밀면, 우물터와 송금의 이름을 직접 묶을 수 있겠군.",
+            "text": "썩은 잔향 속에서도 잠깐 초점이 돌아온다. 산 사람의 회상이라기보다, 죽기 직전 머리에 박힌 장면이 다시 떠오른 꼴이다. 여기서 더 밀면 우물터와 송금의 이름을 직접 묶을 수 있겠군.",
             "style": "thought",
             "speaker_id": "Yuu",
             "emotion_type": "Tense",
@@ -7204,10 +7221,10 @@ window.GAME_DATA = {
         "dlg_ipangyu_default": [
           {
             "order": 1,
-            "text": "그건 아냐, 기자. 그걸로는 문이 안 열려. 노래를 아는 것을 가져와야 이 자리가 이어진다.",
+            "text": "그건 아냐, 기자. 그걸로는 죽은 자리도 흔들리지 않아. 노래를 아는 것을 가져와야 이 잔향이 이어진다.",
             "style": "normal",
             "speaker_id": "Ipangyu",
-            "emotion_type": "Crazy",
+            "emotion_type": "Corpse",
             "standing_slot": "Center",
             "focus_type": "Speaker",
             "effect_group_id": "eff_ipangyu_wrong"
@@ -7473,7 +7490,7 @@ window.GAME_DATA = {
       "dialogues": [
         {
           "order": 1,
-          "text": "의식실을 빠져나오는 길목. 이판규가 벽에 기댄 채 기다리고 있었다. 처음 만났을 때와 같은 눈빛이다. 다만 이번엔 웃지 않는다.",
+          "text": "의식실을 빠져나오는 길목. 폐공장에서 확인한 이판규의 죽음이 분명한데도, 몇 걸음 앞 벽엔 그의 목소리를 닮은 기척이 먼저 기대 선다. 사람의 살이 아니라 죄책감과 의식의 잔향이 잠깐 사람 모양을 빚은 듯하다. 살아 돌아온 게 아니다. 이미 죽은 자의 말버릇만 이 방 안에 눌어붙어 있다.",
           "style": "narration"
         },
         {
@@ -7487,7 +7504,7 @@ window.GAME_DATA = {
         },
         {
           "order": 3,
-          "text": "이판규가 무언가를 중얼거린다. 낙원의 의식에서 쓰이는 문구다. 유웅룡은 잠시 멈춘다.",
+          "text": "유웅룡은 저 입이 시체의 것인지, 의식이 흉내 낸 껍데기인지 끝내 분간하지 못한다. 다만 그 문구만은 분명 낙원의 의식에서 쓰이던 결이다. 잠깐만 방심하면 살아 있는 사람처럼 속아 넘어갈 만큼 선명하다.",
           "style": "narration"
         }
       ],
@@ -7517,7 +7534,7 @@ window.GAME_DATA = {
           "trigger": "Ch5IpangyuDealAccept",
           "name": "이판규의 증언",
           "description": "이판규가 넘겨준 이름. 낙원의 마지막 의식에서 노래한 사람의 이름이 적혀 있다.",
-          "image": "assets/items/records.png"
+          "image": "assets/ev/note.jpeg"
         }
       ],
       "evidence_dialogues": {

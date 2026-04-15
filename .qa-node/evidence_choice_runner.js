@@ -124,8 +124,8 @@ async function submitEvidenceByIndex(page, index) {
 
 async function main() {
   ensureOutDir();
-  const outPath = path.join(OUT_DIR, `evidence-${sceneId}-${actionIndex}-${evidenceIndex}.json`);
-  const shotPath = path.join(OUT_DIR, `evidence-${sceneId}-${actionIndex}-${evidenceIndex}.png`);
+  const outPath = String(process.env.QA_OUT_PATH || path.join(OUT_DIR, `evidence-${sceneId}-${actionIndex}-${evidenceIndex}.json`)).trim();
+  const shotPath = String(process.env.QA_SHOT_PATH || path.join(OUT_DIR, `evidence-${sceneId}-${actionIndex}-${evidenceIndex}.png`)).trim();
 
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
