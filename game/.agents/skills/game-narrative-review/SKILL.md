@@ -20,7 +20,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 `game_data.js` 내부의 논리 연결 상태를 평가합니다.
 - **연결 확인**: `choice_groups`, `conditions`, `questions` 등에서 정의된 ID(`condition_target_id` 등)가 서로 정확히 맵핑되는지. 알 수 없는 ID나 오타가 있는가?
 - **엔드 포인트 검사**: 챕터나 씬의 분기가 막힌 곳(Dead link) 없이 적어도 하나 이상의 조건으로 흘러갈 수 있는지 확인.
-- **보상 무결성**: 질문 당 보상(`reward_flag_id`, `reward_value`)이 제대로 명시되어 있는가? (예: `ResonanceLevel`, `InvestigationScore`)
+- **보상 무결성**: 질문 당 보상(`reward_state_id`, `reward_value`)이 제대로 명시되어 있는가? (예: `ResonanceLevel`, `InvestigationScore`)
 
 ### 2. 🧩 증거/조건 논리 검사 (Evidence Logic Gate) - 25점 만점
 증거 획득 여부와 사건 해결 로직의 정합성을 평가합니다.

@@ -1,10 +1,8 @@
 ﻿EvidenceID,Name,Description,Image,CategoryID,SceneId,Trigger
-EvBlueCloth,푸른 흔적,"이판규의 등뼈가 U자로 완전히 꺾어 부러진 채, 비정상적으로 치솟은 목이 하늘을 노려보며 굳어있다. 파여나간 두 눈구멍 안쪽엔 축축한 푸른 촉수 같은 점액질이 엉겨 말라붙었고, 찢겨진 흉곽 안쪽에서는 벌레들이 갉아먹은 푸른 천 쪼가리가 기괴하게 튀어나와 썩은 내를 풍기고 있다. 명백히 무언가가 그의 안쪽에서부터 터져 나온 흔적이다.",assets/ev/bluecloth.jpeg,trace,ch2_factory,1
-EvNote,붉은 쪽지,"이판규의 손에서 발견된 쪽지. '토요일, 낙원. 그녀가 노래하면 문은 열린다.'",assets/items/note.png,record,ch2_factory,1
-EvBlueHanbok,청색 비단 한복,송금의 방에서 발견된 의례용 한복. 소매 안쪽에 바느질 자국과 작은 상처 자국들.,assets/items/hanbok.png,ritual,ch3_room4,1
-EvDiary,숨겨진 일기장,"송금의 일기장. '청의의 무녀', '노래가 곧 감응', '문 앞에서 노래를 부를 것'.",assets/items/diary.png,record,ch3_room4,2
-EvMask,오징어 가면,눈 구멍이 네 개 달린 기괴한 가면. 청의동자의 눈 네 개를 상징한다.,assets/items/mask.png,ritual,ch3_room4,1
-EvRitualScore,감응 악보,주문이 음표 사이에 숨겨진 기묘한 악보. 유웅룡에게만 이명과 고통을 유발한다.,assets/items/scores.png,ritual,ch3_warehouse,2
-EvOldArticles,1924년 기사 뭉치,과거에 발생한 유사 사건의 기록. 편집장이 직접 작성했다. 일부 문장이 삭제되어 있다.,assets/items/records.png,record,ch4a_library,1
-EvIpangyuName,이판규의 증언,이판규가 넘겨준 이름. 낙원의 마지막 의식에서 노래한 사람의 이름이 적혀 있다.,assets/items/records.png,,ch5_ipangyu_deal,Ch5IpangyuDealAccept
-EvRitualNote,의례실 종이,'그릇은 셋. 둘은 쓰였고 하나가 남았다.' 마지막 무녀가 아직 남아 있다는 증거.,,ritual,ch5_ritual_room,1
+ev_note,붉은 쪽지,"이판규의 손에서 발견된 쪽지. '토요일, 낙원. 그녀가 노래하면 문은 열린다.'",assets/items/note.png,,ch2_factory,1
+ev_diary,숨겨진 일기장,"송금의 일기장. '청의의 무녀', '노래가 곧 감응', '문 앞에서 노래를 부를 것'.",assets/items/diary.png,,ch3_room4,2
+ev_hanbok,청색 비단 한복,송금의 방에서 발견된 의례용 한복. 소매 안쪽에 바느질 자국과 작은 상처 자국들.,assets/items/hanbok.png,,ch3_room4,1
+ev_mask,오징어 가면,눈 구멍이 네 개 달린 기괴한 가면. 청의동자의 눈 네 개를 상징한다.,assets/items/mask.png,,ch3_room4,1
+ev_scores,감응 악보,주문이 음표 사이에 숨겨진 기묘한 악보. 유웅룡에게만 이명과 고통을 유발한다.,assets/items/scores.png,,ch3_warehouse,2
+ev_records,1924년 기사 뭉치,과거에 발생한 유사 사건의 기록. 편집장이 직접 작성했다. 일부 문장이 삭제되어 있다.,assets/items/records.png,,ch4a_library,1
+ev_ritual_note,의례실 종이,'그릇은 셋. 둘은 쓰였고 하나가 남았다.' 마지막 무녀가 아직 남아 있다는 증거.,,,ch5_ritual_room,1

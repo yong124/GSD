@@ -1,16 +1,1 @@
 ﻿ChoiceGroupID	Type	ConditionGroupID	MaxSelectable
-ChoiceGroup_ArticleQ1	Evidence		1
-ChoiceGroup_ArticleQ2	Evidence		1
-ChoiceGroup_ArticleQ3	Evidence		1
-ChoiceGroup_CafeInvestigation	Investigation		2
-ChoiceGroup_EditorOrder	Normal		1
-ChoiceGroup_Editor_Confront	Evidence		1
-ChoiceGroup_GuardedDoor	Normal		1
-ChoiceGroup_IpangyuDeal	Normal		1
-ChoiceGroup_Ipangyu_Confront	Evidence		1
-ChoiceGroup_LibraryEvidence	Evidence		1
-ChoiceGroup_Okryeon_Confront	Evidence		1
-ChoiceGroup_RitualEvidence	Evidence		1
-ChoiceGroup_RitualFinal	Investigation		1
-ChoiceGroup_Room4Investigation	Investigation		2
-ChoiceGroup_Songsoon_Trust	Evidence		1

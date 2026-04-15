@@ -1,5 +1,1 @@
 ﻿GaugeID	Label	MinValue	MaxValue	DefaultValue	HudVisible	HudOrder
-Erosion	침식	0	10	0	true	1
-Credibility	평판	0	10	10	true	2
-ReadRitualScore	의식 악보 독해	0	10	0	false	98
-SolvedQuestionCount	정리한 질문 수	0	10	0	false	99

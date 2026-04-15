@@ -1,156 +1,121 @@
-# 경성뎐 시스템 플로우 다이어그램
+# 시스템 플로우 다이어그램
 
-> 시스템 기획자 관점에서 본 선택 → 상태 변화 → 분기 → 엔딩 흐름
+> 현재 구현 기준의 선택, 상태 변화, 조사, 질문, 분기 흐름 요약.
 
 ---
 
-## 전체 흐름 개요
+## 전체 흐름
 
-```
+```text
 플레이어 입력
-    │
-    ├─ [일반 선택지] ──────────────────────────────┐
-    │                                              │
-    ├─ [조사 선택지 (Investigation)]               │
-    │     └─ 조사 루프 (budget 소진까지 반복)       │
-    │                                              │
-    └─ [증거 제시 (Evidence)]                      │
-          └─ 대사 반응 재생                         │
-                                                  ▼
-                                        Effect Group 적용
-                                                  │
-                                    ┌─────────────┴─────────────┐
-                                    │                           │
-                               GaugeChange                 EvidenceGive
-                           (Credibility / Erosion 등)     (인벤토리 추가)
-                                    │
-                                    ▼
-                              State 갱신
-                                    │
-                          씬 종료 → Branch 판정
-                                    │
-                     ┌──────────────┼──────────────┐
-                     │              │              │
-               조건 분기         조건 분기       기본 분기
-            (condition_group) (condition_group)  (null)
-                     │              │              │
-                  다음 씬        다른 씬        기본 씬
+  ├─ 일반 선택지
+  │    ├─ EffectGroup 적용
+  │    ├─ NextType = Scene / Dialog / None
+  │    └─ 필요 시 다음 씬 또는 같은 씬 내부 Dialog 점프
+  │
+  ├─ 증거 제시
+  │    ├─ 보유 증거 인벤토리 열기
+  │    ├─ 매칭된 Choice 반응 실행
+  │    └─ evidence_dialogues 또는 DialogID 분기
+  │
+  └─ 조사 선택지 (Investigation)
+       ├─ investigation_id로 조사 메타 조회
+       ├─ budget만큼 반복 선택
+       ├─ EffectGroup 적용
+       └─ priority_dialogues 반응 후 씬 종료
+
+씬 종료
+  ├─ 조건 분기 Branch 판정
+  └─ 기본 Branch 또는 엔딩 이동
 ```
 
 ---
 
-## 게이지 시스템
+## 현재 사용 중인 게이지
 
-| 게이지 | 범위 | 의미 | 엔딩 영향 |
-|--------|------|------|-----------|
-| `Erosion` | 0~10 | 침식도 — 위험한 선택/공명 누적 | 10 도달 시 즉시 게임오버 |
-| `Credibility` | 0~10 | 신뢰도 — 증거/기록 기반 조사 | 0 도달 시 게임오버 / 엔딩 분기 가중 |
-| `ReadRitualScore` | 0~10 | 의례 독해 — 의례 관련 선택 누적 | ch6 엔딩 A/B 조건 |
-| `SolvedQuestionCount` | 0~10 | 해결한 질문 수 | 조사 완성도 |
+| 게이지 | 역할 | HUD 카드 노출 |
+|---|---|---|
+| `Erosion` | 침식도 | 예 |
+| `Credibility` | 평판 / 조사 신뢰도 | 예 |
+| `ReadRitualScore` | 의식 독해 진척 | 아니오 |
+| `SolvedQuestionCount` | 해결한 질문 수 | 아니오 |
 
----
+참고:
 
-## 선택 → 게이지 흐름 (주요 예시)
-
-```
-ch3_room4 - 벽의 문양에 손을 댄다
-    └─ effect_group: eff_ch3_room4_touch_wall
-          └─ GaugeChange: Erosion +2   ← 위험한 선택
-
-ch3_room4 - 일기장의 다음 장을 읽는다
-    └─ effect_group: eff_ch3_room4_read_record
-          └─ GaugeChange: Credibility +1   ← 기록 기반 조사
-
-ch4a_library - 핵심 문장만 수첩에 적는다
-    └─ effect_group: eff_ch4a_library_note_articles
-          └─ GaugeChange: Credibility +3   ← 높은 조사 가중치
-```
+- `SongsoonTrust`는 별도 게이지 카드가 아니라 신뢰 상태값으로 관리된다.
+- `InvestigationProgress`는 파생 상태로 계산되며 수첩 상태 문구에서 읽힌다.
 
 ---
 
-## 조사 씬 구조 (Investigation Loop)
+## Effect 배선 방식
 
-ch2, ch3, ch4a, ch6 에 Investigation 씬 배치.
+현재 선택 결과 배선은 `effect_id` 단일 참조가 아니라 `EffectGroupID` 묶음 적용 구조다.
 
-```
-Investigation 씬 진입
-    │
-    ▼
-investigation_id → investigations 테이블 조회
-    │
-    ├─ title / hint → HUD 표시
-    ├─ budget = 2 (ch4a_library 기준)
-    └─ choice_group_id → choice_groups 조회
-                              │
-                              ▼
-               Investigation 선택지 목록 렌더
-                    (budget 소진까지 반복)
-                              │
-                  플레이어 선택 1회
-                              │
-              ├─ effect_group 즉시 적용 (gauge 변화)
-              ├─ priority_dialogues[next_id] 인라인 재생
-              └─ 남은 budget 차감 → re-render
-                              │
-                    budget === 0
-                              │
-                              ▼
-                     다음 씬으로 이동 (branch 판정)
+```text
+Choice / Dialog
+  └─ effect_group_id
+       └─ EffectTable rows
+            ├─ GaugeChange
+            ├─ EvidenceGive
+            └─ TrustChange
 ```
 
-**현재 Investigation 씬 배치:**
-
-| 챕터 | 씬 | investigation_id | budget | 조사 축 |
-|------|----|-----------------|--------|---------|
-| ch2 | ch2_cafe | Investigation_CafeNakwon | 2 | 지배인 / 여급 / 관찰 |
-| ch3 | ch3_room4 | Investigation_Room4 | 2 | 물리 접촉 / 기록 / 관계 |
-| ch4 | ch4a_library | Investigation_Library | 2 | 증거 확보 / 패턴 분석 / 의도 추적 |
-| ch6 | ch6_ritual_scene | Investigation_RitualFinal | 1 | 최후 선택 (단일) |
+이 구조 덕분에 하나의 선택이 평판, 침식, 증거, 신뢰를 동시에 바꿀 수 있다.
 
 ---
 
-## 엔딩 분기 흐름
+## 질문 시스템
 
-```
-ch6_threshold (게임오버 관문)
-    ├─ CG_Erosion_Max (Erosion >= 10) ──────────── scene_gameover_erosion
-    ├─ CG_Credibility_Zero (Credibility <= 0) ──── scene_gameover_credibility
-    └─ default ─────────────────────────────────── ch6_ritual_scene
-                                                         │
-                                                   ch6_outcome
-                                                         │
-                             ┌───────────────────────────┼───────────────────────┐
-                             │                           │                       │
-                   CG_Branch_FinalChoice_A    CG_Branch_FinalChoice_B    CG_Branch_FinalChoice_C
-                             │                           │                       │
-                         ch6_path_a               ch6_path_b               ch6_ending_c
-                             │                           │
-                         ch6_path_a2              ch6_path_b2
-                             │                           │
-                         ch6_ending_a             ch6_ending_b
-                                                         │
-                                                   ch6_epilogue
-                                           (CG_Epilogue_EndingA / EndingB 조건 분기)
+질문은 수첩의 `질문` 탭에서 노출되고, 관련 증거를 제출해 해결할 수 있다.
+
+```text
+관련 조건 충족
+  └─ Question 노출
+       ├─ related_evidence_ids 표시
+       ├─ 단일 증거 제출 또는 복수 증거 연결
+       ├─ 정답이면 solved_state 갱신
+       └─ reward_state / solved count 반영
 ```
 
-**엔딩 분류:**
-
-| 엔딩 | 조건 | 의미 |
-|------|------|------|
-| Ending A | FinalChoice_A + 조사 완성도 | 진실 공개 루트 |
-| Ending B | FinalChoice_B + 관계 기반 | 공존 루트 |
-| Ending C | FinalChoice_C / 기본값 | 침묵 루트 |
-| Gameover (침식) | Erosion >= 10 | 너무 깊이 들어간 결과 |
-| Gameover (신뢰) | Credibility <= 0 | 근거 없이 밀어붙인 결과 |
+현재 구조상 질문은 단순 메모가 아니라 실제 판정 루프를 가진다.
 
 ---
 
-## 시스템 설계 원칙
+## 현재 Investigation 배치
 
-1. **테이블 중심 설계** — 선택 결과(effects), 조건 판정(conditions), 조사 흐름(investigations) 모두 데이터 테이블이 소유. 런타임은 테이블을 읽어 동작할 뿐 결과값을 직접 갖지 않음.
+| 챕터 | 씬 | investigation_id | budget |
+|---|---|---|---:|
+| ch2 | `ch2_cafe` | `Investigation_CafeNakwon` | 2 |
+| ch3 | `ch3_room4` | `Investigation_Room4` | 2 |
+| ch6 | `ch6_ritual_scene` | `Investigation_RitualFinal` | 1 |
 
-2. **게이지 이중 구조** — Erosion(위험 누적)과 Credibility(신뢰 누적)가 서로 반대 방향으로 작용. 한쪽만 치우치면 게임오버.
+주의:
 
-3. **조사 루프 템포** — budget 소진 전까지 선택 → 반응 → 재선택이 한 씬 안에서 반복됨. 각 선택지는 서로 다른 조사 축(물리/기록/관계/위험)을 대표.
+- 현재 `ch1`, `ch4`, `ch5`에는 Investigation 씬이 없다.
+- 과거 문서에 있던 `ch4a_library / Investigation_Library` 배치는 현재 구현에 존재하지 않는다.
 
-4. **엔딩 수렴 설계** — 중반부 선택은 게이지를 누적하고, ch6에서 최종 선택(A/B/C) 하나로 수렴. 엔딩 분기는 FinalChoice 플래그 + 게임오버 조건 우선 체크 순서로 판정.
+---
+
+## 브랜치 구조
+
+씬 종료 후 분기는 `scene.branches[]`에서 평가된다.
+
+```text
+Scene end
+  ├─ condition_group_id가 있는 Branch를 순서대로 검사
+  ├─ 처음 만족하는 next_scene로 이동
+  └─ 없으면 조건 없는 기본 Branch 사용
+```
+
+현재 데이터에서는 기본 Branch 비중이 높아서, 많은 씬이 사실상 `다음 씬` 래퍼처럼 동작한다.
+
+---
+
+## 정리
+
+현재 플로우의 핵심은 다음 네 가지다.
+
+1. 선택 결과는 `EffectGroupID`로 상태에 반영된다.
+2. 질문은 수첩 안에서 실제로 해결 가능한 시스템이다.
+3. Investigation은 ch2, ch3, ch6 세 구간에서만 등장한다.
+4. 엔딩과 씬 이동은 Branch 판정으로 결정된다.

@@ -1,47 +1,14 @@
 ﻿ChoiceID	ChoiceGroupID	Order	Text	ConditionGroupID	NextType	NextID	EvidenceID	TrustCharacterID	TrustValue	ResonanceValue	StateType	StateValue	SceneID
-Ch1NewsroomObedient		1	세간의 입에 오를 만한 글로 꾸며 보지요.		Scene	ch1_newsroom_obedient							ch1_newsroom
-Ch1NewsroomDefiant		2	신문감은 되겠지만, 이대로 덮을 마음은 없습니다.		Scene	ch1_newsroom_defiant							ch1_newsroom
-Ch2CafeAskManager	ChoiceGroup_CafeInvestigation	1	점장에게 더 캐묻는다		Dialog	inv_mgr							ch2_cafe
-Ch2CafeAskWaitress	ChoiceGroup_CafeInvestigation	2	지나치는 여급의 반응을 확인한다		Dialog	inv_wtrs							ch2_cafe
-Ch2CafeAskObserver	ChoiceGroup_CafeInvestigation	3	구석에 앉은 여자를 살핀다		Dialog	inv_obs							ch2_cafe
-Ch2Factory_LookCloser		1	시신의 찢겨진 흉곽 안쪽을 홀린 듯 쳐다본다.		Scene	ch2_factory_shock							ch2_factory
-Ch2HospitalAskRoot		1	그 망상의 근원부터 기어이 묻고 늘어진다.		Scene	ch2_hospital_a							ch2_hospital
-Ch2HospitalAskDoor		2	그가 벌벌 떠는 '문'의 정체부터 확인한다.		Scene	ch2_hospital_b							ch2_hospital
-Ch2IpangyuBlueCloth	ChoiceGroup_Ipangyu_Confront	101	푸른 천 조각을 꺼낸다.		Dialog	dlg_ipangyu_reveal	EvBlueCloth						ch2_ipangyu
-Ch2IpangyuScore	ChoiceGroup_Ipangyu_Confront	102	의식 악보를 내민다.		Dialog	dlg_ipangyu_reveal	EvRitualScore						ch2_ipangyu
-Ch2WellTrustNote	ChoiceGroup_Songsoon_Trust	101	쪽지를 꺼내 보인다.		Dialog	dlg_songsoon_open	EvNote						ch2_well
-Ch2WellTrustCloth	ChoiceGroup_Songsoon_Trust	102	푸른 천 조각을 내민다.		Dialog	dlg_songsoon_open	EvBlueCloth						ch2_well
-Ch3Room4TouchWall	ChoiceGroup_Room4Investigation	1	위험을 감수하고 벽의 문양에 직접 손을 댄다.		Scene	ch3_room4_touch							ch3_room4
-Ch3Room4ReadRecord	ChoiceGroup_Room4Investigation	2	공포보다 기록을 우선하고 일기장의 다음 장을 더 읽는다.		Scene	ch3_room4_record							ch3_room4
-Ch3Room4ComfortSongsoon	ChoiceGroup_Room4Investigation	3	증거보다 먼저 송순에게 혼자 떠맡지 말자고 말한다.		Scene	ch3_room4_comfort							ch3_room4
-Ch3WarehouseReadRitual		1	관자놀이가 깨질 듯해도 악보를 끝까지 읽어 낸다.		Scene	ch3_score_read							ch3_warehouse
-Ch3WarehouseTrustSongsoon		2	악보보다 송순 씨의 귀와 숨결을 먼저 믿는다.		Scene	ch3_score_trust							ch3_warehouse
-Ch4AEditorArticles	ChoiceGroup_Editor_Confront	101	1924년 기사 뭉치를 책상에 올려놓는다.		Dialog	dlg_editor_reveal	EvOldArticles						ch4a_editor_room
-Ch4ALibraryTakeArticles		1	기사 뭉치를 챙긴다.		Scene	ch4a_articles_take							ch4a_library
-Ch4ALibraryNoteArticles		2	핵심 문장만 수첩에 적고 넘어간다.		Scene	ch4a_articles_note							ch4a_library
-Ch4ALibraryExposeArchive		3	삭제된 문장과 증언을 묶어 편집장의 의도를 먼저 추적한다.	CG_Library_QSonggeumRunaway	Scene	ch4a_articles_expose							ch4a_library
-Ch4ALibraryEvidenceDiary	ChoiceGroup_LibraryEvidence	101	찢어진 일기장을 기사 옆에 펼친다.		Dialog	present_diary	EvDiary						ch4a_library
-Ch4ALibraryEvidenceHanbok	ChoiceGroup_LibraryEvidence	102	청색 한복의 결을 기사 기록과 대조한다.		Dialog	present_hanbok	EvBlueHanbok						ch4a_library
-Ch4BCafeHold		1	알겠어요. 더는 억지로 묻지 않을게요.		Scene	ch4b_cafe_hold							ch4b_cafe
-Ch4BCafePress		2	조금만 더 말해줘요. 여기서 멈출 순 없어요.		Scene	ch4b_cafe_press							ch4b_cafe
-Ch4BCafeDiary	ChoiceGroup_Okryeon_Confront	101	송금의 일기장을 꺼내 보인다.		Dialog	dlg_okryeon_reveal	EvDiary						ch4b_cafe
-Ch4BCafeHanbok	ChoiceGroup_Okryeon_Confront	102	푸른 한복 조각을 내민다.		Dialog	dlg_okryeon_reveal	EvBlueHanbok						ch4b_cafe
-Ch5EditorObey	ChoiceGroup_EditorOrder	1	알겠습니다. 여기까지만 하지요.		Scene	ch5_descent							ch5_contact_editor
-Ch5EditorDefy	ChoiceGroup_EditorOrder	2	죄송합니다. 여기까지 왔으니 끝냅니다.		Scene	ch5_descent							ch5_contact_editor
-Ch5GuardedDoorListen	ChoiceGroup_GuardedDoor	1	콧노래의 결을 끝까지 듣고, 문 안쪽 호흡을 짚어 본다.		Scene	ch5_guarded_door_listen							ch5_guarded_door
-Ch5GuardedDoorSteady	ChoiceGroup_GuardedDoor	2	송순과 숨을 고른 뒤, 함께 문을 민다.		Scene	ch5_guarded_door_steady							ch5_guarded_door
-Ch5GuardedDoorObserve	ChoiceGroup_GuardedDoor	3	문 틈으로 안을 직접 들여다본다.		Scene	ch5_guarded_door_observe							ch5_guarded_door
-Ch5IpangyuDealAccept	ChoiceGroup_IpangyuDeal	1	문구를 따라 한다.		Dialog	dlg_ipangyu_deal_accept							ch5_ipangyu_deal
-Ch5IpangyuDealRefuse	ChoiceGroup_IpangyuDeal	2	거절한다.		Dialog	dlg_ipangyu_deal_refuse							ch5_ipangyu_deal
-Ch5PathContactEditor		1	편집장에게 연락한다.		Scene	ch5_contact_editor							ch5_ritual_path
-Ch5PathNoContact		2	말하지 않는다. 둘만 간다.		Scene	ch5_no_contact							ch5_ritual_path
-Ch5RitualEvidenceNote	ChoiceGroup_RitualEvidence	101	의례실 종이를 제단 옆 문장과 맞대 본다.		Dialog	present_ritual_note	EvRitualNote						ch5_ritual_room
-Ch5RitualEvidenceScore	ChoiceGroup_RitualEvidence	102	감응 악보를 지금 울리는 노래와 겹쳐 본다.		Dialog	present_ritual_score	EvRitualScore						ch5_ritual_room
-Ch5RitualEvidenceMask	ChoiceGroup_RitualEvidence	103	가면의 네 배열을 제단 문양과 대조한다.	CG_RitualRoom_QRitualAccident	Dialog	present_mask	EvMask						ch5_ritual_room
-article_q1_correct	ChoiceGroup_ArticleQ1	101	일기장 — 피해자 이름을 직접 특정한다.		Dialog	article_q1_react	EvDiary						ch6_article
-article_q2_correct	ChoiceGroup_ArticleQ2	102	의식 악보 — 부적 제작 경위와 감응 방법을 밝힌다.		Dialog	article_q2_react	EvRitualScore						ch6_article
-article_q3_correct	ChoiceGroup_ArticleQ3	103	1924년 구 기사 — 구 세력의 계보와 반복된 패턴을 폭로한다.		Dialog	article_q3_react	EvOldArticles						ch6_article
-Ch6FinalAnswer	ChoiceGroup_RitualFinal	1	송순이 언니의 노래에 응답한다.		Scene	ch6_choice_a							ch6_ritual_scene
-Ch6FinalBlock	ChoiceGroup_RitualFinal	2	유웅룡이 이해심을 막으러 달려간다.		Scene	ch6_choice_b							ch6_ritual_scene
-Ch6FinalHesitate	ChoiceGroup_RitualFinal	3	아무것도 하지 않고 지켜본다.		Scene	ch6_choice_c							ch6_ritual_scene
-Ch6FinalExpose	ChoiceGroup_RitualFinal	4	지금까지 붙든 질문과 단서를 들이밀며 이해심을 몰아세운다.	CG_RitualScene_SolvedHigh	Dialog	ritual_expose							ch6_ritual_scene
+		1	알겠습니다. (순응)										ch1_newsroom
+		2	생각해 보겠습니다. (냉소)										ch1_newsroom
+		1	'청의의 감응'이 무엇인가?										ch2_hospital
+		2	'문'이 무엇인가?										ch2_hospital
+		1	벽의 문양에 손을 댄다.										ch3_room4
+		2	그대로 둔다.										ch3_room4
+		1	알겠어요. 고마워요. (멈춘다)										ch4b_cafe
+		2	제발, 조금만 더. (캐묻는다)										ch4b_cafe
+		1	편집장에게 연락한다.										ch5_ritual_path
+		2	말하지 않는다. 둘만 간다.										ch5_ritual_path
+		1	송순이 언니의 노래에 응답한다.										ch6_ritual_scene
+		2	유웅룡이 이해심을 막으러 달려간다.										ch6_ritual_scene
+		3	아무것도 하지 않고 지켜본다.										ch6_ritual_scene

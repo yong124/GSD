@@ -826,9 +826,9 @@ function img(sl, file, x, y, w, h) {
     },
   ];
 
-  const sw = 1.6, sh = 1.0, sy = 1.75;
+  const sw = 1.55, sh = 1.0, sy = 1.75;
   steps.forEach((st, i) => {
-    const sx = 0.35 + i * (sw + 0.45);
+    const sx = 0.3 + i * (sw + 0.42);
     box(sl, sx, sy, sw, sh, st.color, st.color);
     // 번호
     sl.addText(st.id, {

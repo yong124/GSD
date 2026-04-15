@@ -2306,7 +2306,7 @@
     markDirty();
     render();
     renderPanel();
-    setStatus(`? 씬 복제: ${nextId}`);
+    setStatus(`씬 복제: ${nextId}`);
   }
 
   function collectValidation() {
@@ -2681,7 +2681,7 @@
     markDirty();
     render();
     renderPanel();
-    setStatus(`? 씬 ${selected.length}개 삭제`);
+    setStatus(`씬 ${selected.length}개 삭제`);
   }
 
   // ── 이벤트 바인딩 ─────────────────────────────────────

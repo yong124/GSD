@@ -119,19 +119,20 @@ python -m http.server 3900
 
 - `content/docs/system/writing/DIALOGUE_PERIOD_TONE_GUIDE.md`
 
-### Claude 蹂댁“ 湲곗?
+### Claude 보조 기준 문서
 
-- `.claude/rules/寃쎌꽦???댁쁺_洹쒖튃.md`
-- `.claude/references/?묒뾽_異??좏깮_媛?대뱶.md`
-- `.claude/references/寃利?泥댄겕由ъ뒪??md`
+- `.claude/rules/경성뎐_운영_규칙.md`
 - `.claude/skills/gsd-data-polish/SKILL.md`
 - `.claude/skills/gsd-runtime-ui/SKILL.md`
 - `.claude/skills/gsd-priority-investigation/SKILL.md`
 - `.claude/skills/gsd-editornode-pipeline/SKILL.md`
+- `.claude/skills/gsd-browser-qa/SKILL.md`
 - `.claude/skills/gsd-release-checks/SKILL.md`
-- `.claude/commands/?곗씠???대━??md`
-- `.claude/commands/?고???UI.md`
-- `.claude/commands/由대━利?泥댄겕.md`
+- `.claude/commands/데이터-폴리시.md`
+- `.claude/commands/런타임-UI.md`
+- `.claude/commands/브라우저-QA.md`
+- `.claude/commands/에디터노드-파이프라인.md`
+- `.claude/commands/릴리즈-체크.md`
 
 ### 罹먮┃??湲곗? 臾몄꽌
 
@@ -189,19 +190,25 @@ window.GAME_DATA = {
       title,
       background,
       music,
-      next_scene,
       effect,
       branches: [
-        { order, flag_key, flag_value, next_scene }
+        { branch_id, order, condition_group_id, next_scene }
       ],
       dialogues: [
-        // ?꾩닔: order, speaker, text, style, portrait, condition
-        // ?좏깮: label, speaker_id, emotion_type, standing_slot, focus_type,
+        // 필수: order, text, style
+        // 선택: speaker_id, emotion_type, standing_slot, focus_type,
         //        enter_motion, exit_motion, idle_motion, fx_type
-        { order, label, speaker, text, style, portrait, condition }
+        { order, text, style, speaker_id, emotion_type, standing_slot, focus_type,
+          enter_motion, exit_motion, idle_motion, fx_type }
       ],
       choices: [
-        { order, text, flag_key, flag_value, next_scene, next_dialogue }
+        // next_type: "Scene" | "Dialogue"
+        // next_type="Scene" 이면 next_id 가 씬 ID
+        // next_type="Dialogue" 이면 next_id 가 대사 label
+        { order, choice_id, text, type, kicker,
+          effect_group_id,
+          reward_state_id, reward_value, reward_mode,
+          next_type, next_id }
       ],
       evidence: [
         { evidence_id, trigger, name, description, image }
@@ -225,7 +232,9 @@ window.GAME_DATA = {
 - branch ?뺤씤
 - `Dialogue.start(lines)`
 - ???醫낅즺 ??evidence / choice 泥섎━
-- ?꾩냽 `next_scene` ?먮뒗 branch ?대룞
+- choices: `next_type="Scene"` → `next_id`(씬 ID)로 이동 / `next_type="Dialogue"` → `next_id`(대사 label)로 점프
+- branches: `next_scene`(씬 ID)로 이동
+- 고아 씬 탐지 시 choices의 `next_id`, branches의 `next_scene` 모두 참조로 간주해야 함
 
 ?꾩옱 異붽?濡?議댁옱?섎뒗 ?고???異?
 
@@ -263,20 +272,7 @@ Get-Content '寃쎈줈' -Encoding utf8
 
 ## Data-First Rule
 
-- When adding repeatable content, prefer table/data ownership over runtime hardcoding.
-- Check in this order before writing new constants or switch logic:
-  1. can this be absorbed by an existing table?
-  2. does this need a new table?
-  3. is this truly runtime-only derived logic?
-- Move repeatable gameplay metadata into tables whenever practical:
-  - scene goals -> `SceneTable`
-  - notebook summaries / roles -> `CharacterTable`
-  - evidence category / hints -> `EvidenceTable`
-  - questions -> `QuestionTable`
-  - state labels / ranges -> `StateDescriptorTable`
-  - visibility / state rules -> `RuleTable`
-- Avoid adding authorable gameplay content only in `evidence.js`, `scene.js`, `ui.js`, or `editor.js` constants.
-- If structure changes, prefer updating `EditorNode -> pipeline -> game_data -> runtime -> validate/docs` in the same work round.
+반복 가능한 게임플레이 메타데이터는 런타임 상수 전에 테이블 이관 검토. 순서: 기존 테이블 확장 → 신규 테이블 → 파생 로직만 런타임. 구조 변경 시 `EditorNode → pipeline → game_data → runtime → validate/docs` 한 라운드에 같이 반영.
 
 ?쒓???源⑥졇 蹂댁씠??寃쎌슦?먮룄, ?ㅼ젣 ?뚯씪? ?뺤긽 UTF-8?????덈떎.
 
