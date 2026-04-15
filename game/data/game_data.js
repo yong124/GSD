@@ -5,7 +5,7 @@ window.GAME_DATA = {
       "id": "Yuu",
       "display_name": "유웅룡",
       "default_emotion_type": "Neutral",
-      "default_image_path": "assets/portraits/yuu.jpeg",
+      "default_image_path": "assets/portraits/yuu.png",
       "role_text": "기록자",
       "notebook_summary1": "법정에서 시작된 실종 사건을 끝까지 물고 늘어지는 기자.",
       "notebook_summary2": "기록과 은폐의 경계에서 사건을 붙들고 있다."
@@ -14,7 +14,7 @@ window.GAME_DATA = {
       "id": "Songsoon",
       "display_name": "송순",
       "default_emotion_type": "Uneasy",
-      "default_image_path": "assets/portraits/songsoon.jpeg",
+      "default_image_path": "assets/portraits/songsoon.png",
       "role_text": "증언자",
       "notebook_summary1": "낙원 안쪽 사정을 알고 있지만 쉽게 입을 열지 않는다.",
       "notebook_summary2": "신뢰를 얻을수록 더 깊은 증언에 접근할 수 있다."
@@ -23,7 +23,7 @@ window.GAME_DATA = {
       "id": "Ipangyu",
       "display_name": "이판규",
       "default_emotion_type": "Crazy",
-      "default_image_path": "assets/portraits/pan_crazy.png",
+      "default_image_path": "assets/portraits/ipangyu.png",
       "role_text": "문턱의 죄수",
       "notebook_summary1": "광기와 교리 사이를 오가며 사건의 단어를 흘리는 인물.",
       "notebook_summary2": "헛소리처럼 들리지만 사건의 방향을 먼저 암시한다."
@@ -32,7 +32,7 @@ window.GAME_DATA = {
       "id": "Editor",
       "display_name": "편집장",
       "default_emotion_type": "Angry",
-      "default_image_path": "assets/portraits/editor.jpeg",
+      "default_image_path": "assets/portraits/editor.png",
       "role_text": "기록의 문지기",
       "notebook_summary1": "무엇이 기사로 남고 무엇이 묻히는지 결정하는 편집장.",
       "notebook_summary2": "바깥에 흔적을 남길지 말지의 축과 연결된다."
@@ -41,43 +41,43 @@ window.GAME_DATA = {
       "id": "Judge",
       "display_name": "재판관",
       "default_emotion_type": "Neutral",
-      "default_image_path": "assets/portraits/judge.jpeg"
+      "default_image_path": "assets/portraits/judge.png"
     },
     "Prosecutor": {
       "id": "Prosecutor",
       "display_name": "검사",
       "default_emotion_type": "Neutral",
-      "default_image_path": "assets/portraits/prosecutor.jpeg"
+      "default_image_path": "assets/portraits/prosecutor.png"
     },
     "Lawyer": {
       "id": "Lawyer",
       "display_name": "변호인",
       "default_emotion_type": "Neutral",
-      "default_image_path": "assets/portraits/lawyer.jpeg"
+      "default_image_path": "assets/portraits/lawyer.png"
     },
     "Policeman": {
       "id": "Policeman",
       "display_name": "경찰",
       "default_emotion_type": "Neutral",
-      "default_image_path": "assets/portraits/policeman.jpeg"
+      "default_image_path": "assets/portraits/policeman.png"
     },
     "Manager": {
       "id": "Manager",
       "display_name": "점장",
       "default_emotion_type": "Neutral",
-      "default_image_path": "assets/portraits/manager.jpeg"
+      "default_image_path": "assets/portraits/manager.png"
     },
     "Waitress": {
       "id": "Waitress",
       "display_name": "여급",
       "default_emotion_type": "Neutral",
-      "default_image_path": "assets/portraits/waitress_generic.jpeg"
+      "default_image_path": "assets/portraits/waitress_generic.png"
     },
     "Elder": {
       "id": "Elder",
       "display_name": "노인",
       "default_emotion_type": "Neutral",
-      "default_image_path": "assets/portraits/elder_slum.jpeg"
+      "default_image_path": "assets/portraits/elder_slum.png"
     },
     "Okryeon": {
       "id": "Okryeon",
@@ -92,7 +92,7 @@ window.GAME_DATA = {
       "id": "Haesim",
       "display_name": "이해심",
       "default_emotion_type": "Trance",
-      "default_image_path": "assets/portraits/haesim.jpeg",
+      "default_image_path": "assets/portraits/haesim.png",
       "role_text": "의식의 중심",
       "notebook_summary1": "공명과 의식의 중심축에 선 인물.",
       "notebook_summary2": "신념인지 광기인지 분간하기 어려운 확신을 가진다."
@@ -101,7 +101,7 @@ window.GAME_DATA = {
       "id": "Cheonyonghae",
       "display_name": "천용해",
       "default_emotion_type": "Neutral",
-      "default_image_path": null,
+      "default_image_path": "assets/portraits/cheonyonghae.png",
       "role_text": "문턱의 인도자",
       "notebook_summary1": "의식이 가장 깊어지는 지점에서 모습을 드러내는 인물.",
       "notebook_summary2": "사람을 데려가는 쪽인지, 이미 건너간 쪽인지 끝내 분간하기 어렵다."
@@ -110,7 +110,7 @@ window.GAME_DATA = {
       "id": "Songgeum",
       "display_name": "송금",
       "default_emotion_type": "Trance",
-      "default_image_path": "assets/portraits/songgeum.jpeg",
+      "default_image_path": "assets/portraits/songgeum.png",
       "role_text": "실종자",
       "notebook_summary1": "사건의 핵심에서 사라진 여급.",
       "notebook_summary2": "사람들이 입을 다무는 이유가 이 인물과 맞물려 있다."
@@ -118,46 +118,46 @@ window.GAME_DATA = {
   },
   "character_emotions": {
     "Yuu": {
-      "Neutral": "assets/portraits/yuu.jpeg",
-      "Tense": "assets/portraits/yuu.jpeg",
-      "Shaken": "assets/portraits/yuu.jpeg",
-      "Trance": "assets/portraits/yuu.jpeg"
+      "Neutral": "assets/portraits/yuu.png",
+      "Tense": "assets/portraits/yuu.png",
+      "Shaken": "assets/portraits/yuu.png",
+      "Trance": "assets/portraits/yuu.png"
     },
     "Songsoon": {
-      "Neutral": "assets/portraits/songsoon.jpeg",
-      "Uneasy": "assets/portraits/songsoon.jpeg",
-      "Afraid": "assets/portraits/songsoon.jpeg",
-      "Shaken": "assets/portraits/songsoon.jpeg"
+      "Neutral": "assets/portraits/songsoon.png",
+      "Uneasy": "assets/portraits/songsoon.png",
+      "Afraid": "assets/portraits/songsoon.png",
+      "Shaken": "assets/portraits/songsoon.png"
     },
     "Ipangyu": {
-      "Neutral": "assets/portraits/pan_crazy.png",
-      "Crazy": "assets/portraits/pan_crazy.png",
-      "Trance": "assets/portraits/pan_crazy.png"
+      "Neutral": "assets/portraits/ipangyu.png",
+      "Crazy": "assets/portraits/ipangyu.png",
+      "Trance": "assets/portraits/ipangyu.png"
     },
     "Editor": {
-      "Neutral": "assets/portraits/editor.jpeg",
-      "Angry": "assets/portraits/editor.jpeg"
+      "Neutral": "assets/portraits/editor.png",
+      "Angry": "assets/portraits/editor.png"
     },
     "Judge": {
-      "Neutral": "assets/portraits/judge.jpeg"
+      "Neutral": "assets/portraits/judge.png"
     },
     "Prosecutor": {
-      "Neutral": "assets/portraits/prosecutor.jpeg"
+      "Neutral": "assets/portraits/prosecutor.png"
     },
     "Lawyer": {
-      "Neutral": "assets/portraits/lawyer.jpeg"
+      "Neutral": "assets/portraits/lawyer.png"
     },
     "Policeman": {
-      "Neutral": "assets/portraits/policeman.jpeg"
+      "Neutral": "assets/portraits/policeman.png"
     },
     "Manager": {
-      "Neutral": "assets/portraits/manager.jpeg"
+      "Neutral": "assets/portraits/manager.png"
     },
     "Waitress": {
-      "Neutral": "assets/portraits/waitress_generic.jpeg"
+      "Neutral": "assets/portraits/waitress_generic.png"
     },
     "Elder": {
-      "Neutral": "assets/portraits/elder_slum.jpeg"
+      "Neutral": "assets/portraits/elder_slum.png"
     },
     "Okryeon": {
       "Neutral": "assets/portraits/kum_fixed.png",
@@ -165,16 +165,16 @@ window.GAME_DATA = {
       "Shaken": "assets/portraits/kum_fixed.png"
     },
     "Haesim": {
-      "Neutral": "assets/portraits/haesim.jpeg",
-      "Trance": "assets/portraits/haesim.jpeg",
-      "Crazy": "assets/portraits/haesim.jpeg"
+      "Neutral": "assets/portraits/haesim.png",
+      "Trance": "assets/portraits/haesim.png",
+      "Crazy": "assets/portraits/haesim.png"
     },
     "Cheonyonghae": {
-      "Neutral": ""
+      "Neutral": "assets/portraits/cheonyonghae.png"
     },
     "Songgeum": {
-      "Neutral": "assets/portraits/songgeum.jpeg",
-      "Trance": "assets/portraits/songgeum.jpeg"
+      "Neutral": "assets/portraits/songgeum.png",
+      "Trance": "assets/portraits/songgeum.png"
     }
   },
   "choice_groups": [
@@ -3867,7 +3867,7 @@ window.GAME_DATA = {
             "focus_type": "Speaker",
             "text": "일기장을 기사 옆에 펼쳐 두니, 공포를 남긴 문장과 공포를 지운 문장이 한 줄처럼 이어집니다. 누군가는 비명을 기록으로 남기고, 누군가는 그 기록이 읽히지 않게 접어 둔 겁니다.",
             "style": "thought",
-            "portrait": "assets/portraits/yuu.jpeg",
+            "portrait": "assets/portraits/yuu.png",
             "condition": null
           },
           {
@@ -3889,7 +3889,7 @@ window.GAME_DATA = {
             "focus_type": "Speaker",
             "text": "청색 한복의 결을 기사 문장과 맞대 보니, '실종'이라 적힌 빈칸이 전부 의례의 배역표처럼 읽히는군요. 사람을 찾은 게 아니라, 쓸 몸을 골랐던 겁니다.",
             "style": "thought",
-            "portrait": "assets/portraits/yuu.jpeg",
+            "portrait": "assets/portraits/yuu.png",
             "condition": null
           },
           {
@@ -3911,7 +3911,7 @@ window.GAME_DATA = {
             "focus_type": "Speaker",
             "text": "지금 내민 단서만으로는 기사와 증언의 틈을 바로 묶어내기 어렵다. 조금 더 맞는 증거가 필요하다.",
             "style": "thought",
-            "portrait": "assets/portraits/yuu.jpeg",
+            "portrait": "assets/portraits/yuu.png",
             "condition": null
           }
         ]
@@ -5575,7 +5575,7 @@ window.GAME_DATA = {
             "focus_type": "Speaker",
             "text": "이 종이에 적힌 '셋 중 하나가 남았다'는 문장은 헛소문이 아니었군요. 제단 앞 숫자와 딱 맞아떨어집니다. 여기선 사람 이름보다 남은 몫이 먼저 세어졌어요.",
             "style": "thought",
-            "portrait": "assets/portraits/yuu.jpeg",
+            "portrait": "assets/portraits/yuu.png",
             "condition": null
           },
           {
@@ -5587,7 +5587,7 @@ window.GAME_DATA = {
             "focus_type": "Speaker",
             "text": "언니가 사람으로 불린 적이 거의 없었던 거네요…. 처음부터 누가 될지만 정해 놓고 끌고 온 거예요.",
             "style": "normal",
-            "portrait": "assets/portraits/songsoon.jpeg",
+            "portrait": "assets/portraits/songsoon.png",
             "condition": null
           }
         ],
@@ -5601,7 +5601,7 @@ window.GAME_DATA = {
             "focus_type": "Speaker",
             "text": "창고에서 챙긴 악보와 지금 흐르는 노랫소리의 결이 같습니다. 제단은 장식이 아니고, 이 방 전체가 한 곡의 구조 안에 사람 숨을 집어넣는 장치였군요.",
             "style": "thought",
-            "portrait": "assets/portraits/yuu.jpeg",
+            "portrait": "assets/portraits/yuu.png",
             "condition": null
           },
           {
@@ -5623,7 +5623,7 @@ window.GAME_DATA = {
             "focus_type": "Speaker",
             "text": "가면의 네 눈과 제단 문양이 정확히 맞물립니다. 우발적 광신이라면 이런 식의 배치가 나올 리 없어요. 이건 누가 어느 자리에서 무엇을 보게 할지까지 짜 둔 판입니다.",
             "style": "thought",
-            "portrait": "assets/portraits/yuu.jpeg",
+            "portrait": "assets/portraits/yuu.png",
             "condition": null
           },
           {
@@ -5645,7 +5645,7 @@ window.GAME_DATA = {
             "focus_type": "Speaker",
             "text": "이 증거만으로는 의식의 구조를 바로 꿰맞출 수 없다. 다른 단서를 더 정확히 짚어야 한다.",
             "style": "thought",
-            "portrait": "assets/portraits/yuu.jpeg",
+            "portrait": "assets/portraits/yuu.png",
             "condition": null
           }
         ]
@@ -6040,7 +6040,7 @@ window.GAME_DATA = {
           "idle_motion": "ShakeLight",
           "text": "그만 연기합시다. 이판규를 미친놈으로 덮고, 송금을 도망친 사람으로 만들고, 의식을 우발적 광신이라 부른 거짓말이 전부 여기서 이어졌습니다. 이제 남은 건 사람 잡아먹는 판을 들키지 않으려는 몸부림뿐이군요.",
           "style": "normal",
-          "portrait": "assets/portraits/yuu.jpeg",
+          "portrait": "assets/portraits/yuu.png",
           "condition": null
         },
         {
@@ -6053,7 +6053,7 @@ window.GAME_DATA = {
           "idle_motion": "Tremble",
           "text": "입을 맞춘다고 진실이 되는 줄 아느냐. 질문 몇 개 풀었다고 문턱의 무게를 재단할 수는 없어.",
           "style": "normal",
-          "portrait": "assets/portraits/haesim.jpeg",
+          "portrait": "assets/portraits/haesim.png",
           "condition": null
         },
         {
