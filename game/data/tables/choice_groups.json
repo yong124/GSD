@@ -1,0 +1,110 @@
+[
+  {
+    "choice_group_id": "ChoiceGroup_CafeInvestigation",
+    "type": "Investigation",
+    "condition_group_id": null,
+    "max_selectable": 2
+  },
+  {
+    "choice_group_id": "ChoiceGroup_Room4Investigation",
+    "type": "Investigation",
+    "condition_group_id": null,
+    "max_selectable": 2
+  },
+  {
+    "choice_group_id": "ChoiceGroup_RitualFinal",
+    "type": "Investigation",
+    "condition_group_id": null,
+    "max_selectable": 1
+  },
+  {
+    "choice_group_id": "ChoiceGroup_LibraryEvidence",
+    "type": "Evidence",
+    "answer_type": "Evidence",
+    "condition_group_id": null,
+    "max_selectable": 1,
+    "default_dialog_id": "present_library_default"
+  },
+  {
+    "choice_group_id": "ChoiceGroup_RitualEvidence",
+    "type": "Evidence",
+    "answer_type": "Evidence",
+    "condition_group_id": null,
+    "max_selectable": 1,
+    "default_dialog_id": "present_ritual_default"
+  },
+  {
+    "choice_group_id": "ChoiceGroup_Ipangyu_Confront",
+    "type": "Evidence",
+    "answer_type": "Evidence",
+    "condition_group_id": null,
+    "max_selectable": 1,
+    "default_dialog_id": "dlg_ipangyu_default"
+  },
+  {
+    "choice_group_id": "ChoiceGroup_Okryeon_Confront",
+    "type": "Evidence",
+    "answer_type": "Evidence",
+    "condition_group_id": null,
+    "max_selectable": 1,
+    "default_dialog_id": "dlg_okryeon_close"
+  },
+  {
+    "choice_group_id": "ChoiceGroup_Songsoon_Trust",
+    "type": "Evidence",
+    "answer_type": "Evidence",
+    "condition_group_id": null,
+    "max_selectable": 1,
+    "default_dialog_id": "dlg_songsoon_skeptical"
+  },
+  {
+    "choice_group_id": "ChoiceGroup_Editor_Confront",
+    "type": "Evidence",
+    "answer_type": "Evidence",
+    "condition_group_id": null,
+    "max_selectable": 1,
+    "default_dialog_id": "dlg_editor_deflect"
+  },
+  {
+    "choice_group_id": "ChoiceGroup_ArticleQ1",
+    "type": "Evidence",
+    "answer_type": "Evidence",
+    "condition_group_id": null,
+    "max_selectable": 1,
+    "default_dialog_id": "dlg_article_default"
+  },
+  {
+    "choice_group_id": "ChoiceGroup_ArticleQ2",
+    "type": "Evidence",
+    "answer_type": "Evidence",
+    "condition_group_id": null,
+    "max_selectable": 1,
+    "default_dialog_id": "dlg_article_default"
+  },
+  {
+    "choice_group_id": "ChoiceGroup_ArticleQ3",
+    "type": "Evidence",
+    "answer_type": "Evidence",
+    "condition_group_id": null,
+    "max_selectable": 1,
+    "default_dialog_id": "dlg_article_default"
+  },
+  {
+    "choice_group_id": "ChoiceGroup_EditorOrder",
+    "type": "Normal",
+    "condition_group_id": null,
+    "max_selectable": 1
+  },
+  {
+    "choice_group_id": "ChoiceGroup_GuardedDoor",
+    "type": "Normal",
+    "condition_group_id": null,
+    "max_selectable": 1
+  },
+  {
+    "choice_group_id": "ChoiceGroup_IpangyuDeal",
+    "type": "Normal",
+    "condition_group_id": null,
+    "max_selectable": 1
+  }
+]

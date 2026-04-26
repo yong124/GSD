@@ -1,0 +1,236 @@
+[
+  {
+    "effect_group_id": "eff_article_correct",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Credibility",
+    "gauge_delta": 1,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_article_wrong",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Credibility",
+    "gauge_delta": -1,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_ch1_newsroom_obedient",
+    "effect_type": "TrustChange",
+    "gauge_id": null,
+    "gauge_delta": null,
+    "evidence_id": null,
+    "trust_character_id": "Editor",
+    "trust_delta": 1
+  },
+  {
+    "effect_group_id": "eff_ch3_room4_read_record",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Credibility",
+    "gauge_delta": 1,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_ch3_room4_touch_wall",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Erosion",
+    "gauge_delta": 2,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_ch3_warehouse_read_ritual",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Credibility",
+    "gauge_delta": 1,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_ch4a_library_note_articles",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Credibility",
+    "gauge_delta": 3,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_ch5_guarded_door_listen",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Erosion",
+    "gauge_delta": 2,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_ch5_guarded_door_steady",
+    "effect_type": "TrustChange",
+    "gauge_id": null,
+    "gauge_delta": null,
+    "evidence_id": null,
+    "trust_character_id": "Songsoon",
+    "trust_delta": 2
+  },
+  {
+    "effect_group_id": "eff_editor_correct",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Credibility",
+    "gauge_delta": 2,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_editor_wrong",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Credibility",
+    "gauge_delta": -1,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_ipangyu_correct",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Credibility",
+    "gauge_delta": 1,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_ipangyu_correct",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Erosion",
+    "gauge_delta": 1,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_ipangyu_wrong",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Credibility",
+    "gauge_delta": -1,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_okryeon_diary",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Credibility",
+    "gauge_delta": 1,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_okryeon_hanbok",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Credibility",
+    "gauge_delta": 1,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_okryeon_hanbok",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Erosion",
+    "gauge_delta": 1,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_okryeon_wrong",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Credibility",
+    "gauge_delta": -1,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_songsoon_trust",
+    "effect_type": "TrustChange",
+    "gauge_id": null,
+    "gauge_delta": null,
+    "evidence_id": null,
+    "trust_character_id": "Songsoon",
+    "trust_delta": 1
+  },
+  {
+    "effect_group_id": "eff_editor_defy",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Credibility",
+    "gauge_delta": -1,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_ch5_observe",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Credibility",
+    "gauge_delta": 1,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_ch5_observe",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Erosion",
+    "gauge_delta": 1,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_ipangyu_deal_accept",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Erosion",
+    "gauge_delta": 1,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_ipangyu_deal_accept",
+    "effect_type": "EvidenceGain",
+    "gauge_id": null,
+    "gauge_delta": null,
+    "evidence_id": "EvIpangyuName",
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_ch1_court_pursue",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Credibility",
+    "gauge_delta": 1,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_ch1_court_comply",
+    "effect_type": "TrustChange",
+    "gauge_id": null,
+    "gauge_delta": null,
+    "evidence_id": null,
+    "trust_character_id": "Editor",
+    "trust_delta": 1
+  }
+]

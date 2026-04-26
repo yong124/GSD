@@ -1,0 +1,261 @@
+[
+  {
+    "investigation_id": "Investigation_CafeNakwon",
+    "title": "낙원에서 먼저 흔들어 볼 결은 무엇인가",
+    "hint": "점장의 입, 여급들의 빚, 구석 손님의 침묵 가운데 어디를 먼저 건드릴지 정하세요.",
+    "budget": 2,
+    "choice_group_id": "ChoiceGroup_CafeInvestigation",
+    "priority_dialogues": {
+      "inv_mgr": [
+        {
+          "order": 1,
+          "text": "한 가지만 더요. 그 여자가 마지막으로 무대에 섰던 날, 기억하십니까?",
+          "style": "normal",
+          "condition": null,
+          "speaker_id": "Yuu",
+          "emotion_type": "Tense",
+          "standing_slot": "Right",
+          "focus_type": "Speaker"
+        },
+        {
+          "order": 2,
+          "text": "…그건 제가 드릴 말씀이 없습니다. 손님, 이런 말씀이 계속되면 자리를 비워드려야 하겠습니다.",
+          "style": "normal",
+          "condition": null,
+          "speaker_id": "Manager",
+          "emotion_type": "Neutral",
+          "standing_slot": "Left",
+          "focus_type": "Speaker"
+        },
+        {
+          "order": 3,
+          "text": "점장은 이미 겁을 먹고 있다. 여기서 더 밀면 입을 닫겠지만, 낙원 안쪽 질서가 누구를 숨기고 있는지는 더 또렷해졌어.",
+          "style": "thought",
+          "condition": null,
+          "speaker_id": "Yuu",
+          "emotion_type": "Tense",
+          "standing_slot": "Right",
+          "focus_type": "Speaker"
+        }
+      ],
+      "inv_wtrs": [
+        {
+          "order": 1,
+          "text": "지나치던 여급이 손님 상을 치우며 눈을 피한다. 반쯤 비운 술잔이 제 것인지 손님 것인지 구분이 안 간다. 유웅룡이 시선으로 잡아채자 잠깐 멈춘다.",
+          "style": "narration",
+          "condition": null
+        },
+        {
+          "order": 2,
+          "text": "그런 건 이제 안 해요. 이름을 입에 올렸다가 되돌아오는 것도 있으니까…. (낮게) 저는 아직 빚이 남아서요. 손님은 못 들은 셈 치세요.",
+          "style": "normal",
+          "condition": null,
+          "speaker_id": "Waitress",
+          "emotion_type": "Neutral",
+          "standing_slot": "Left",
+          "focus_type": "Speaker"
+        },
+        {
+          "order": 3,
+          "text": "이름을 올리면 되돌아오고, 빚이 남아 있으면 입을 닫는다. 낙원은 노래보다 빚으로 사람을 붙들고 있군. 다음엔 그 빚의 주인을 쫓아야겠어.",
+          "style": "thought",
+          "condition": null,
+          "speaker_id": "Yuu",
+          "emotion_type": "Tense",
+          "standing_slot": "Right",
+          "focus_type": "Speaker"
+        }
+      ],
+      "inv_obs": [
+        {
+          "order": 1,
+          "text": "구석 자리. 손을 모은 채 조용히 앉은 여자. 술잔을 천천히 밀어놓으면서 이쪽을 보지 않는다.",
+          "style": "thought",
+          "condition": null,
+          "speaker_id": "Yuu",
+          "emotion_type": "Tense",
+          "standing_slot": "Right",
+          "focus_type": "Speaker"
+        },
+        {
+          "order": 2,
+          "text": "하지만 저 눈은 전부 듣고 있다. 조용히 웅크렸을 뿐, 이미 안쪽 사정을 아는 사람의 자세다. 오늘 밤 낙원엔 말 안 하는 증인이 더 있군.",
+          "style": "thought",
+          "condition": null,
+          "speaker_id": "Yuu",
+          "emotion_type": "Tense",
+          "standing_slot": "Right",
+          "focus_type": "Speaker"
+        }
+      ]
+    }
+  },
+  {
+    "investigation_id": "Investigation_Room4",
+    "title": "이 방에서 먼저 붙들 진실은 무엇인가",
+    "hint": "벽의 흔적, 남겨진 기록, 송순의 흔들림 가운데 어디부터 잡아야 사건의 구조가 드러나는지 고르세요.",
+    "budget": 2,
+    "choice_group_id": "ChoiceGroup_Room4Investigation",
+    "priority_dialogues": {
+      "room4_touch": [
+        {
+          "order": 1,
+          "text": "유웅룡의 손끝이 문양에 닿는 순간, 차갑다기보다 젖은 숨결 같은 감각이 손바닥으로 파고든다. 방 안 공기가 아주 잠깐 뒤집힌다.",
+          "style": "narration",
+          "condition": null
+        },
+        {
+          "order": 2,
+          "speaker_id": "Yuu",
+          "emotion_type": "Shaken",
+          "standing_slot": "Right",
+          "focus_type": "Speaker",
+          "idle_motion": "Tremble",
+          "fx_type": "BlueTrace",
+          "text": "...문양이 아니라 자국이었군. 누가 바깥에서 연 게 아니라, 안쪽에서 한 번 밀어낸 흔적이야.",
+          "style": "normal",
+          "condition": null
+        },
+        {
+          "order": 3,
+          "speaker_id": "Songsoon",
+          "emotion_type": "Afraid",
+          "standing_slot": "Left",
+          "focus_type": "Speaker",
+          "text": "그걸 직접 만지고도 그런 소릴 하세요? ...그래도 이제 저도 모른 체는 못 하겠어요.",
+          "style": "normal",
+          "condition": null
+        }
+      ],
+      "room4_record": [
+        {
+          "order": 1,
+          "speaker_id": "Yuu",
+          "emotion_type": "Tense",
+          "standing_slot": "Right",
+          "focus_type": "Speaker",
+          "text": "(일기장을 더 넘긴다) 이름을 불릴수록 내가 옅어진다... 남겨 둔 문장치곤 지나치게 또렷하군요.",
+          "style": "normal",
+          "condition": null
+        },
+        {
+          "order": 2,
+          "speaker_id": "Yuu",
+          "emotion_type": "Tense",
+          "standing_slot": "Right",
+          "focus_type": "Speaker",
+          "text": "살려 달라는 글이라기보다, 나중에라도 누가 읽어 달라는 문장입니다. 이건 끝까지 가져가야 해요.",
+          "style": "thought",
+          "condition": null
+        },
+        {
+          "order": 3,
+          "speaker_id": "Songsoon",
+          "emotion_type": "Uneasy",
+          "standing_slot": "Left",
+          "focus_type": "Speaker",
+          "text": "그럼 끝까지 읽어야죠. 언니가 남긴 말이면, 적어도 우린 다 읽고 나가야 해요.",
+          "style": "normal",
+          "condition": null
+        }
+      ],
+      "room4_comfort": [
+        {
+          "order": 1,
+          "speaker_id": "Yuu",
+          "emotion_type": "Neutral",
+          "standing_slot": "Right",
+          "focus_type": "Speaker",
+          "text": "송순 씨, 이 일 전부 당신 몫으로 짊어질 생각은 마십시오. 없어지는 사람을 막는 일은 죄책감만으로는 못 버팁니다.",
+          "style": "normal",
+          "condition": null
+        },
+        {
+          "order": 2,
+          "speaker_id": "Songsoon",
+          "emotion_type": "Sad",
+          "standing_slot": "Left",
+          "focus_type": "Speaker",
+          "text": "...그 말을 기다리고 있었는지도 몰라요. 내가 언니를 못 지켰단 마음이 자꾸 먼저 와서, 자꾸 다 놓칠 뻔했어요.",
+          "style": "normal",
+          "condition": null
+        },
+        {
+          "order": 3,
+          "speaker_id": "Yuu",
+          "emotion_type": "Neutral",
+          "standing_slot": "Right",
+          "focus_type": "Speaker",
+          "text": "탓은 나중에 합시다. 지금은 누가 지웠는지부터 찾아야지요.",
+          "style": "normal",
+          "condition": null
+        }
+      ]
+    }
+  },
+  {
+    "investigation_id": "Investigation_RitualFinal",
+    "title": "이 방에서 무엇을 사람으로 남길 것인가",
+    "hint": "구해 붙들지, 몸으로 끊을지, 공포에 멈출지, 쌓아 온 질문으로 폭로할지 선택하세요.",
+    "budget": 1,
+    "choice_group_id": "ChoiceGroup_RitualFinal",
+    "priority_dialogues": {
+      "ritual_answer": [
+        {
+          "order": 1,
+          "speaker_id": "Songsoon",
+          "emotion_type": "Afraid",
+          "standing_slot": "Left",
+          "focus_type": "Speaker",
+          "idle_motion": "Tremble",
+          "text": "언니, 그 소리 따라가지 마. 나 봐. 나 아직 여기 있어. 네 이름 알아.",
+          "style": "normal",
+          "condition": null
+        },
+        {
+          "order": 2,
+          "text": "송순의 목소리가 콧노래를 가르며 들어간다. 의식의 중심이 아주 잠깐 흔들린다.",
+          "style": "narration",
+          "condition": null
+        }
+      ],
+      "ritual_block": [
+        {
+          "order": 1,
+          "speaker_id": "Yuu",
+          "emotion_type": "Angry",
+          "standing_slot": "Right",
+          "focus_type": "Speaker",
+          "idle_motion": "ShakeLight",
+          "text": "이쯤으로 충분할 터인데. 사람 갈아 넣고도 정화라 부를 셈이면, 그 입부터 막아야겠군.",
+          "style": "normal",
+          "condition": null
+        },
+        {
+          "order": 2,
+          "text": "유웅룡이 제단 쪽으로 몸을 던진다. 글로는 늦는 순간이 있다. 이번만큼은 문장보다 몸이 먼저 나간다.",
+          "style": "narration",
+          "condition": null
+        }
+      ],
+      "ritual_hesitate": [
+        {
+          "order": 1,
+          "text": "두 사람은 아주 짧은 순간, 아무 쪽도 택하지 못하고 얼어붙는다. 공포는 그렇게 늘 반 박자 먼저 사람을 붙든다.",
+          "style": "narration",
+          "condition": null
+        },
+        {
+          "order": 2,
+          "speaker_id": "Yuu",
+          "emotion_type": "Shaken",
+          "standing_slot": "Right",
+          "focus_type": "Speaker",
+          "text": "...빌어먹을, 한 박자 늦었군.",
+          "style": "normal",
+          "condition": null
+        }
+      ]
+    }
+  }
+]

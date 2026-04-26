@@ -1,0 +1,74 @@
+[
+  {
+    "gauge_id": "Erosion",
+    "min_value": 0,
+    "max_value": 2,
+    "label": "안정",
+    "hud_color": "#6a9f6a",
+    "detail": "아직은 이성을 붙들고 사건을 따라갈 수 있는 상태다.",
+    "trigger_scene_id": null
+  },
+  {
+    "gauge_id": "Erosion",
+    "min_value": 3,
+    "max_value": 5,
+    "label": "위조",
+    "hud_color": "#c8a84b",
+    "detail": "조사 과정 곳곳에서 의식의 균열이 스며든다.",
+    "trigger_scene_id": null
+  },
+  {
+    "gauge_id": "Erosion",
+    "min_value": 6,
+    "max_value": 8,
+    "label": "심화",
+    "hud_color": "#b06040",
+    "detail": "위협을 감수한 만큼 비현실의 결이 짙어진다.",
+    "trigger_scene_id": null
+  },
+  {
+    "gauge_id": "Erosion",
+    "min_value": 9,
+    "max_value": 9,
+    "label": "침식",
+    "hud_color": "#8b2020",
+    "detail": "이성과 의식의 경계가 크게 흔들리고 있다.",
+    "trigger_scene_id": null
+  },
+  {
+    "gauge_id": "Erosion",
+    "min_value": 10,
+    "max_value": 10,
+    "label": "붕괴",
+    "hud_color": "#4a0000",
+    "detail": "",
+    "trigger_scene_id": "scene_ending_erosion"
+  },
+  {
+    "gauge_id": "Credibility",
+    "min_value": 3,
+    "max_value": 10,
+    "label": "안정",
+    "hud_color": "#6a9f6a",
+    "detail": "기자로서의 평판이 아직 버티고 있다.",
+    "trigger_scene_id": null
+  },
+  {
+    "gauge_id": "Credibility",
+    "min_value": 1,
+    "max_value": 2,
+    "label": "흔들림",
+    "hud_color": "#c8a84b",
+    "detail": "압박을 받는 순간 평판이 빠르게 깎이고 있다.",
+    "trigger_scene_id": null
+  },
+  {
+    "gauge_id": "Credibility",
+    "min_value": 0,
+    "max_value": 0,
+    "label": "실각",
+    "hud_color": "#8b2020",
+    "detail": "",
+    "trigger_scene_id": "scene_gameover_credibility"
+  }
+]

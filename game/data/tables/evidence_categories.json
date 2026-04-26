@@ -1,0 +1,17 @@
+[
+  {
+    "category_id": "record",
+    "category_title": "기록과 기사",
+    "category_hint": "남겨진 문장과 호출의 흔적"
+  },
+  {
+    "category_id": "trace",
+    "category_title": "현장 물증",
+    "category_hint": "현장에서 직접 붙잡은 흔적"
+  },
+  {
+    "category_id": "ritual",
+    "category_title": "의례와 공명",
+    "category_hint": "문, 무녀, 감응과 연결된 흔적"
+  }
+]

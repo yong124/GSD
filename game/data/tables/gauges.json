@@ -1,0 +1,38 @@
+[
+  {
+    "gauge_id": "Erosion",
+    "label": "침식",
+    "min_value": 0,
+    "max_value": 10,
+    "default_value": 0,
+    "hud_visible": true,
+    "hud_order": 1
+  },
+  {
+    "gauge_id": "Credibility",
+    "label": "평판",
+    "min_value": 0,
+    "max_value": 10,
+    "default_value": 10,
+    "hud_visible": true,
+    "hud_order": 2
+  },
+  {
+    "gauge_id": "ReadRitualScore",
+    "label": "의식 악보 독해",
+    "min_value": 0,
+    "max_value": 10,
+    "default_value": 0,
+    "hud_visible": false,
+    "hud_order": 98
+  },
+  {
+    "gauge_id": "SolvedQuestionCount",
+    "label": "정리한 질문 수",
+    "min_value": 0,
+    "max_value": 10,
+    "default_value": 0,
+    "hud_visible": false,
+    "hud_order": 99
+  }
+]

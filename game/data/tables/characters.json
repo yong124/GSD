@@ -1,0 +1,116 @@
+{
+  "Yuu": {
+    "id": "Yuu",
+    "display_name": "유웅룡",
+    "default_emotion_type": "Neutral",
+    "default_image_path": "assets/portraits/yuu.png",
+    "role_text": "기록자",
+    "notebook_summary1": "법정에서 시작된 실종 사건을 끝까지 물고 늘어지는 기자.",
+    "notebook_summary2": "기록과 은폐의 경계에서 사건을 붙들고 있다."
+  },
+  "Songsoon": {
+    "id": "Songsoon",
+    "display_name": "송순",
+    "default_emotion_type": "Uneasy",
+    "default_image_path": "assets/portraits/songsoon.png",
+    "role_text": "증언자",
+    "notebook_summary1": "낙원 안쪽 사정을 알고 있지만 쉽게 입을 열지 않는다.",
+    "notebook_summary2": "신뢰를 얻을수록 더 깊은 증언에 접근할 수 있다."
+  },
+  "Ipangyu": {
+    "id": "Ipangyu",
+    "display_name": "이판규",
+    "default_emotion_type": "Crazy",
+    "default_image_path": "assets/portraits/ipangyu.png",
+    "role_text": "문턱의 죄수",
+    "notebook_summary1": "광기와 교리 사이를 오가며 사건의 단어를 흘리는 인물.",
+    "notebook_summary2": "헛소리처럼 들리지만 사건의 방향을 먼저 암시한다."
+  },
+  "Editor": {
+    "id": "Editor",
+    "display_name": "편집장",
+    "default_emotion_type": "Angry",
+    "default_image_path": "assets/portraits/editor.png",
+    "role_text": "기록의 문지기",
+    "notebook_summary1": "무엇이 기사로 남고 무엇이 묻히는지 결정하는 편집장.",
+    "notebook_summary2": "바깥에 흔적을 남길지 말지의 축과 연결된다."
+  },
+  "Judge": {
+    "id": "Judge",
+    "display_name": "재판관",
+    "default_emotion_type": "Neutral",
+    "default_image_path": "assets/portraits/judge.png"
+  },
+  "Prosecutor": {
+    "id": "Prosecutor",
+    "display_name": "검사",
+    "default_emotion_type": "Neutral",
+    "default_image_path": "assets/portraits/prosecutor.png"
+  },
+  "Lawyer": {
+    "id": "Lawyer",
+    "display_name": "변호인",
+    "default_emotion_type": "Neutral",
+    "default_image_path": "assets/portraits/lawyer.png"
+  },
+  "Policeman": {
+    "id": "Policeman",
+    "display_name": "경찰",
+    "default_emotion_type": "Neutral",
+    "default_image_path": "assets/portraits/policeman.png"
+  },
+  "Manager": {
+    "id": "Manager",
+    "display_name": "점장",
+    "default_emotion_type": "Neutral",
+    "default_image_path": "assets/portraits/manager.png"
+  },
+  "Waitress": {
+    "id": "Waitress",
+    "display_name": "여급",
+    "default_emotion_type": "Neutral",
+    "default_image_path": "assets/portraits/waitress_generic.png"
+  },
+  "Elder": {
+    "id": "Elder",
+    "display_name": "노인",
+    "default_emotion_type": "Neutral",
+    "default_image_path": "assets/portraits/elder_slum.png"
+  },
+  "Okryeon": {
+    "id": "Okryeon",
+    "display_name": "옥련",
+    "default_emotion_type": "Afraid",
+    "default_image_path": "assets/portraits/kum_fixed.png",
+    "role_text": "생존자",
+    "notebook_summary1": "낙원에서 벌어진 일을 견디고 살아남은 여급.",
+    "notebook_summary2": "압박보다 보호에 가까운 태도에서 더 많은 진실이 새어 나온다."
+  },
+  "Haesim": {
+    "id": "Haesim",
+    "display_name": "이해심",
+    "default_emotion_type": "Trance",
+    "default_image_path": "assets/portraits/haesim.png",
+    "role_text": "의식의 중심",
+    "notebook_summary1": "공명과 의식의 중심축에 선 인물.",
+    "notebook_summary2": "신념인지 광기인지 분간하기 어려운 확신을 가진다."
+  },
+  "Cheonyonghae": {
+    "id": "Cheonyonghae",
+    "display_name": "천용해",
+    "default_emotion_type": "Neutral",
+    "default_image_path": "assets/portraits/cheonyonghae.png",
+    "role_text": "문턱의 인도자",
+    "notebook_summary1": "의식이 가장 깊어지는 지점에서 모습을 드러내는 인물.",
+    "notebook_summary2": "사람을 데려가는 쪽인지, 이미 건너간 쪽인지 끝내 분간하기 어렵다."
+  },
+  "Songgeum": {
+    "id": "Songgeum",
+    "display_name": "송금",
+    "default_emotion_type": "Trance",
+    "default_image_path": "assets/portraits/songgeum.png",
+    "role_text": "실종자",
+    "notebook_summary1": "사건의 핵심에서 사라진 여급.",
+    "notebook_summary2": "사람들이 입을 다무는 이유가 이 인물과 맞물려 있다."
+  }
+}

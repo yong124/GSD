@@ -43,6 +43,21 @@ button {
   background: var(--bg-card); color: var(--text); cursor: pointer; font-size: 12px;
 }
 button:hover { border-color: var(--accent); color: var(--accent); }
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  border-color: var(--border);
+  color: var(--text-dim);
+}
+button.is-primary {
+  border-color: rgba(200, 168, 75, 0.5);
+}
+button.is-primary.is-dirty {
+  background: rgba(200, 168, 75, 0.12);
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 0 1px rgba(200, 168, 75, 0.18);
+}
 button.danger { border-color: #663333; color: #cc6666; }
 button.danger:hover { background: #331a1a; }
 button.small { padding: 1px 7px; font-size: 11px; }

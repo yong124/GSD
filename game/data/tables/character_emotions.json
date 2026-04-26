@@ -1,0 +1,62 @@
+{
+  "Yuu": {
+    "Neutral": "assets/portraits/yuu.png",
+    "Tense": "assets/portraits/yuu.png",
+    "Shaken": "assets/portraits/yuu.png",
+    "Trance": "assets/portraits/yuu.png"
+  },
+  "Songsoon": {
+    "Neutral": "assets/portraits/songsoon.png",
+    "Uneasy": "assets/portraits/songsoon.png",
+    "Afraid": "assets/portraits/songsoon.png",
+    "Shaken": "assets/portraits/songsoon.png"
+  },
+  "Ipangyu": {
+    "Neutral": "assets/portraits/ipangyu.png",
+    "Crazy": "assets/portraits/ipangyu.png",
+    "Trance": "assets/portraits/ipangyu.png",
+    "Corpse": "assets/portraits/ipangyu_corpse.png"
+  },
+  "Editor": {
+    "Neutral": "assets/portraits/editor.png",
+    "Angry": "assets/portraits/editor.png"
+  },
+  "Judge": {
+    "Neutral": "assets/portraits/judge.png"
+  },
+  "Prosecutor": {
+    "Neutral": "assets/portraits/prosecutor.png"
+  },
+  "Lawyer": {
+    "Neutral": "assets/portraits/lawyer.png"
+  },
+  "Policeman": {
+    "Neutral": "assets/portraits/policeman.png"
+  },
+  "Manager": {
+    "Neutral": "assets/portraits/manager.png"
+  },
+  "Waitress": {
+    "Neutral": "assets/portraits/waitress_generic.png"
+  },
+  "Elder": {
+    "Neutral": "assets/portraits/elder_slum.png"
+  },
+  "Okryeon": {
+    "Neutral": "assets/portraits/kum_fixed.png",
+    "Afraid": "assets/portraits/kum_fixed.png",
+    "Shaken": "assets/portraits/kum_fixed.png"
+  },
+  "Haesim": {
+    "Neutral": "assets/portraits/haesim.png",
+    "Trance": "assets/portraits/haesim.png",
+    "Crazy": "assets/portraits/haesim.png"
+  },
+  "Cheonyonghae": {
+    "Neutral": "assets/portraits/cheonyonghae.png"
+  },
+  "Songgeum": {
+    "Neutral": "assets/portraits/songgeum.png",
+    "Trance": "assets/portraits/songgeum.png"
+  }
+}

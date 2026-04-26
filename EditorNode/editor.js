@@ -43,10 +43,28 @@
     state_descriptors: [],
     scenes: {},
   };
+  const TABLE_FILE_MAP = [
+    ['meta.json', 'first_scene'],
+    ['characters.json', 'characters'],
+    ['character_emotions.json', 'character_emotions'],
+    ['choice_groups.json', 'choice_groups'],
+    ['conditions.json', 'conditions'],
+    ['evidence_categories.json', 'evidence_categories'],
+    ['investigations.json', 'investigations'],
+    ['questions.json', 'questions'],
+    ['state_descriptors.json', 'state_descriptors'],
+    ['gauges.json', 'gauges'],
+    ['gauge_states.json', 'gauge_states'],
+    ['effects.json', 'effects'],
+    ['scenes.json', 'scenes'],
+  ];
+  const TABLE_BASE_PATH = '../game/data/tables';
 
   // ── 상태 ──────────────────────────────────────────────
   const state = {
     data: structuredClone(EMPTY_DATA),
+    workspaceDirHandle: null,
+    isSavingWorkspace: false,
     layout: {},       // { sceneId: { x, y } }
     selectedId: null,
     selectedIds: new Set(),
@@ -99,6 +117,9 @@
     els.btnAutoLayout = $('btn-auto-layout');
     els.btnZoomOut = $('btn-zoom-out');
     els.btnZoomIn = $('btn-zoom-in');
+    els.btnLoad = $('btn-load');
+    els.btnSaveWorkspace = $('btn-save-workspace');
+    els.btnExport = $('btn-export');
     els.zoomLabel = $('zoom-label');
     els.fieldChapter = $('field-chapter');
     els.fieldMusic   = $('field-music');
@@ -155,6 +176,7 @@
     els.choiceList   = $('choice-list');
     els.branchList   = $('branch-list');
     els.status       = $('status');
+    els.qaHint = document.querySelector('.qa-action-row + .section-hint');
   }
 
   function ensureStandaloneCombobox(inputEl, listId) {
@@ -230,7 +252,7 @@
       return;
     }
     if (state.dirty) {
-      setStatus('미저장 변경은 game_data.js에 반영되지 않습니다', true);
+      setStatus('미저장 변경은 JSON 테이블과 game_data.js 번들에 반영되지 않습니다', true);
     } else {
       setStatus(`QA 실행: ${sceneId}`);
     }
@@ -353,9 +375,158 @@
     els.status.textContent = msg;
     els.status.style.color = err ? '#cc6666' : '#6a9f6a';
   }
+
+  function supportsWorkspaceSave() {
+    return typeof window.showDirectoryPicker === 'function' && location.protocol !== 'file:';
+  }
+
+  function updatePersistenceUi() {
+    const canSaveWorkspace = supportsWorkspaceSave();
+    const hasWorkspaceHandle = Boolean(state.workspaceDirHandle);
+    const saveLabel = state.isSavingWorkspace
+      ? '저장 중...'
+      : state.dirty
+        ? '워크스페이스 저장 *'
+        : '워크스페이스 저장';
+
+    if (els.btnSaveWorkspace) {
+      els.btnSaveWorkspace.textContent = saveLabel;
+      els.btnSaveWorkspace.disabled = !canSaveWorkspace || state.isSavingWorkspace;
+      els.btnSaveWorkspace.classList.toggle('is-primary', canSaveWorkspace);
+      els.btnSaveWorkspace.classList.toggle('is-dirty', canSaveWorkspace && state.dirty);
+      els.btnSaveWorkspace.title = !canSaveWorkspace
+        ? 'Chromium 계열 브라우저와 http/https 환경에서만 직접 저장을 지원합니다.'
+        : hasWorkspaceHandle
+          ? '선택한 워크스페이스에 tables JSON과 game_data.js를 함께 저장합니다.'
+          : '워크스페이스 루트를 선택한 뒤 tables JSON과 game_data.js를 함께 저장합니다.';
+    }
+
+    if (els.btnExport) {
+      els.btnExport.title = canSaveWorkspace
+        ? '다운로드 방식으로 JSON 테이블 파일들을 내보냅니다.'
+        : '직접 저장을 지원하지 않는 환경에서 JSON 테이블 다운로드로 사용할 수 있습니다.';
+    }
+
+    if (els.qaHint) {
+      els.qaHint.textContent = canSaveWorkspace
+        ? '현재 번들된 game_data.js 기준으로 브라우저 QA를 실행합니다. 수정 후에는 워크스페이스 저장으로 JSON과 번들을 함께 갱신하세요.'
+        : '현재 번들된 game_data.js 기준으로 브라우저 QA를 실행합니다. 수정 후에는 JSON 내보내기와 bundle 갱신이 필요합니다.';
+    }
+  }
+
+  function buildTablePayloadMap(payload) {
+    return new Map([
+      ['meta.json', { first_scene: payload.first_scene || '' }],
+      ['characters.json', payload.characters || {}],
+      ['character_emotions.json', payload.character_emotions || {}],
+      ['choice_groups.json', payload.choice_groups || []],
+      ['conditions.json', payload.conditions || []],
+      ['evidence_categories.json', payload.evidence_categories || []],
+      ['investigations.json', payload.investigations || []],
+      ['questions.json', payload.questions || []],
+      ['state_descriptors.json', payload.state_descriptors || []],
+      ['gauges.json', payload.gauges || []],
+      ['gauge_states.json', payload.gauge_states || []],
+      ['effects.json', payload.effects || []],
+      ['scenes.json', payload.scenes || {}],
+    ]);
+  }
+
+  async function fetchJson(path) {
+    const response = await fetch(path, { cache: 'no-store' });
+    if (!response.ok) {
+      throw new Error(`${path} (${response.status})`);
+    }
+    return response.json();
+  }
+
+  async function loadTableData() {
+    const results = await Promise.all(TABLE_FILE_MAP.map(async ([filename, key]) => {
+      const payload = await fetchJson(`${TABLE_BASE_PATH}/${filename}?t=${Date.now()}`);
+      return [key, payload];
+    }));
+
+    const merged = {};
+    results.forEach(([key, payload]) => {
+      if (key === 'first_scene') {
+        merged.first_scene = payload?.first_scene || '';
+      } else {
+        merged[key] = payload;
+      }
+    });
+    return merged;
+  }
+
+  function downloadTextFile(content, filename, mimeType = 'application/json') {
+    const blob = new Blob([content], { type: mimeType });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }
+
+  function buildBundleContent(payload) {
+    return `window.GAME_DATA = ${JSON.stringify(payload, null, 2)};\n`;
+  }
+
+  async function verifyReadWritePermission(handle) {
+    const readWrite = { mode: 'readwrite' };
+    if ((await handle.queryPermission(readWrite)) === 'granted') return true;
+    if ((await handle.requestPermission(readWrite)) === 'granted') return true;
+    return false;
+  }
+
+  async function ensureWorkspaceDirHandle() {
+    if (typeof window.showDirectoryPicker !== 'function') {
+      throw new Error('이 브라우저는 워크스페이스 직접 저장을 지원하지 않습니다');
+    }
+
+    if (state.workspaceDirHandle) {
+      const granted = await verifyReadWritePermission(state.workspaceDirHandle);
+      if (granted) return state.workspaceDirHandle;
+      state.workspaceDirHandle = null;
+    }
+
+    const handle = await window.showDirectoryPicker({ mode: 'readwrite' });
+    const granted = await verifyReadWritePermission(handle);
+    if (!granted) {
+      throw new Error('선택한 폴더에 쓰기 권한이 없습니다');
+    }
+    state.workspaceDirHandle = handle;
+    return handle;
+  }
+
+  async function getWorkspaceDataDirectories(rootHandle) {
+    const gameDir = await rootHandle.getDirectoryHandle('game');
+    const dataDir = await gameDir.getDirectoryHandle('data');
+    const tablesDir = await dataDir.getDirectoryHandle('tables', { create: true });
+    return { dataDir, tablesDir };
+  }
+
+  async function writeFileHandle(dirHandle, filename, content) {
+    const fileHandle = await dirHandle.getFileHandle(filename, { create: true });
+    const writable = await fileHandle.createWritable();
+    await writable.write(content);
+    await writable.close();
+  }
+
+  async function saveWorkspaceFiles(payload) {
+    const rootHandle = await ensureWorkspaceDirHandle();
+    const { dataDir, tablesDir } = await getWorkspaceDataDirectories(rootHandle);
+    const tablePayloads = buildTablePayloadMap(payload);
+
+    for (const [filename] of TABLE_FILE_MAP) {
+      const content = JSON.stringify(tablePayloads.get(filename), null, 2) + '\n';
+      await writeFileHandle(tablesDir, filename, content);
+    }
+
+    await writeFileHandle(dataDir, 'game_data.js', buildBundleContent(payload));
+  }
   function markDirty() {
     state.dirty = true;
     setStatus('● 미저장 변경사항');
+    updatePersistenceUi();
   }
 
   function ensurePrimarySelection() {
@@ -534,6 +705,7 @@
     ensurePrimarySelection();
     renderPanel();
     setStatus('? 실행 취소');
+    updatePersistenceUi();
   }
   function redo() {
     if (state.future.length === 0) { setStatus('더 이상 다시 실행할 수 없습니다', true); return; }
@@ -546,6 +718,7 @@
     ensurePrimarySelection();
     renderPanel();
     setStatus('? 다시 실행');
+    updatePersistenceUi();
   }
 
   function isTyping() {
@@ -2575,21 +2748,10 @@
   }
 
   // ── 불러오기 ──────────────────────────────────────────
-  function loadData() {
-    // 기존 스크립트 태그 제거
-    const old = document.getElementById('_game_data_script');
-    if (old) old.remove();
-    delete window.GAME_DATA;
-
-    const script = document.createElement('script');
-    script.id = '_game_data_script';
-    script.src = '../game/data/game_data.js?t=' + Date.now();
-    script.onload = () => {
-      if (!window.GAME_DATA) {
-        setStatus('오류: GAME_DATA 없음', true);
-        return;
-      }
-      state.data = ensureDataShape(window.GAME_DATA);
+  async function loadData() {
+    try {
+      const tableData = await loadTableData();
+      state.data = ensureDataShape(tableData);
       state.layout = {};
       state.history = [];
       state.future = [];
@@ -2602,28 +2764,47 @@
       state.selectedId = null;
       render();
       renderPanel();
-      setStatus('? 불러오기 완료');
-    };
-    script.onerror = () => setStatus('오류: game_data.js 를 찾을 수 없습니다', true);
-    document.head.appendChild(script);
+      setStatus('JSON 테이블 불러오기 완료');
+      updatePersistenceUi();
+    } catch (error) {
+      setStatus(`오류: tables JSON을 불러올 수 없습니다 (${error.message})`, true);
+      updatePersistenceUi();
+    }
   }
 
   // ── 내보내기 ──────────────────────────────────────────
   function exportData() {
     const payload = buildExportData();
     state.data = payload;
-    const json = JSON.stringify(payload, null, 2);
-    const content = `window.GAME_DATA = ${json};\n`;
-    const blob = new Blob([content], { type: 'text/javascript' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'game_data.js';
-    a.click();
-    URL.revokeObjectURL(a.href);
+    const tablePayloads = buildTablePayloadMap(payload);
+    TABLE_FILE_MAP.forEach(([filename]) => {
+      const content = JSON.stringify(tablePayloads.get(filename), null, 2) + '\n';
+      downloadTextFile(content, filename);
+    });
     state.dirty = false;
-    setStatus('? 내보내기 완료');
+    setStatus('JSON 테이블 내보내기 완료. 적용 후 bundle 스크립트를 실행하세요.');
+    updatePersistenceUi();
     render();
     renderPanel();
+  }
+
+  async function saveWorkspace() {
+    state.isSavingWorkspace = true;
+    updatePersistenceUi();
+    try {
+      const payload = buildExportData();
+      state.data = payload;
+      await saveWorkspaceFiles(payload);
+      state.dirty = false;
+      setStatus('워크스페이스 저장 완료. tables JSON과 game_data.js 번들을 함께 갱신했습니다.');
+      render();
+      renderPanel();
+    } catch (error) {
+      setStatus(`오류: 워크스페이스 저장 실패 (${error.message})`, true);
+    } finally {
+      state.isSavingWorkspace = false;
+      updatePersistenceUi();
+    }
   }
 
   // ── 씬 추가 ───────────────────────────────────────────
@@ -2691,6 +2872,7 @@
     $('btn-undo').addEventListener('click', undo);
     $('btn-redo').addEventListener('click', redo);
     $('btn-load').addEventListener('click', loadData);
+    if (els.btnSaveWorkspace) els.btnSaveWorkspace.addEventListener('click', () => { saveWorkspace(); });
     $('btn-export').addEventListener('click', exportData);
     if (els.btnOpenSceneQa) els.btnOpenSceneQa.addEventListener('click', () => openSceneQa());
     if (els.btnCopySceneQa) els.btnCopySceneQa.addEventListener('click', () => { copySceneQaUrl(); });
@@ -3079,7 +3261,12 @@
 
     // 단축키
     document.addEventListener('keydown', e => {
-      if (e.ctrlKey && e.key === 's') { e.preventDefault(); exportData(); return; }
+      if (e.ctrlKey && e.key === 's') {
+        e.preventDefault();
+        if (typeof window.showDirectoryPicker === 'function' && location.protocol !== 'file:') saveWorkspace();
+        else exportData();
+        return;
+      }
       if (e.ctrlKey && e.key === 'z') { e.preventDefault(); undo(); return; }
       if (e.ctrlKey && (e.key === 'y' || (e.shiftKey && e.key === 'Z'))) { e.preventDefault(); redo(); return; }
       const selected = getSelectedSceneIds();
@@ -3104,7 +3291,8 @@
     bindEvents();
     applyCamera();
     renderPanel();
-    setStatus('game_data.js를 불러오세요');
+    setStatus('tables JSON을 불러오세요');
+    updatePersistenceUi();
     // 서버 환경이면 자동 로드 시도
     if (location.protocol !== 'file:') loadData();
   }
