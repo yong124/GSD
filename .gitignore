@@ -4,6 +4,7 @@ Microsoft/
 .qa-artifacts/
 .qa-node/node_modules/
 content/docs/portfolio/node_modules/
+content/docs/
 content/docs/portfolio/screenshots/
 content/docs/portfolio/slides/
 content/docs/portfolio/slides_v2/
