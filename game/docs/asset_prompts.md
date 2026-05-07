@@ -65,15 +65,15 @@
 
 ---
 
-## 3. 🧩 단서 및 소품 (Items/Evidence) `assets/items/` & `assets/ev/`
+## 3. 🧩 단서 및 소품 (Evidence) `assets/ev/`
 | 파일명 | 에셋 내용 | 추천 생성 프롬프트 |
 | --- | --- | --- |
 | `bluecloth.jpeg` | 푸른 천 조각 | `A ragged piece of blue silk cloth stained with dark dried blood, placed on a dark wooden table, macro photography, terrifying occult item` |
-| `diary.png` | 숨겨진 일기장 | `An old worn-out leather notebook from 1930s, torn pages, blood splatters on the cover, dark isolated background, game UI icon` |
-| `hanbok.png` | 푸른 한복 | `A torn and dirty traditional Korean blue hanbok for a child, draped over a dark background, eerie vibes` |
-| `mask.png` | 기괴한 탈 | `A traditional Korean mask but distorted and terrifying, four eye holes, dark wooden texture, occult artifact` |
-| `note.png` | 붉은 쪽지 | `A crumpled piece of paper with chaotic red ink handwriting, dark isolated background` |
-| `scores.png` | 기괴한 악보 | `Old sheet music with chaotic, impossible musical notes that look like writhing insects, horror artifact vibes` |
+| `diary.jpeg` | 숨겨진 일기장 | `An old worn-out leather notebook from 1930s, torn pages, blood splatters on the cover, dark isolated background, game UI icon` |
+| `hanbok.jpeg` | 푸른 한복 | `A torn and dirty traditional Korean blue hanbok for a child, draped over a dark background, eerie vibes` |
+| `mask.jpeg` | 기괴한 탈 | `A traditional Korean mask but distorted and terrifying, four eye holes, dark wooden texture, occult artifact` |
+| `note.jpeg` | 붉은 쪽지 | `A crumpled piece of paper with chaotic red ink handwriting, dark isolated background` |
+| `score.jpeg` | 기괴한 악보 | `Old sheet music with chaotic, impossible musical notes that look like writhing insects, horror artifact vibes` |
 
 ---
 
