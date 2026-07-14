@@ -14,9 +14,18 @@ Do not use this as the primary skill for narrative-only polishing or runtime-onl
 - `G:\GSD\EditorNode\index.html`
 - `G:\GSD\EditorNode\editor.css`
 - `G:\GSD\EditorNode\editor.js`
+- `G:\GSD\game\data\tables\*.json`
+- `G:\GSD\content\tools\split_game_data.py`
 - `G:\GSD\content\tools\export_to_json.py`
 - `G:\GSD\content\tools\json_to_generated_xlsx.py`
 - `G:\GSD\content\tools\validate_game_data.py`
+
+## Current data flow
+
+- EditorNode loads from `game/data/tables/*.json` and saves **both** tables JSON and `game_data.js` in one workspace save.
+- `split_game_data.py` regenerates tables from `game_data.js` after direct bundle edits.
+- The game runtime loads only `game_data.js`. Tables exist for the editor and for per-table diffs.
+- If a schema change touches table shape, `TABLE_FILES` in `split_game_data.py` and the EditorNode load/save lists must stay in sync.
 - `G:\GSD\content\docs\system\core\DATA_STRUCTURE.md`
 - `G:\GSD\content\docs\system\core\TABLE_SPEC.md`
 

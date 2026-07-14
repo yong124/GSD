@@ -15,6 +15,10 @@ Do not use this as the primary skill when the job is mostly about authoring new 
 - `G:\GSD\game\css\main.css`
 - `G:\GSD\game\css\dialogue.css`
 - `G:\GSD\game\css\effects.css`
+- `G:\GSD\game\js\core\engine.js`
+- `G:\GSD\game\js\managers\ui.js`
+- `G:\GSD\game\js\managers\input.js`
+- `G:\GSD\game\js\managers\effects.js`
 - `G:\GSD\game\js\engine\choice.js`
 - `G:\GSD\game\js\engine\dialogue.js`
 - `G:\GSD\game\js\engine\evidence.js`

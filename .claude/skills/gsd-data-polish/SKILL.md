@@ -27,7 +27,7 @@ Do not use this as the primary skill for runtime-only HUD or CSS work. In that c
 
 1. Check `git status --short` first to understand the existing worktree.
 2. If Korean text looks broken, verify UTF-8 before assuming file corruption.
-3. Edit Korean text with `apply_patch` when possible.
+3. Edit Korean text with a precise patch tool (Edit / apply_patch), never shell-inlined strings.
 4. Preserve current structural fields such as:
    - `speaker_id`
    - `emotion_type`
@@ -60,6 +60,12 @@ If tabular review is needed:
 
 ```powershell
 py G:\GSD\content\tools\json_to_generated_xlsx.py
+```
+
+If `game_data.js` was edited directly, refresh the editor-side tables so EditorNode does not load stale data:
+
+```powershell
+py G:\GSD\content\tools\split_game_data.py
 ```
 
 ## Data-first reminder

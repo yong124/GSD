@@ -27,6 +27,12 @@ git status --short
 py G:\GSD\content\tools\validate_game_data.py
 ```
 
+   If it was edited directly (not via EditorNode save), also refresh tables:
+
+```powershell
+py G:\GSD\content\tools\split_game_data.py
+```
+
 3. If browser runtime files changed:
 
 - verify touched JS with `node --check`
