@@ -4796,7 +4796,7 @@ window.GAME_DATA = {
       "dialogues": [
         {
           "order": 1,
-          "text": "밤. 두 사람이 재합류한다. 따로 들고 온 조각들이 마침내 서로를 설명하기 시작한다. 이제 남은 건 추측이 아니라 선택이다.",
+          "text": "밤. 두 사람이 다시 만난다. 따로 들고 온 조각들이 마침내 서로를 설명하기 시작한다. 이제 남은 건 추측이 아니라 선택이다.",
           "style": "narration"
         },
         {
@@ -4945,7 +4945,7 @@ window.GAME_DATA = {
         },
         {
           "order": 2,
-          "text": "들어가기 전에 신문사에 한 줄 남기지요. 누가 덮으려 해도, 적어도 우리가 여기까지 왔단 흔적은 있어야 하니까.",
+          "text": "들어가기 전에 신문사에 한 줄 남기겠습니다. 우리가 어디로 내려갔는지, 바깥에도 적힌 자리가 한 군데는 있어야지요.",
           "style": "normal",
           "speaker_id": "Yuu",
           "emotion_type": "Neutral",
@@ -4999,7 +4999,7 @@ window.GAME_DATA = {
           "order": 1,
           "choice_group_id": "ChoiceGroup_EditorOrder",
           "choice_id": "Ch5EditorObey",
-          "text": "알겠습니다. 여기까지만 하지요.",
+          "text": "…알겠습니다. 무리는 하지 않겠습니다.",
           "next_type": "Scene",
           "next_id": "ch5_descent",
           "effect_group_id": null
@@ -5008,7 +5008,7 @@ window.GAME_DATA = {
           "order": 2,
           "choice_group_id": "ChoiceGroup_EditorOrder",
           "choice_id": "Ch5EditorDefy",
-          "text": "죄송합니다. 여기까지 왔으니 끝냅니다.",
+          "text": "죄송합니다. 여기까지 왔으니 끝을 봐야겠습니다.",
           "next_type": "Scene",
           "next_id": "ch5_descent",
           "effect_group_id": "eff_editor_defy"
@@ -5038,7 +5038,7 @@ window.GAME_DATA = {
           "emotion_type": "Tense",
           "standing_slot": "Right",
           "focus_type": "Speaker",
-          "text": "좋습니다. 그럼 이건 우리 둘이 끝까지 들고 내려가죠. 대신 변명도 퇴로도 없이, 본 사람 둘이 그대로 증인이 되는 겁니다.",
+          "text": "그럼 이건 우리 둘이 그대로 들고 내려가는 겁니다. 변명도 퇴로도 없이, 본 사람 둘이 곧 증인이 되는 거지.",
           "style": "thought",
           "dialog_id": "no_contact_react"
         },
@@ -5124,7 +5124,7 @@ window.GAME_DATA = {
         },
         {
           "order": 4,
-          "text": "악보에서 본 순서대로라면, 먼저 이름을 흐리고 그다음 발을 끌어당기겠지. 귀를 빼앗기지 마십시오.",
+          "text": "악보에서 본 순서대로라면, 먼저 이름을 흐리고 그다음 발을 끌어당기겠지. 귀부터 내주지 말아야 한다.",
           "style": "thought",
           "condition_group_id": "CG_Room4_ReadRitual",
           "speaker_id": "Yuu",
@@ -5139,7 +5139,7 @@ window.GAME_DATA = {
         },
         {
           "order": 6,
-          "text": "사람이 만든 종교라면, 왜 이렇게 남은 흔적이 짐승 같을까요.",
+          "text": "사람이 만든 종교라면, 남은 흔적이 왜 이렇게 짐승 같을까요.",
           "style": "normal",
           "speaker_id": "Songsoon",
           "emotion_type": "Uneasy",
@@ -5332,7 +5332,7 @@ window.GAME_DATA = {
         },
         {
           "order": 3,
-          "text": "…이 소리, 이제 남의 목소리로만은 안 들립니다. 한 번 귀를 들이면 사람 숨의 결까지 흉내 내는군요.",
+          "text": "…이 소리, 이제 남의 목소리로만은 안 들립니다. 한 번 귀를 내주면 사람 숨의 결까지 흉내 내는군요.",
           "style": "thought",
           "speaker_id": "Yuu",
           "emotion_type": "Tense",
@@ -5374,7 +5374,7 @@ window.GAME_DATA = {
           "emotion_type": "Neutral",
           "standing_slot": "Right",
           "focus_type": "Speaker",
-          "text": "좋아요. 이번엔 소리에 끌려 들어가는 대신, 우리가 먼저 숨을 맞추고 들어갑시다. 사람 하나가 다른 사람을 붙든 채로요.",
+          "text": "이번엔 소리에 끌려 들어가는 대신, 우리가 먼저 숨을 맞추고 들어간다. 사람이 사람을 붙든 채로.",
           "style": "thought",
           "dialog_id": "door_steady_react"
         },
@@ -5482,7 +5482,7 @@ window.GAME_DATA = {
         },
         {
           "order": 8,
-          "text": "그 사람은 이미 죽었잖아요. 그런데 왜 여기까지 와서도 그 사람 목소리가 아직 벽에 남아 있는 것 같죠?",
+          "text": "이상해요. 지금 여긴 우리뿐인데… 누가 아직 벽 안쪽에서 숨을 고르고 있는 것 같아요.",
           "style": "normal",
           "speaker_id": "Songsoon",
           "emotion_type": "Afraid",
@@ -5699,7 +5699,7 @@ window.GAME_DATA = {
           "order": 101,
           "choice_group_id": "ChoiceGroup_RitualEvidence",
           "choice_id": "Ch5RitualEvidenceNote",
-          "text": "의례실 종이를 제단 옆 문장과 맞대 본다.",
+          "text": "의례실 종이를 제단 앞 문장과 맞대 본다.",
           "evidence_id": "EvRitualNote",
           "next_type": "Dialog",
           "next_id": "present_ritual_note"
@@ -5717,7 +5717,7 @@ window.GAME_DATA = {
           "order": 103,
           "choice_group_id": "ChoiceGroup_RitualEvidence",
           "choice_id": "Ch5RitualEvidenceMask",
-          "text": "가면의 네 배열을 제단 문양과 대조한다.",
+          "text": "가면의 눈 배열을 제단 문양과 대조한다.",
           "evidence_id": "EvMask",
           "condition_group_id": "CG_RitualRoom_QRitualAccident",
           "next_type": "Dialog",
@@ -7570,7 +7570,7 @@ window.GAME_DATA = {
         "dlg_ipangyu_deal_refuse": [
           {
             "order": 1,
-            "text": "그렇군. 그럼 이름은 네가 직접 찾아야지. 나는 팔지 않는 걸 억지로 넘기진 않아.",
+            "text": "그렇군. 그럼 이름은 네가 직접 찾아야지. 안 사겠다는 자에게 억지로 팔진 않아.",
             "style": "normal",
             "speaker_id": "Ipangyu",
             "emotion_type": "Crazy",
@@ -7579,7 +7579,7 @@ window.GAME_DATA = {
           },
           {
             "order": 2,
-            "text": "정보는 비어 버렸지만, 적어도 저 문장을 입에 올리지는 않았다. 유웅룡은 이름 대신 결심을 챙긴 채 방 안으로 더 깊이 들어갈 준비를 한다.",
+            "text": "이름 하나가 빈 채로 남았지만, 적어도 저 문장을 입에 올리지는 않았다. 유웅룡은 이름 대신 결심을 챙긴 채 더 깊은 안쪽으로 걸음을 옮긴다.",
             "style": "narration"
           }
         ]
