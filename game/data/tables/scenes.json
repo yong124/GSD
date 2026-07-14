@@ -1230,7 +1230,7 @@
       },
       {
         "order": 12,
-        "text": "…겁먹은 얼굴이 아니군요. 겁을 들고도 물러서지 않는 얼굴이군.",
+        "text": "…겁먹은 얼굴이 아니군요. 겁을 쥐고도 물러서지 않는 얼굴이군.",
         "style": "thought",
         "speaker_id": "Yuu",
         "emotion_type": "Tense",
@@ -1566,7 +1566,7 @@
       },
       {
         "order": 6,
-        "text": "의식을 위한 도구야. (서랍 이중 바닥에서 일기장을 꺼내며) 숨긴 사람은 증거가 아니라, 나중에라도 누가 읽길 바랐던 것 같군요.",
+        "text": "의식에 쓰는 도구요. (서랍 이중 바닥에서 일기장을 꺼내며) 숨긴 사람은 증거가 아니라, 나중에라도 누가 읽길 바랐던 것 같군요.",
         "style": "normal",
         "speaker_id": "Yuu",
         "emotion_type": "Neutral",
@@ -1692,7 +1692,7 @@
       },
       {
         "evidence_id": "EvMask",
-        "name": "오징어 가면",
+        "name": "네 눈 가면",
         "description": "눈 구멍이 네 개 달린 기괴한 가면. 청의동자의 눈 네 개를 상징한다.",
         "image": "assets/ev/mask.jpeg",
         "category_id": "ritual",
