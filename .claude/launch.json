@@ -2,17 +2,17 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "경성뎐",
+      "name": "game",
       "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "3900"],
-      "port": 3900,
+      "runtimeArgs": ["-m", "http.server", "4173"],
+      "port": 4173,
       "cwd": "game"
     },
     {
-      "name": "adv-editor",
+      "name": "editor",
       "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "3901"],
-      "port": 3901,
+      "runtimeArgs": ["-m", "http.server", "8000"],
+      "port": 8000,
       "cwd": "."
     }
   ]
