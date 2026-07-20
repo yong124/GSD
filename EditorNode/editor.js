@@ -58,7 +58,12 @@
     ['effects.json', 'effects'],
     ['scenes.json', 'scenes'],
   ];
-  const TABLE_BASE_PATH = '../game/data/tables';
+  const TABLE_BASE_PATH_CANDIDATES = [
+    '../game/data/tables',
+    './game/data/tables',
+    '/game/data/tables',
+    'game/data/tables',
+  ];
 
   // ── 상태 ──────────────────────────────────────────────
   const state = {
@@ -440,9 +445,22 @@
     return response.json();
   }
 
+  async function fetchJsonWithFallback(filename) {
+    const errors = [];
+    for (const basePath of TABLE_BASE_PATH_CANDIDATES) {
+      const path = `${basePath}/${filename}?t=${Date.now()}`;
+      try {
+        return await fetchJson(path);
+      } catch (error) {
+        errors.push(error.message);
+      }
+    }
+    throw new Error(errors.join(' | '));
+  }
+
   async function loadTableData() {
     const results = await Promise.all(TABLE_FILE_MAP.map(async ([filename, key]) => {
-      const payload = await fetchJson(`${TABLE_BASE_PATH}/${filename}?t=${Date.now()}`);
+      const payload = await fetchJsonWithFallback(filename);
       return [key, payload];
     }));
 
@@ -2767,7 +2785,10 @@
       setStatus('JSON 테이블 불러오기 완료');
       updatePersistenceUi();
     } catch (error) {
-      setStatus(`오류: tables JSON을 불러올 수 없습니다 (${error.message})`, true);
+      const extra = location.protocol === 'file:'
+        ? ' file:// 환경에서는 fetch가 막힐 수 있으니 로컬 서버에서 열어주세요.'
+        : '';
+      setStatus(`오류: tables JSON을 불러올 수 없습니다 (${error.message})${extra}`, true);
       updatePersistenceUi();
     }
   }
