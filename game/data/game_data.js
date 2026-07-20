@@ -3754,7 +3754,7 @@ window.GAME_DATA = {
       "dialogues": [
         {
           "order": 1,
-          "text": "다음 날. 유웅룡 단독 루트. 난향일보 자료실. 먼지 냄새와 눅눅한 종이 냄새가 섞인 방 안, 오래된 사건들이 묻힌 채 쌓여 있다.",
+          "text": "다음 날. 유웅룡은 혼자 난향일보 자료실로 향했다. 먼지 냄새와 눅눅한 종이 냄새가 섞인 방 안, 오래된 사건들이 묻힌 채 쌓여 있다.",
           "style": "narration"
         },
         {
@@ -3963,7 +3963,7 @@ window.GAME_DATA = {
           "order": 101,
           "choice_group_id": "ChoiceGroup_LibraryEvidence",
           "choice_id": "Ch4ALibraryEvidenceDiary",
-          "text": "찢어진 일기장을 기사 옆에 펼친다.",
+          "text": "숨겨진 일기장을 기사 옆에 펼친다.",
           "evidence_id": "EvDiary",
           "next_type": "Dialog",
           "next_id": "present_diary"
@@ -4022,7 +4022,7 @@ window.GAME_DATA = {
         },
         {
           "order": 3,
-          "text": "좋습니다. 누가 접어 둔 건지 알겠으니, 이제 누가 그 접힌 틈으로 사람을 밀어 넣었는지도 보러 가야지요.",
+          "text": "이걸로 됐군. 누가 접어 둔 건지 알았으니, 이제 그 접힌 틈으로 사람을 밀어 넣은 자를 보러 가야지요.",
           "style": "thought",
           "speaker_id": "Yuu",
           "emotion_type": "Tense",
@@ -4066,7 +4066,7 @@ window.GAME_DATA = {
         },
         {
           "order": 3,
-          "text": "전부 들고 갈 필요는 없습니다. 중요한 건 종이 뭉치가 아니라, 누가 언제 무엇을 지웠는지 잇는 문장이니까.",
+          "text": "수첩 한 권이면 충분합니다. 지워진 문장이 어디서 다시 나타나는지, 이 뼈대에 대 보면 될 테니까.",
           "style": "thought",
           "speaker_id": "Yuu",
           "emotion_type": "Tense",
@@ -4162,7 +4162,7 @@ window.GAME_DATA = {
         },
         {
           "order": 5,
-          "text": "…이해심이라는 여자. 창백한 얼굴, 푸른 옷, 두 눈을 가린 안대. 양반집 규수처럼 단정한데, 입을 열면 장례식 염이라도 읽는 것 같아. 한 번 본 사람은 잊을 수가 없어.",
+          "text": "…이해심이라는 여자. 창백한 얼굴, 푸른 옷, 두 눈을 가린 안대. 양반집 규수처럼 단정한데, 입을 열면 제문이라도 읽는 것 같아. 한 번 본 사람은 잊을 수가 없어.",
           "style": "normal",
           "speaker_id": "Elder",
           "emotion_type": "Neutral",
@@ -4171,7 +4171,7 @@ window.GAME_DATA = {
         },
         {
           "order": 6,
-          "text": "그 여잔 천국을 약속하지 않았어. 대신 조선을 구하려면 한 번 몽땅 썩은 살을 도려내야 한다고 했지. 기묘하지 않은가. 세상이 지나치게 기울어져 있으면, 구원보다 파멸이 더 공평해 보일 때가 있는 법이오.",
+          "text": "그 여잔 천국을 약속하지 않았어. 대신 조선을 구하려면 썩은 살을 한번 몽땅 도려내야 한다고 했지. 기묘하지 않은가. 세상이 지나치게 기울어져 있으면, 구원보다 파멸이 더 공평해 보일 때가 있는 법이오.",
           "style": "normal",
           "speaker_id": "Elder",
           "emotion_type": "Neutral",
@@ -4212,7 +4212,7 @@ window.GAME_DATA = {
     "ch4b_cafe": {
       "id": "ch4b_cafe",
       "chapter": 4,
-      "title": "여급의 루트",
+      "title": "밤의 낙원",
       "background": "assets/bg/cafe.jpeg",
       "music": "assets/sfx/jazz_dark.mp3",
       "effect": null,
@@ -4220,7 +4220,7 @@ window.GAME_DATA = {
       "dialogues": [
         {
           "order": 1,
-          "text": "같은 날 밤, 송순이 홀로 남은 낙원. 손님이 빠져나간 뒤의 실내는 화려한 전등보다 남겨진 침묵이 더 선명하다. 웃음이 걷힌 자리에 젖은 나무 냄새와 식은 연주만 남아 있다.",
+          "text": "같은 날 밤, 낙원. 손님이 빠져나간 실내는 화려한 전등보다 남겨진 침묵이 더 선명하다. 웃음이 걷힌 자리에서, 송순은 마지막까지 남은 옥련을 조용히 붙잡는다.",
           "style": "narration"
         },
         {
@@ -4234,7 +4234,7 @@ window.GAME_DATA = {
         },
         {
           "order": 3,
-          "text": "…(목소리를 낮춘다) 송금 언니는 이해심 님께 직접 골라졌어요. '그릇이 되어야 한다'고 했죠. 노래가 문을 여는 열쇠라면서. 처음엔 다들 무대에 설 기회쯤으로 알았어요.",
+          "text": "…(목소리를 낮춘다) 송금 언니는 이해심 님이 직접 골랐어요. '그릇이 되어야 한다'고 했죠. 노래가 문을 여는 열쇠라면서. 처음엔 다들 무대에 설 기회쯤으로 알았어요.",
           "style": "normal",
           "speaker_id": "Okryeon",
           "emotion_type": "Afraid",
@@ -4270,7 +4270,7 @@ window.GAME_DATA = {
         },
         {
           "order": 7,
-          "text": "그날 다들 노래를 듣긴 했어요. 그런데 아무도 같은 소릴 들은 것 같지가 않았어요. 누구는 어미 목소리 같다고 했고, 누구는 물 밑에서 누가 웃는 소리 같다 했어요. 그 점이 더욱 소름이 끼쳤어요.",
+          "text": "그날 다들 노래를 듣긴 했어요. 그런데 아무도 같은 소릴 들은 것 같지가 않았어요. 누구는 어미 목소리 같다고 했고, 누구는 물 밑에서 누가 웃는 소리 같다 했어요. 그게 더 소름 끼쳤어요.",
           "style": "normal",
           "speaker_id": "Okryeon",
           "emotion_type": "Afraid",
@@ -4288,7 +4288,7 @@ window.GAME_DATA = {
         },
         {
           "order": 9,
-          "text": "두 분이 나누는 대화가 들렸소. 한 가지만 더 물어도 되겠소. 그날 창고에서 마지막으로 나온 사람이 누구였소?",
+          "text": "두 분 얘기, 문밖에서 들었습니다. 하나만 더 묻지요. 그날 창고에서 마지막으로 나온 사람이 누구였습니까.",
           "style": "normal",
           "speaker_id": "Yuu",
           "emotion_type": "Neutral",
@@ -4378,7 +4378,7 @@ window.GAME_DATA = {
           },
           {
             "order": 3,
-            "text": "알겠소. 충분하오. 나머지는 내가 이어 가겠소. 말해준 것만으로도 이미 많이 도움이 됐소.",
+            "text": "알겠습니다. 그거면 충분합니다. 나머지는 제가 이어 가지요. 여기까지 말해 준 것만으로도 큰 도움이 됐습니다.",
             "style": "normal",
             "speaker_id": "Yuu",
             "emotion_type": "Tense",
@@ -4422,13 +4422,13 @@ window.GAME_DATA = {
           "emotion_type": "Neutral",
           "standing_slot": "Right",
           "focus_type": "Speaker",
-          "text": "좋아요. 여기서 더 몰아붙이면 입이 닫히겠지요. 대신 지금 내놓은 떨림이 어디를 향하는지만 놓치지 않겠습니다.",
+          "text": "잘 멈췄군. 여기서 더 몰아붙이면 입이 닫히겠지. 대신 지금 내놓은 떨림이 어디를 향하는지만 놓치지 않으면 됩니다.",
           "style": "thought",
           "dialog_id": "hold_react"
         },
         {
           "order": 2,
-          "text": "…알겠어요. 여기까지로 할게요. 더 헤집으면 옥련 씨 숨통까지 죄는 셈이겠네요.",
+          "text": "…미안해요, 옥련 씨. 여기까지만 할게요. 더 헤집으면 옥련 씨 숨통까지 죄는 셈이니까.",
           "style": "normal",
           "speaker_id": "Songsoon",
           "emotion_type": "Uneasy",
@@ -4485,7 +4485,7 @@ window.GAME_DATA = {
         },
         {
           "order": 2,
-          "text": "아뇨, 여기서 멈출 순 없어요. 무서운 줄 알아요. 그래도 언니가 어디로 끌려갔는지는 끝내 알아야 해요.",
+          "text": "무서운 건 알아요. 그래도 언니가 어디로 끌려갔는지는, 여기서 끝내 들어야겠어요.",
           "style": "normal",
           "speaker_id": "Songsoon",
           "emotion_type": "Uneasy",
@@ -4565,7 +4565,7 @@ window.GAME_DATA = {
         },
         {
           "order": 6,
-          "text": "기다려, 언니. 이번엔 내가 너한테 갈게. 네가 못 돌아오더라도, 네 이름만은 내가 붙들고 나올 거야.",
+          "text": "기다려, 언니. 이번엔 내가 갈게. 언니가 못 돌아오더라도, 언니 이름만은 내가 붙들고 나올 거야.",
           "style": "normal",
           "speaker_id": "Songsoon",
           "emotion_type": "Uneasy",
@@ -4692,7 +4692,7 @@ window.GAME_DATA = {
         },
         {
           "order": 12,
-          "text": "…그걸 정말 들고 왔나. 자네도 참, 접힌 걸 굳이 펴 보겠다고 손 베이는 쪽을 고르는군.",
+          "text": "…그걸 정말 들고 왔나. 너도 참, 접힌 걸 굳이 펴 보겠다고 손 베이는 쪽을 고르는군.",
           "style": "normal",
           "condition_group_id": "CG_Backroom_FoundOldArticles",
           "speaker_id": "Editor",
@@ -4747,7 +4747,7 @@ window.GAME_DATA = {
           },
           {
             "order": 2,
-            "text": "내가 접어 둔 기사가 이것뿐만이 아니야. 위에서 덮으라 했어. 사람 이름도, 날짜도, 사건 내용도. 살아남으려면 그 수밖에 없었어.",
+            "text": "접은 게 이 기사 하나가 아니야. 이름을 지우고, 날짜를 지우고, 나중엔 뭘 지웠는지 세지도 않게 되더군. 그렇게 신문은 살았고, 나는 이 방에 남았다.",
             "style": "normal",
             "speaker_id": "Editor",
             "emotion_type": "Angry",
@@ -4756,7 +4756,7 @@ window.GAME_DATA = {
           },
           {
             "order": 3,
-            "text": "충분합니다. 이제 제 몫이 생겼습니다. 선배가 못 쓴 문장까지 이어 쓰겠습니다.",
+            "text": "그 말이면 충분합니다. 이번 기사엔 덮으라 한 쪽의 이름까지 함께 적겠습니다.",
             "style": "normal",
             "speaker_id": "Yuu",
             "emotion_type": "Neutral",
@@ -4767,7 +4767,7 @@ window.GAME_DATA = {
         "dlg_editor_deflect": [
           {
             "order": 1,
-            "text": "그걸로는 내가 해줄 말이 없어. 더 분명한 것이 있거든 들고 오게. 이걸로는 아무것도 움직이지 않아.",
+            "text": "그걸로는 내가 해줄 말이 없어. 더 분명한 게 있거든 들고 와라. 종이 한 장으로 움직일 일이 아니야.",
             "style": "normal",
             "speaker_id": "Editor",
             "emotion_type": "Angry",
@@ -4796,7 +4796,7 @@ window.GAME_DATA = {
       "dialogues": [
         {
           "order": 1,
-          "text": "밤. 두 사람이 재합류한다. 따로 들고 온 조각들이 마침내 서로를 설명하기 시작한다. 이제 남은 건 추측이 아니라 선택이다.",
+          "text": "밤. 두 사람이 다시 만난다. 따로 들고 온 조각들이 마침내 서로를 설명하기 시작한다. 이제 남은 건 추측이 아니라 선택이다.",
           "style": "narration"
         },
         {
@@ -4945,7 +4945,7 @@ window.GAME_DATA = {
         },
         {
           "order": 2,
-          "text": "들어가기 전에 신문사에 한 줄 남기지요. 누가 덮으려 해도, 적어도 우리가 여기까지 왔단 흔적은 있어야 하니까.",
+          "text": "들어가기 전에 신문사에 한 줄 남기겠습니다. 우리가 어디로 내려갔는지, 바깥에도 적힌 자리가 한 군데는 있어야지요.",
           "style": "normal",
           "speaker_id": "Yuu",
           "emotion_type": "Neutral",
@@ -4999,7 +4999,7 @@ window.GAME_DATA = {
           "order": 1,
           "choice_group_id": "ChoiceGroup_EditorOrder",
           "choice_id": "Ch5EditorObey",
-          "text": "알겠습니다. 여기까지만 하지요.",
+          "text": "…알겠습니다. 무리는 하지 않겠습니다.",
           "next_type": "Scene",
           "next_id": "ch5_descent",
           "effect_group_id": null
@@ -5008,7 +5008,7 @@ window.GAME_DATA = {
           "order": 2,
           "choice_group_id": "ChoiceGroup_EditorOrder",
           "choice_id": "Ch5EditorDefy",
-          "text": "죄송합니다. 여기까지 왔으니 끝냅니다.",
+          "text": "죄송합니다. 여기까지 왔으니 끝을 봐야겠습니다.",
           "next_type": "Scene",
           "next_id": "ch5_descent",
           "effect_group_id": "eff_editor_defy"
@@ -5038,7 +5038,7 @@ window.GAME_DATA = {
           "emotion_type": "Tense",
           "standing_slot": "Right",
           "focus_type": "Speaker",
-          "text": "좋습니다. 그럼 이건 우리 둘이 끝까지 들고 내려가죠. 대신 변명도 퇴로도 없이, 본 사람 둘이 그대로 증인이 되는 겁니다.",
+          "text": "그럼 이건 우리 둘이 그대로 들고 내려가는 겁니다. 변명도 퇴로도 없이, 본 사람 둘이 곧 증인이 되는 거지.",
           "style": "thought",
           "dialog_id": "no_contact_react"
         },
@@ -5124,7 +5124,7 @@ window.GAME_DATA = {
         },
         {
           "order": 4,
-          "text": "악보에서 본 순서대로라면, 먼저 이름을 흐리고 그다음 발을 끌어당기겠지. 귀를 빼앗기지 마십시오.",
+          "text": "악보에서 본 순서대로라면, 먼저 이름을 흐리고 그다음 발을 끌어당기겠지. 귀부터 내주지 말아야 한다.",
           "style": "thought",
           "condition_group_id": "CG_Room4_ReadRitual",
           "speaker_id": "Yuu",
@@ -5139,7 +5139,7 @@ window.GAME_DATA = {
         },
         {
           "order": 6,
-          "text": "사람이 만든 종교라면, 왜 이렇게 남은 흔적이 짐승 같을까요.",
+          "text": "사람이 만든 종교라면, 남은 흔적이 왜 이렇게 짐승 같을까요.",
           "style": "normal",
           "speaker_id": "Songsoon",
           "emotion_type": "Uneasy",
@@ -5332,7 +5332,7 @@ window.GAME_DATA = {
         },
         {
           "order": 3,
-          "text": "…이 소리, 이제 남의 목소리로만은 안 들립니다. 한 번 귀를 들이면 사람 숨의 결까지 흉내 내는군요.",
+          "text": "…이 소리, 이제 남의 목소리로만은 안 들립니다. 한 번 귀를 내주면 사람 숨의 결까지 흉내 내는군요.",
           "style": "thought",
           "speaker_id": "Yuu",
           "emotion_type": "Tense",
@@ -5374,7 +5374,7 @@ window.GAME_DATA = {
           "emotion_type": "Neutral",
           "standing_slot": "Right",
           "focus_type": "Speaker",
-          "text": "좋아요. 이번엔 소리에 끌려 들어가는 대신, 우리가 먼저 숨을 맞추고 들어갑시다. 사람 하나가 다른 사람을 붙든 채로요.",
+          "text": "이번엔 소리에 끌려 들어가는 대신, 우리가 먼저 숨을 맞추고 들어간다. 사람이 사람을 붙든 채로.",
           "style": "thought",
           "dialog_id": "door_steady_react"
         },
@@ -5482,7 +5482,7 @@ window.GAME_DATA = {
         },
         {
           "order": 8,
-          "text": "그 사람은 이미 죽었잖아요. 그런데 왜 여기까지 와서도 그 사람 목소리가 아직 벽에 남아 있는 것 같죠?",
+          "text": "이상해요. 지금 여긴 우리뿐인데… 누가 아직 벽 안쪽에서 숨을 고르고 있는 것 같아요.",
           "style": "normal",
           "speaker_id": "Songsoon",
           "emotion_type": "Afraid",
@@ -5699,7 +5699,7 @@ window.GAME_DATA = {
           "order": 101,
           "choice_group_id": "ChoiceGroup_RitualEvidence",
           "choice_id": "Ch5RitualEvidenceNote",
-          "text": "의례실 종이를 제단 옆 문장과 맞대 본다.",
+          "text": "의례실 종이를 제단 앞 문장과 맞대 본다.",
           "evidence_id": "EvRitualNote",
           "next_type": "Dialog",
           "next_id": "present_ritual_note"
@@ -5717,7 +5717,7 @@ window.GAME_DATA = {
           "order": 103,
           "choice_group_id": "ChoiceGroup_RitualEvidence",
           "choice_id": "Ch5RitualEvidenceMask",
-          "text": "가면의 네 배열을 제단 문양과 대조한다.",
+          "text": "가면의 눈 배열을 제단 문양과 대조한다.",
           "evidence_id": "EvMask",
           "condition_group_id": "CG_RitualRoom_QRitualAccident",
           "next_type": "Dialog",
@@ -6101,7 +6101,7 @@ window.GAME_DATA = {
       "dialogues": [
         {
           "order": 1,
-          "text": "언니, 그 소리 따라가지 마. 나 봐. 나 아직 여기 있어. 네 이름 아직 여기 남아 있어. 저 사람들 입에서 지워지기 전에 내가 먼저 부를게.",
+          "text": "언니, 그 소리 따라가지 마. 나 봐. 나 아직 여기 있어. 언니 이름 아직 여기 남아 있어. 저 사람들 입에서 지워지기 전에 내가 먼저 부를게.",
           "style": "normal",
           "speaker_id": "Songsoon",
           "emotion_type": "Uneasy",
@@ -6135,7 +6135,7 @@ window.GAME_DATA = {
       "dialogues": [
         {
           "order": 1,
-          "text": "이쯤이면 충분하겠지. 사람 갈아 넣고도 정화라 부를 셈이면, 이번엔 글이 아니라 몸으로라도 그 입부터 막아야지.",
+          "text": "말은 이쯤이면 충분하겠지. 사람 갈아 넣고도 정화라 부를 셈이면, 이번엔 글이 아니라 몸으로라도 그 입부터 막아야지.",
           "style": "normal",
           "speaker_id": "Yuu",
           "emotion_type": "Neutral",
@@ -6243,7 +6243,7 @@ window.GAME_DATA = {
         },
         {
           "order": 2,
-          "text": "방금 내린 선택은 이미 대가를 만들고 있다. 누군가는 이름을 붙들고, 누군가는 몸을 던졌고, 누군가는 단 한 박자 늦었다. 그 차이가 이제 각기 다른 결말의 속도를 만든다.",
+          "text": "방금의 선택은 이미 대가를 만들고 있다. 부른 이름이든, 던진 몸이든, 놓친 한 박자든 — 이 방은 그 차이를 잊지 않고 그대로 되돌려 준다.",
           "style": "narration"
         },
         {
@@ -6254,7 +6254,7 @@ window.GAME_DATA = {
         },
         {
           "order": 4,
-          "text": "더 나아가, 그중 몇몇은 아예 거짓말의 모양으로 남아 있었다. 미친 넋두리, 자발적 도피, 우발적 광신. 여기까지 오며 그 편한 설명들을 하나씩 부순 사람에겐 이제 무엇을 택하든 변명할 자리가 더 좁다.",
+          "text": "그중 몇몇은 아예 거짓말의 모양으로 남아 있었다. 미친 넋두리, 자발적 도피, 우발적 광신. 여기까지 오며 그 편한 설명들을 하나씩 부순 사람에겐 이제 무엇을 택하든 변명할 자리가 더 좁다.",
           "style": "narration",
           "condition_group_id": "CG_RitualScene_SolvedHigh"
         }
@@ -6294,7 +6294,7 @@ window.GAME_DATA = {
         },
         {
           "order": 2,
-          "text": "송순의 목소리가 콧노래과 겹쳐지며 방 안 공기의 결이 미세하게 바뀐다. 처음으로 의식 한가운데 사람 체온이 끼어든다. 구해 내려는 이름 하나가 제단의 질서를 비틀기 시작한다.",
+          "text": "송순의 목소리가 콧노래와 겹쳐지며 방 안 공기의 결이 미세하게 바뀐다. 처음으로 의식 한가운데 사람 체온이 끼어든다. 구해 내려는 이름 하나가 제단의 질서를 비틀기 시작한다.",
           "style": "narration"
         }
       ],
@@ -6365,7 +6365,7 @@ window.GAME_DATA = {
         },
         {
           "order": 3,
-          "text": "문 앞에서부터 얽혀 든 콧노래의 결이 이 순간 송순의 목소리와 포개진다. 파멸에 더 가까이 다가섰기에, 되려 무엇을 붙들어야 하는지도 더 선명하게 보인다.",
+          "text": "문 앞에서부터 얽혀 든 콧노래의 결이 이 순간 송순의 목소리와 포개진다. 파멸에 더 가까이 다가섰기에, 되레 무엇을 붙들어야 하는지도 더 선명하게 보인다.",
           "style": "narration",
           "condition_group_id": "CG_Threshold_Resonance2"
         },
@@ -6502,7 +6502,7 @@ window.GAME_DATA = {
       "dialogues": [
         {
           "order": 1,
-          "text": "연락하지 않은 덕분에 아무도 끼어들지 않는다. 이 선택의 결과는 오롯이 두 사람과 의식의 중심에 남는다. 도움을 부르지 않은 대가이기도 하고, 방해받지 않고 끝까지 본 대가이기도 하다.",
+          "text": "이 깊이까지는 아무도 끼어들지 못한다. 이 선택의 결과는 오롯이 두 사람과 의식의 중심에 남는다. 도움이 닿지 않는 자리의 대가이기도 하고, 방해받지 않고 끝까지 본 대가이기도 하다.",
           "style": "narration"
         },
         {
@@ -6893,7 +6893,7 @@ window.GAME_DATA = {
         },
         {
           "order": 7,
-          "text": "문은 열렸다. 무엇이 나왔는지는 아무도 모른다. 그리고 아무도 묻지 않는다. 도시는 늘 그래왔듯, 감당 못 할 대답 앞에서 질문부터 접어버린다.",
+          "text": "그날 밤 문은 분명 흔들렸다. 그 틈으로 무엇이 새어 나왔는지는 아무도 모른다. 그리고 아무도 묻지 않는다. 도시는 늘 그래왔듯, 감당 못 할 대답 앞에서 질문부터 접어버린다.",
           "style": "narration"
         },
         {
@@ -7109,7 +7109,7 @@ window.GAME_DATA = {
         },
         {
           "order": 2,
-          "text": "평판이 바닥이야. 자네 기사는 더 이상 검토도 못 해. 아무도 이 신문에 실린 걸 믿지 않으니까.",
+          "text": "평판이 바닥이야. 네 기사는 더 이상 검토도 못 해. 아무도 이 신문에 실린 걸 믿지 않으니까.",
           "style": "normal",
           "speaker_id": "Editor",
           "emotion_type": "Angry",
@@ -7327,7 +7327,7 @@ window.GAME_DATA = {
         "article_q1_react": [
           {
             "order": 1,
-            "text": "됐다. 이름은 이걸로 특정된다. 일기장이 있으면 누가 부정해도 근거를 댈 수 있다. 첫 번째 항목은 통과다. 이제 송금을 없던 사람 취급한 자들부터 막아 세울 수 있다.",
+            "text": "됐다. 이름은 이걸로 특정된다. 일기장이 있으면 누가 부정해도 근거를 댈 수 있다. 첫 줄은 이걸로 선다. 이제 송금을 없던 사람 취급한 자들부터 막아 세울 수 있다.",
             "style": "normal",
             "speaker_id": "Yuu",
             "emotion_type": "Tense",
@@ -7349,7 +7349,7 @@ window.GAME_DATA = {
         "article_q3_react": [
           {
             "order": 1,
-            "text": "1924년 기사. 편집장이 접어 둔 문장이 여기 있었다. 구 세력의 이름까지 이으면, 이번 사건이 처음이 아니라는 걸 증명할 수 있다. 이제 이해심 뒤에 선 얼굴까지 기사에 끌어낼 수 있다.",
+            "text": "1924년 기사. 편집장이 접어 둔 문장이 여기 있었다. 그때 지워진 이름들까지 이으면, 이번 사건이 처음이 아니라는 걸 증명할 수 있다. 이제 이해심 뒤에 선 얼굴까지 기사에 끌어낼 수 있다.",
             "style": "normal",
             "speaker_id": "Yuu",
             "emotion_type": "Tense",
@@ -7385,7 +7385,7 @@ window.GAME_DATA = {
           "order": 102,
           "choice_group_id": "ChoiceGroup_ArticleQ2",
           "choice_id": "article_q2_correct",
-          "text": "의식 악보 — 부적 제작 경위와 감응 방법을 밝힌다.",
+          "text": "의식 악보 — 노래로 사람을 묶어 둔 감응의 방법을 밝힌다.",
           "evidence_id": "EvRitualScore",
           "effect_group_id": "eff_article_correct",
           "next_type": "Dialog",
@@ -7395,7 +7395,7 @@ window.GAME_DATA = {
           "order": 103,
           "choice_group_id": "ChoiceGroup_ArticleQ3",
           "choice_id": "article_q3_correct",
-          "text": "1924년 구 기사 — 구 세력의 계보와 반복된 패턴을 폭로한다.",
+          "text": "1924년 기사 뭉치 — 과거에도 반복된 실종의 계보를 폭로한다.",
           "evidence_id": "EvOldArticles",
           "effect_group_id": "eff_article_correct",
           "next_type": "Dialog",
@@ -7570,7 +7570,7 @@ window.GAME_DATA = {
         "dlg_ipangyu_deal_refuse": [
           {
             "order": 1,
-            "text": "그렇군. 그럼 이름은 네가 직접 찾아야지. 나는 팔지 않는 걸 억지로 넘기진 않아.",
+            "text": "그렇군. 그럼 이름은 네가 직접 찾아야지. 안 사겠다는 자에게 억지로 팔진 않아.",
             "style": "normal",
             "speaker_id": "Ipangyu",
             "emotion_type": "Crazy",
@@ -7579,7 +7579,7 @@ window.GAME_DATA = {
           },
           {
             "order": 2,
-            "text": "정보는 비어 버렸지만, 적어도 저 문장을 입에 올리지는 않았다. 유웅룡은 이름 대신 결심을 챙긴 채 방 안으로 더 깊이 들어갈 준비를 한다.",
+            "text": "이름 하나가 빈 채로 남았지만, 적어도 저 문장을 입에 올리지는 않았다. 유웅룡은 이름 대신 결심을 챙긴 채 더 깊은 안쪽으로 걸음을 옮긴다.",
             "style": "narration"
           }
         ]

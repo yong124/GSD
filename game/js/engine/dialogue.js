@@ -25,6 +25,16 @@ const Dialogue = (() => {
     return emoPath || char?.default_image_path || '';
   }
 
+  // 화자가 이미 스탠딩 스테이지에 올라가 있으면 대사창 헤드샷은 중복이므로 생략한다.
+  // (renderStage가 _stageState를 먼저 갱신하므로, 이 시점의 _stageState는 현재 라인 기준이다.)
+  function isSpeakerOnStage(line) {
+    if (!line.speaker_id) return false;
+    if (line.standing_slot) return true;
+    const img = getCharacterImage(line);
+    if (!img) return false;
+    return Object.values(_stageState).some(s => s && s.image && s.image === img);
+  }
+
   function resetStage() {
     _stageState = { Left: null, Center: null, Right: null };
     UIManager.clearStandingAll();
@@ -80,7 +90,7 @@ const Dialogue = (() => {
     }
     
     const speakerName = getCharacterName(line);
-    const portrait = (line.style === 'narration' || !speakerName) ? null : getCharacterImage(line);
+    const portrait = (line.style === 'narration' || !speakerName || isSpeakerOnStage(line)) ? null : getCharacterImage(line);
     const displaySpeaker = (line.style === 'narration' || !speakerName) ? '' : speakerName;
 
     typeText(displaySpeaker, line.text, portrait);
@@ -92,7 +102,7 @@ const Dialogue = (() => {
       clearInterval(_timer);
       const line = _lines[_index];
       const speakerName = getCharacterName(line);
-      const portrait = (line.style === 'narration' || !speakerName) ? null : getCharacterImage(line);
+      const portrait = (line.style === 'narration' || !speakerName || isSpeakerOnStage(line)) ? null : getCharacterImage(line);
       const displaySpeaker = (line.style === 'narration' || !speakerName) ? '' : speakerName;
       UIManager.setDialogue(displaySpeaker, line.text, portrait);
       UIManager.setClickHintVisible(true);

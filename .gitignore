@@ -1,5 +1,6 @@
 Microsoft/
 .claude/settings.local.json
+.claude/worktrees/
 .qa/
 .qa-artifacts/
 .qa-node/node_modules/
