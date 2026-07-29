@@ -2014,20 +2014,24 @@ window.GAME_DATA = {
           "order": 1,
           "choice_id": "Ch1CourtPursue",
           "effect_group_id": "eff_ch1_court_pursue",
-          "text": "이 판결, 기어이 물고 늘어진다.",
+          "text": "판결문에서 푸른 천과 이판규의 시선을 따로 기록한다.",
           "next_type": "Scene",
-          "next_id": "ch1_newsroom"
+          "next_id": "ch1_newsroom",
+          "impact_text": "평판 +1 · 기사 밖의 기록을 남겼다."
         },
         {
           "order": 2,
           "choice_id": "Ch1CourtComply",
           "effect_group_id": "eff_ch1_court_comply",
-          "text": "편집장이 원하는 기사를 먼저 써둔다. 그게 실리는 법이다.",
+          "text": "판결문을 먼저 편집국에 넘겨 신문감으로 정리한다.",
           "next_type": "Scene",
-          "next_id": "ch1_newsroom"
+          "next_id": "ch1_newsroom",
+          "impact_text": "편집장 신뢰 +1 · 편집국의 문을 먼저 연다."
         }
       ],
-      "evidence": []
+      "evidence": [],
+      "goal_kicker": "첫 기록",
+      "goal_text": "법정에서 지워진 흔적을 어떤 기록으로 남길지 정한다."
     },
     "ch1_newsroom": {
       "id": "ch1_newsroom",
