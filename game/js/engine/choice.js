@@ -27,6 +27,7 @@ const Choice = (() => {
           if (effect?.gauge_id) State.addGauge(effect.gauge_id, Number(effect.gauge_delta || 0));
           break;
         case 'EvidenceGive':
+        case 'EvidenceGain':
           if (effect?.evidence_id && typeof Evidence?.collect === 'function') Evidence.collect(effect.evidence_id);
           break;
         case 'TrustChange':
@@ -39,12 +40,34 @@ const Choice = (() => {
     return effects;
   }
 
-  function describeChoiceImpact(choice, isPriority = false) {
+  function formatSignedValue(value) {
+    const numeric = Number(value || 0);
+    return numeric > 0 ? `+${numeric}` : `${numeric}`;
+  }
+
+  function describeEffect(effect) {
+    if (!effect) return '';
+    if (effect.effect_type === 'GaugeChange') {
+      const labels = { Credibility: '평판', Erosion: '침식' };
+      return `${labels[effect.gauge_id] || effect.gauge_id} ${formatSignedValue(effect.gauge_delta)}`;
+    }
+    if (effect.effect_type === 'TrustChange') {
+      const character = window.GAME_DATA?.characters?.[effect.trust_character_id];
+      return `${character?.display_name || effect.trust_character_id} 신뢰 ${formatSignedValue(effect.trust_delta)}`;
+    }
+    if ((effect.effect_type === 'EvidenceGive' || effect.effect_type === 'EvidenceGain') && effect.evidence_id) {
+      return '단서 획득';
+    }
+    return '';
+  }
+
+  function describeChoiceImpact(choice, effects = [], isPriority = false) {
     if (!choice) return '선택의 파장을 알 수 없습니다.';
-    if (isPriority) return '조사 방향이 미세하게 바뀝니다.';
-    if (choice.effect_group_id) return '연결된 효과가 즉시 발동합니다.';
-    if (choice.evidence_id) return '관련된 증거 반응이 열립니다.';
+    const changes = effects.map(describeEffect).filter(Boolean);
+    if (changes.length > 0) return changes.join(' · ');
     if (choice.impact_text) return choice.impact_text;
+    if (isPriority) return '조사 방향이 미세하게 바뀝니다.';
+    if (choice.evidence_id) return '관련된 증거 반응이 열립니다.';
     return '선택의 파장은 조용히 남습니다.';
   }
 
@@ -59,19 +82,20 @@ const Choice = (() => {
   }
 
   function applyChoiceEffects(choice) {
-    if (!choice) return;
+    if (!choice) return [];
     State.recordChoice(getChoiceId(choice));
-    if (choice?.effect_group_id) applyEffectGroup(choice.effect_group_id);
+    return choice?.effect_group_id ? applyEffectGroup(choice.effect_group_id) : [];
   }
 
-  function showChoiceImpact(choice, isPriority = false) {
+  function showChoiceImpact(choice, effects = [], isPriority = false) {
     if (typeof UIManager?.showToast !== 'function' || !choice) return;
-    UIManager.showToast(`선택: ${choice.text || choice.evidence_id || '증거 제시'}\n${describeChoiceImpact(choice, isPriority)}`, 'toast-impact');
+    UIManager.showToast(`결과: ${describeChoiceImpact(choice, effects, isPriority)}`, 'toast-impact');
   }
 
   function finishChoice(callback, picked) {
     setTimeout(() => {
       UIManager.setChoiceBoxVisible(false);
+      UIManager.hideEvidenceInventory?.();
       if (callback) callback(picked);
     }, PICK_DELAY_MS);
   }
@@ -134,8 +158,8 @@ const Choice = (() => {
       const mappedChoices = mapChoices(choices);
 
       UIManager.renderChoiceList(mappedChoices, picked => {
-        applyChoiceEffects(picked);
-        showChoiceImpact(picked);
+        const effects = applyChoiceEffects(picked);
+        showChoiceImpact(picked, effects);
         finishChoice(onChoose, picked);
       });
 
@@ -183,8 +207,8 @@ const Choice = (() => {
             return;
           }
 
-          applyChoiceEffects(choice);
-          showChoiceImpact(choice, true);
+          const effects = applyChoiceEffects(choice);
+          showChoiceImpact(choice, effects, true);
           pickedSet.add(choice.order);
           spent += 1;
 
@@ -248,21 +272,20 @@ const Choice = (() => {
 
           const isWrongPick = isGate && !matchedChoice?.is_correct;
           if (isWrongPick) {
-            if (picked.effect_group_id) applyEffectGroup(picked.effect_group_id);
-            showChoiceImpact({ ...picked, text: matchedChoice?.text || pickedEvidenceId });
+            const effects = picked.effect_group_id ? applyEffectGroup(picked.effect_group_id) : [];
+            showChoiceImpact({ ...picked, text: matchedChoice?.text || pickedEvidenceId }, effects);
             const branchLines = (scene.evidence_dialogues || {})[picked.next_id || ''] || [];
-            const retry = () => attempt();
             if (branchLines.length > 0) {
               UIManager.setChoiceBoxVisible(false);
-              Dialogue.start(branchLines, retry, null);
+              Dialogue.start(branchLines, attempt, null);
             } else {
-              retry();
+              attempt();
             }
             return;
           }
 
-          if (matchedChoice) applyChoiceEffects(picked);
-          showChoiceImpact({ ...picked, text: matchedChoice?.text || pickedEvidenceId });
+          const effects = matchedChoice ? applyChoiceEffects(picked) : [];
+          showChoiceImpact({ ...picked, text: matchedChoice?.text || pickedEvidenceId }, effects);
           finishChoice(onChoose, picked);
         }, meta);
 
@@ -274,12 +297,14 @@ const Choice = (() => {
 
     hide() {
       UIManager.updateHUD(null, null);
+      UIManager.hideEvidenceInventory?.();
       UIManager.setChoiceBoxVisible(false);
     },
 
     isVisible() {
       const el = document.getElementById(Config.SELECTORS.CHOICE_BOX);
-      return !!(el && !el.classList.contains('hidden'));
+      const inventoryVisible = UIManager.isEvidenceInventoryVisible?.() || false;
+      return !!(el && !el.classList.contains('hidden')) || inventoryVisible;
     }
   };
 })();
