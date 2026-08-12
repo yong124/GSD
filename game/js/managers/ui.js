@@ -565,52 +565,34 @@ const UIManager = (() => {
       }
 
       const selectedQuestion = questions.find(item => item.questionId === data?.selectedQuestionId) || questions[0];
-      const selectedEvidenceIds = data?.selectedQuestionEvidenceIds || [];
       const questionCards = questions.map(item => `
         <button class="question-card question-select ${item.questionId === selectedQuestion?.questionId ? 'is-selected' : ''}" data-question-id="${item.questionId}">
           <div class="question-title">${item.title}</div>
-          <div class="question-state ${item.isSolved ? 'is-solved' : ''}">${item.state}</div>
+          <div class="question-state ${item.isSolved ? 'is-solved' : ''}">${item.state}${item.isAnswered && !item.isSolved ? ' · 미해결 기록' : ''}</div>
           <div class="question-detail">${item.detail}</div>
-        </button>
-      `).join('');
-
-      const isContradictionQuestion = selectedQuestion?.resolutionType === 'Contradiction';
-      const isConnectionQuestion = !isContradictionQuestion && (((selectedQuestion?.solutionEvidenceIds || []).length > 1) || selectedQuestion?.solutionMode === 'All');
-      const evidenceOptions = (selectedQuestion?.ownedEvidence || []).map(item => `
-        <button class="question-evidence-btn ${selectedEvidenceIds.includes(item.evidenceId) ? 'is-selected' : ''}" data-question-id="${selectedQuestion.questionId}" data-evidence-id="${item.evidenceId}">
-          <span class="question-evidence-name">${item.name}</span>
-          <span class="question-evidence-tag">${isContradictionQuestion ? '반박' : (isConnectionQuestion ? '연결' : '제출')}</span>
         </button>
       `).join('');
 
       const relatedEvidence = (selectedQuestion?.relatedEvidence || []).map(item => `
         <span class="question-chip ${item.isOwned ? 'is-owned' : 'is-missing'}">${item.name}</span>
       `).join('');
+      const recordedAnswer = selectedQuestion?.recordedAnswerText
+        ? `<div class="question-resolution-subtitle">기록된 추론</div><div class="question-resolution-detail">${selectedQuestion.recordedAnswerText}</div>`
+        : '';
+      const resolutionDetail = selectedQuestion?.isSolved && selectedQuestion.resolvedDetail
+        ? selectedQuestion.resolvedDetail
+        : (selectedQuestion?.recordedResultText || selectedQuestion?.detail || '');
 
       const resolutionHtml = selectedQuestion ? `
         <section class="question-resolution">
-          <div class="memo-section-title">질문 정리</div>
+          <div class="memo-section-title">질문 기록</div>
           <div class="question-resolution-title">${selectedQuestion.title}</div>
-          <div class="question-resolution-state ${selectedQuestion.isSolved ? 'is-solved' : ''}">${selectedQuestion.state}</div>
-          <div class="question-resolution-detail">${selectedQuestion.isSolved && selectedQuestion.resolvedDetail ? selectedQuestion.resolvedDetail : selectedQuestion.detail}</div>
-          ${isContradictionQuestion && !selectedQuestion.isSolved ? `
-            <div class="question-contradiction-card">
-              <div class="question-contradiction-kicker">${selectedQuestion.contradictionPrompt || '모순 제시'}</div>
-              <div class="question-contradiction-statement">${selectedQuestion.contradictionStatement || ''}</div>
-            </div>
-          ` : ''}
+          <div class="question-resolution-state ${selectedQuestion.isSolved ? 'is-solved' : ''}">${selectedQuestion.state}${selectedQuestion.isAnswered && !selectedQuestion.isSolved ? ' · 미해결 기록' : ''}</div>
+          <div class="question-resolution-detail">${resolutionDetail}</div>
+          ${recordedAnswer}
           <div class="question-resolution-subtitle">관련 단서</div>
           <div class="question-chip-list">${relatedEvidence || '<span class="question-chip is-missing">연결 단서 없음</span>'}</div>
-          <div class="question-resolution-subtitle">${isContradictionQuestion ? '모순을 드러낼 근거 제시' : (isConnectionQuestion ? '보유 단서를 연결해 정리' : '보유 단서로 정리')}</div>
-          ${selectedQuestion.isSolved
-            ? '<div class="question-resolution-empty">이미 정리된 질문입니다.</div>'
-            : (evidenceOptions
-              ? `<div class="question-evidence-list">${evidenceOptions}</div>${isConnectionQuestion ? `
-                <button class="question-commit-btn" data-question-id="${selectedQuestion.questionId}">
-                  선택한 단서를 근거로 질문 정리
-                </button>
-              ` : ''}`
-              : '<div class="question-resolution-empty">아직 이 질문을 정리할 단서를 확보하지 못했습니다.</div>')}
+          <div class="question-resolution-empty">질문의 결론은 장면의 추론 단계에서 기록됩니다.</div>
         </section>
       ` : '';
 
@@ -624,15 +606,6 @@ const UIManager = (() => {
 
       list.querySelectorAll('.question-select').forEach(btn => {
         btn.addEventListener('click', () => handlers.onQuestionSelect?.(btn.dataset.questionId));
-      });
-      list.querySelectorAll('.question-evidence-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          if (isConnectionQuestion) handlers.onQuestionEvidenceToggle?.(btn.dataset.questionId, btn.dataset.evidenceId);
-          else handlers.onQuestionSubmit?.(btn.dataset.questionId, btn.dataset.evidenceId);
-        });
-      });
-      list.querySelectorAll('.question-commit-btn').forEach(btn => {
-        btn.addEventListener('click', () => handlers.onQuestionEvidenceCommit?.(btn.dataset.questionId));
       });
       return;
     }

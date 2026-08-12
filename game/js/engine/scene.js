@@ -76,7 +76,11 @@ const Scene = (() => {
 
   function handleGaugeStateChange(event) {
     UIManager.updateGaugeHUD?.(event?.gaugeId, event?.value, event?.previousState, event?.state);
-    const triggerSceneId = event?.state?.trigger_scene_id;
+    const erosionValue = State.getGauge('Erosion');
+    const erosionGameover = getGaugeStates('Erosion').find(row => (
+      row?.trigger_scene_id && erosionValue >= Number(row.min_value) && erosionValue <= Number(row.max_value)
+    ));
+    const triggerSceneId = erosionGameover?.trigger_scene_id || event?.state?.trigger_scene_id;
     if (!triggerSceneId) return;
     Scene.load(triggerSceneId);
   }
@@ -98,11 +102,15 @@ const Scene = (() => {
 
   function loadResolvedNext(scene) {
     const nextSceneId = resolveNextScene(scene);
-    if (nextSceneId) {
-      Scene.load(nextSceneId);
-      return;
-    }
-    triggerEnding();
+    leaveScene(scene, nextSceneId);
+  }
+
+  function leaveScene(scene, nextSceneId) {
+    const proceed = () => {
+      if (nextSceneId) Scene.load(nextSceneId);
+      else triggerEnding();
+    };
+    if (!Evidence.startQuestionCheckpoint(scene, proceed)) proceed();
   }
 
   function parseConditionValue(value) {
@@ -408,7 +416,7 @@ const Scene = (() => {
           Choice.showPriority({ ...scene, choices: investigationChoices, investigation }, chosen => {
             const { nextScene, nextDialogue } = resolveChoiceNavigation(chosen);
             if (nextScene) {
-              Scene.load(nextScene, nextDialogue);
+              leaveScene(scene, nextScene);
             } else if (nextDialogue) {
               const branchLines = (scene.evidence_dialogues || {})[nextDialogue || ''] || [];
               if (branchLines.length > 0) {
@@ -426,7 +434,7 @@ const Scene = (() => {
           Choice.show(choices, chosen => {
             const { nextScene, nextDialogue } = resolveChoiceNavigation(chosen);
             if (nextScene) {
-              Scene.load(nextScene, nextDialogue);
+              leaveScene(scene, nextScene);
             } else if (nextDialogue) {
               const branchLines = (scene.evidence_dialogues || {})[nextDialogue || ''] || [];
               if (branchLines.length > 0) {

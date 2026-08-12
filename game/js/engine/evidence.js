@@ -4,7 +4,6 @@ const Evidence = (() => {
   let _seenEvidence = new Set();
   let _activeTab = 'status';
   let _selectedQuestionId = null;
-  let _selectedEvidenceByQuestion = {};
 
   function getEvidenceCategory(ev) {
     const category = _evidenceCategories[ev?.category_id];
@@ -207,7 +206,13 @@ const Evidence = (() => {
       return dataQuestions
         .filter(question => evaluateQuestionVisible(question.visible_condition_group_ids, context))
         .map(question => {
-        const relatedEvidenceIds = Array.isArray(question.related_evidence_ids) ? question.related_evidence_ids : [];
+        const recordedAnswer = (Engine.data?.question_answers || []).find(answer => (
+          answer?.question_id === question.question_id && State.hasChoice(answer.answer_id)
+        )) || null;
+        const relatedEvidenceIds = [...new Set([
+          ...(Array.isArray(question.related_evidence_ids) ? question.related_evidence_ids : []),
+          ...(Array.isArray(recordedAnswer?.required_evidence_ids) ? recordedAnswer.required_evidence_ids : []),
+        ])];
         const relatedEvidence = relatedEvidenceIds.map(evidenceId => {
           const ev = _allEvidence[evidenceId];
           return {
@@ -230,7 +235,10 @@ const Evidence = (() => {
           category: question.category || '',
           resolutionType: question.resolution_type || 'Evidence',
           isSolved,
+          isAnswered: !!recordedAnswer,
           resolvedDetail: question.resolved_detail || '',
+          recordedAnswerText: recordedAnswer?.answer_text || '',
+          recordedResultText: recordedAnswer?.result_text || '',
           successToast: question.success_toast || '',
           failureToast: question.failure_toast || '',
           solutionEvidenceIds,
@@ -262,79 +270,108 @@ const Evidence = (() => {
     State.incrementNumericState('SolvedQuestionCount', 1);
   }
 
-  function toggleQuestionEvidence(questionId, evidenceId) {
-    if (!questionId || !evidenceId) return;
-    const question = getQuestionEntries().find(item => item.questionId === questionId);
-    if (!question) return;
-    if (!_selectedEvidenceByQuestion[questionId]) {
-      _selectedEvidenceByQuestion[questionId] = new Set();
-    }
-    const bucket = _selectedEvidenceByQuestion[questionId];
-    if (isConnectionQuestion(question)) {
-      if (bucket.has(evidenceId)) bucket.delete(evidenceId);
-      else bucket.add(evidenceId);
-    } else {
-      bucket.clear();
-      bucket.add(evidenceId);
-    }
-    if (this.isOpen()) renderNotebook();
-  }
+  function startQuestionCheckpoint(scene, onComplete) {
+    const sceneId = scene?.id;
+    const questionIds = Array.isArray(scene?.forced_question_ids) ? scene.forced_question_ids : [];
+    const completedStateId = `QuestionCheckpointCompleted_${sceneId}`;
+    if (!sceneId || questionIds.length === 0 || State.getBooleanState(completedStateId)) return false;
 
-  function getSelectedEvidenceIds(questionId) {
-    return Array.from(_selectedEvidenceByQuestion[questionId] || []);
-  }
-
-  function isConnectionQuestion(question) {
-    if (!question) return false;
-    return question.resolutionType !== 'Contradiction'
-      && (((question.solutionEvidenceIds || []).length > 1) || question.solutionMode === 'All');
-  }
-
-  function isQuestionSolved(question, selectedEvidenceIds) {
-    const solutionIds = question.solutionEvidenceIds || [];
-    if (solutionIds.length === 0) return false;
-    if (question.resolutionType === 'Contradiction') {
-      return selectedEvidenceIds.some(id => solutionIds.includes(id));
-    }
-    if (question.solutionMode === 'All') {
-      return solutionIds.every(id => selectedEvidenceIds.includes(id));
-    }
-    return selectedEvidenceIds.some(id => solutionIds.includes(id));
-  }
-
-  function solveQuestion(questionId, evidenceIds) {
     const questions = getQuestionEntries();
-    const question = questions.find(item => item.questionId === questionId);
-    if (!question) {
-      UIManager.showToast('해당 질문을 찾지 못했습니다.', 'error');
-      return;
+    const pending = questionIds.filter(questionId => !State.getBooleanState(`QuestionAnswered_${sceneId}_${questionId}`));
+    if (pending.length === 0 || (scene.question_mode === 'Any' && pending.length < questionIds.length)) {
+      State.setBooleanState(completedStateId, true);
+      return false;
     }
 
-    if (question.isSolved) {
-      UIManager.showToast('이미 정리된 질문입니다.', 'save');
-      return;
-    }
+    UIManager.setPanelVisible(Config.SELECTORS.MEMO_PANEL, false);
+    UIManager.setDialogueBoxVisible(false);
+    UIManager.setChoiceBoxVisible(true);
 
-    const pickedIds = Array.isArray(evidenceIds) ? evidenceIds : [evidenceIds].filter(Boolean);
-    const allOwned = pickedIds.every(evidenceId => question.ownedEvidence.some(item => item.evidenceId === evidenceId));
-    if (pickedIds.length === 0 || !allOwned) {
-      UIManager.showToast('지금 가진 단서로만 질문을 정리할 수 있습니다.', 'error');
-      return;
-    }
+    const finish = () => {
+      State.setBooleanState(completedStateId, true);
+      UIManager.setChoiceBoxVisible(false);
+      if (onComplete) onComplete();
+    };
 
-    if (isQuestionSolved(question, pickedIds)) {
-      if (question.solvedStateId) {
-        State.markQuestionSolved(question.solvedStateId);
+    const showQuestion = index => {
+      if (index >= pending.length) {
+        finish();
+        return;
       }
-      incrementSolvedQuestionCount();
-      applyQuestionReward(question);
-      delete _selectedEvidenceByQuestion[questionId];
-      UIManager.showToast(question.successToast || `질문 정리: ${question.title}`, 'impact');
-    } else {
-      UIManager.showToast(question.failureToast || '아직 이 질문을 묶을 근거가 부족합니다.', 'error');
-    }
+      UIManager.setDialogueBoxVisible(false);
+      UIManager.setChoiceBoxVisible(true);
 
-    if (this.isOpen()) renderNotebook();
+      const questionId = pending[index];
+      const question = questions.find(item => item.questionId === questionId);
+      const answers = (Engine.data?.question_answers || [])
+        .filter(answer => answer?.question_id === questionId)
+        .sort((a, b) => Number(a?.sort_order || 0) - Number(b?.sort_order || 0));
+      if (!question || answers.length === 0) {
+        console.error(`[Evidence] Missing forced question or answers: ${sceneId} -> ${questionId}`);
+        UIManager.showToast('질문 데이터를 찾지 못해 진행할 수 없습니다.', 'error');
+        return;
+      }
+
+      const choices = answers.map(answer => {
+        const required = Array.isArray(answer.required_evidence_ids) ? answer.required_evidence_ids.filter(Boolean) : [];
+        const locked = required.some(evidenceId => !State.getEvidenceOwned(evidenceId));
+        return {
+          ...answer,
+          text: answer.answer_text || answer.answer_id,
+          type: 'choice-decision',
+          locked,
+          lockedHint: locked ? '필요한 단서를 아직 확보하지 못했습니다.' : '',
+        };
+      });
+      if (!choices.some(choice => !choice.locked)) {
+        console.error(`[Evidence] All forced answers are locked: ${sceneId} -> ${questionId}`);
+        UIManager.showToast('선택할 수 있는 답변이 없어 진행할 수 없습니다.', 'error');
+        return;
+      }
+
+      UIManager.renderChoiceList(choices, answer => {
+        State.recordChoice(answer.answer_id);
+        State.setBooleanState(`QuestionAnswered_${sceneId}_${questionId}`, true);
+
+        if (answer.is_correct && !question.isSolved) {
+          if (question.solvedStateId) State.markQuestionSolved(question.solvedStateId);
+          incrementSolvedQuestionCount();
+          applyQuestionReward(question);
+        }
+
+        UIManager.showToast(answer.result_text || '추론 결과가 기록되었습니다.', 'impact');
+        Choice.applyEffectGroup(answer.effect_group_id);
+        if (State.getGauge('Erosion') >= 10 || State.getGauge('Credibility') <= 0) return;
+
+        const advance = () => {
+          if (scene.question_mode === 'Any') finish();
+          else showQuestion(index + 1);
+        };
+        if (answer.next_type === 'Scene' && answer.next_id) {
+          State.setBooleanState(completedStateId, true);
+          UIManager.setChoiceBoxVisible(false);
+          Scene.load(answer.next_id);
+          return;
+        }
+        if (answer.next_type === 'Dialog' && answer.next_id) {
+          const lines = (scene.evidence_dialogues || {})[answer.next_id] || [];
+          if (lines.length > 0) {
+            UIManager.setChoiceBoxVisible(false);
+            UIManager.setDialogueBoxVisible(true);
+            Dialogue.start(lines, advance, null);
+            return;
+          }
+        }
+        advance();
+      }, {
+        kicker: '추론',
+        title: question.title,
+        hint: `${questionIds.indexOf(questionId) + 1} / ${questionIds.length} · 단서와 진술을 바탕으로 결론을 고르십시오.`,
+      });
+    };
+
+    showQuestion(0);
+    return true;
   }
 
   function renderNotebook() {
@@ -343,17 +380,6 @@ const Evidence = (() => {
     if (!questions.find(item => item.questionId === _selectedQuestionId)) {
       _selectedQuestionId = questions[0]?.questionId || null;
     }
-    Object.keys(_selectedEvidenceByQuestion).forEach(questionId => {
-      const question = questions.find(item => item.questionId === questionId);
-      if (!question || question.isSolved) {
-        delete _selectedEvidenceByQuestion[questionId];
-        return;
-      }
-      const validIds = new Set((question.ownedEvidence || []).map(item => item.evidenceId));
-      _selectedEvidenceByQuestion[questionId] = new Set(
-        Array.from(_selectedEvidenceByQuestion[questionId] || []).filter(id => validIds.has(id))
-      );
-    });
 
     UIManager.renderNotebook({
       metaText: `단서 ${State.getEvidence().length}건 · ${scene?.title || State.currentSceneId || '대기 중'}`,
@@ -363,7 +389,6 @@ const Evidence = (() => {
       evidenceGroups: prepareMemoData(),
       questions,
       selectedQuestionId: _selectedQuestionId,
-      selectedQuestionEvidenceIds: getSelectedEvidenceIds(_selectedQuestionId),
     }, _activeTab, {
       onTabChange: (tab) => {
         _activeTab = tab;
@@ -372,20 +397,13 @@ const Evidence = (() => {
       onQuestionSelect: (questionId) => {
         _selectedQuestionId = questionId;
         renderNotebook();
-      },
-      onQuestionSubmit: (questionId, evidenceId) => {
-        solveQuestion(questionId, evidenceId);
-      },
-      onQuestionEvidenceToggle: (questionId, evidenceId) => {
-        toggleQuestionEvidence(questionId, evidenceId);
-      },
-      onQuestionEvidenceCommit: (questionId) => {
-        solveQuestion(questionId, getSelectedEvidenceIds(questionId));
       }
     });
   }
 
   return {
+    startQuestionCheckpoint,
+
     index(scenes) {
       _evidenceCategories = {};
       (Engine.data?.evidence_categories || []).forEach(category => {
