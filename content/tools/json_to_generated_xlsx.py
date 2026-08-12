@@ -38,7 +38,7 @@ SHEET_DEFS = {
         "headers": ["EffectGroupID", "EffectType", "GaugeID", "GaugeDelta", "EvidenceID", "TrustCharacterID", "TrustDelta"],
     },
     "SceneTable": {
-        "headers": ["SceneID", "Chapter", "Title", "Background", "Music", "Effect", "GoalKicker", "GoalText", "EvidencePromptTitle", "EvidencePromptHint", "InvestigationTitle", "InvestigationHint"],
+        "headers": ["SceneID", "Chapter", "Title", "Background", "Music", "Effect", "GoalKicker", "GoalText", "EvidencePromptTitle", "EvidencePromptHint", "InvestigationTitle", "InvestigationHint", "ForcedQuestionIDs", "QuestionMode"],
     },
     "DialogTable": {
         "headers": ["DialogID", "SceneID", "Order", "CharacterID", "EmotionType", "StandingSlot", "FocusType", "EnterMotion", "ExitMotion", "IdleMotion", "FxType", "Text", "Style", "ConditionGroupID", "ChoiceGroupID", "NextDialogID", "Speaker", "Portrait", "Label"],
@@ -66,6 +66,9 @@ SHEET_DEFS = {
     },
     "QuestionTable": {
         "headers": ["QuestionID", "Title", "Detail", "SortOrder", "Category", "ResolutionType", "VisibleConditionGroupIDs", "StateConditionsJSON", "RelatedEvidenceIDs", "SolutionEvidenceIDs", "SolutionMode", "ContradictionPrompt", "ContradictionStatement", "SolvedStateID", "ResolvedDetail", "SuccessToast", "FailureToast", "RewardStateID", "RewardValue", "RewardMode"],
+    },
+    "QuestionAnswerTable": {
+        "headers": ["AnswerID", "QuestionID", "SortOrder", "AnswerText", "RequiredEvidenceIDs", "IsCorrect", "EffectGroupID", "ResultText", "NextType", "NextID"],
     },
     "StateDescriptorTable": {
         "headers": ["DescriptorID", "TargetStateType", "TargetStateID", "MinValue", "MaxValue", "Label", "Detail"],
@@ -138,6 +141,8 @@ def build_scene_rows(data):
             "EvidencePromptHint": scene.get("evidence_prompt_hint"),
             "InvestigationTitle": scene.get("investigation_title"),
             "InvestigationHint": scene.get("investigation_hint"),
+            "ForcedQuestionIDs": ", ".join(scene.get("forced_question_ids", []) or []),
+            "QuestionMode": scene.get("question_mode"),
         })
     return rows
 
@@ -381,6 +386,25 @@ def build_question_rows(data):
     return rows
 
 
+def build_question_answer_rows(data):
+    rows = []
+    for answer in data.get("question_answers", []) or []:
+        rows.append({
+            "AnswerID": answer.get("answer_id"),
+            "QuestionID": answer.get("question_id"),
+            "SortOrder": answer.get("sort_order"),
+            "AnswerText": answer.get("answer_text"),
+            "RequiredEvidenceIDs": ", ".join(answer.get("required_evidence_ids", []) or []),
+            "IsCorrect": answer.get("is_correct"),
+            "EffectGroupID": answer.get("effect_group_id"),
+            "ResultText": answer.get("result_text"),
+            "NextType": answer.get("next_type"),
+            "NextID": answer.get("next_id"),
+        })
+    rows.sort(key=lambda x: ((x.get("QuestionID") or ""), (x.get("SortOrder") or 0), (x.get("AnswerID") or "")))
+    return rows
+
+
 def build_state_descriptor_rows(data):
     rows = []
     for descriptor in data.get("state_descriptors", []) or []:
@@ -411,6 +435,7 @@ def build_sheet_rows(data):
         "CharacterTable": build_character_rows(data),
         "CharacterEmotionTable": build_character_emotion_rows(data),
         "QuestionTable": build_question_rows(data),
+        "QuestionAnswerTable": build_question_answer_rows(data),
         "StateDescriptorTable": build_state_descriptor_rows(data),
     }
 

@@ -340,5 +340,41 @@
     "evidence_id": null,
     "trust_character_id": null,
     "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_question_erosion",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Erosion",
+    "gauge_delta": 1,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_question_credibility",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Credibility",
+    "gauge_delta": -1,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_question_both",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Erosion",
+    "gauge_delta": 1,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_question_both",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Credibility",
+    "gauge_delta": -1,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
   }
 ]

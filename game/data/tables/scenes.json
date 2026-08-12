@@ -1095,6 +1095,11 @@
   },
   "ch2_well": {
     "id": "ch2_well",
+    "forced_question_ids": [
+      "QIpangyuMadness",
+      "QCallPattern"
+    ],
+    "question_mode": "All",
     "chapter": 2,
     "title": "우물터 담벼락",
     "background": "assets/bg/storage.jpeg",
@@ -2375,6 +2380,10 @@
   },
   "ch4a_slum": {
     "id": "ch4a_slum",
+    "forced_question_ids": [
+      "QArchivePattern"
+    ],
+    "question_mode": "All",
     "chapter": 4,
     "title": "경성 외곽 빈민가",
     "background": "assets/bg/storage.jpeg",
@@ -3916,6 +3925,12 @@
   },
   "ch5_ritual_room": {
     "id": "ch5_ritual_room",
+    "forced_question_ids": [
+      "QRitualLead",
+      "QRitualAccident",
+      "QRitualErasure"
+    ],
+    "question_mode": "All",
     "chapter": 5,
     "title": "지하 의례실",
     "background": "assets/bg/ritual_room.jpg",
@@ -5556,6 +5571,10 @@
   },
   "ch2_factory_shock": {
     "id": "ch2_factory_shock",
+    "forced_question_ids": [
+      "QIpangyuCall"
+    ],
+    "question_mode": "All",
     "chapter": 2,
     "title": "폐공장 — 침식",
     "background": "assets/bg/factory.jpeg",
@@ -6179,6 +6198,12 @@
   },
   "ch3_room4_conclusion": {
     "id": "ch3_room4_conclusion",
+    "forced_question_ids": [
+      "QSonggeumMissing",
+      "QSonggeumRunaway",
+      "QRoom4Purpose"
+    ],
+    "question_mode": "All",
     "chapter": 3,
     "title": "4호실의 결론",
     "background": "assets/bg/storage.jpeg",

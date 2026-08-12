@@ -15,6 +15,7 @@ TABLE_FILES = {
     "conditions.json": ("conditions",),
     "evidence_categories.json": ("evidence_categories",),
     "questions.json": ("questions",),
+    "question_answers.json": ("question_answers",),
     "state_descriptors.json": ("state_descriptors",),
     "gauges.json": ("gauges",),
     "gauge_states.json": ("gauge_states",),

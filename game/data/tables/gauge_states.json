@@ -42,7 +42,7 @@
     "label": "붕괴",
     "hud_color": "#4a0000",
     "detail": "",
-    "trigger_scene_id": "scene_ending_erosion"
+    "trigger_scene_id": "scene_gameover_erosion"
   },
   {
     "gauge_id": "Credibility",

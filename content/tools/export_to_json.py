@@ -10,7 +10,7 @@ Excel → game_data.js 변환 스크립트
   서버 없이 index.html을 파일로 열어도 동작함
 
 Excel 컬럼 규칙 (PascalCase):
-  SceneTable / Scenes        : SceneID, Chapter, Title, Background, Music, Effect, GoalKicker, GoalText, EvidencePromptTitle, EvidencePromptHint
+  SceneTable / Scenes        : SceneID, Chapter, Title, Background, Music, Effect, GoalKicker, GoalText, EvidencePromptTitle, EvidencePromptHint, ForcedQuestionIDs, QuestionMode
   DialogTable / Dialogues    : 새 구조 기준
   ChoiceTable / Choices      : 새 구조 기준
   BranchTable / Branches     : 새 구조 기준
@@ -21,6 +21,7 @@ Excel 컬럼 규칙 (PascalCase):
   CharacterTable / Characters
   CharacterEmotionTable / CharacterEmotions
   QuestionTable / Questions : QuestionID, Title, Detail, SortOrder, Category, ResolutionType, VisibleConditionGroupIDs, StateConditionsJSON, RelatedEvidenceIDs, SolutionEvidenceIDs, SolutionMode, ContradictionPrompt, ContradictionStatement, SolvedStateID, ResolvedDetail, SuccessToast, FailureToast, RewardStateID, RewardValue, RewardMode
+  QuestionAnswerTable / QuestionAnswers : AnswerID, QuestionID, SortOrder, AnswerText, RequiredEvidenceIDs, IsCorrect, EffectGroupID, ResultText, NextType, NextID
   StateDescriptorTable / StateDescriptors : DescriptorID, TargetStateID, MinValue, MaxValue, Label, Detail
 
 무시 규칙:
@@ -151,9 +152,11 @@ def build_game_data(wb):
     gauges_ws = resolve_optional_sheet(wb, "GaugeTable", "Gauges")
     gauge_states_ws = resolve_optional_sheet(wb, "GaugeStateTable", "GaugeStates")
     effects_ws = resolve_optional_sheet(wb, "EffectTable", "Effects")
+    question_answers_ws = resolve_optional_sheet(wb, "QuestionAnswerTable", "QuestionAnswers")
     gauges_raw = read_sheet(gauges_ws) if gauges_ws else []
     gauge_states_raw = read_sheet(gauge_states_ws) if gauge_states_ws else []
     effects_raw = read_sheet(effects_ws) if effects_ws else []
+    question_answers_raw = read_sheet(question_answers_ws) if question_answers_ws else []
 
     # SceneID 기준으로 씬 딕셔너리 구성
     scenes = {}
@@ -175,6 +178,10 @@ def build_game_data(wb):
             "choices":    [],
             "evidence":   [],
         }
+        if s.get("ForcedQuestionIDs"):
+            scenes[sid]["forced_question_ids"] = [part.strip() for part in str(s.get("ForcedQuestionIDs")).split(",") if part and part.strip()]
+        if s.get("QuestionMode"):
+            scenes[sid]["question_mode"] = s.get("QuestionMode")
 
     # Dialogues 삽입 후 Order 정렬
     for d in dialogues_raw:
@@ -364,6 +371,24 @@ def build_game_data(wb):
             "reward_mode": q.get("RewardMode") or "",
         })
 
+    question_answers = []
+    for row in question_answers_raw:
+        answer_id = row.get("AnswerID")
+        if not answer_id:
+            continue
+        question_answers.append({
+            "answer_id": answer_id,
+            "question_id": row.get("QuestionID") or "",
+            "sort_order": row.get("SortOrder"),
+            "answer_text": row.get("AnswerText") or "",
+            "required_evidence_ids": [part.strip() for part in str(row.get("RequiredEvidenceIDs") or "").split(",") if part and part.strip()],
+            "is_correct": str(row.get("IsCorrect") or "").strip().lower() in {"true", "1", "yes"},
+            "effect_group_id": row.get("EffectGroupID") or "",
+            "result_text": row.get("ResultText") or "",
+            "next_type": row.get("NextType") or "None",
+            "next_id": row.get("NextID") or "",
+        })
+
     state_descriptors = []
     for row in state_descriptors_raw:
         descriptor_id = row.get("DescriptorID")
@@ -432,6 +457,7 @@ def build_game_data(wb):
         "characters": characters,
         "character_emotions": character_emotions,
         "questions": questions,
+        "question_answers": question_answers,
         "state_descriptors": state_descriptors,
         "gauges": gauges,
         "gauge_states": gauge_states,

@@ -416,6 +416,91 @@ def validate_questions(data, issues):
                 issues.append(f"[Question.contradiction_statement] {question.get('question_id') or '(unknown)'} missing ContradictionStatement")
 
 
+def validate_question_answers(data, scenes, issues):
+    answers = data.get("question_answers", []) or []
+    question_ids = {
+        question.get("question_id")
+        for question in (data.get("questions", []) or [])
+        if question.get("question_id")
+    }
+    evidence_ids = {
+        evidence.get("evidence_id")
+        for scene in scenes.values()
+        for evidence in (scene.get("evidence", []) or [])
+        if evidence.get("evidence_id")
+    }
+    effect_group_ids = {
+        effect.get("effect_group_id")
+        for effect in (data.get("effects", []) or [])
+        if effect.get("effect_group_id")
+    }
+    answer_ids = [answer.get("answer_id") for answer in answers if answer.get("answer_id")]
+    for duplicate in find_duplicates(answer_ids):
+        issues.append(f"[Duplicate.answer_id] {duplicate}")
+
+    answers_by_question = {question_id: [] for question_id in question_ids}
+    for answer in answers:
+        answer_id = answer.get("answer_id") or "(unknown)"
+        question_id = answer.get("question_id")
+        if not answer.get("answer_id"):
+            issues.append("[QuestionAnswer.answer_id] missing AnswerID")
+        if question_id not in question_ids:
+            issues.append(f"[QuestionAnswer.question_id] {answer_id} -> {question_id or '(missing)'} (missing QuestionID)")
+        else:
+            answers_by_question[question_id].append(answer)
+
+        required_evidence_ids = answer.get("required_evidence_ids")
+        if not isinstance(required_evidence_ids, list):
+            issues.append(f"[QuestionAnswer.required_evidence_ids] {answer_id} must be a list")
+        elif not required_evidence_ids:
+            issues.append(f"[QuestionAnswer.required_evidence_ids] {answer_id} must not be always selectable")
+        else:
+            for evidence_id in required_evidence_ids:
+                if evidence_id not in evidence_ids:
+                    issues.append(f"[QuestionAnswer.required_evidence_ids] {answer_id} -> {evidence_id} (missing EvidenceID)")
+
+        effect_group_id = answer.get("effect_group_id")
+        if effect_group_id and effect_group_id not in effect_group_ids:
+            issues.append(f"[QuestionAnswer.effect_group_id] {answer_id} -> {effect_group_id} (missing EffectGroupID)")
+
+        next_type = answer.get("next_type")
+        if next_type not in {"Scene", "Dialog", "None"}:
+            issues.append(f"[QuestionAnswer.next_type] {answer_id} invalid NextType: {next_type}")
+        elif next_type == "Scene":
+            next_id = answer.get("next_id")
+            if not next_id or next_id not in scenes:
+                issues.append(f"[QuestionAnswer.next_id] {answer_id} -> {next_id or '(missing)'} (missing SceneID)")
+
+    for question_id, question_answers in answers_by_question.items():
+        if not any(answer.get("is_correct") is True for answer in question_answers):
+            issues.append(f"[QuestionAnswer.is_correct] {question_id} has no correct answer")
+
+
+def validate_forced_questions(data, scenes, issues):
+    question_ids = {
+        question.get("question_id")
+        for question in (data.get("questions", []) or [])
+        if question.get("question_id")
+    }
+    for scene_id, scene in scenes.items():
+        forced_question_ids = scene.get("forced_question_ids")
+        question_mode = scene.get("question_mode")
+        if forced_question_ids is None:
+            if question_mode is not None:
+                issues.append(f"[Scene.question_mode] {scene_id} requires forced_question_ids")
+            continue
+        if not isinstance(forced_question_ids, list):
+            issues.append(f"[Scene.forced_question_ids] {scene_id} must be a list")
+            continue
+        for duplicate in find_duplicates(forced_question_ids):
+            issues.append(f"[Duplicate.forced_question_id] {scene_id} -> {duplicate}")
+        for question_id in forced_question_ids:
+            if question_id not in question_ids:
+                issues.append(f"[Scene.forced_question_ids] {scene_id} -> {question_id} (missing QuestionID)")
+        if question_mode not in {"All", "Any"}:
+            issues.append(f"[Scene.question_mode] {scene_id} invalid QuestionMode: {question_mode}")
+
+
 def validate_state_descriptors(data, issues):
     descriptors = data.get("state_descriptors", []) or []
     numeric_state_ids = {"ResonanceLevel", "InvestigationScore", "SongsoonTrust", "ReadRitualScore", "SolvedQuestionCount"}
@@ -477,6 +562,8 @@ def main():
     validate_gauges(data, scenes, issues)
     validate_effects(data, issues)
     validate_questions(data, issues)
+    validate_question_answers(data, scenes, issues)
+    validate_forced_questions(data, scenes, issues)
     validate_state_descriptors(data, issues)
 
     print(f"검수 대상: {input_path}")
