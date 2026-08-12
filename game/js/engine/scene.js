@@ -7,7 +7,6 @@ const Scene = (() => {
   let _hudContext = null;
   let _conditions = [];
   let _choiceGroups = new Map();
-  let _investigations = new Map();
   let _gauges = [];
   let _gaugeStates = [];
   const _gaugeListeners = new Map();
@@ -191,6 +190,14 @@ const Scene = (() => {
         if (choiceIds.length === 0) return false;
         return choiceIds.some(choiceId => State.hasChoice(choiceId));
       }
+      case 'QuestionSolved': {
+        const stateKeys = String(targetId || '')
+          .split('|')
+          .map(value => value.trim())
+          .filter(Boolean);
+        if (stateKeys.length === 0) return false;
+        return stateKeys.some(stateKey => State.isQuestionSolved(stateKey));
+      }
       case 'RevealedCharacter':
         return getRevealedCharacterSet(context).has(targetId);
       case 'SceneProgressIndex':
@@ -228,19 +235,50 @@ const Scene = (() => {
     return 'Normal';
   }
 
+  function buildConditionLockHint(conditionGroupId) {
+    if (!conditionGroupId) return '';
+    const rows = _conditions.filter(row => row?.condition_group_id === conditionGroupId);
+    if (rows.length === 0) return '';
+    const types = new Set(rows.map(row => row?.condition_type));
+    if (types.has('EvidenceOwned')) return '특정 단서를 가지고 있어야 열립니다.';
+    if (types.has('GaugeValue')) return '지금과 다른 상태여야 열립니다.';
+    if (types.has('ChoiceSelected')) return '이전의 다른 선택에 따라 달라집니다.';
+    if (types.has('QuestionSolved')) return '관련 질문을 단서로 정리해야 열립니다.';
+    if (types.has('Trust')) return '관계가 지금과 달라야 열립니다.';
+    return '아직 조건이 채워지지 않았습니다.';
+  }
+
   function getSceneChoicesByType(scene, type) {
     const context = { sceneId: scene?.id };
     const sceneChoices = Array.isArray(scene?.choices) ? scene.choices : [];
-    return sceneChoices.filter(choice => {
-      if (!passesConditionRef(choice, context)) return false;
+    const typed = sceneChoices.filter(choice => {
       const groupType = getChoiceGroupType(choice);
       if (type === 'Investigation') return groupType === 'Investigation';
       if (type === 'Normal') return groupType === 'Normal';
       return false;
-    }).map(choice => ({
-      ...choice,
-      choice_group_type: getChoiceGroupType(choice),
-    }));
+    });
+
+    if (type !== 'Normal') {
+      return typed
+        .filter(choice => passesConditionRef(choice, context))
+        .map(choice => ({ ...choice, choice_group_type: getChoiceGroupType(choice) }));
+    }
+
+    // Normal choices: keep condition-failing entries visible (grayed, unclickable)
+    // as long as at least one sibling choice is actually pickable. A scene whose
+    // only choice is locked falls back to the old hide-and-auto-continue behavior.
+    const passing = typed.filter(choice => passesConditionRef(choice, context));
+    if (passing.length === 0) return [];
+
+    return typed.map(choice => {
+      const locked = !passesConditionRef(choice, context);
+      return {
+        ...choice,
+        choice_group_type: getChoiceGroupType(choice),
+        locked,
+        lockedHint: locked ? buildConditionLockHint(choice.condition_group_id) : '',
+      };
+    });
   }
 
   function getAvailableChoices(scene, type = 'Normal') {
@@ -248,23 +286,17 @@ const Scene = (() => {
   }
 
   function resolveInvestigation(scene) {
-    if (scene?.investigation_id) {
-      return _investigations.get(scene.investigation_id) || null;
-    }
-
     const investigationChoices = getSceneChoicesByType(scene, 'Investigation');
-    if (investigationChoices.length > 0) {
-      const group = getChoiceGroup(investigationChoices[0]?.choice_group_id);
-      return {
-        investigation_id: scene?.investigation_id || investigationChoices[0]?.choice_group_id || scene?.id,
-        title: scene?.title || '조사 장면',
-        hint: '남은 조사 기회 안에서 무엇을 먼저 확인할지 정하세요.',
-        budget: group?.max_selectable ?? 1,
-        choice_group_id: group?.choice_group_id || investigationChoices[0]?.choice_group_id || null,
-      };
-    }
+    if (investigationChoices.length === 0) return null;
 
-    return null;
+    const group = getChoiceGroup(investigationChoices[0]?.choice_group_id);
+    return {
+      investigation_id: group?.choice_group_id || investigationChoices[0]?.choice_group_id || scene?.id,
+      title: scene?.investigation_title || scene?.title || '조사 장면',
+      hint: scene?.investigation_hint || '남은 조사 기회 안에서 무엇을 먼저 확인할지 정하세요.',
+      budget: group?.max_selectable ?? 1,
+      choice_group_id: group?.choice_group_id || investigationChoices[0]?.choice_group_id || null,
+    };
   }
 
   function hasPriorityMode(scene, choices = null) {
@@ -344,7 +376,6 @@ const Scene = (() => {
   function runScene(scene, fromLabel, restoreProgress = false) {
     // Clear leftover overlays from the previous scene before the new flow starts.
     Choice?.hide?.();
-    UIManager.hideEvidenceInventory?.();
     UIManager.setChoiceBoxVisible(false);
     UIManager.setDialogueBoxVisible(true);
 
@@ -451,7 +482,6 @@ const Scene = (() => {
       _firstSceneId = gameData.first_scene || Object.keys(gameData.scenes || {})[0] || null;
       _conditions = Array.isArray(gameData.conditions) ? gameData.conditions : [];
       _choiceGroups = new Map((gameData.choice_groups || []).map(item => [item.choice_group_id, item]));
-      _investigations = new Map((gameData.investigations || []).map(item => [item.investigation_id, item]));
       _gauges = Array.isArray(gameData.gauges) ? gameData.gauges : [];
       _gaugeStates = Array.isArray(gameData.gauge_states) ? gameData.gauge_states : [];
       bindGaugeStateListeners();

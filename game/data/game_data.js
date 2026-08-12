@@ -186,6 +186,24 @@ window.GAME_DATA = {
       "max_selectable": 2
     },
     {
+      "choice_group_id": "ChoiceGroup_CafeManagerEvidence",
+      "type": "Evidence",
+      "answer_type": "Evidence",
+      "condition_group_id": null,
+      "max_selectable": 1,
+      "is_gate": true,
+      "default_dialog_id": "cafe_manager_need_note"
+    },
+    {
+      "choice_group_id": "ChoiceGroup_CafeWaitressEvidence",
+      "type": "Evidence",
+      "answer_type": "Evidence",
+      "condition_group_id": null,
+      "max_selectable": 1,
+      "is_gate": true,
+      "default_dialog_id": "cafe_waitress_need_trace"
+    },
+    {
       "choice_group_id": "ChoiceGroup_Room4Investigation",
       "type": "Investigation",
       "condition_group_id": null,
@@ -193,9 +211,36 @@ window.GAME_DATA = {
     },
     {
       "choice_group_id": "ChoiceGroup_RitualFinal",
-      "type": "Investigation",
+      "type": "Normal",
       "condition_group_id": null,
       "max_selectable": 1
+    },
+    {
+      "choice_group_id": "ChoiceGroup_SlumInvestigation",
+      "type": "Investigation",
+      "condition_group_id": null,
+      "max_selectable": 2
+    },
+    {
+      "choice_group_id": "ChoiceGroup_NewsroomInvestigation",
+      "type": "Investigation",
+      "condition_group_id": null,
+      "max_selectable": 2
+    },
+    {
+      "choice_group_id": "ChoiceGroup_GuardedDoorInvestigation",
+      "type": "Investigation",
+      "condition_group_id": null,
+      "max_selectable": 2
+    },
+    {
+      "choice_group_id": "ChoiceGroup_Room4Conclusion",
+      "type": "Evidence",
+      "condition_group_id": null,
+      "max_selectable": 1,
+      "is_gate": true,
+      "default_dialog_id": "room4_conclusion_wrong",
+      "default_effect_group_id": "eff_room4_conclusion_wrong"
     },
     {
       "choice_group_id": "ChoiceGroup_LibraryEvidence",
@@ -211,15 +256,8 @@ window.GAME_DATA = {
       "answer_type": "Evidence",
       "condition_group_id": null,
       "max_selectable": 1,
-      "default_dialog_id": "present_ritual_default"
-    },
-    {
-      "choice_group_id": "ChoiceGroup_Ipangyu_Confront",
-      "type": "Evidence",
-      "answer_type": "Evidence",
-      "condition_group_id": null,
-      "max_selectable": 1,
-      "default_dialog_id": "dlg_ipangyu_default"
+      "default_dialog_id": "present_ritual_default",
+      "is_gate": true
     },
     {
       "choice_group_id": "ChoiceGroup_Okryeon_Confront",
@@ -227,7 +265,8 @@ window.GAME_DATA = {
       "answer_type": "Evidence",
       "condition_group_id": null,
       "max_selectable": 1,
-      "default_dialog_id": "dlg_okryeon_close"
+      "default_dialog_id": "dlg_okryeon_close",
+      "is_gate": true
     },
     {
       "choice_group_id": "ChoiceGroup_Songsoon_Trust",
@@ -235,7 +274,8 @@ window.GAME_DATA = {
       "answer_type": "Evidence",
       "condition_group_id": null,
       "max_selectable": 1,
-      "default_dialog_id": "dlg_songsoon_skeptical"
+      "default_dialog_id": "dlg_songsoon_skeptical",
+      "is_gate": true
     },
     {
       "choice_group_id": "ChoiceGroup_Editor_Confront",
@@ -282,7 +322,49 @@ window.GAME_DATA = {
       "max_selectable": 1
     },
     {
-      "choice_group_id": "ChoiceGroup_IpangyuDeal",
+      "choice_group_id": "ChoiceGroup_ParticipantLedger",
+      "type": "Normal",
+      "condition_group_id": null,
+      "max_selectable": 1
+    },
+    {
+      "choice_group_id": "ChoiceGroup_Backroom",
+      "type": "Normal",
+      "condition_group_id": null,
+      "max_selectable": 1
+    },
+    {
+      "choice_group_id": "ChoiceGroup_BackroomInvestigation",
+      "type": "Investigation",
+      "condition_group_id": null,
+      "max_selectable": 2
+    },
+    {
+      "choice_group_id": "ChoiceGroup_Threshold",
+      "type": "Normal",
+      "condition_group_id": null,
+      "max_selectable": 1
+    },
+    {
+      "choice_group_id": "ChoiceGroup_Descent",
+      "type": "Normal",
+      "condition_group_id": null,
+      "max_selectable": 1
+    },
+    {
+      "choice_group_id": "ChoiceGroup_HallwayBonus",
+      "type": "Normal",
+      "condition_group_id": null,
+      "max_selectable": 1
+    },
+    {
+      "choice_group_id": "ChoiceGroup_EditorRoomBonus",
+      "type": "Normal",
+      "condition_group_id": null,
+      "max_selectable": 1
+    },
+    {
+      "choice_group_id": "ChoiceGroup_ArticleBonus",
       "type": "Normal",
       "condition_group_id": null,
       "max_selectable": 1
@@ -346,6 +428,54 @@ window.GAME_DATA = {
       "condition_value": true
     },
     {
+      "condition_id": "Cond_Proof_Person_01",
+      "condition_group_id": "CG_Proof_Person",
+      "condition_type": "QuestionSolved",
+      "condition_target_id": "QuestionSolved_QSonggeumMissing|QuestionSolved_QSonggeumRunaway|QuestionSolved_QRoom4Purpose",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Proof_Structure_01",
+      "condition_group_id": "CG_Proof_Structure",
+      "condition_type": "QuestionSolved",
+      "condition_target_id": "QuestionSolved_QIpangyuCall|QuestionSolved_QIpangyuMadness|QuestionSolved_QCallPattern|QuestionSolved_QArchivePattern",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Proof_Ritual_01",
+      "condition_group_id": "CG_Proof_Ritual",
+      "condition_type": "QuestionSolved",
+      "condition_target_id": "QuestionSolved_QRitualLead|QuestionSolved_QRitualAccident|QuestionSolved_QRitualErasure",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Proof_All_01",
+      "condition_group_id": "CG_Proof_All",
+      "condition_type": "QuestionSolved",
+      "condition_target_id": "QuestionSolved_QSonggeumMissing|QuestionSolved_QSonggeumRunaway|QuestionSolved_QRoom4Purpose",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Proof_All_02",
+      "condition_group_id": "CG_Proof_All",
+      "condition_type": "QuestionSolved",
+      "condition_target_id": "QuestionSolved_QIpangyuCall|QuestionSolved_QIpangyuMadness|QuestionSolved_QCallPattern|QuestionSolved_QArchivePattern",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Proof_All_03",
+      "condition_group_id": "CG_Proof_All",
+      "condition_type": "QuestionSolved",
+      "condition_target_id": "QuestionSolved_QRitualLead|QuestionSolved_QRitualAccident|QuestionSolved_QRitualErasure",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
       "condition_id": "Cond_Branch_FinalChoice_A",
       "condition_group_id": "CG_Branch_FinalChoice_A",
       "condition_type": "ChoiceSelected",
@@ -357,7 +487,7 @@ window.GAME_DATA = {
       "condition_id": "Cond_Branch_FinalChoice_B",
       "condition_group_id": "CG_Branch_FinalChoice_B",
       "condition_type": "ChoiceSelected",
-      "condition_target_id": "Ch6FinalBlock|Ch6FinalExpose",
+      "condition_target_id": "Ch6FinalBlock|Ch6FinalRecord",
       "compare_type": "Equal",
       "condition_value": true
     },
@@ -416,8 +546,9 @@ window.GAME_DATA = {
       "condition_target_id": "SolvedQuestionCount",
       "compare_type": "Equal",
       "condition_value": [
-        2,
-        3
+        4,
+        5,
+        6
       ]
     },
     {
@@ -487,34 +618,38 @@ window.GAME_DATA = {
     {
       "condition_id": "Cond_Epilogue_EndingA_01",
       "condition_group_id": "CG_Epilogue_EndingA",
-      "condition_type": "Trust",
-      "condition_target_id": "Songsoon",
+      "condition_type": "GaugeValue",
+      "condition_target_id": "SolvedQuestionCount",
       "compare_type": "GreaterEqual",
-      "condition_value": 1
+      "condition_value": 7
     },
     {
       "condition_id": "Cond_Epilogue_EndingA_02",
       "condition_group_id": "CG_Epilogue_EndingA",
-      "condition_type": "ChoiceSelected",
-      "condition_target_id": "article_q1_correct",
-      "compare_type": "Equal",
-      "condition_value": true
-    },
-    {
-      "condition_id": "Cond_Epilogue_EndingB_01",
-      "condition_group_id": "CG_Epilogue_EndingB",
       "condition_type": "GaugeValue",
       "condition_target_id": "Credibility",
       "compare_type": "GreaterEqual",
       "condition_value": 7
     },
     {
+      "condition_id": "Cond_Epilogue_EndingB_01",
+      "condition_group_id": "CG_Epilogue_EndingB",
+      "condition_type": "GaugeValue",
+      "condition_target_id": "SolvedQuestionCount",
+      "compare_type": "Equal",
+      "condition_value": [
+        4,
+        5,
+        6
+      ]
+    },
+    {
       "condition_id": "Cond_Epilogue_EndingB_02",
       "condition_group_id": "CG_Epilogue_EndingB",
-      "condition_type": "ChoiceSelected",
-      "condition_target_id": "article_q3_correct",
-      "compare_type": "Equal",
-      "condition_value": true
+      "condition_type": "GaugeValue",
+      "condition_target_id": "Credibility",
+      "compare_type": "GreaterEqual",
+      "condition_value": 7
     },
     {
       "condition_id": "Cond_Hospital_Info2_01",
@@ -551,7 +686,7 @@ window.GAME_DATA = {
     {
       "condition_id": "Cond_Library_RunawaySolved_01",
       "condition_group_id": "CG_Library_QSonggeumRunaway",
-      "condition_type": "ChoiceSelected",
+      "condition_type": "QuestionSolved",
       "condition_target_id": "QuestionSolved_QSonggeumRunaway",
       "compare_type": "Equal",
       "condition_value": true
@@ -559,7 +694,7 @@ window.GAME_DATA = {
     {
       "condition_id": "Cond_Outcome_QMadness_01",
       "condition_group_id": "CG_Outcome_QMadness",
-      "condition_type": "ChoiceSelected",
+      "condition_type": "QuestionSolved",
       "condition_target_id": "QuestionSolved_QIpangyuMadness",
       "compare_type": "Equal",
       "condition_value": true
@@ -567,7 +702,7 @@ window.GAME_DATA = {
     {
       "condition_id": "Cond_Outcome_QRunaway_01",
       "condition_group_id": "CG_Outcome_QRunaway",
-      "condition_type": "ChoiceSelected",
+      "condition_type": "QuestionSolved",
       "condition_target_id": "QuestionSolved_QSonggeumRunaway",
       "compare_type": "Equal",
       "condition_value": true
@@ -579,14 +714,15 @@ window.GAME_DATA = {
       "condition_target_id": "SolvedQuestionCount",
       "compare_type": "Equal",
       "condition_value": [
-        2,
-        3
+        4,
+        5,
+        6
       ]
     },
     {
       "condition_id": "Cond_RitualRoom_AccidentSolved_01",
       "condition_group_id": "CG_RitualRoom_QRitualAccident",
-      "condition_type": "ChoiceSelected",
+      "condition_type": "QuestionSolved",
       "condition_target_id": "QuestionSolved_QRitualAccident",
       "compare_type": "Equal",
       "condition_value": true
@@ -602,7 +738,7 @@ window.GAME_DATA = {
     {
       "condition_id": "Cond_RitualRoom_QRitualAccident_01",
       "condition_group_id": "CG_RitualRoom_QRitualAccident",
-      "condition_type": "ChoiceSelected",
+      "condition_type": "QuestionSolved",
       "condition_target_id": "QuestionSolved_QRitualAccident",
       "compare_type": "Equal",
       "condition_value": true
@@ -628,12 +764,8 @@ window.GAME_DATA = {
       "condition_group_id": "CG_RitualScene_SolvedHigh",
       "condition_type": "GaugeValue",
       "condition_target_id": "SolvedQuestionCount",
-      "compare_type": "Equal",
-      "condition_value": [
-        4,
-        5,
-        6
-      ]
+      "compare_type": "GreaterEqual",
+      "condition_value": 7
     },
     {
       "condition_id": "Cond_Room4_ReadRitual_01",
@@ -698,8 +830,9 @@ window.GAME_DATA = {
       "condition_target_id": "SolvedQuestionCount",
       "compare_type": "Equal",
       "condition_value": [
-        2,
-        3
+        4,
+        5,
+        6
       ]
     },
     {
@@ -707,14 +840,6 @@ window.GAME_DATA = {
       "condition_group_id": "CG_Threshold_TrustedSongsoon",
       "condition_type": "ChoiceSelected",
       "condition_target_id": "Ch3WarehouseTrustSongsoon|Ch3Room4ComfortSongsoon",
-      "compare_type": "Equal",
-      "condition_value": true
-    },
-    {
-      "condition_id": "Cond_Epilogue_EndingA_03",
-      "condition_group_id": "CG_Epilogue_EndingA",
-      "condition_type": "ChoiceSelected",
-      "condition_target_id": "Ch5IpangyuDealAccept",
       "compare_type": "Equal",
       "condition_value": true
     },
@@ -807,7 +932,7 @@ window.GAME_DATA = {
       "condition_group_id": "CG_QR_RitualOpen_03"
     },
     {
-      "condition_type": "ChoiceSelected",
+      "condition_type": "QuestionSolved",
       "condition_target_id": "QuestionSolved_QIpangyuCall",
       "compare_type": "Equal",
       "condition_value": true,
@@ -823,7 +948,7 @@ window.GAME_DATA = {
       "condition_group_id": "CG_QS_IpangyuCall_02"
     },
     {
-      "condition_type": "ChoiceSelected",
+      "condition_type": "QuestionSolved",
       "condition_target_id": "QuestionSolved_QIpangyuMadness",
       "compare_type": "Equal",
       "condition_value": true,
@@ -839,7 +964,7 @@ window.GAME_DATA = {
       "condition_group_id": "CG_QS_IpangyuMadness_02"
     },
     {
-      "condition_type": "ChoiceSelected",
+      "condition_type": "QuestionSolved",
       "condition_target_id": "QuestionSolved_QSonggeumMissing",
       "compare_type": "Equal",
       "condition_value": true,
@@ -855,7 +980,7 @@ window.GAME_DATA = {
       "condition_group_id": "CG_QS_SonggeumMissing_02"
     },
     {
-      "condition_type": "ChoiceSelected",
+      "condition_type": "QuestionSolved",
       "condition_target_id": "QuestionSolved_QSonggeumRunaway",
       "compare_type": "Equal",
       "condition_value": true,
@@ -871,7 +996,7 @@ window.GAME_DATA = {
       "condition_group_id": "CG_QS_SonggeumRunaway_02"
     },
     {
-      "condition_type": "ChoiceSelected",
+      "condition_type": "QuestionSolved",
       "condition_target_id": "QuestionSolved_QRitualLead",
       "compare_type": "Equal",
       "condition_value": true,
@@ -887,7 +1012,7 @@ window.GAME_DATA = {
       "condition_group_id": "CG_QS_RitualLead_02"
     },
     {
-      "condition_type": "ChoiceSelected",
+      "condition_type": "QuestionSolved",
       "condition_target_id": "QuestionSolved_QRitualAccident",
       "compare_type": "Equal",
       "condition_value": true,
@@ -901,6 +1026,118 @@ window.GAME_DATA = {
       "condition_value": true,
       "condition_id": "Cond_RR_QRitualAccidentState_01",
       "condition_group_id": "CG_QS_RitualAccident_02"
+    },
+    {
+      "condition_id": "Cond_Room4_HasNote_01",
+      "condition_group_id": "CG_Room4_HasNote",
+      "condition_type": "EvidenceOwned",
+      "condition_target_id": "EvNote",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Archive_QPattern_01",
+      "condition_group_id": "CG_Archive_QPattern",
+      "condition_type": "QuestionSolved",
+      "condition_target_id": "QuestionSolved_QArchivePattern",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Ritual_QRoom4Purpose_01",
+      "condition_group_id": "CG_Ritual_QRoom4Purpose",
+      "condition_type": "QuestionSolved",
+      "condition_target_id": "QuestionSolved_QRoom4Purpose",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Article_QCallPattern_01",
+      "condition_group_id": "CG_Article_QCallPattern",
+      "condition_type": "QuestionSolved",
+      "condition_target_id": "QuestionSolved_QCallPattern",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Article_QRitualErasure_01",
+      "condition_group_id": "CG_Article_QRitualErasure",
+      "condition_type": "QuestionSolved",
+      "condition_target_id": "QuestionSolved_QRitualErasure",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_GuardedDoor_HasScore_01",
+      "condition_group_id": "CG_GuardedDoor_HasScore",
+      "condition_type": "EvidenceOwned",
+      "condition_target_id": "EvRitualScore",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Slum_HasHanbok_01",
+      "condition_group_id": "CG_Slum_HasHanbok",
+      "condition_type": "EvidenceOwned",
+      "condition_target_id": "EvBlueHanbok",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Backroom_HasArticles_01",
+      "condition_group_id": "CG_Backroom_HasArticles",
+      "condition_type": "EvidenceOwned",
+      "condition_target_id": "EvOldArticles",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Threshold_Credibility7_01",
+      "condition_group_id": "CG_Threshold_Credibility7",
+      "condition_type": "GaugeValue",
+      "condition_target_id": "Credibility",
+      "compare_type": "GreaterEqual",
+      "condition_value": 7
+    },
+    {
+      "condition_id": "Cond_Cafe4b_Erosion2_01",
+      "condition_group_id": "CG_Cafe4b_Erosion2",
+      "condition_type": "GaugeValue",
+      "condition_target_id": "Erosion",
+      "compare_type": "GreaterEqual",
+      "condition_value": 2
+    },
+    {
+      "condition_id": "Cond_ParticipantLedger_Erosion3_01",
+      "condition_group_id": "CG_ParticipantLedger_Erosion3",
+      "condition_type": "GaugeValue",
+      "condition_target_id": "Erosion",
+      "compare_type": "GreaterEqual",
+      "condition_value": 3
+    },
+    {
+      "condition_id": "Cond_Threshold_Erosion6_01",
+      "condition_group_id": "CG_Threshold_Erosion6",
+      "condition_type": "GaugeValue",
+      "condition_target_id": "Erosion",
+      "compare_type": "GreaterEqual",
+      "condition_value": 6
+    },
+    {
+      "condition_id": "Cond_Descent_Erosion3_01",
+      "condition_group_id": "CG_Descent_Erosion3",
+      "condition_type": "GaugeValue",
+      "condition_target_id": "Erosion",
+      "compare_type": "GreaterEqual",
+      "condition_value": 3
+    },
+    {
+      "condition_id": "Cond_Ritual_Erosion6_01",
+      "condition_group_id": "CG_Ritual_Erosion6",
+      "condition_type": "GaugeValue",
+      "condition_target_id": "Erosion",
+      "compare_type": "GreaterEqual",
+      "condition_value": 6
     }
   ],
   "evidence_categories": [
@@ -918,267 +1155,6 @@ window.GAME_DATA = {
       "category_id": "ritual",
       "category_title": "의례와 공명",
       "category_hint": "문, 무녀, 감응과 연결된 흔적"
-    }
-  ],
-  "investigations": [
-    {
-      "investigation_id": "Investigation_CafeNakwon",
-      "title": "낙원에서 먼저 흔들어 볼 결은 무엇인가",
-      "hint": "점장의 입, 여급들의 빚, 구석 손님의 침묵 가운데 어디를 먼저 건드릴지 정하세요.",
-      "budget": 2,
-      "choice_group_id": "ChoiceGroup_CafeInvestigation",
-      "priority_dialogues": {
-        "inv_mgr": [
-          {
-            "order": 1,
-            "text": "한 가지만 더요. 그 여자가 마지막으로 무대에 섰던 날, 기억하십니까?",
-            "style": "normal",
-            "condition": null,
-            "speaker_id": "Yuu",
-            "emotion_type": "Tense",
-            "standing_slot": "Right",
-            "focus_type": "Speaker"
-          },
-          {
-            "order": 2,
-            "text": "…그건 제가 드릴 말씀이 없습니다. 손님, 이런 말씀이 계속되면 자리를 비워드려야 하겠습니다.",
-            "style": "normal",
-            "condition": null,
-            "speaker_id": "Manager",
-            "emotion_type": "Neutral",
-            "standing_slot": "Left",
-            "focus_type": "Speaker"
-          },
-          {
-            "order": 3,
-            "text": "점장은 이미 겁을 먹고 있다. 여기서 더 밀면 입을 닫겠지만, 낙원 안쪽 질서가 누구를 숨기고 있는지는 더 또렷해졌어.",
-            "style": "thought",
-            "condition": null,
-            "speaker_id": "Yuu",
-            "emotion_type": "Tense",
-            "standing_slot": "Right",
-            "focus_type": "Speaker"
-          }
-        ],
-        "inv_wtrs": [
-          {
-            "order": 1,
-            "text": "지나치던 여급이 손님 상을 치우며 눈을 피한다. 반쯤 비운 술잔이 제 것인지 손님 것인지 구분이 안 간다. 유웅룡이 시선으로 잡아채자 잠깐 멈춘다.",
-            "style": "narration",
-            "condition": null
-          },
-          {
-            "order": 2,
-            "text": "그런 건 이제 안 해요. 이름을 입에 올렸다가 되돌아오는 것도 있으니까…. (낮게) 저는 아직 빚이 남아서요. 손님은 못 들은 셈 치세요.",
-            "style": "normal",
-            "condition": null,
-            "speaker_id": "Waitress",
-            "emotion_type": "Neutral",
-            "standing_slot": "Left",
-            "focus_type": "Speaker"
-          },
-          {
-            "order": 3,
-            "text": "이름을 올리면 되돌아오고, 빚이 남아 있으면 입을 닫는다. 낙원은 노래보다 빚으로 사람을 붙들고 있군. 다음엔 그 빚의 주인을 쫓아야겠어.",
-            "style": "thought",
-            "condition": null,
-            "speaker_id": "Yuu",
-            "emotion_type": "Tense",
-            "standing_slot": "Right",
-            "focus_type": "Speaker"
-          }
-        ],
-        "inv_obs": [
-          {
-            "order": 1,
-            "text": "구석 자리. 손을 모은 채 조용히 앉은 여자. 술잔을 천천히 밀어놓으면서 이쪽을 보지 않는다.",
-            "style": "thought",
-            "condition": null,
-            "speaker_id": "Yuu",
-            "emotion_type": "Tense",
-            "standing_slot": "Right",
-            "focus_type": "Speaker"
-          },
-          {
-            "order": 2,
-            "text": "하지만 저 눈은 전부 듣고 있다. 조용히 웅크렸을 뿐, 이미 안쪽 사정을 아는 사람의 자세다. 오늘 밤 낙원엔 말 안 하는 증인이 더 있군.",
-            "style": "thought",
-            "condition": null,
-            "speaker_id": "Yuu",
-            "emotion_type": "Tense",
-            "standing_slot": "Right",
-            "focus_type": "Speaker"
-          }
-        ]
-      }
-    },
-    {
-      "investigation_id": "Investigation_Room4",
-      "title": "이 방에서 먼저 붙들 진실은 무엇인가",
-      "hint": "벽의 흔적, 남겨진 기록, 송순의 흔들림 가운데 어디부터 잡아야 사건의 구조가 드러나는지 고르세요.",
-      "budget": 2,
-      "choice_group_id": "ChoiceGroup_Room4Investigation",
-      "priority_dialogues": {
-        "room4_touch": [
-          {
-            "order": 1,
-            "text": "유웅룡의 손끝이 문양에 닿는 순간, 차갑다기보다 젖은 숨결 같은 감각이 손바닥으로 파고든다. 방 안 공기가 아주 잠깐 뒤집힌다.",
-            "style": "narration",
-            "condition": null
-          },
-          {
-            "order": 2,
-            "speaker_id": "Yuu",
-            "emotion_type": "Shaken",
-            "standing_slot": "Right",
-            "focus_type": "Speaker",
-            "idle_motion": "Tremble",
-            "fx_type": "BlueTrace",
-            "text": "...문양이 아니라 자국이었군. 누가 바깥에서 연 게 아니라, 안쪽에서 한 번 밀어낸 흔적이야.",
-            "style": "normal",
-            "condition": null
-          },
-          {
-            "order": 3,
-            "speaker_id": "Songsoon",
-            "emotion_type": "Afraid",
-            "standing_slot": "Left",
-            "focus_type": "Speaker",
-            "text": "그걸 직접 만지고도 그런 소릴 하세요? ...그래도 이제 저도 모른 체는 못 하겠어요.",
-            "style": "normal",
-            "condition": null
-          }
-        ],
-        "room4_record": [
-          {
-            "order": 1,
-            "speaker_id": "Yuu",
-            "emotion_type": "Tense",
-            "standing_slot": "Right",
-            "focus_type": "Speaker",
-            "text": "(일기장을 더 넘긴다) 이름을 불릴수록 내가 옅어진다... 남겨 둔 문장치곤 지나치게 또렷하군요.",
-            "style": "normal",
-            "condition": null
-          },
-          {
-            "order": 2,
-            "speaker_id": "Yuu",
-            "emotion_type": "Tense",
-            "standing_slot": "Right",
-            "focus_type": "Speaker",
-            "text": "살려 달라는 글이라기보다, 나중에라도 누가 읽어 달라는 문장입니다. 이건 끝까지 가져가야 해요.",
-            "style": "thought",
-            "condition": null
-          },
-          {
-            "order": 3,
-            "speaker_id": "Songsoon",
-            "emotion_type": "Uneasy",
-            "standing_slot": "Left",
-            "focus_type": "Speaker",
-            "text": "그럼 끝까지 읽어야죠. 언니가 남긴 말이면, 적어도 우린 다 읽고 나가야 해요.",
-            "style": "normal",
-            "condition": null
-          }
-        ],
-        "room4_comfort": [
-          {
-            "order": 1,
-            "speaker_id": "Yuu",
-            "emotion_type": "Neutral",
-            "standing_slot": "Right",
-            "focus_type": "Speaker",
-            "text": "송순 씨, 이 일 전부 당신 몫으로 짊어질 생각은 마십시오. 없어지는 사람을 막는 일은 죄책감만으로는 못 버팁니다.",
-            "style": "normal",
-            "condition": null
-          },
-          {
-            "order": 2,
-            "speaker_id": "Songsoon",
-            "emotion_type": "Sad",
-            "standing_slot": "Left",
-            "focus_type": "Speaker",
-            "text": "...그 말을 기다리고 있었는지도 몰라요. 내가 언니를 못 지켰단 마음이 자꾸 먼저 와서, 자꾸 다 놓칠 뻔했어요.",
-            "style": "normal",
-            "condition": null
-          },
-          {
-            "order": 3,
-            "speaker_id": "Yuu",
-            "emotion_type": "Neutral",
-            "standing_slot": "Right",
-            "focus_type": "Speaker",
-            "text": "탓은 나중에 합시다. 지금은 누가 지웠는지부터 찾아야지요.",
-            "style": "normal",
-            "condition": null
-          }
-        ]
-      }
-    },
-    {
-      "investigation_id": "Investigation_RitualFinal",
-      "title": "이 방에서 무엇을 사람으로 남길 것인가",
-      "hint": "구해 붙들지, 몸으로 끊을지, 공포에 멈출지, 쌓아 온 질문으로 폭로할지 선택하세요.",
-      "budget": 1,
-      "choice_group_id": "ChoiceGroup_RitualFinal",
-      "priority_dialogues": {
-        "ritual_answer": [
-          {
-            "order": 1,
-            "speaker_id": "Songsoon",
-            "emotion_type": "Afraid",
-            "standing_slot": "Left",
-            "focus_type": "Speaker",
-            "idle_motion": "Tremble",
-            "text": "언니, 그 소리 따라가지 마. 나 봐. 나 아직 여기 있어. 네 이름 알아.",
-            "style": "normal",
-            "condition": null
-          },
-          {
-            "order": 2,
-            "text": "송순의 목소리가 콧노래를 가르며 들어간다. 의식의 중심이 아주 잠깐 흔들린다.",
-            "style": "narration",
-            "condition": null
-          }
-        ],
-        "ritual_block": [
-          {
-            "order": 1,
-            "speaker_id": "Yuu",
-            "emotion_type": "Angry",
-            "standing_slot": "Right",
-            "focus_type": "Speaker",
-            "idle_motion": "ShakeLight",
-            "text": "이쯤으로 충분할 터인데. 사람 갈아 넣고도 정화라 부를 셈이면, 그 입부터 막아야겠군.",
-            "style": "normal",
-            "condition": null
-          },
-          {
-            "order": 2,
-            "text": "유웅룡이 제단 쪽으로 몸을 던진다. 글로는 늦는 순간이 있다. 이번만큼은 문장보다 몸이 먼저 나간다.",
-            "style": "narration",
-            "condition": null
-          }
-        ],
-        "ritual_hesitate": [
-          {
-            "order": 1,
-            "text": "두 사람은 아주 짧은 순간, 아무 쪽도 택하지 못하고 얼어붙는다. 공포는 그렇게 늘 반 박자 먼저 사람을 붙든다.",
-            "style": "narration",
-            "condition": null
-          },
-          {
-            "order": 2,
-            "speaker_id": "Yuu",
-            "emotion_type": "Shaken",
-            "standing_slot": "Right",
-            "focus_type": "Speaker",
-            "text": "...빌어먹을, 한 박자 늦었군.",
-            "style": "normal",
-            "condition": null
-          }
-        ]
-      }
     }
   ],
   "questions": [
@@ -1352,7 +1328,8 @@ window.GAME_DATA = {
         "EvRitualScore",
         "EvOldArticles",
         "EvRitualNote",
-        "EvMask"
+        "EvMask",
+        "EvSlumWitness"
       ],
       "solution_evidence_ids": [
         "EvRitualScore",
@@ -1426,6 +1403,87 @@ window.GAME_DATA = {
           "priority": 10
         }
       ]
+    },
+    {
+      "question_id": "QCallPattern",
+      "title": "호출의 쪽지와 푸른 천은 같은 명령의 흔적인가",
+      "detail": "공장에 남은 두 물건이 우연한 폐기물이 아니라 사람을 낙원으로 이끄는 표식인지 확인한다.",
+      "sort_order": 18,
+      "category": "Witness",
+      "related_evidence_ids": [
+        "EvNote",
+        "EvBlueCloth"
+      ],
+      "solution_evidence_ids": [
+        "EvNote",
+        "EvBlueCloth"
+      ],
+      "solution_mode": "All",
+      "solved_state_id": "QuestionSolved_QCallPattern",
+      "resolved_detail": "쪽지의 지시와 푸른 천의 표식은 같은 호출이 사람을 낙원으로 밀어 넣었다는 흔적이다.",
+      "success_toast": "질문 정리: 호출의 표식이 하나로 이어졌다.",
+      "failure_toast": "두 흔적을 함께 대조해야 호출의 구조가 드러난다."
+    },
+    {
+      "question_id": "QRoom4Purpose",
+      "title": "4호실은 무엇을 위해 쓰였는가",
+      "detail": "방 안의 의복과 가면이 단순한 소품인지, 사람을 의례의 역할로 바꾸는 장치인지 가린다.",
+      "sort_order": 28,
+      "category": "Missing",
+      "related_evidence_ids": [
+        "EvBlueHanbok",
+        "EvMask",
+        "EvDiary"
+      ],
+      "solution_evidence_ids": [
+        "EvBlueHanbok",
+        "EvMask"
+      ],
+      "solution_mode": "All",
+      "solved_state_id": "QuestionSolved_QRoom4Purpose",
+      "resolved_detail": "청색 한복과 네 눈 가면은 4호실이 사람을 의례의 배역으로 바꾸던 준비실이었음을 보여 준다.",
+      "success_toast": "질문 정리: 4호실의 용도를 붙들었다.",
+      "failure_toast": "의복과 가면을 함께 읽어야 방의 역할이 보인다."
+    },
+    {
+      "question_id": "QArchivePattern",
+      "title": "과거 기사와 현재 실종은 같은 구조인가",
+      "detail": "삭제된 기사와 빈민가의 목격담을 이어, 반복된 실종이 개인 사건이 아니었음을 확인한다.",
+      "sort_order": 38,
+      "category": "Record",
+      "related_evidence_ids": [
+        "EvOldArticles",
+        "EvSlumWitness"
+      ],
+      "solution_evidence_ids": [
+        "EvOldArticles",
+        "EvSlumWitness"
+      ],
+      "solution_mode": "All",
+      "solved_state_id": "QuestionSolved_QArchivePattern",
+      "resolved_detail": "과거 기사와 목격담은 같은 방식의 실종이 기록에서 반복해서 지워졌음을 보여 준다.",
+      "success_toast": "질문 정리: 반복된 삭제의 계보를 찾았다.",
+      "failure_toast": "기사와 목격담이 함께 있어야 반복의 구조를 말할 수 있다."
+    },
+    {
+      "question_id": "QRitualErasure",
+      "title": "의식은 어떻게 사람의 이름을 지우는가",
+      "detail": "악보와 의례실 기록을 맞대, 노래가 사람을 역할로 바꾸는 절차를 밝힌다.",
+      "sort_order": 45,
+      "category": "Ritual",
+      "related_evidence_ids": [
+        "EvRitualScore",
+        "EvRitualNote"
+      ],
+      "solution_evidence_ids": [
+        "EvRitualScore",
+        "EvRitualNote"
+      ],
+      "solution_mode": "All",
+      "solved_state_id": "QuestionSolved_QRitualErasure",
+      "resolved_detail": "악보와 의례실 기록은 노래가 이름을 흐리고 사람을 의례의 몫으로 바꾸는 정해진 절차였음을 보여 준다.",
+      "success_toast": "질문 정리: 이름을 지우는 절차를 밝혔다.",
+      "failure_toast": "노래의 순서와 의례실 기록을 함께 봐야 한다."
     }
   ],
   "state_descriptors": [
@@ -1643,6 +1701,15 @@ window.GAME_DATA = {
   ],
   "effects": [
     {
+      "effect_group_id": "eff_ch4a_slum_ask_masked",
+      "effect_type": "EvidenceGive",
+      "gauge_id": null,
+      "gauge_delta": null,
+      "evidence_id": "EvSlumWitness",
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
       "effect_group_id": "eff_article_correct",
       "effect_type": "GaugeChange",
       "gauge_id": "Credibility",
@@ -1742,33 +1809,6 @@ window.GAME_DATA = {
       "trust_delta": null
     },
     {
-      "effect_group_id": "eff_ipangyu_correct",
-      "effect_type": "GaugeChange",
-      "gauge_id": "Credibility",
-      "gauge_delta": 1,
-      "evidence_id": null,
-      "trust_character_id": null,
-      "trust_delta": null
-    },
-    {
-      "effect_group_id": "eff_ipangyu_correct",
-      "effect_type": "GaugeChange",
-      "gauge_id": "Erosion",
-      "gauge_delta": 1,
-      "evidence_id": null,
-      "trust_character_id": null,
-      "trust_delta": null
-    },
-    {
-      "effect_group_id": "eff_ipangyu_wrong",
-      "effect_type": "GaugeChange",
-      "gauge_id": "Credibility",
-      "gauge_delta": -1,
-      "evidence_id": null,
-      "trust_character_id": null,
-      "trust_delta": null
-    },
-    {
       "effect_group_id": "eff_okryeon_diary",
       "effect_type": "GaugeChange",
       "gauge_id": "Credibility",
@@ -1814,6 +1854,78 @@ window.GAME_DATA = {
       "trust_delta": 1
     },
     {
+      "effect_group_id": "eff_songsoon_wrong",
+      "effect_type": "GaugeChange",
+      "gauge_id": "Credibility",
+      "gauge_delta": -1,
+      "evidence_id": null,
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_ritual_wrong",
+      "effect_type": "GaugeChange",
+      "gauge_id": "Credibility",
+      "gauge_delta": -1,
+      "evidence_id": null,
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_ch3_room4_touch_wall",
+      "effect_type": "EvidenceGive",
+      "gauge_id": null,
+      "gauge_delta": null,
+      "evidence_id": "EvMask",
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_ch3_room4_comfort_hanbok",
+      "effect_type": "EvidenceGive",
+      "gauge_id": null,
+      "gauge_delta": null,
+      "evidence_id": "EvBlueHanbok",
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_room4_conclusion_wrong",
+      "effect_type": "GaugeChange",
+      "gauge_id": "Credibility",
+      "gauge_delta": -1,
+      "evidence_id": null,
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_r9_document",
+      "effect_type": "GaugeChange",
+      "gauge_id": "Credibility",
+      "gauge_delta": 1,
+      "evidence_id": null,
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_r9_follow_sound",
+      "effect_type": "GaugeChange",
+      "gauge_id": "Erosion",
+      "gauge_delta": 1,
+      "evidence_id": null,
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_r9_songsoon_support",
+      "effect_type": "TrustChange",
+      "gauge_id": null,
+      "gauge_delta": null,
+      "evidence_id": null,
+      "trust_character_id": "Songsoon",
+      "trust_delta": 1
+    },
+    {
       "effect_group_id": "eff_editor_defy",
       "effect_type": "GaugeChange",
       "gauge_id": "Credibility",
@@ -1823,38 +1935,38 @@ window.GAME_DATA = {
       "trust_delta": null
     },
     {
-      "effect_group_id": "eff_ch5_observe",
-      "effect_type": "GaugeChange",
-      "gauge_id": "Credibility",
-      "gauge_delta": 1,
+      "effect_group_id": "eff_editor_obey",
+      "effect_type": "TrustChange",
+      "gauge_id": null,
+      "gauge_delta": null,
       "evidence_id": null,
-      "trust_character_id": null,
-      "trust_delta": null
+      "trust_character_id": "Editor",
+      "trust_delta": 1
     },
     {
-      "effect_group_id": "eff_ch5_observe",
-      "effect_type": "GaugeChange",
-      "gauge_id": "Erosion",
-      "gauge_delta": 1,
-      "evidence_id": null,
-      "trust_character_id": null,
-      "trust_delta": null
-    },
-    {
-      "effect_group_id": "eff_ipangyu_deal_accept",
-      "effect_type": "GaugeChange",
-      "gauge_id": "Erosion",
-      "gauge_delta": 1,
-      "evidence_id": null,
-      "trust_character_id": null,
-      "trust_delta": null
-    },
-    {
-      "effect_group_id": "eff_ipangyu_deal_accept",
+      "effect_group_id": "eff_participant_ledger",
       "effect_type": "EvidenceGain",
       "gauge_id": null,
       "gauge_delta": null,
-      "evidence_id": "EvIpangyuName",
+      "evidence_id": "EvParticipantLedger",
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_participant_ledger_reveal",
+      "effect_type": "GaugeChange",
+      "gauge_id": "Erosion",
+      "gauge_delta": 1,
+      "evidence_id": null,
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_participant_ledger_reveal",
+      "effect_type": "EvidenceGain",
+      "gauge_id": null,
+      "gauge_delta": null,
+      "evidence_id": "EvParticipantLedger",
       "trust_character_id": null,
       "trust_delta": null
     },
@@ -1875,6 +1987,60 @@ window.GAME_DATA = {
       "evidence_id": null,
       "trust_character_id": "Editor",
       "trust_delta": 1
+    },
+    {
+      "effect_group_id": "eff_room4_note_match",
+      "effect_type": "GaugeChange",
+      "gauge_id": "Credibility",
+      "gauge_delta": 1,
+      "evidence_id": null,
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_guarded_door_score_read",
+      "effect_type": "GaugeChange",
+      "gauge_id": "Credibility",
+      "gauge_delta": 1,
+      "evidence_id": null,
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_slum_hanbok_press",
+      "effect_type": "GaugeChange",
+      "gauge_id": "Erosion",
+      "gauge_delta": 1,
+      "evidence_id": null,
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_cafe_press_credential",
+      "effect_type": "GaugeChange",
+      "gauge_id": "Credibility",
+      "gauge_delta": 1,
+      "evidence_id": null,
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_cafe4b_erosion_lean",
+      "effect_type": "GaugeChange",
+      "gauge_id": "Erosion",
+      "gauge_delta": 1,
+      "evidence_id": null,
+      "trust_character_id": null,
+      "trust_delta": null
+    },
+    {
+      "effect_group_id": "eff_threshold_erosion_touch",
+      "effect_type": "GaugeChange",
+      "gauge_id": "Erosion",
+      "gauge_delta": 1,
+      "evidence_id": null,
+      "trust_character_id": null,
+      "trust_delta": null
     }
   ],
   "scenes": {
@@ -1910,7 +2076,7 @@ window.GAME_DATA = {
         },
         {
           "order": 3,
-          "text": "피고 이판규는 한 달 간격으로 아홉 살, 열한 살 조선인 남자아이 두 명을 살해한 혐의입니다. 피해 아동의 입 안에서 파란 천 조각이 깊숙이 말려든 채 발견되었습니다. 이는 단순 사고가 아니라 의식의 흔적으로 보입니다.",
+          "text": "피고 이판규는 아동 두 명의 실종과 살해 혐의를 받고 있습니다. 다만 현장 기록은 부실하고, 남은 증언도 서로 맞지 않습니다.",
           "style": "normal",
           "speaker_id": "Prosecutor",
           "emotion_type": "Neutral",
@@ -2060,7 +2226,7 @@ window.GAME_DATA = {
         },
         {
           "order": 3,
-          "text": "단순한 실종이 아니지. 입에 푸른 천을 쑤셔 넣고 바쳤다는 자야. 그런데 무죄야, 정신병자라는 이유로. 이런 게 기사야, 유 기자.",
+          "text": "단순한 실종이 아니지. 그런데 무죄야, 정신병자라는 이유로. 이런 게 기사야, 유 기자.",
           "style": "normal",
           "speaker_id": "Editor",
           "emotion_type": "Angry",
@@ -2117,7 +2283,7 @@ window.GAME_DATA = {
         },
         {
           "order": 10,
-          "text": "클리핑 귀퉁이엔 누군가 덧쓴 메모가 남아 있다. '낙원 재조사 요망'. 잉크는 번져 있는데, 그 두 글자만은 이상할 만큼 또렷하다.",
+          "text": "클리핑 귀퉁이엔 누군가 덧쓴 메모가 남아 있다. '이송 뒤 재조사 요망'. 잉크는 번져 있는데, 행선지를 가리키는 말만은 이상할 만큼 또렷하다.",
           "style": "narration"
         }
       ],
@@ -2158,7 +2324,7 @@ window.GAME_DATA = {
           "branch_id": "Br_ch1_newsroom_obedient_Default",
           "order": 1,
           "condition_group_id": null,
-          "next_scene": "ch2_hospital"
+          "next_scene": "ch1_newsroom_investigation"
         }
       ],
       "dialogues": [
@@ -2215,7 +2381,7 @@ window.GAME_DATA = {
           "branch_id": "Br_ch1_newsroom_defiant_Default",
           "order": 1,
           "condition_group_id": null,
-          "next_scene": "ch2_hospital"
+          "next_scene": "ch1_newsroom_investigation"
         }
       ],
       "dialogues": [
@@ -2628,7 +2794,24 @@ window.GAME_DATA = {
           "style": "narration"
         }
       ],
-      "choices": [],
+      "choices": [
+        {
+          "order": 1,
+          "choice_id": "Ch2EscapeDocument",
+          "text": "탈주 경로와 목격을 수첩에 남긴 뒤 현장으로 향한다.",
+          "effect_group_id": "eff_r9_document",
+          "next_type": "Scene",
+          "next_id": "ch2_factory"
+        },
+        {
+          "order": 2,
+          "choice_id": "Ch2EscapePursue",
+          "text": "사라진 이판규가 끌려간 방향을 끝까지 쫓는다.",
+          "effect_group_id": "eff_r9_follow_sound",
+          "next_type": "Scene",
+          "next_id": "ch2_factory"
+        }
+      ],
       "evidence": []
     },
     "ch2_factory": {
@@ -2710,14 +2893,13 @@ window.GAME_DATA = {
       "music": "assets/sfx/jazz.mp3",
       "effect": null,
       "goal_kicker": "조사 목표",
-      "goal_text": "낙원 안에서 누구의 입을 먼저 흔들어야 송금과 낙원의 연결고리가 드러나는지 가려낸다.",
-      "investigation_id": "Investigation_CafeNakwon",
+      "goal_text": "폐공장에서 얻은 물증을 먼저 제시해, 낙원이 숨기는 사람과 밤을 특정한다.",
       "branches": [
         {
           "branch_id": "Br_ch2_cafe_Default",
           "order": 1,
           "condition_group_id": null,
-          "next_scene": "ch2_ipangyu"
+          "next_scene": "ch2_well"
         }
       ],
       "dialogues": [
@@ -2755,7 +2937,7 @@ window.GAME_DATA = {
         },
         {
           "order": 5,
-          "text": "아… 그런 이가 있긴 했지요. 요새는 무대에 올리지 않습니다. 저 아이들 중에 어물쩡 나가려는 것들이 생겨서요. (잔을 내려놓으며 시선을 피한다)",
+          "text": "그런 이름을 들먹이는 손님은 드뭅니다. 먼저 무엇을 보고 오셨는지부터 말씀하시지요. (잔을 내려놓으며 시선을 피한다)",
           "style": "normal",
           "speaker_id": "Manager",
           "emotion_type": "Neutral",
@@ -2787,9 +2969,170 @@ window.GAME_DATA = {
           "text": "구석 손님의 침묵을 정면으로 살핀다",
           "next_type": "Dialog",
           "next_id": "inv_obs"
+        },
+        {
+          "order": 101,
+          "choice_group_id": "ChoiceGroup_CafeManagerEvidence",
+          "choice_id": "Ch2CafePresentNote",
+          "text": "붉은 쪽지를 점장 앞에 펼쳐 놓는다.",
+          "evidence_id": "EvNote",
+          "next_type": "Dialog",
+          "next_id": "cafe_manager_reveal",
+          "is_correct": true
+        },
+        {
+          "order": 102,
+          "choice_group_id": "ChoiceGroup_CafeWaitressEvidence",
+          "choice_id": "Ch2CafePresentBlueCloth",
+          "text": "푸른 흔적을 여급에게 보여 준다.",
+          "evidence_id": "EvBlueCloth",
+          "next_type": "Dialog",
+          "next_id": "cafe_waitress_reveal",
+          "is_correct": true
         }
       ],
-      "evidence": []
+      "evidence": [],
+      "investigation_title": "낙원에서 먼저 흔들어 볼 결은 무엇인가",
+      "investigation_hint": "점장의 입, 여급들의 빚, 구석 손님의 침묵 가운데 어디를 먼저 건드릴지 정하세요.",
+      "investigation_dialogues": {
+        "inv_mgr": [
+          {
+            "order": 1,
+            "text": "한 가지만 더요. 그 여자가 마지막으로 무대에 섰던 날, 기억하십니까?",
+            "style": "normal",
+            "condition": null,
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
+          },
+          {
+            "order": 2,
+            "text": "…그건 제가 드릴 말씀이 없습니다. 손님, 이런 말씀이 계속되면 자리를 비워드려야 하겠습니다.",
+            "style": "normal",
+            "condition": null,
+            "speaker_id": "Manager",
+            "emotion_type": "Neutral",
+            "standing_slot": "Left",
+            "focus_type": "Speaker"
+          },
+          {
+            "order": 3,
+            "text": "점장은 이미 겁을 먹고 있다. 여기서 더 밀면 입을 닫겠지만, 낙원 안쪽 질서가 누구를 숨기고 있는지는 더 또렷해졌어.",
+            "style": "thought",
+            "condition": null,
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
+          }
+        ],
+        "inv_wtrs": [
+          {
+            "order": 1,
+            "text": "지나치던 여급이 손님 상을 치우며 눈을 피한다. 반쯤 비운 술잔이 제 것인지 손님 것인지 구분이 안 간다. 유웅룡이 시선으로 잡아채자 잠깐 멈춘다.",
+            "style": "narration",
+            "condition": null
+          },
+          {
+            "order": 2,
+            "text": "그런 건 이제 안 해요. 이름을 입에 올렸다가 되돌아오는 것도 있으니까…. (낮게) 저는 아직 빚이 남아서요. 손님은 못 들은 셈 치세요.",
+            "style": "normal",
+            "condition": null,
+            "speaker_id": "Waitress",
+            "emotion_type": "Neutral",
+            "standing_slot": "Left",
+            "focus_type": "Speaker"
+          },
+          {
+            "order": 3,
+            "text": "이름을 올리면 되돌아오고, 빚이 남아 있으면 입을 닫는다. 낙원은 노래보다 빚으로 사람을 붙들고 있군. 다음엔 그 빚의 주인을 쫓아야겠어.",
+            "style": "thought",
+            "condition": null,
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
+          }
+        ],
+        "inv_obs": [
+          {
+            "order": 1,
+            "text": "구석 자리. 손을 모은 채 조용히 앉은 여자. 술잔을 천천히 밀어놓으면서 이쪽을 보지 않는다.",
+            "style": "thought",
+            "condition": null,
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
+          },
+          {
+            "order": 2,
+            "text": "하지만 저 눈은 전부 듣고 있다. 조용히 웅크렸을 뿐, 이미 안쪽 사정을 아는 사람의 자세다. 오늘 밤 낙원엔 말 안 하는 증인이 더 있군.",
+            "style": "thought",
+            "condition": null,
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
+          }
+        ]
+      },
+      "evidence_dialogues": {
+        "cafe_manager_reveal": [
+          {
+            "order": 1,
+            "text": "…그 쪽지를 어디서 구했습니까. 토요일마다 무대를 비운 날이 있었던 건 맞습니다. 송금이 마지막으로 노래한 밤이었지요.",
+            "style": "normal",
+            "speaker_id": "Manager",
+            "emotion_type": "Neutral",
+            "standing_slot": "Left",
+            "focus_type": "Speaker"
+          },
+          {
+            "order": 2,
+            "text": "이제야 날짜가 물증과 맞물린다. 낙원이 숨긴 것은 가수 하나가 아니라, 그날 밤 자체였군.",
+            "style": "thought",
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
+          }
+        ],
+        "cafe_manager_need_note": [
+          {
+            "order": 1,
+            "text": "소문만으로는 대답하지 않겠습니다. 낙원과 연결된 물증을 가져오시지요.",
+            "style": "normal",
+            "speaker_id": "Manager",
+            "emotion_type": "Neutral",
+            "standing_slot": "Left",
+            "focus_type": "Speaker"
+          }
+        ],
+        "cafe_waitress_reveal": [
+          {
+            "order": 1,
+            "text": "그 푸른 자국… 무대 뒤로 불려간 애들 옷에서도 봤어요. 저는 아무것도 못 봤다고 했지만, 그 문 쪽에서 노래가 난 건 알아요.",
+            "style": "normal",
+            "speaker_id": "Waitress",
+            "emotion_type": "Neutral",
+            "standing_slot": "Left",
+            "focus_type": "Speaker"
+          }
+        ],
+        "cafe_waitress_need_trace": [
+          {
+            "order": 1,
+            "text": "그날 일을 묻지 마세요. 증거도 없이 이름을 부르면 저까지 사라질지 몰라요.",
+            "style": "normal",
+            "speaker_id": "Waitress",
+            "emotion_type": "Neutral",
+            "standing_slot": "Left",
+            "focus_type": "Speaker"
+          }
+        ]
+      }
     },
     "ch2_well": {
       "id": "ch2_well",
@@ -2851,81 +3194,11 @@ window.GAME_DATA = {
         },
         {
           "order": 6,
-          "text": "사라졌어요. 언니만이 아니에요. 하나둘씩, 아무 말도 없이. 처음엔 병가라고 하고, 그 다음엔 고향 갔다고 하고… 그다음부터는 이름을 입에 올리는 사람까지 없어져요.",
-          "style": "normal",
-          "speaker_id": "Songsoon",
-          "emotion_type": "Afraid",
-          "standing_slot": "Left",
-          "focus_type": "Speaker",
-          "idle_motion": "Tremble"
-        },
-        {
-          "order": 7,
-          "text": "경찰엔 안 갔습니까?",
-          "style": "normal",
-          "speaker_id": "Yuu",
-          "emotion_type": "Tense",
-          "standing_slot": "Right",
-          "focus_type": "Speaker"
-        },
-        {
-          "order": 8,
-          "text": "여급이 사라진 일에 누가 시간을 써주겠어요. 없어져도 다들 그만뒀겠거니 해요. 우릴 사람보다 숫자처럼 보니까. 숫자는 지워도 소란이 안 나니까.",
-          "style": "normal",
-          "speaker_id": "Songsoon",
-          "emotion_type": "Afraid",
-          "standing_slot": "Left",
-          "focus_type": "Speaker"
-        },
-        {
-          "order": 9,
-          "text": "언니는 무대 뒤 창고를 자꾸 서성였어요. 안에서 노래 같은 걸 들었다고 했어요. 노래라기보단, 누가 기억하려는 숨소리 같았다고. 저는… 혼자선 못 들어갔어요.",
-          "style": "scared",
-          "speaker_id": "Songsoon",
-          "emotion_type": "Shaken",
-          "standing_slot": "Left",
-          "focus_type": "Speaker",
-          "idle_motion": "ShakeLight"
-        },
-        {
-          "order": 10,
-          "text": "혼자 안 들어간 건 잘하셨습니다. 대신 이제부턴 혼자 움직이지 마십시오. 누가 없어졌는지 입 다무는 사람들 틈에선, 같이 본 사람이 하나라도 더 있어야 하니까.",
-          "style": "normal",
-          "speaker_id": "Yuu",
-          "emotion_type": "Tense",
-          "standing_slot": "Right",
-          "focus_type": "Speaker"
-        },
-        {
-          "order": 11,
-          "text": "…처음이에요. 제 말 듣고 그런 식으로 답한 사람. 다들 미쳤다거나, 더럽다거나, 괜히 엮이지 말라고만 했지요.",
+          "text": "무슨 이야기를 들으러 오신 건지, 먼저 보여 주세요. 말만으로는 더는 누구도 믿지 않아요.",
           "style": "normal",
           "speaker_id": "Songsoon",
           "emotion_type": "Uneasy",
           "standing_slot": "Left",
-          "focus_type": "Speaker"
-        },
-        {
-          "order": 12,
-          "text": "담장 너머로 짧은 콧노래가 지나간다. 둘 다 동시에 고개를 드는데, 이번엔 아무도 그 소리를 부정하지 않는다.",
-          "style": "narration"
-        },
-        {
-          "order": 13,
-          "text": "저 소리예요. 언니가 창고에서 들었다고 한 거요. 저는 처음 들어봐요. 근데 어디선가 아는 소리 같아요.",
-          "style": "normal",
-          "speaker_id": "Songsoon",
-          "emotion_type": "Uneasy",
-          "standing_slot": "Left",
-          "focus_type": "Speaker"
-        },
-        {
-          "order": 14,
-          "text": "콧노래 소리가 들렸다는 게 거짓말이 아니다. 저 여자도 처음 듣는 소리라고 했지만, 표정은 아는 소리처럼 굳어 있다.",
-          "style": "thought",
-          "speaker_id": "Yuu",
-          "emotion_type": "Tense",
-          "standing_slot": "Right",
           "focus_type": "Speaker"
         }
       ],
@@ -2938,7 +3211,8 @@ window.GAME_DATA = {
           "evidence_id": "EvNote",
           "effect_group_id": "eff_songsoon_trust",
           "next_type": "Dialog",
-          "next_id": "dlg_songsoon_open"
+          "next_id": "dlg_songsoon_open",
+          "is_correct": true
         },
         {
           "order": 102,
@@ -2948,7 +3222,8 @@ window.GAME_DATA = {
           "evidence_id": "EvBlueCloth",
           "effect_group_id": "eff_songsoon_trust",
           "next_type": "Dialog",
-          "next_id": "dlg_songsoon_open"
+          "next_id": "dlg_songsoon_open",
+          "is_correct": true
         }
       ],
       "evidence": [],
@@ -2958,7 +3233,7 @@ window.GAME_DATA = {
         "dlg_songsoon_open": [
           {
             "order": 1,
-            "text": "...이걸 갖고 계셨군요. 그럼 기자님은 이미 낙원 안까지 들어갔던 거네요.",
+            "text": "...이걸 갖고 계셨군요. 그럼 기자님은 소문이 아니라 현장을 보고 오신 거네요.",
             "style": "normal",
             "speaker_id": "Songsoon",
             "emotion_type": "Uneasy",
@@ -2967,7 +3242,7 @@ window.GAME_DATA = {
           },
           {
             "order": 2,
-            "text": "낙원 안쪽 창고에 들어가는 문이 있어요. 이해심 님만 열 수 있다고 했는데, 언니는 그 안에서 노래를 했대요. 세 번.",
+            "text": "언니는 무대 뒤 창고를 자꾸 서성였어요. 안에서 노래 같은 걸 들었다고 했고요. 저는 혼자선 못 들어갔어요. 그 문은 낙원 안쪽으로 이어져요.",
             "style": "normal",
             "speaker_id": "Songsoon",
             "emotion_type": "Uneasy",
@@ -2976,7 +3251,7 @@ window.GAME_DATA = {
           },
           {
             "order": 3,
-            "text": "짧은 침묵이 지나간다. 콧노래 소리는 이미 사라졌지만, 아무도 그것이 없었다고 말하지 않는다.",
+            "text": "사라진 건 언니 하나가 아니에요. 처음엔 병가라 하고, 다음엔 고향 갔다고 했어요. 이제는 이름을 입에 올리는 사람까지 없어져요.",
             "style": "narration"
           }
         ],
@@ -2988,7 +3263,8 @@ window.GAME_DATA = {
             "speaker_id": "Songsoon",
             "emotion_type": "Uneasy",
             "standing_slot": "Left",
-            "focus_type": "Speaker"
+            "focus_type": "Speaker",
+            "effect_group_id": "eff_songsoon_wrong"
           }
         ]
       }
@@ -3380,7 +3656,46 @@ window.GAME_DATA = {
           "focus_type": "Speaker"
         }
       ],
-      "choices": [],
+      "choices": [
+        {
+          "order": 1,
+          "choice_group_id": "ChoiceGroup_HallwayBonus",
+          "choice_id": "Ch3HallwayHoldHand",
+          "condition_group_id": "CG_Room4_TrustedSongsoon",
+          "text": "문을 밀기 전, 먼저 송순의 손을 마주 잡는다.",
+          "next_type": "Dialog",
+          "next_id": "hallway_hold_hand_react"
+        },
+        {
+          "order": 2,
+          "choice_id": "Ch3HallwayPromiseRecord",
+          "text": "송순에게 이 방에서 본 일을 함께 기록하겠다고 약속한다.",
+          "effect_group_id": "eff_r9_songsoon_support",
+          "next_type": "Scene",
+          "next_id": "ch3_room4"
+        },
+        {
+          "order": 3,
+          "choice_id": "Ch3HallwayDocumentMarks",
+          "text": "문 앞 긁힌 자국을 수첩에 옮겨 적는다.",
+          "effect_group_id": "eff_r9_document",
+          "next_type": "Scene",
+          "next_id": "ch3_room4"
+        }
+      ],
+      "evidence_dialogues": {
+        "hallway_hold_hand_react": [
+          {
+            "order": 1,
+            "text": "손이 차다. 그래도 놓지 않는다. 여기서부턴 혼자 버티라고 할 말이 아니다.",
+            "style": "thought",
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
+          }
+        ]
+      },
       "evidence": []
     },
     "ch3_room4": {
@@ -3392,13 +3707,12 @@ window.GAME_DATA = {
       "effect": null,
       "goal_kicker": "조사 목표",
       "goal_text": "방 안에 남은 흔적 중 무엇이 의식의 구조를 밝히고, 무엇이 송금의 마지막 저항을 보여 주는지 가려낸다.",
-      "investigation_id": "Investigation_Room4",
       "branches": [
         {
           "branch_id": "Br_ch3_room4_Default",
           "order": 1,
           "condition_group_id": null,
-          "next_scene": "ch4a_library"
+          "next_scene": "ch3_room4_conclusion"
         }
       ],
       "dialogues": [
@@ -3427,7 +3741,7 @@ window.GAME_DATA = {
         },
         {
           "order": 4,
-          "text": "무대의상도, 평상복도 아니야. 보여주기 위한 옷이 아니라 누군가를 바꾸기 위한 옷이다.",
+          "text": "무대의상도, 평상복도 아니야. 왜 이런 옷을 숨겨 두었는지부터 확인해야겠군.",
           "style": "thought",
           "speaker_id": "Yuu",
           "emotion_type": "Tense",
@@ -3445,7 +3759,7 @@ window.GAME_DATA = {
         },
         {
           "order": 6,
-          "text": "의식에 쓰는 도구요. (서랍 이중 바닥에서 일기장을 꺼내며) 숨긴 사람은 증거가 아니라, 나중에라도 누가 읽길 바랐던 것 같군요.",
+          "text": "눈이 네 개인 가면과 이중 바닥의 일기장…. 누가 무엇을 감추었는지, 아직 단정할 순 없습니다.",
           "style": "normal",
           "speaker_id": "Yuu",
           "emotion_type": "Neutral",
@@ -3454,7 +3768,7 @@ window.GAME_DATA = {
         },
         {
           "order": 7,
-          "text": "(낭독) '노래를 부르면 누군가 문 밖에서 듣고 있는 기분이에요. 문을 열면 아무도 없는데, 다시 부르면 더 가까워져요. 그 사람들은 절 그분의 그릇이라 불러요…'",
+          "text": "일기장의 첫 장은 젖은 손자국에 번져 있다. 읽을수록 누군가가 쓴 말인지, 누군가에게 받아 적힌 말인지부터 가려야 한다.",
           "style": "normal",
           "speaker_id": "Yuu",
           "emotion_type": "Neutral",
@@ -3463,7 +3777,7 @@ window.GAME_DATA = {
         },
         {
           "order": 8,
-          "text": "'그들은 제가 청의의 무녀가 될 운명이라 했어요. 노래가 곧 감응이라면서… 그런데 전 점점, 제가 노래하는 게 아니라 누군가 제 목으로 연습하는 것 같아요.'",
+          "text": "몇 줄은 지워졌고, 남은 문장은 노래와 문 앞의 감각을 반복한다. 결론은 흔적을 맞춘 뒤에야 낼 수 있다.",
           "style": "normal",
           "speaker_id": "Yuu",
           "emotion_type": "Neutral",
@@ -3539,8 +3853,8 @@ window.GAME_DATA = {
           "choice_id": "Ch3Room4TouchWall",
           "effect_group_id": "eff_ch3_room4_touch_wall",
           "text": "위험을 감수하고 벽 문양이 남긴 저항 흔적을 짚는다.",
-          "next_type": "Scene",
-          "next_id": "ch3_room4_touch"
+          "next_type": "Dialog",
+          "next_id": "room4_touch"
         },
         {
           "order": 2,
@@ -3548,16 +3862,27 @@ window.GAME_DATA = {
           "choice_id": "Ch3Room4ReadRecord",
           "effect_group_id": "eff_ch3_room4_read_record",
           "text": "공포보다 기록을 택하고 일기의 구조를 끝까지 읽는다.",
-          "next_type": "Scene",
-          "next_id": "ch3_room4_record"
+          "next_type": "Dialog",
+          "next_id": "room4_record"
         },
         {
           "order": 3,
           "choice_group_id": "ChoiceGroup_Room4Investigation",
           "choice_id": "Ch3Room4ComfortSongsoon",
+          "effect_group_id": "eff_ch3_room4_comfort_hanbok",
           "text": "증거보다 먼저 송순의 무너지는 마음을 붙든다.",
-          "next_type": "Scene",
-          "next_id": "ch3_room4_comfort"
+          "next_type": "Dialog",
+          "next_id": "room4_comfort"
+        },
+        {
+          "order": 4,
+          "choice_group_id": "ChoiceGroup_Room4Investigation",
+          "choice_id": "Ch3Room4CompareNote",
+          "condition_group_id": "CG_Room4_HasNote",
+          "effect_group_id": "eff_room4_note_match",
+          "text": "쥐고 있던 붉은 쪽지를 방 안 흔적과 나란히 맞대 본다.",
+          "next_type": "Dialog",
+          "next_id": "room4_note"
         }
       ],
       "evidence": [
@@ -3567,7 +3892,7 @@ window.GAME_DATA = {
           "description": "송금의 방에서 발견된 의례용 한복. 소매 안쪽에 바느질 자국과 작은 상처 자국들.",
           "image": "assets/ev/hanbok.jpeg",
           "category_id": "ritual",
-          "trigger": 1
+          "trigger": null
         },
         {
           "evidence_id": "EvMask",
@@ -3575,7 +3900,7 @@ window.GAME_DATA = {
           "description": "눈 구멍이 네 개 달린 기괴한 가면. 청의동자의 눈 네 개를 상징한다.",
           "image": "assets/ev/mask.jpeg",
           "category_id": "ritual",
-          "trigger": 1
+          "trigger": null
         },
         {
           "evidence_id": "EvDiary",
@@ -3585,154 +3910,121 @@ window.GAME_DATA = {
           "category_id": "record",
           "trigger": 2
         }
-      ]
-    },
-    "ch3_room4_touch": {
-      "id": "ch3_room4_touch",
-      "chapter": 3,
-      "title": "벽의 응답",
-      "background": "assets/bg/storage.jpeg",
-      "music": "assets/sfx/creepy_2.mp3",
-      "effect": 2,
-      "branches": [
-        {
-          "branch_id": "Br_ch3_room4_touch_Default",
-          "order": 1,
-          "condition_group_id": null,
-          "next_scene": "ch4a_library"
-        }
       ],
-      "dialogues": [
-        {
-          "order": 1,
-          "text": "유웅룡의 손끝이 문양에 닿는 순간, 차갑다기보다 젖은 숨결 같은 감각이 손등을 타고 올라온다. 벽지 아래에서 아주 잠깐, 네 개의 눈이 겹쳐 뜨였다가 사라진다.",
-          "style": "narration"
-        },
-        {
-          "order": 2,
-          "text": "…문양이 아니라 자국이었군. 누가 바깥에서 연 게 아니라, 안쪽에서 한 번 밀고 나오려 했던 흔적입니다.",
-          "style": "normal",
-          "speaker_id": "Yuu",
-          "emotion_type": "Neutral",
-          "standing_slot": "Right",
-          "focus_type": "Speaker"
-        },
-        {
-          "order": 3,
-          "text": "그걸 직접 만지고도 그런 소릴 하세요? 기자님도 참…. 그런데 이제 저도 못 물러가겠어요. 언니가 안에서 한 번은 버티려 했다는 거잖아요.",
-          "style": "normal",
-          "speaker_id": "Songsoon",
-          "emotion_type": "Uneasy",
-          "standing_slot": "Left",
-          "focus_type": "Speaker"
-        }
-      ],
-      "choices": [],
-      "evidence": []
-    },
-    "ch3_room4_record": {
-      "id": "ch3_room4_record",
-      "chapter": 3,
-      "title": "기록의 다음 장",
-      "background": "assets/bg/storage.jpeg",
-      "music": "assets/sfx/sad.mp3",
-      "effect": null,
-      "branches": [
-        {
-          "branch_id": "Br_ch3_room4_record_Default",
-          "order": 1,
-          "condition_group_id": null,
-          "next_scene": "ch4a_library"
-        }
-      ],
-      "dialogues": [
-        {
-          "order": 1,
-          "text": "(일기장을 더 넘긴다) '이름을 불릴수록 내가 옅어지는 기분이 든다. 노래가 내 목에서 나는 게 아니라, 내 목을 빌려 나는 것 같다.'",
-          "style": "normal",
-          "speaker_id": "Yuu",
-          "emotion_type": "Neutral",
-          "standing_slot": "Right",
-          "focus_type": "Speaker"
-        },
-        {
-          "order": 2,
-          "text": "남겨 둔 문장치곤 지나치게 또렷하군요. 살려 달라는 글이라기보다, 나중에 누가 구조를 알아보길 바란 기록에 가깝습니다.",
-          "style": "thought",
-          "speaker_id": "Yuu",
-          "emotion_type": "Tense",
-          "standing_slot": "Right",
-          "focus_type": "Speaker"
-        },
-        {
-          "order": 3,
-          "text": "그럼 끝까지 읽어야죠. 언니가 남긴 말이면, 적어도 우린 다 읽고 나가야 해요.",
-          "style": "normal",
-          "speaker_id": "Songsoon",
-          "emotion_type": "Uneasy",
-          "standing_slot": "Left",
-          "focus_type": "Speaker"
-        },
-        {
-          "order": 4,
-          "text": "종이 위 문장을 따라갈수록 방 안의 공포는 도리어 또렷한 순서를 갖추기 시작한다. 유웅룡은 처음으로 이 사건이 괴담이 아니라 설계된 삭제라는 감각을 붙든다. 다음엔 그 삭제를 누가 지휘했는지 쫓아야 한다.",
-          "style": "narration"
-        }
-      ],
-      "choices": [],
-      "evidence": []
-    },
-    "ch3_room4_comfort": {
-      "id": "ch3_room4_comfort",
-      "chapter": 3,
-      "title": "혼자 두지 않는 말",
-      "background": "assets/bg/storage.jpeg",
-      "music": "assets/sfx/sad.mp3",
-      "effect": null,
-      "branches": [
-        {
-          "branch_id": "Br_ch3_room4_comfort_Default",
-          "order": 1,
-          "condition_group_id": null,
-          "next_scene": "ch4a_library"
-        }
-      ],
-      "dialogues": [
-        {
-          "order": 1,
-          "text": "송순 씨, 이 일 전부 당신 몫으로 짊어질 생각은 마십시오. 없어지는 사람을 쫓는 일까지, 남은 사람 하나한테만 미루는 건 지나치게 비겁해요.",
-          "style": "normal",
-          "speaker_id": "Yuu",
-          "emotion_type": "Neutral",
-          "standing_slot": "Right",
-          "focus_type": "Speaker"
-        },
-        {
-          "order": 2,
-          "text": "…그 말을 기다리고 있었는지도 몰라요. 내가 언니를 못 지켰단 마음이 자꾸 먼저 와서, 뭘 봐도 전부 내 탓처럼 보였지요.",
-          "style": "normal",
-          "speaker_id": "Songsoon",
-          "emotion_type": "Uneasy",
-          "standing_slot": "Left",
-          "focus_type": "Speaker"
-        },
-        {
-          "order": 3,
-          "text": "탓은 나중에 합시다. 지금은 누가 지웠는지부터 찾아야지요.",
-          "style": "normal",
-          "speaker_id": "Yuu",
-          "emotion_type": "Neutral",
-          "standing_slot": "Right",
-          "focus_type": "Speaker"
-        },
-        {
-          "order": 4,
-          "text": "그 말 이후 송순의 시선은 죄책감에 붙들리지 않고 방 안 증거들로 다시 옮겨 간다. 서로의 몫을 나눠 든다는 감각이 처음 분명해진다. 이제는 언니를 잃은 이유가 아니라, 누가 언니를 가져갔는지 묻는 쪽으로 나아갈 수 있다.",
-          "style": "narration"
-        }
-      ],
-      "choices": [],
-      "evidence": []
+      "investigation_title": "이 방에서 먼저 붙들 진실은 무엇인가",
+      "investigation_hint": "벽의 흔적, 남겨진 기록, 송순의 흔들림 가운데 어디부터 잡아야 사건의 구조가 드러나는지 고르세요.",
+      "investigation_dialogues": {
+        "room4_touch": [
+          {
+            "order": 1,
+            "text": "유웅룡의 손끝이 문양에 닿는 순간, 차갑다기보다 젖은 숨결 같은 감각이 손바닥으로 파고든다. 방 안 공기가 아주 잠깐 뒤집힌다.",
+            "style": "narration",
+            "condition": null
+          },
+          {
+            "order": 2,
+            "speaker_id": "Yuu",
+            "emotion_type": "Shaken",
+            "standing_slot": "Right",
+            "focus_type": "Speaker",
+            "idle_motion": "Tremble",
+            "fx_type": "BlueTrace",
+            "text": "...문양이 아니라 자국이었군. 누가 바깥에서 연 게 아니라, 안쪽에서 한 번 밀어낸 흔적이야.",
+            "style": "normal",
+            "condition": null
+          },
+          {
+            "order": 3,
+            "speaker_id": "Songsoon",
+            "emotion_type": "Afraid",
+            "standing_slot": "Left",
+            "focus_type": "Speaker",
+            "text": "그걸 직접 만지고도 그런 소릴 하세요? ...그래도 이제 저도 모른 체는 못 하겠어요.",
+            "style": "normal",
+            "condition": null
+          }
+        ],
+        "room4_record": [
+          {
+            "order": 1,
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker",
+            "text": "(일기장을 더 넘긴다) 이름을 불릴수록 내가 옅어진다... 남겨 둔 문장치곤 지나치게 또렷하군요.",
+            "style": "normal",
+            "condition": null
+          },
+          {
+            "order": 2,
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker",
+            "text": "살려 달라는 글이라기보다, 나중에라도 누가 읽어 달라는 문장입니다. 이건 끝까지 가져가야 해요.",
+            "style": "thought",
+            "condition": null
+          },
+          {
+            "order": 3,
+            "speaker_id": "Songsoon",
+            "emotion_type": "Uneasy",
+            "standing_slot": "Left",
+            "focus_type": "Speaker",
+            "text": "그럼 끝까지 읽어야죠. 언니가 남긴 말이면, 적어도 우린 다 읽고 나가야 해요.",
+            "style": "normal",
+            "condition": null
+          }
+        ],
+        "room4_comfort": [
+          {
+            "order": 1,
+            "speaker_id": "Yuu",
+            "emotion_type": "Neutral",
+            "standing_slot": "Right",
+            "focus_type": "Speaker",
+            "text": "송순 씨, 이 일 전부 당신 몫으로 짊어질 생각은 마십시오. 없어지는 사람을 막는 일은 죄책감만으로는 못 버팁니다.",
+            "style": "normal",
+            "condition": null
+          },
+          {
+            "order": 2,
+            "speaker_id": "Songsoon",
+            "emotion_type": "Sad",
+            "standing_slot": "Left",
+            "focus_type": "Speaker",
+            "text": "...그 말을 기다리고 있었는지도 몰라요. 내가 언니를 못 지켰단 마음이 자꾸 먼저 와서, 자꾸 다 놓칠 뻔했어요.",
+            "style": "normal",
+            "condition": null
+          },
+          {
+            "order": 3,
+            "speaker_id": "Yuu",
+            "emotion_type": "Neutral",
+            "standing_slot": "Right",
+            "focus_type": "Speaker",
+            "text": "탓은 나중에 합시다. 지금은 누가 지웠는지부터 찾아야지요.",
+            "style": "normal",
+            "condition": null
+          }
+        ],
+        "room4_note": [
+          {
+            "order": 1,
+            "text": "붉은 쪽지를 벽지 자국 옆에 나란히 놓자 종이가 접힌 결이 손자국의 방향과 겹친다. 누군가 이 방으로 사람을 부른 뒤, 같은 자리에 머뭇거린 흔적이다.",
+            "style": "narration"
+          },
+          {
+            "order": 2,
+            "text": "송금 씨가 쓴 게 아니라 송금 씨에게 온 거예요. 처음부터 골라진 거였군요.",
+            "style": "normal",
+            "speaker_id": "Songsoon",
+            "emotion_type": "Uneasy",
+            "standing_slot": "Left",
+            "focus_type": "Speaker"
+          }
+        ]
+      }
     },
     "ch4a_library": {
       "id": "ch4a_library",
@@ -3851,6 +4143,16 @@ window.GAME_DATA = {
           "text": "송금이 스스로 달아났다는 식으로 몰아붙인 말도 결국 기사 한 귀퉁이의 편한 변명에 불과했군요. 이 일기장 앞에선 그런 설명이 버티질 못합니다.",
           "style": "thought",
           "condition_group_id": "CG_Library_QSonggeumRunaway",
+          "speaker_id": "Yuu",
+          "emotion_type": "Tense",
+          "standing_slot": "Right",
+          "focus_type": "Speaker"
+        },
+        {
+          "order": 13,
+          "text": "과거 기사와 빈민가의 목격담까지 이어지자, 이 삭제는 한 번의 실수가 아니라 되풀이된 방식이라는 사실이 선명해진다.",
+          "style": "thought",
+          "condition_group_id": "CG_Archive_QPattern",
           "speaker_id": "Yuu",
           "emotion_type": "Tense",
           "standing_slot": "Right",
@@ -4135,7 +4437,7 @@ window.GAME_DATA = {
         },
         {
           "order": 2,
-          "text": "…청의교? 그거 함부로 입에 올리면 안 돼. 수년 전에도 그랬어. 여자들이 하나둘 사라지고, 아무도 찾지 않았어.",
+          "text": "…청의교? 그 이름을 어디서 들었소. 그런 말을 꺼내려면, 적어도 왜 여기까지 왔는지부터 보여 주시오.",
           "style": "normal",
           "speaker_id": "Elder",
           "emotion_type": "Neutral",
@@ -4144,7 +4446,7 @@ window.GAME_DATA = {
         },
         {
           "order": 3,
-          "text": "배고픈 사람들한텐 구원이란 말이 독보다 세지. 밥 한 그릇보다, 내일이 달라질 거라는 말이 더 위험한 것이오.",
+          "text": "증거 없이 이름부터 부르면 이 골목 사람부터 다쳐요. 들고 온 기록과 물건이 있다면, 그걸 먼저 보시오.",
           "style": "normal",
           "speaker_id": "Elder",
           "emotion_type": "Neutral",
@@ -4153,7 +4455,7 @@ window.GAME_DATA = {
         },
         {
           "order": 4,
-          "text": "앞장서서 판을 벌이는 이가 있습니까. 누가 이 짓을 거머쥐고 있지요?",
+          "text": "과거 기사와 지금의 흔적을 가져왔습니다. 같은 방식으로 사람이 사라졌다는 걸, 당신이 본 범위에서만 말해 주십시오.",
           "style": "normal",
           "speaker_id": "Yuu",
           "emotion_type": "Neutral",
@@ -4162,7 +4464,7 @@ window.GAME_DATA = {
         },
         {
           "order": 5,
-          "text": "…이해심이라는 여자. 창백한 얼굴, 푸른 옷, 두 눈을 가린 안대. 양반집 규수처럼 단정한데, 입을 열면 제문이라도 읽는 것 같아. 한 번 본 사람은 잊을 수가 없어.",
+          "text": "내가 본 것과 들은 말을 섞어 버리면 또 다른 사람이 다쳐. 들고 온 기록을 먼저 보여 주고, 무엇을 확인하려는지부터 말하시오.",
           "style": "normal",
           "speaker_id": "Elder",
           "emotion_type": "Neutral",
@@ -4171,7 +4473,7 @@ window.GAME_DATA = {
         },
         {
           "order": 6,
-          "text": "그 여잔 천국을 약속하지 않았어. 대신 조선을 구하려면 썩은 살을 한번 몽땅 도려내야 한다고 했지. 기묘하지 않은가. 세상이 지나치게 기울어져 있으면, 구원보다 파멸이 더 공평해 보일 때가 있는 법이오.",
+          "text": "낙원이라는 말도, 밤 수레라는 말도 쉽게 꺼낼 수 있는 건 아니오. 물증과 맞춰 보인 뒤에야 내가 본 동선을 말하겠소.",
           "style": "normal",
           "speaker_id": "Elder",
           "emotion_type": "Neutral",
@@ -4180,25 +4482,7 @@ window.GAME_DATA = {
         },
         {
           "order": 7,
-          "text": "허나 앞에 선 건 늘 그 여자였어도, 뒤엔 흰 천으로 얼굴을 가린 사내가 있었다더군. 이름이… 천용해였나. 사람들은 그놈 얼굴도 모르고 무릎부터 꿇었다지.",
-          "style": "normal",
-          "speaker_id": "Elder",
-          "emotion_type": "Neutral",
-          "standing_slot": "Left",
-          "focus_type": "Speaker"
-        },
-        {
-          "order": 8,
-          "text": "'이해심'. 이제야 입에 올릴 만한 이름 하나가 생겼군요.",
-          "style": "thought",
-          "speaker_id": "Yuu",
-          "emotion_type": "Tense",
-          "standing_slot": "Right",
-          "focus_type": "Speaker"
-        },
-        {
-          "order": 9,
-          "text": "괴물은 늘 얼굴보다 이름이 먼저 잡히지요. 헌데 이번엔 이름이 하나가 아니군요. 얼굴 가린 사내까지 딸려 있다면, 판이 생각보다 더 큽니다.",
+          "text": "이름보다 동선이 먼저군요. 낙원에서 보낸 물자와 지하 문을 따라가면, 의식이 오늘 어디서 이어지는지도 잡을 수 있겠습니다.",
           "style": "thought",
           "speaker_id": "Yuu",
           "emotion_type": "Tense",
@@ -4206,8 +4490,187 @@ window.GAME_DATA = {
           "focus_type": "Speaker"
         }
       ],
-      "choices": [],
-      "evidence": []
+      "goal_kicker": "조사 목표",
+      "goal_text": "이해심이 무엇을 파는지, 뒤에 누가 있는지, 이 골목에서 또 누가 사라졌는지 가운데 무엇을 먼저 캘지 정한다.",
+      "choices": [
+        {
+          "order": 1,
+          "choice_group_id": "ChoiceGroup_SlumInvestigation",
+          "choice_id": "Ch4aSlumAskBelief",
+          "text": "그 여자가 사람들에게 무얼 판다는 건지 캐묻는다",
+          "next_type": "Dialog",
+          "next_id": "inv_belief"
+        },
+        {
+          "order": 2,
+          "choice_group_id": "ChoiceGroup_SlumInvestigation",
+          "choice_id": "Ch4aSlumAskMasked",
+          "text": "뒤에 있다는 얼굴 가린 사내를 캐묻는다",
+          "next_type": "Dialog",
+          "next_id": "inv_masked",
+          "effect_group_id": "eff_ch4a_slum_ask_masked"
+        },
+        {
+          "order": 3,
+          "choice_group_id": "ChoiceGroup_SlumInvestigation",
+          "choice_id": "Ch4aSlumAskMissing",
+          "text": "이 골목에서 최근에 사라진 여자가 있었는지 캐묻는다",
+          "next_type": "Dialog",
+          "next_id": "inv_missing"
+        },
+        {
+          "order": 4,
+          "choice_group_id": "ChoiceGroup_SlumInvestigation",
+          "choice_id": "Ch4aSlumAskHanbok",
+          "condition_group_id": "CG_Slum_HasHanbok",
+          "text": "청색 한복을 꺼내 보이며 이 옷이 어디서 나온 건지 캐묻는다",
+          "next_type": "Dialog",
+          "next_id": "inv_hanbok",
+          "effect_group_id": "eff_slum_hanbok_press"
+        }
+      ],
+      "evidence": [
+        {
+          "evidence_id": "EvSlumWitness",
+          "name": "얼굴 가린 사내의 목격담",
+          "description": "노인이 전한 흰 천으로 얼굴을 가린 사내, 천용해에 대한 소문. 낙원 의식을 주도한 손이 하나 더 있었다는 증거다.",
+          "image": "assets/ev/note.jpeg",
+          "category_id": "trace",
+          "trigger": "Ch4aSlumAskMasked"
+        }
+      ],
+      "investigation_title": "이 골목에서 이해심의 무엇을 먼저 캐낼 것인가",
+      "investigation_hint": "여자가 파는 믿음, 뒤에 숨은 사내, 최근에 사라진 이들의 흔적 가운데 어디를 먼저 건드릴지 정하세요.",
+      "investigation_dialogues": {
+        "inv_belief": [
+          {
+            "order": 1,
+            "text": "그 여자는 무얼 판다는 겁니까. 사람을 저렇게 홀릴 수 있으려면 믿을 만한 게 있어야 할 텐데요.",
+            "style": "normal",
+            "condition": null,
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
+          },
+          {
+            "order": 2,
+            "text": "그 여잔 천국을 약속하지 않았어. 대신 조선을 구하려면 썩은 살을 한번 몽땅 도려내야 한다고 했지. 기묘하지 않은가. 세상이 지나치게 기울어져 있으면, 구원보다 파멸이 더 공평해 보일 때가 있는 법이오.",
+            "style": "normal",
+            "condition": null,
+            "speaker_id": "Elder",
+            "emotion_type": "Neutral",
+            "standing_slot": "Left",
+            "focus_type": "Speaker"
+          },
+          {
+            "order": 3,
+            "text": "구원이 아니라 허락을 파는 거였군. 이 도시를 통째로 태워도 좋다는 허락 말이야.",
+            "style": "thought",
+            "condition": null,
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
+          }
+        ],
+        "inv_masked": [
+          {
+            "order": 1,
+            "text": "여자 혼자서 이 판을 다 짜진 않았을 텐데요.",
+            "style": "normal",
+            "condition": null,
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
+          },
+          {
+            "order": 2,
+            "text": "허나 앞에 선 건 늘 그 여자였어도, 뒤엔 흰 천으로 얼굴을 가린 사내가 있었다더군. 이름이… 천용해였나. 사람들은 그놈 얼굴도 모르고 무릎부터 꿇었다지.",
+            "style": "normal",
+            "condition": null,
+            "speaker_id": "Elder",
+            "emotion_type": "Neutral",
+            "standing_slot": "Left",
+            "focus_type": "Speaker"
+          },
+          {
+            "order": 3,
+            "text": "'천용해'. 얼굴 가린 자에게도 이름이 있다면, 쫓을 실마리가 하나 늘었군.",
+            "style": "thought",
+            "condition": null,
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
+          }
+        ],
+        "inv_missing": [
+          {
+            "order": 1,
+            "text": "이 골목에서도 최근에 사라진 여자가 있었습니까.",
+            "style": "normal",
+            "condition": null,
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
+          },
+          {
+            "order": 2,
+            "text": "있었지. 지난달에도 하나. 이 동네서 반년 살던 처자였어. 청의교에 나간다더니 어느 날부터 안 보이더군. 식구들이 찾아 나섰지만 관에서도 손을 놨고, 신문사도 오지 않았어.",
+            "style": "normal",
+            "condition": null,
+            "speaker_id": "Elder",
+            "emotion_type": "Neutral",
+            "standing_slot": "Left",
+            "focus_type": "Speaker"
+          },
+          {
+            "order": 3,
+            "text": "송금 하나만이 아니었어. 이 도시가 놓친 이름이 몇이나 더 있을지, 이제야 셈이 시작되는군.",
+            "style": "thought",
+            "condition": null,
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
+          }
+        ],
+        "inv_hanbok": [
+          {
+            "order": 1,
+            "text": "이 옷, 이 골목 사람이 만든 겁니까. 처음 보는 결인데.",
+            "style": "normal",
+            "condition": null,
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
+          },
+          {
+            "order": 2,
+            "text": "…그건 여기서 짓는 옷이 아니야. 그 여자가 사람을 고를 때마다 직접 입혀 보낸다고 들었어. 색이 바래지 않는 게 이상하다 싶었지.",
+            "style": "normal",
+            "condition": null,
+            "speaker_id": "Elder",
+            "emotion_type": "Neutral",
+            "standing_slot": "Left",
+            "focus_type": "Speaker"
+          },
+          {
+            "order": 3,
+            "text": "골라서 입힌다. 이건 우연히 걸린 게 아니라 처음부터 지목당했다는 뜻이군.",
+            "style": "thought",
+            "condition": null,
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
+          }
+        ]
+      }
     },
     "ch4b_cafe": {
       "id": "ch4b_cafe",
@@ -4234,7 +4697,7 @@ window.GAME_DATA = {
         },
         {
           "order": 3,
-          "text": "…(목소리를 낮춘다) 송금 언니는 이해심 님이 직접 골랐어요. '그릇이 되어야 한다'고 했죠. 노래가 문을 여는 열쇠라면서. 처음엔 다들 무대에 설 기회쯤으로 알았어요.",
+          "text": "…송금 언니가 왜 사라졌는지, 저는 아직 제 눈으로 본 것만 말할 수 있어요. 증거가 있다면 보여 주세요.",
           "style": "normal",
           "speaker_id": "Okryeon",
           "emotion_type": "Afraid",
@@ -4252,7 +4715,7 @@ window.GAME_DATA = {
         },
         {
           "order": 5,
-          "text": "전 겁이 나서 달아났어요. 송금 언니는 남았고요. 더는 모르겠어요. 아니… 알아도 입에 올리면 그날 냄새가 다시 나요. 젖은 비단 냄새랑 비린 피 냄새가 한꺼번에.",
+          "text": "전 겁이 나서 달아났어요. 더 말하면 그날 냄새가 다시 나요. 젖은 비단 냄새랑 비린 피 냄새가 한꺼번에.",
           "style": "normal",
           "speaker_id": "Okryeon",
           "emotion_type": "Afraid",
@@ -4270,7 +4733,7 @@ window.GAME_DATA = {
         },
         {
           "order": 7,
-          "text": "그날 다들 노래를 듣긴 했어요. 그런데 아무도 같은 소릴 들은 것 같지가 않았어요. 누구는 어미 목소리 같다고 했고, 누구는 물 밑에서 누가 웃는 소리 같다 했어요. 그게 더 소름 끼쳤어요.",
+          "text": "무대 뒤 문에서 들린 소리는 기억해요. 하지만 그게 누군지, 어디로 이어졌는지는 증거를 보고서야 말할 수 있어요.",
           "style": "normal",
           "speaker_id": "Okryeon",
           "emotion_type": "Afraid",
@@ -4279,7 +4742,7 @@ window.GAME_DATA = {
         },
         {
           "order": 8,
-          "text": "송금 언니는 끝까지 조용했어요. 겁먹은 사람 같지가 않았어요. 이미 제 몫이 정해졌다는 걸 먼저 알아버린 얼굴이라, 그래서 더 무서웠어요.",
+          "text": "송금 언니가 남긴 물건이 있다면, 그걸 보고 내가 도망친 밤과 맞춰 볼 수 있을 거예요.",
           "style": "normal",
           "speaker_id": "Okryeon",
           "emotion_type": "Afraid",
@@ -4327,6 +4790,15 @@ window.GAME_DATA = {
           "flag_value": 1
         },
         {
+          "order": 3,
+          "choice_id": "Ch4BCafeErosionPress",
+          "condition_group_id": "CG_Cafe4b_Erosion2",
+          "effect_group_id": "eff_cafe4b_erosion_lean",
+          "text": "이유 모를 확신에 이끌려, 그 소리가 들리는 쪽을 그대로 좇는다.",
+          "next_type": "Scene",
+          "next_id": "ch4b_cafe_press"
+        },
+        {
           "order": 101,
           "choice_group_id": "ChoiceGroup_Okryeon_Confront",
           "choice_id": "Ch4BCafeDiary",
@@ -4337,7 +4809,8 @@ window.GAME_DATA = {
           "next_id": "dlg_okryeon_reveal",
           "next_scene": "ch4b_backroom",
           "flag_key": "EvidenceShown",
-          "flag_value": 1
+          "flag_value": 1,
+          "is_correct": true
         },
         {
           "order": 102,
@@ -4349,6 +4822,7 @@ window.GAME_DATA = {
           "next_type": "Dialog",
           "next_id": "dlg_okryeon_reveal",
           "next_scene": "ch4b_backroom",
+          "is_correct": true,
           "flag_key": "EvidenceShown",
           "flag_value": 2
         }
@@ -4573,8 +5047,56 @@ window.GAME_DATA = {
           "focus_type": "Speaker"
         }
       ],
-      "choices": [],
-      "evidence": []
+      "choices": [
+        {
+          "order": 1,
+          "choice_id": "Ch4bBackroomCheckAbsence",
+          "choice_group_id": "ChoiceGroup_BackroomInvestigation",
+          "text": "결근표와 빈 객실 장부를 대조해, 누가 어떤 날 사라졌는지 확인한다.",
+          "next_type": "Dialog",
+          "next_id": "backroom_absence"
+        },
+        {
+          "order": 2,
+          "choice_id": "Ch4bBackroomTraceLaundry",
+          "choice_group_id": "ChoiceGroup_BackroomInvestigation",
+          "text": "세탁 자루와 무대 뒤 출입 흔적을 따라, 지하로 이어진 동선을 확인한다.",
+          "next_type": "Dialog",
+          "next_id": "backroom_route"
+        }
+      ],
+      "investigation_title": "낙원 뒷방에서 지하 진입의 근거를 확인한다",
+      "investigation_hint": "결근·세탁 기록과 출입 동선을 서로 다른 두 축으로 확인해, 사라짐과 지하 문을 연결한다.",
+      "investigation_dialogues": {
+        "backroom_absence": [
+          {
+            "order": 1,
+            "text": "결근표에는 같은 날짜마다 여급의 이름이 지워져 있다. 병가나 퇴직이 아니라, 무대에서 빠진 사람을 장부가 뒤늦게 따라간 흔적이다.",
+            "style": "narration",
+            "speaker_id": "Songsoon",
+            "emotion_type": "Uneasy",
+            "standing_slot": "Left",
+            "focus_type": "Speaker"
+          }
+        ],
+        "backroom_route": [
+          {
+            "order": 1,
+            "text": "세탁 자루의 푸른 염료와 바닥의 젖은 바퀴 자국이 무대 뒤 가림막 아래로 이어진다. 손님 출입문이 아니라 사람을 보이지 않게 옮기던 지하 출입구다.",
+            "style": "narration"
+          }
+        ]
+      },
+      "evidence": [
+        {
+          "evidence_id": "EvBasementRoute",
+          "trigger": 1,
+          "name": "세탁 수레의 지하 출입 흔적",
+          "description": "푸른 염료가 묻은 세탁 자루와 바퀴 자국. 결근 처리된 여급들이 무대 뒤 가림막 아래 지하 출입구로 옮겨졌음을 보여 준다.",
+          "image": "assets/ev/note.jpeg",
+          "category_id": "record"
+        }
+      ]
     },
     "ch4a_editor_room": {
       "id": "ch4a_editor_room",
@@ -4617,7 +5139,7 @@ window.GAME_DATA = {
         },
         {
           "order": 4,
-          "text": "지운 게 아니라… 살아남으려고 접어 둔 거다. 그때도 사람은 사라졌고, 위에선 덮으라 했어. 안 그러면 신문부터 접혔지. 살아남은 기록이 늘 바른 기록은 아니야.",
+          "text": "그 기사를 왜 들고 왔지. 종이 한 장으로 날 심문할 셈이냐.",
           "style": "normal",
           "speaker_id": "Editor",
           "emotion_type": "Angry",
@@ -4721,6 +5243,15 @@ window.GAME_DATA = {
       ],
       "choices": [
         {
+          "order": 1,
+          "choice_group_id": "ChoiceGroup_EditorRoomBonus",
+          "choice_id": "Ch4AEditorRecallArchive",
+          "condition_group_id": "CG_Branch_ExposedArchivePattern",
+          "text": "삭제된 문장을 이었던 방식 그대로, 편집장의 말도 끝까지 받아 적는다.",
+          "next_type": "Dialog",
+          "next_id": "editor_room_archive_react"
+        },
+        {
           "order": 101,
           "choice_group_id": "ChoiceGroup_Editor_Confront",
           "choice_id": "Ch4AEditorArticles",
@@ -4774,6 +5305,17 @@ window.GAME_DATA = {
             "standing_slot": "Left",
             "focus_type": "Speaker",
             "effect_group_id": "eff_editor_wrong"
+          }
+        ],
+        "editor_room_archive_react": [
+          {
+            "order": 1,
+            "text": "자료실에서 지운 문장을 이었던 것처럼, 이번엔 편집장이 흘린 말도 하나도 놓치지 않고 받아 적는다.",
+            "style": "thought",
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
           }
         ]
       }
@@ -5002,7 +5544,7 @@ window.GAME_DATA = {
           "text": "…알겠습니다. 무리는 하지 않겠습니다.",
           "next_type": "Scene",
           "next_id": "ch5_descent",
-          "effect_group_id": null
+          "effect_group_id": "eff_editor_obey"
         },
         {
           "order": 2,
@@ -5157,6 +5699,16 @@ window.GAME_DATA = {
         },
         {
           "order": 8,
+          "text": "귓속에서 아까부터 낮은 웅웅거림이 떠나질 않는다. 계단이 아니라 머릿속에서 나는 소리 같기도 하다.",
+          "style": "thought",
+          "condition_group_id": "CG_Descent_Erosion3",
+          "speaker_id": "Yuu",
+          "emotion_type": "Shaken",
+          "standing_slot": "Right",
+          "focus_type": "Speaker"
+        },
+        {
+          "order": 9,
           "text": "그래도 들릴 건 들을게요. 무섭다고 귀를 막으면, 또 누가 사라졌는지도 모르고 지나가게 되니까.",
           "style": "normal",
           "condition_group_id": "CG_Threshold_TrustedSongsoon",
@@ -5166,12 +5718,51 @@ window.GAME_DATA = {
           "focus_type": "Speaker"
         },
         {
-          "order": 9,
+          "order": 10,
           "text": "두 사람의 발소리가 계단 아래 어둠에 잠긴다. 노랫소리는 멈추지 않는다. 멈추지 않는다는 사실 하나만으로도, 아직 늦지 않았다는 희망과 이미 늦었다는 공포가 동시에 따라온다.",
           "style": "narration"
         }
       ],
-      "choices": [],
+      "choices": [
+        {
+          "order": 1,
+          "choice_group_id": "ChoiceGroup_Descent",
+          "choice_id": "Ch5DescentSelfReliant",
+          "condition_group_id": "CG_Branch_CalledEditorFalse",
+          "text": "편집장 도움 없이 왔다는 사실을 되새기며 스스로 다잡는다.",
+          "next_type": "Dialog",
+          "next_id": "descent_self_reliant_react"
+        },
+        {
+          "order": 2,
+          "choice_id": "Ch5DescentSignal",
+          "text": "송순과 멈출 신호를 정하고 계단을 내려간다.",
+          "effect_group_id": "eff_r9_songsoon_support",
+          "next_type": "Scene",
+          "next_id": "ch5_guarded_door"
+        },
+        {
+          "order": 3,
+          "choice_id": "Ch5DescentFollowSong",
+          "text": "콧노래의 박자를 기억하며 소리가 나는 쪽으로 간다.",
+          "effect_group_id": "eff_r9_follow_sound",
+          "next_type": "Scene",
+          "next_id": "ch5_guarded_door"
+        }
+      ],
+      "evidence_dialogues": {
+        "descent_self_reliant_react": [
+          {
+            "order": 1,
+            "text": "아무에게도 알리지 않았으니, 여기서부턴 이 판단이 전부 내 몫이다. 되돌릴 변명거리도 없다.",
+            "style": "thought",
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
+          }
+        ]
+      },
       "evidence": []
     },
     "ch5_guarded_door": {
@@ -5275,135 +5866,94 @@ window.GAME_DATA = {
           "choice_id": "Ch5GuardedDoorListen",
           "effect_group_id": "eff_ch5_guarded_door_listen",
           "text": "콧노래의 결을 끝까지 듣고, 문 안쪽 호흡을 짚어 본다.",
-          "next_type": "Scene",
-          "next_id": "ch5_guarded_door_listen",
-          "choice_group_id": "ChoiceGroup_GuardedDoor"
+          "next_type": "Dialog",
+          "next_id": "door_listen",
+          "choice_group_id": "ChoiceGroup_GuardedDoorInvestigation"
         },
         {
           "order": 2,
           "choice_id": "Ch5GuardedDoorSteady",
           "effect_group_id": "eff_ch5_guarded_door_steady",
           "text": "송순과 숨을 고른 뒤, 함께 문을 민다.",
-          "next_type": "Scene",
-          "next_id": "ch5_guarded_door_steady",
-          "choice_group_id": "ChoiceGroup_GuardedDoor"
+          "next_type": "Dialog",
+          "next_id": "door_steady",
+          "choice_group_id": "ChoiceGroup_GuardedDoorInvestigation"
         },
         {
           "order": 3,
-          "choice_group_id": "ChoiceGroup_GuardedDoor",
+          "choice_group_id": "ChoiceGroup_GuardedDoorInvestigation",
           "choice_id": "Ch5GuardedDoorObserve",
           "text": "문 틈으로 안의 배치와 위험을 직접 읽어 낸다.",
-          "next_type": "Scene",
-          "next_id": "ch5_guarded_door_observe"
-        }
-      ],
-      "evidence": []
-    },
-    "ch5_guarded_door_listen": {
-      "id": "ch5_guarded_door_listen",
-      "chapter": 5,
-      "title": "문에 귀를 대다",
-      "background": "assets/bg/storage.jpeg",
-      "music": "assets/sfx/creepy_2.mp3",
-      "effect": 2,
-      "branches": [
-        {
-          "branch_id": "Br_ch5_guarded_door_listen_Default",
-          "order": 1,
-          "condition_group_id": null,
-          "next_scene": "ch5_ritual_room"
-        }
-      ],
-      "dialogues": [
-        {
-          "order": 1,
-          "speaker_id": "Yuu",
-          "emotion_type": "Tense",
-          "standing_slot": "Right",
-          "focus_type": "Speaker",
-          "text": "조금만 더 듣겠습니다. 무섭더라도 결을 끝까지 짚어야, 저 안에서 무엇이 사람 숨을 끌고 가는지 분간할 수 있습니다.",
-          "style": "thought",
-          "dialog_id": "door_listen_react"
-        },
-        {
-          "order": 2,
-          "text": "유웅룡이 문 가까이 귀를 기울인다. 콧노래는 더는 멀리서 들리지 않는다. 문 저편 누군가의 목구멍이 아니라, 바로 귓속 얇은 막을 안에서부터 문지르는 소리처럼 들린다.",
-          "style": "narration"
-        },
-        {
-          "order": 3,
-          "text": "…이 소리, 이제 남의 목소리로만은 안 들립니다. 한 번 귀를 내주면 사람 숨의 결까지 흉내 내는군요.",
-          "style": "thought",
-          "speaker_id": "Yuu",
-          "emotion_type": "Tense",
-          "standing_slot": "Right",
-          "focus_type": "Speaker"
+          "next_type": "Dialog",
+          "next_id": "door_observe"
         },
         {
           "order": 4,
-          "text": "기자님 얼굴빛이 좋지 않아요. 그래도 이제 저 문이 사람을 어떻게 속이는지는 조금 아시겠죠.",
-          "style": "normal",
-          "speaker_id": "Songsoon",
-          "emotion_type": "Uneasy",
-          "standing_slot": "Left",
-          "focus_type": "Speaker"
+          "choice_group_id": "ChoiceGroup_GuardedDoorInvestigation",
+          "choice_id": "Ch5GuardedDoorReadScore",
+          "condition_group_id": "CG_GuardedDoor_HasScore",
+          "effect_group_id": "eff_guarded_door_score_read",
+          "text": "감응 악보를 펼쳐 지금 흘러나오는 노래의 순서와 맞춰 본다.",
+          "next_type": "Dialog",
+          "next_id": "door_listen"
         }
       ],
-      "choices": [],
-      "evidence": []
-    },
-    "ch5_guarded_door_steady": {
-      "id": "ch5_guarded_door_steady",
-      "chapter": 5,
-      "title": "함께 버티는 숨",
-      "background": "assets/bg/storage.jpeg",
-      "music": "assets/sfx/creepy_2.mp3",
-      "effect": null,
-      "branches": [
-        {
-          "branch_id": "Br_ch5_guarded_door_steady_Default",
-          "order": 1,
-          "condition_group_id": null,
-          "next_scene": "ch5_ritual_room"
-        }
-      ],
-      "dialogues": [
-        {
-          "order": 1,
-          "speaker_id": "Yuu",
-          "emotion_type": "Neutral",
-          "standing_slot": "Right",
-          "focus_type": "Speaker",
-          "text": "이번엔 소리에 끌려 들어가는 대신, 우리가 먼저 숨을 맞추고 들어간다. 사람이 사람을 붙든 채로.",
-          "style": "thought",
-          "dialog_id": "door_steady_react"
-        },
-        {
-          "order": 2,
-          "text": "한 번만 더 숨 고르지요. 여기서 겁이 나는 건 부끄러운 일이 아닙니다. 겁이 난 채로도 끝까지 가는 편이 훨씬 어렵지요.",
-          "style": "normal",
-          "speaker_id": "Yuu",
-          "emotion_type": "Neutral",
-          "standing_slot": "Right",
-          "focus_type": "Speaker"
-        },
-        {
-          "order": 3,
-          "text": "…네. 이번엔 혼자 겁먹는 게 아니라는 것만으로도 버틸 만해요.",
-          "style": "normal",
-          "speaker_id": "Songsoon",
-          "emotion_type": "Uneasy",
-          "standing_slot": "Left",
-          "focus_type": "Speaker"
-        },
-        {
-          "order": 4,
-          "text": "두 사람은 짧게 호흡을 맞춘다. 겁은 가시지 않지만, 그 겁이 한 사람 몫으로만 남지 않는 순간 문 앞 공기가 아주 조금 달라진다.",
-          "style": "narration"
-        }
-      ],
-      "choices": [],
-      "evidence": []
+      "evidence_dialogues": {
+        "guarded_door_score_react": [
+          {
+            "order": 1,
+            "text": "악보와 지금 노래의 순서가 정확히 겹친다. 즉흥이 아니라 정해진 절차다. 다음은 이름을 흐리는 대목이겠지.",
+            "style": "thought",
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
+          },
+          {
+            "order": 2,
+            "text": "그럼 준비할 시간은 있는 거네요. 언제 이름이 흐려지는지 안다면, 그 순간만 놓치지 않으면 돼요.",
+            "style": "normal",
+            "speaker_id": "Songsoon",
+            "emotion_type": "Uneasy",
+            "standing_slot": "Left",
+            "focus_type": "Speaker"
+          }
+        ]
+      },
+      "evidence": [],
+      "investigation_title": "문 앞에서 무엇을 먼저 읽어 낼 것인가",
+      "investigation_hint": "노랫소리, 문 안의 배치, 송순의 호흡 가운데 두 가지를 확인하고 의례실에 들어갈 준비를 하세요.",
+      "investigation_dialogues": {
+        "door_listen": [
+          {
+            "order": 1,
+            "text": "콧노래는 사람 숨을 한 박자씩 늦춘다. 들을수록 문보다 듣는 쪽이 먼저 흔들린다.",
+            "style": "narration"
+          }
+        ],
+        "door_observe": [
+          {
+            "order": 1,
+            "text": "문틈 너머 제단의 배치가 보인다. 들어가자마자 노래를 끊을 자리와 피할 길을 머릿속에 그린다.",
+            "style": "thought",
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
+          }
+        ],
+        "door_steady": [
+          {
+            "order": 1,
+            "text": "송순과 숨을 맞춘다. 공포를 없애지는 못해도, 누가 누구를 붙들어야 하는지는 분명해진다.",
+            "style": "normal",
+            "speaker_id": "Songsoon",
+            "emotion_type": "Uneasy",
+            "standing_slot": "Left",
+            "focus_type": "Speaker"
+          }
+        ]
+      }
     },
     "ch5_ritual_room": {
       "id": "ch5_ritual_room",
@@ -5419,7 +5969,7 @@ window.GAME_DATA = {
           "branch_id": "Br_ch5_ritual_room_Default",
           "order": 1,
           "condition_group_id": null,
-          "next_scene": "ch5_ipangyu_deal"
+          "next_scene": "ch5_participant_ledger"
         }
       ],
       "dialogues": [
@@ -5440,7 +5990,7 @@ window.GAME_DATA = {
         },
         {
           "order": 3,
-          "text": "저기 제단에… '그릇은 셋. 둘은 쓰였고 하나가 남았다'라고 적혀 있어요. 사람을 사람으로 안 보고, 남은 몫까지 미리 헤아려 둔 거예요.",
+          "text": "제단에 지워진 숫자와 짧은 문장이 남아 있어요. 누가, 무엇을 세었는지는 기록과 맞춰 봐야 해요.",
           "style": "normal",
           "speaker_id": "Songsoon",
           "emotion_type": "Uneasy",
@@ -5451,7 +6001,7 @@ window.GAME_DATA = {
         },
         {
           "order": 4,
-          "text": "그릇 셋 중 둘은 이판규가 바쳤던 아이들이고, 세 번째는 아직 안쪽에 남아 있다…. 구원 타령을 하더니 결국 셈법은 도살장과 다를 게 없군요.",
+          "text": "숫자만으로 피해자나 의식의 순서를 단정할 순 없습니다. 제단의 기록을 증거와 함께 읽어야 합니다.",
           "style": "thought",
           "speaker_id": "Yuu",
           "emotion_type": "Tense",
@@ -5505,7 +6055,7 @@ window.GAME_DATA = {
         },
         {
           "order": 11,
-          "text": "이 노래는 사람을 부르는 게 아닙니다. 제 발로 안쪽으로 걸어 들어가게 만드는 소리지. 불려 간 줄도 모른 채 스스로 문턱을 넘게 만드는.",
+          "text": "노래가 어떤 역할을 하는지는 악보와 이 방의 기록을 겹쳐 봐야 압니다. 지금은 목소리를 놓치지 맙시다.",
           "style": "thought",
           "speaker_id": "Yuu",
           "emotion_type": "Trance",
@@ -5516,6 +6066,17 @@ window.GAME_DATA = {
         },
         {
           "order": 12,
+          "text": "손끝이 먼저 떨린다. 노래가 귀를 넘어 뼈 속에서 울리는 것 같다. 여기서 더 들으면, 듣는 쪽이 나일지 저 문 안의 무엇일지 자신이 없다.",
+          "style": "thought",
+          "condition_group_id": "CG_Ritual_Erosion6",
+          "speaker_id": "Yuu",
+          "emotion_type": "Shaken",
+          "standing_slot": "Right",
+          "focus_type": "Speaker",
+          "fx_type": "RitualGlow"
+        },
+        {
+          "order": 13,
           "text": "그래도 전 저 안에서 언니를 찾을 수 있어요. 기자님은 기록을 놓치지 말고, 전 목소리를 놓치지 않을게요.",
           "style": "normal",
           "condition_group_id": "CG_Threshold_TrustedSongsoon",
@@ -5527,14 +6088,14 @@ window.GAME_DATA = {
           "idle_motion": "ShakeHard"
         },
         {
-          "order": 13,
+          "order": 14,
           "text": "어딘가 위쪽, 닿을 듯 말 듯 먼 곳에선 아직도 도시의 숨이 남아 있다. 유웅룡은 편집장에게 남긴 한 줄이 문득 떠오르지만, 이제 그 문장은 퇴로가 아니라 증인 하나를 더 만드는 장치에 가깝다.",
           "style": "narration",
           "condition_group_id": "CG_Descent_CalledEditorTrue",
           "fx_type": "Flicker"
         },
         {
-          "order": 14,
+          "order": 15,
           "text": "그래도 가야 해요. 저 안에 언니가 있다면, 그 목소리라도 붙잡아야 하니까.",
           "style": "normal",
           "speaker_id": "Songsoon",
@@ -5545,13 +6106,13 @@ window.GAME_DATA = {
           "idle_motion": "Tremble"
         },
         {
-          "order": 15,
+          "order": 16,
           "text": "바닥 가장자리엔 누군가 남긴 손자국들이 겹겹이 말라 있다. 올라오려던 사람도 있었고, 마지막까지 붙잡히지 않으려 버틴 사람도 있었다는 뜻이다.",
           "style": "narration",
           "fx_type": "BloodSmear"
         },
         {
-          "order": 16,
+          "order": 17,
           "speaker_id": "Yuu",
           "emotion_type": "Tense",
           "standing_slot": "Right",
@@ -5561,7 +6122,7 @@ window.GAME_DATA = {
           "condition_group_id": "CG_RitualRoom_RitualScore"
         },
         {
-          "order": 17,
+          "order": 18,
           "speaker_id": "Yuu",
           "emotion_type": "Tense",
           "standing_slot": "Right",
@@ -5571,10 +6132,20 @@ window.GAME_DATA = {
           "condition_group_id": "CG_RitualRoom_OldArticles"
         },
         {
-          "order": 18,
+          "order": 19,
           "text": "이걸 우발적 광신쯤으로 넘기긴 어렵습니다. 종이에 적힌 순서와 남은 몫이 전부 맞아떨어져요. 저들은 처음부터 사람 수까지 세며 판을 굴렸습니다.",
           "style": "thought",
           "condition_group_id": "CG_RitualRoom_QRitualAccident",
+          "speaker_id": "Yuu",
+          "emotion_type": "Tense",
+          "standing_slot": "Right",
+          "focus_type": "Speaker"
+        },
+        {
+          "order": 20,
+          "text": "4호실의 옷과 가면까지 떠올리면, 이곳은 사람을 무작정 해친 자리가 아니다. 이름과 얼굴을 벗겨 의식의 배역으로 갈아 끼우던 자리다.",
+          "style": "thought",
+          "condition_group_id": "CG_Ritual_QRoom4Purpose",
           "speaker_id": "Yuu",
           "emotion_type": "Tense",
           "standing_slot": "Right",
@@ -5663,7 +6234,8 @@ window.GAME_DATA = {
             "text": "이 증거만으로는 의식의 구조를 바로 꿰맞출 수 없다. 다른 단서를 더 정확히 짚어야 한다.",
             "style": "thought",
             "portrait": "assets/portraits/yuu.png",
-            "condition": null
+            "condition": null,
+            "effect_group_id": "eff_ritual_wrong"
           }
         ]
       },
@@ -5702,7 +6274,8 @@ window.GAME_DATA = {
           "text": "의례실 종이를 제단 앞 문장과 맞대 본다.",
           "evidence_id": "EvRitualNote",
           "next_type": "Dialog",
-          "next_id": "present_ritual_note"
+          "next_id": "present_ritual_note",
+          "is_correct": true
         },
         {
           "order": 102,
@@ -5711,7 +6284,8 @@ window.GAME_DATA = {
           "text": "감응 악보를 지금 울리는 노래와 겹쳐 본다.",
           "evidence_id": "EvRitualScore",
           "next_type": "Dialog",
-          "next_id": "present_ritual_score"
+          "next_id": "present_ritual_score",
+          "is_correct": true
         },
         {
           "order": 103,
@@ -5721,7 +6295,8 @@ window.GAME_DATA = {
           "evidence_id": "EvMask",
           "condition_group_id": "CG_RitualRoom_QRitualAccident",
           "next_type": "Dialog",
-          "next_id": "present_mask"
+          "next_id": "present_mask",
+          "is_correct": true
         }
       ],
       "evidence": [
@@ -5863,7 +6438,52 @@ window.GAME_DATA = {
           "condition_group_id": "CG_Threshold_SolvedMid"
         }
       ],
-      "choices": [],
+      "choices": [
+        {
+          "order": 1,
+          "choice_group_id": "ChoiceGroup_Threshold",
+          "choice_id": "Ch6ThresholdErosionTouch",
+          "condition_group_id": "CG_Threshold_Erosion6",
+          "effect_group_id": "eff_threshold_erosion_touch",
+          "text": "이미 물든 감각으로, 문에 먼저 손을 얹는다.",
+          "next_type": "Dialog",
+          "next_id": "threshold_erosion_react"
+        },
+        {
+          "order": 2,
+          "choice_group_id": "ChoiceGroup_Threshold",
+          "choice_id": "Ch6ThresholdCredibilityResolve",
+          "condition_group_id": "CG_Threshold_Credibility7",
+          "effect_group_id": "eff_cafe_press_credential",
+          "text": "그동안 지켜 낸 기자로서의 신뢰를 되새기며 두려움을 억누른다.",
+          "next_type": "Dialog",
+          "next_id": "threshold_credibility_react"
+        }
+      ],
+      "evidence_dialogues": {
+        "threshold_erosion_react": [
+          {
+            "order": 1,
+            "text": "손끝이 문에 닿기도 전에 먼저 뜨겁다. 몇 번이나 이 감각에 몸을 내줬는지, 이제는 정확히 세지도 못하겠다.",
+            "style": "thought",
+            "speaker_id": "Yuu",
+            "emotion_type": "Shaken",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
+          }
+        ],
+        "threshold_credibility_react": [
+          {
+            "order": 1,
+            "text": "여기까지 오는 동안 무너지지 않은 것들을 하나씩 세어 본다. 그 목록이 지금은 문보다 든든하다.",
+            "style": "thought",
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
+          }
+        ]
+      },
       "evidence": []
     },
     "ch6_ritual_scene": {
@@ -5875,11 +6495,16 @@ window.GAME_DATA = {
       "effect": 4,
       "goal_kicker": "결단 목표",
       "goal_text": "송금, 이해심, 그리고 이 방에 쌓인 질문들 사이에서 무엇을 사람 쪽으로 남길지 지금 결정한다.",
-      "investigation_id": "Investigation_RitualFinal",
       "branches": [
         {
-          "branch_id": "Br_ch6_ritual_scene_Default",
+          "branch_id": "Br_ch6_ritual_scene_Expose",
           "order": 1,
+          "condition_group_id": "CG_Branch_ExposedTruthAtRitual",
+          "next_scene": "ch6_final_decision"
+        },
+        {
+          "branch_id": "Br_ch6_ritual_scene_Default",
+          "order": 2,
           "condition_group_id": null,
           "next_scene": "ch6_article"
         }
@@ -6010,78 +6635,107 @@ window.GAME_DATA = {
         {
           "order": 1,
           "choice_group_id": "ChoiceGroup_RitualFinal",
+          "choice_id": "Ch6FinalExpose",
+          "text": "지금까지 쌓은 질문과 단서를 들이밀어 이해심의 거짓을 폭로한다.",
+          "next_type": "Dialog",
+          "next_id": "ritual_expose",
+          "condition_group_id": "CG_Proof_All",
+          "impact_text": "마지막 결단의 무게가 기울기 시작합니다."
+        },
+        {
+          "order": 2,
+          "choice_group_id": "ChoiceGroup_RitualFinal",
+          "choice_id": "Ch6FinalHesitate",
+          "text": "증명을 끝내지 못한 채 공포에 얼어붙는다.",
+          "next_type": "Scene",
+          "next_id": "ch6_choice_c",
+          "impact_text": "틈을 만들지 못한 대가가 남습니다."
+        }
+      ],
+      "evidence": [],
+      "evidence_dialogues": {
+        "ritual_expose": [
+          {
+            "order": 1,
+            "speaker": "유웅룡",
+            "speaker_id": "Yuu",
+            "emotion_type": "Angry",
+            "standing_slot": "Right",
+            "focus_type": "Speaker",
+            "idle_motion": "ShakeLight",
+            "text": "그만 연기합시다. 호출된 사람과 지워진 기사, 강제로 편입된 송금, 노래와 순번이 적힌 의례 기록이 전부 여기서 이어졌습니다. 우발적인 광신이 아니라 사람을 셈해 삼키는 판이었군요.",
+            "style": "normal",
+            "portrait": "assets/portraits/yuu.png",
+            "condition": null
+          },
+          {
+            "order": 2,
+            "speaker": "이해심",
+            "speaker_id": "Haesim",
+            "emotion_type": "Crazy",
+            "standing_slot": "Center",
+            "focus_type": "Speaker",
+            "idle_motion": "Tremble",
+            "text": "입을 맞춘다고 진실이 되는 줄 아느냐. 질문 몇 개 풀었다고 문턱의 무게를 재단할 수는 없어.",
+            "style": "normal",
+            "portrait": "assets/portraits/haesim.png",
+            "condition": null
+          },
+          {
+            "order": 3,
+            "speaker": "",
+            "text": "쌓아 온 질문들이 한꺼번에 제단 위로 던져진다. 방 안 공기가 순간 비틀린다. 이해심 쪽 의식의 흐름이 아주 잠깐 끊기고, 유웅룡은 그 틈을 몸으로 파고든다.",
+            "style": "narration",
+            "portrait": null,
+            "condition": null
+          }
+        ]
+      }
+    },
+    "ch6_final_decision": {
+      "id": "ch6_final_decision",
+      "chapter": 6,
+      "title": "폭로 뒤의 결단",
+      "background": "assets/bg/ritual_room.jpg",
+      "music": "assets/sfx/ritual_climax.mp3",
+      "effect": null,
+      "goal_kicker": "마지막 결단",
+      "goal_text": "폭로로 만든 틈을 어디에 쓸지 고른다. 사람을 붙들거나, 의식을 끊거나, 기록을 남긴다.",
+      "branches": [],
+      "dialogues": [
+        {
+          "order": 1,
+          "text": "질문과 기록이 한꺼번에 들이닥치자 의식의 박자가 잠시 어긋난다. 이제는 알고 있는 것을 행동으로 옮겨야 한다.",
+          "style": "narration"
+        }
+      ],
+      "choices": [
+        {
+          "order": 1,
+          "choice_group_id": "ChoiceGroup_RitualFinal",
           "choice_id": "Ch6FinalAnswer",
           "text": "송순이 언니를 사람의 이름으로 붙들어 세운다.",
           "next_type": "Scene",
-          "next_id": "ch6_choice_a",
-          "impact_text": "마지막 결단의 무게가 기울기 시작합니다."
+          "next_id": "ch6_choice_a"
         },
         {
           "order": 2,
           "choice_group_id": "ChoiceGroup_RitualFinal",
           "choice_id": "Ch6FinalBlock",
-          "text": "유웅룡이 제단으로 뛰어들어 의식을 몸으로 끊는다.",
+          "text": "유웅룡이 명부의 순번과 악보를 따라 제단을 끊는다.",
           "next_type": "Scene",
-          "next_id": "ch6_choice_b",
-          "impact_text": "마지막 결단의 무게가 기울기 시작합니다."
+          "next_id": "ch6_choice_b"
         },
         {
           "order": 3,
           "choice_group_id": "ChoiceGroup_RitualFinal",
-          "choice_id": "Ch6FinalHesitate",
-          "text": "공포에 얼어붙은 채 아무 선택도 하지 못한다.",
+          "choice_id": "Ch6FinalRecord",
+          "text": "기사와 목격, 명부를 남겨 반복된 구조를 드러낸다.",
           "next_type": "Scene",
-          "next_id": "ch6_choice_c",
-          "impact_text": "마지막 결단의 무게가 기울기 시작합니다."
-        },
-        {
-          "order": 4,
-          "choice_group_id": "ChoiceGroup_RitualFinal",
-          "choice_id": "Ch6FinalExpose",
-          "text": "지금까지 쌓은 질문과 단서를 들이밀어 이해심의 거짓을 폭로한다.",
-          "next_type": "Dialog",
-          "next_id": "ritual_expose",
-          "condition_group_id": "CG_RitualScene_SolvedHigh",
-          "impact_text": "마지막 결단의 무게가 기울기 시작합니다."
+          "next_id": "ch6_choice_b"
         }
       ],
-      "evidence": [],
-      "ritual_expose": [
-        {
-          "order": 1,
-          "speaker": "유웅룡",
-          "speaker_id": "Yuu",
-          "emotion_type": "Angry",
-          "standing_slot": "Right",
-          "focus_type": "Speaker",
-          "idle_motion": "ShakeLight",
-          "text": "그만 연기합시다. 이판규를 미친놈으로 덮고, 송금을 도망친 사람으로 만들고, 의식을 우발적 광신이라 부른 거짓말이 전부 여기서 이어졌습니다. 이제 남은 건 사람 잡아먹는 판을 들키지 않으려는 몸부림뿐이군요.",
-          "style": "normal",
-          "portrait": "assets/portraits/yuu.png",
-          "condition": null
-        },
-        {
-          "order": 2,
-          "speaker": "이해심",
-          "speaker_id": "Haesim",
-          "emotion_type": "Crazy",
-          "standing_slot": "Center",
-          "focus_type": "Speaker",
-          "idle_motion": "Tremble",
-          "text": "입을 맞춘다고 진실이 되는 줄 아느냐. 질문 몇 개 풀었다고 문턱의 무게를 재단할 수는 없어.",
-          "style": "normal",
-          "portrait": "assets/portraits/haesim.png",
-          "condition": null
-        },
-        {
-          "order": 3,
-          "speaker": "",
-          "text": "쌓아 온 질문들이 한꺼번에 제단 위로 던져진다. 방 안 공기가 순간 비틀린다. 이해심 쪽 의식의 흐름이 아주 잠깐 끊기고, 유웅룡은 그 틈을 몸으로 파고든다.",
-          "style": "narration",
-          "portrait": null,
-          "condition": null
-        }
-      ]
+      "evidence": []
     },
     "ch6_choice_a": {
       "id": "ch6_choice_a",
@@ -7052,7 +7706,24 @@ window.GAME_DATA = {
           "standing_slot": "Right"
         }
       ],
-      "choices": [],
+      "choices": [
+        {
+          "order": 1,
+          "choice_id": "Ch2FactoryShockDocument",
+          "text": "시신과 쪽지를 분리해 기록하고 낙원으로 향한다.",
+          "effect_group_id": "eff_r9_document",
+          "next_type": "Scene",
+          "next_id": "ch2_cafe"
+        },
+        {
+          "order": 2,
+          "choice_id": "Ch2FactoryShockFollowSong",
+          "text": "환청의 방향을 따라 서둘러 낙원으로 향한다.",
+          "effect_group_id": "eff_r9_follow_sound",
+          "next_type": "Scene",
+          "next_id": "ch2_cafe"
+        }
+      ],
       "evidence": []
     },
     "scene_gameover_erosion": {
@@ -7134,140 +7805,6 @@ window.GAME_DATA = {
       "choices": [],
       "evidence": []
     },
-    "ch2_ipangyu": {
-      "id": "ch2_ipangyu",
-      "chapter": 2,
-      "title": "이판규의 잔향",
-      "background": "assets/bg/slum.jpeg",
-      "music": "assets/sfx/jazz_dark.mp3",
-      "effect": null,
-      "goal_kicker": "증거 제시",
-      "goal_text": "죽은 이판규 뒤에 남은 잔향을 흔들어 송금과 의식에 닿는 이름을 끌어낸다. 맞는 증거만이 사후의 기억을 붙잡는다.",
-      "evidence_prompt_title": "이판규의 잔향에 증거를 들이민다",
-      "evidence_prompt_hint": "이미 죽은 이판규가 남긴 말의 결에 닿는 증거만이 통한다. 맞는 걸 내밀면 흐릿한 잔향에도 방향이 생긴다.",
-      "branches": [
-        {
-          "branch_id": "Br_ch2_ipangyu_Default",
-          "order": 1,
-          "condition_group_id": null,
-          "next_scene": "ch2_well"
-        }
-      ],
-      "dialogues": [
-        {
-          "order": 1,
-          "text": "낙원 외곽 판자촌 골목. 폐공장에서 분명 이판규의 시체를 보고 돌아왔는데, 지붕 낮은 집들 사이로 낯익은 실루엣이 또 한 번 흔들린다. 사람 하나가 담벼락에 등을 기댄 채 혼자 중얼거리고 있다.",
-          "style": "narration"
-        },
-        {
-          "order": 2,
-          "text": "얼굴은 이판규가 맞다. 하지만 폐공장에서 본 시신처럼 목이 어딘가 부자연스럽게 비틀려 있고, 발치엔 그림자도 없다. 살아 있는 사람이라기보다 막 죽은 자리에 눌어붙은 소문과 죄책감이 사람 모양을 흉내 낸 것에 가깝다.",
-          "style": "narration"
-        },
-        {
-          "order": 3,
-          "text": "왔군. 와야 할 사람이 왔어. 토요일이 지났으니, 문이 열렸으니, 이제 기자가 와야 했어.",
-          "style": "normal",
-          "speaker_id": "Ipangyu",
-          "emotion_type": "Corpse",
-          "standing_slot": "Center",
-          "focus_type": "Speaker"
-        },
-        {
-          "order": 4,
-          "text": "말도 안 돼… 당신은 이미 죽었소. 내가 당신 시체를 보고 왔는데, 지금 여기서 뭘 흉내 내고 있는 거요.",
-          "style": "normal",
-          "speaker_id": "Yuu",
-          "emotion_type": "Shaken",
-          "standing_slot": "Right",
-          "focus_type": "Speaker"
-        },
-        {
-          "order": 5,
-          "text": "죽은 건 껍데기지. 이어진 건 아직 안 끊겼어. 나도, 송금도, 기자도. 한 번 문턱을 넘은 것들은 죽어도 한동안 같은 자리를 맴돌아.",
-          "style": "normal",
-          "speaker_id": "Ipangyu",
-          "emotion_type": "Corpse",
-          "standing_slot": "Center",
-          "focus_type": "Speaker"
-        },
-        {
-          "order": 6,
-          "text": "좋아. 산 사람으로 대하진 않겠소. 대신 당신 뒤에 남은 것에 묻지. 낙원에서 사라진 사람들, 송금, 그리고 그날 노래. 무엇을 본 거요.",
-          "style": "thought",
-          "speaker_id": "Yuu",
-          "emotion_type": "Tense",
-          "standing_slot": "Right",
-          "focus_type": "Speaker"
-        }
-      ],
-      "evidence_dialogues": {
-        "dlg_ipangyu_reveal": [
-          {
-            "order": 1,
-            "text": "...이걸 어디서 구했어. 그날 거기 없었으면 손에 쥘 수 없는 물건인데. 죽은 뒤에도 이 결만은 속일 수가 없네.",
-            "style": "normal",
-            "speaker_id": "Ipangyu",
-            "emotion_type": "Corpse",
-            "standing_slot": "Center",
-            "focus_type": "Speaker"
-          },
-          {
-            "order": 2,
-            "text": "맞아. 나는 그날 창고에 있었어. 노래를 들었어. 다들 다른 걸 들었지만 나는 이름을 들었어. 사라진 사람들 이름을. 송금도 그 안에 있었지. 문이 열릴 때 제일 또렷했던 이름이었어.",
-            "style": "normal",
-            "speaker_id": "Ipangyu",
-            "emotion_type": "Corpse",
-            "standing_slot": "Center",
-            "focus_type": "Speaker"
-          },
-          {
-            "order": 3,
-            "text": "썩은 잔향 속에서도 잠깐 초점이 돌아온다. 산 사람의 회상이라기보다, 죽기 직전 머리에 박힌 장면이 다시 떠오른 꼴이다. 여기서 더 밀면 우물터와 송금의 이름을 직접 묶을 수 있겠군.",
-            "style": "thought",
-            "speaker_id": "Yuu",
-            "emotion_type": "Tense",
-            "standing_slot": "Right",
-            "focus_type": "Speaker"
-          }
-        ],
-        "dlg_ipangyu_default": [
-          {
-            "order": 1,
-            "text": "그건 아냐, 기자. 그걸로는 죽은 자리도 흔들리지 않아. 노래를 아는 것을 가져와야 이 잔향이 이어진다.",
-            "style": "normal",
-            "speaker_id": "Ipangyu",
-            "emotion_type": "Corpse",
-            "standing_slot": "Center",
-            "focus_type": "Speaker",
-            "effect_group_id": "eff_ipangyu_wrong"
-          }
-        ]
-      },
-      "choices": [
-        {
-          "order": 101,
-          "choice_group_id": "ChoiceGroup_Ipangyu_Confront",
-          "choice_id": "Ch2IpangyuBlueCloth",
-          "text": "푸른 천 조각으로 그날 현장에 있었음을 들이민다.",
-          "evidence_id": "EvBlueCloth",
-          "effect_group_id": "eff_ipangyu_correct",
-          "next_type": "Dialog",
-          "next_id": "dlg_ipangyu_reveal"
-        },
-        {
-          "order": 102,
-          "choice_group_id": "ChoiceGroup_Ipangyu_Confront",
-          "choice_id": "Ch2IpangyuScore",
-          "text": "의식 악보를 내밀어 그가 들은 노래를 찌른다.",
-          "evidence_id": "EvRitualScore",
-          "effect_group_id": "eff_ipangyu_correct",
-          "next_type": "Dialog",
-          "next_id": "dlg_ipangyu_reveal"
-        }
-      ],
-      "evidence": []
-    },
     "ch6_article": {
       "id": "ch6_article",
       "chapter": 6,
@@ -7321,6 +7858,26 @@ window.GAME_DATA = {
           "order": 6,
           "text": "세 번째 항목 — 배후 세력의 실체. 이번이 처음이 아니라는 걸 보여줄 근거가 필요하다.",
           "style": "narration"
+        },
+        {
+          "order": 7,
+          "text": "쪽지와 푸른 천을 함께 정리해 둔 덕에, 기사는 누가 누구를 호출했는지부터 끊기지 않고 시작한다.",
+          "style": "thought",
+          "condition_group_id": "CG_Article_QCallPattern",
+          "speaker_id": "Yuu",
+          "emotion_type": "Tense",
+          "standing_slot": "Right",
+          "focus_type": "Speaker"
+        },
+        {
+          "order": 8,
+          "text": "악보와 의례실 기록을 겹치면, 이름을 지운 방법까지 문장으로 남길 수 있다. 이건 더는 추측이 아니다.",
+          "style": "thought",
+          "condition_group_id": "CG_Article_QRitualErasure",
+          "speaker_id": "Yuu",
+          "emotion_type": "Tense",
+          "standing_slot": "Right",
+          "focus_type": "Speaker"
         }
       ],
       "evidence_dialogues": {
@@ -7368,9 +7925,29 @@ window.GAME_DATA = {
             "focus_type": "Speaker",
             "effect_group_id": "eff_article_wrong"
           }
+        ],
+        "article_cafe_press_react": [
+          {
+            "order": 1,
+            "text": "그날 밤 더 캐묻지 않았다면 이 문장도 없었을 것이다. 옥련의 망설임까지 그대로 적어 둔다.",
+            "style": "thought",
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
+          }
         ]
       },
       "choices": [
+        {
+          "order": 1,
+          "choice_group_id": "ChoiceGroup_ArticleBonus",
+          "choice_id": "Ch6ArticleRecallCafePress",
+          "condition_group_id": "CG_Branch_EndingAScore2",
+          "text": "카페에서 옥련을 더 밀어붙였던 그 밤을 떠올리며 문장을 고쳐 쓴다.",
+          "next_type": "Dialog",
+          "next_id": "article_cafe_press_react"
+        },
         {
           "order": 101,
           "choice_group_id": "ChoiceGroup_ArticleQ1",
@@ -7448,53 +8025,18 @@ window.GAME_DATA = {
       "choices": [],
       "evidence": []
     },
-    "ch5_guarded_door_observe": {
-      "id": "ch5_guarded_door_observe",
+    "ch5_participant_ledger": {
+      "id": "ch5_participant_ledger",
       "chapter": 5,
-      "title": "문 틈의 목격",
+      "title": "염료 묻은 참여자 명부",
       "background": "assets/bg/ritual_room.jpg",
-      "music": "assets/sfx/ritual_climax.mp3",
+      "music": "assets/sfx/ritual.mp3",
       "effect": null,
+      "goal_kicker": "의식 순번",
+      "goal_text": "송금이 자발적 무녀가 아니라 강제로 편입됐음을 확인하고, 이번 밤 끊어야 할 순번을 읽는다.",
       "branches": [
         {
-          "branch_id": "Br_ch5_observe_Default",
-          "order": 1,
-          "condition_group_id": null,
-          "next_scene": "ch5_ritual_room"
-        }
-      ],
-      "dialogues": [
-        {
-          "order": 1,
-          "text": "문 틈으로 본 것들이 수첩 위에 내려앉는다. 의식의 배치, 서 있는 위치, 노래의 방향. 기사로 쓸 수 있는 것들이다.",
-          "style": "thought",
-          "speaker_id": "Yuu",
-          "emotion_type": "Tense",
-          "standing_slot": "Right",
-          "focus_type": "Speaker",
-          "effect_group_id": "eff_ch5_observe"
-        },
-        {
-          "order": 2,
-          "text": "그러나 그 안에서 흘러나온 콧노래는 귓속에서 좀처럼 사라지지 않는다. 들은 것과 기록한 것이 같은 무게가 아니다.",
-          "style": "narration"
-        }
-      ],
-      "choices": [],
-      "evidence": []
-    },
-    "ch5_ipangyu_deal": {
-      "id": "ch5_ipangyu_deal",
-      "chapter": 5,
-      "title": "이판규의 거래",
-      "background": "assets/bg/ritual_room.jpg",
-      "music": "assets/sfx/jazz_dark.mp3",
-      "effect": null,
-      "goal_kicker": "결단 목표",
-      "goal_text": "이판규의 거래를 받아들여 이름을 얻을지, 거절하고 더 어두운 길을 감수할지 결정한다.",
-      "branches": [
-        {
-          "branch_id": "Br_ch5_ipangyu_deal_Default",
+          "branch_id": "Br_ch5_participant_ledger_Default",
           "order": 1,
           "condition_group_id": null,
           "next_scene": "ch6_threshold"
@@ -7503,87 +8045,251 @@ window.GAME_DATA = {
       "dialogues": [
         {
           "order": 1,
-          "text": "의식실을 빠져나오는 길목. 폐공장에서 확인한 이판규의 죽음이 분명한데도, 몇 걸음 앞 벽엔 그의 목소리를 닮은 기척이 먼저 기대 선다. 사람의 살이 아니라 죄책감과 의식의 잔향이 잠깐 사람 모양을 빚은 듯하다. 살아 돌아온 게 아니다. 이미 죽은 자의 말버릇만 이 방 안에 눌어붙어 있다.",
+          "text": "제단 뒤 틈에서 염료와 피가 뒤섞인 종이 한 장이 나온다. 이름 옆에는 노래가 아니라 배역과 순번이 적혀 있다.",
           "style": "narration"
         },
         {
           "order": 2,
-          "text": "마지막 그릇의 이름을 알려줄게. 기사에 쓸 수 있는 이름이야. 그 대신 이 문구를 한 번만 따라 해봐.",
-          "style": "normal",
-          "speaker_id": "Ipangyu",
-          "emotion_type": "Crazy",
-          "standing_slot": "Center",
+          "text": "송금의 이름은 이미 일기와 송순의 입에서 확인했다. 여기서 새로 드러난 것은, 그가 선택한 무녀가 아니라 억지로 순번에 넣어진 편입자였다는 사실이다.",
+          "style": "thought",
+          "speaker_id": "Yuu",
+          "emotion_type": "Tense",
+          "standing_slot": "Right",
           "focus_type": "Speaker"
         },
         {
           "order": 3,
-          "text": "유웅룡은 저 입이 시체의 것인지, 의식이 흉내 낸 껍데기인지 끝내 분간하지 못한다. 다만 그 문구만은 분명 낙원의 의식에서 쓰이던 결이다. 잠깐만 방심하면 살아 있는 사람처럼 속아 넘어갈 만큼 선명하다.",
+          "text": "공연 순서표와 일기의 문장을 대면, 지워진 칸 하나가 오늘 밤의 순번으로 이어진다. 이 순서를 끊지 못하면 송금은 다시 사람 아닌 몫으로 남는다.",
           "style": "narration"
         }
       ],
       "choices": [
         {
           "order": 1,
-          "choice_group_id": "ChoiceGroup_IpangyuDeal",
-          "choice_id": "Ch5IpangyuDealAccept",
-          "text": "오염을 감수하고 문구를 따라 해 이름을 받아낸다.",
+          "choice_group_id": "ChoiceGroup_ParticipantLedger",
+          "choice_id": "Ch5ParticipantLedgerRead",
+          "text": "일기와 공연 순서표를 명부에 겹쳐 강제 편입과 기본 순번을 확인한다.",
           "next_type": "Dialog",
-          "next_id": "dlg_ipangyu_deal_accept",
-          "effect_group_id": "eff_ipangyu_deal_accept"
+          "next_id": "ledger_read",
+          "effect_group_id": "eff_participant_ledger"
         },
         {
           "order": 2,
-          "choice_group_id": "ChoiceGroup_IpangyuDeal",
-          "choice_id": "Ch5IpangyuDealRefuse",
-          "text": "거래를 끊고 이름 없는 어둠을 감수한다.",
+          "choice_group_id": "ChoiceGroup_ParticipantLedger",
+          "choice_id": "Ch5ParticipantLedgerReveal",
+          "condition_group_id": "CG_ParticipantLedger_Erosion3",
+          "text": "염료를 닦아 숨긴 순번까지 드러내고 의식 교란의 틈을 읽는다.",
           "next_type": "Dialog",
-          "next_id": "dlg_ipangyu_deal_refuse",
-          "effect_group_id": null
+          "next_id": "ledger_reveal",
+          "effect_group_id": "eff_participant_ledger_reveal"
         }
       ],
       "evidence": [
         {
-          "evidence_id": "EvIpangyuName",
-          "trigger": "Ch5IpangyuDealAccept",
-          "name": "이판규의 증언",
-          "description": "이판규가 넘겨준 이름. 낙원의 마지막 의식에서 노래한 사람의 이름이 적혀 있다.",
-          "image": "assets/ev/note.jpeg"
+          "evidence_id": "EvParticipantLedger",
+          "trigger": "Ch5ParticipantLedgerRead",
+          "name": "염료 묻은 참여자 명부",
+          "description": "의식에 편입된 사람과 배역·순번이 적힌 명부. 송금은 자원자가 아니라 강제로 배정된 편입자로 기록되어 있다.",
+          "image": "assets/ev/note.jpeg",
+          "category_id": "ritual"
         }
       ],
       "evidence_dialogues": {
-        "dlg_ipangyu_deal_accept": [
+        "ledger_read": [
           {
             "order": 1,
-            "text": "…그래. 잘 따라 했어. 이름은 송금이야. 낙원에서 마지막으로 노래한 사람.",
-            "style": "normal",
-            "speaker_id": "Ipangyu",
-            "emotion_type": "Crazy",
-            "standing_slot": "Center",
-            "focus_type": "Speaker"
+            "text": "명부의 송금 칸에는 '자원'이 아니라 '편입'이라 적혀 있다. 옆의 순번은 오늘 밤 마지막 노래 바로 전이다.",
+            "style": "narration"
           },
           {
             "order": 2,
-            "text": "이판규가 돌아선다. 이름 하나가 수첩에 남았다. 그러나 유웅룡의 입안에는 방금 따라 한 문구의 감촉이 좀처럼 사라지지 않는다. 알아낸 만큼, 저쪽도 기자를 안으로 한 걸음 더 끌어들였다.",
-            "style": "narration"
+            "text": "이제 필요한 것은 이름을 되찾는 일이 아니라, 이 순번이 다음 사람을 삼키기 전에 끊는 일이다.",
+            "style": "thought",
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
           }
         ],
-        "dlg_ipangyu_deal_refuse": [
+        "ledger_reveal": [
           {
             "order": 1,
-            "text": "그렇군. 그럼 이름은 네가 직접 찾아야지. 안 사겠다는 자에게 억지로 팔진 않아.",
-            "style": "normal",
-            "speaker_id": "Ipangyu",
-            "emotion_type": "Crazy",
-            "standing_slot": "Center",
+            "text": "염료가 번지며 가려진 한 줄이 드러난다. 마지막 노래 뒤에 문을 닫는 손의 순서까지 적혀 있다. 읽어 낸 만큼 귓속의 허밍이 선명해진다.",
+            "style": "narration",
+            "speaker_id": "Yuu",
+            "emotion_type": "Shaken",
+            "standing_slot": "Right",
             "focus_type": "Speaker"
-          },
-          {
-            "order": 2,
-            "text": "이름 하나가 빈 채로 남았지만, 적어도 저 문장을 입에 올리지는 않았다. 유웅룡은 이름 대신 결심을 챙긴 채 더 깊은 안쪽으로 걸음을 옮긴다.",
-            "style": "narration"
           }
         ]
       }
+    },
+    "ch1_newsroom_investigation": {
+      "id": "ch1_newsroom_investigation",
+      "chapter": 1,
+      "title": "취재의 첫 줄",
+      "background": "assets/bg/newsroom.jpeg",
+      "music": "assets/sfx/newsroom.mp3",
+      "effect": null,
+      "goal_kicker": "조사 목표",
+      "goal_text": "첫 취재에서 기록이 어디서 끊겼는지 확인해, 병원 접견으로 이어질 질문을 만든다.",
+      "branches": [
+        {
+          "branch_id": "Br_ch1_newsroom_investigation_Default",
+          "order": 1,
+          "condition_group_id": null,
+          "next_scene": "ch2_hospital"
+        }
+      ],
+      "dialogues": [
+        {
+          "order": 1,
+          "text": "판결문과 낡은 클리핑이 책상 위에 놓인다. 유웅룡은 무엇을 먼저 기록해야 이 사건이 다시 지워지지 않을지 고른다.",
+          "style": "narration"
+        }
+      ],
+      "choices": [
+        {
+          "order": 1,
+          "choice_group_id": "ChoiceGroup_NewsroomInvestigation",
+          "choice_id": "Ch1NewsroomReadRecord",
+          "text": "판결문 가장자리의 지워진 증언 흔적을 대조한다.",
+          "next_type": "Dialog",
+          "next_id": "newsroom_record",
+          "reward_state_id": "InvestigationScore",
+          "reward_value": 1,
+          "reward_mode": "Add"
+        },
+        {
+          "order": 2,
+          "choice_group_id": "ChoiceGroup_NewsroomInvestigation",
+          "choice_id": "Ch1NewsroomWriteName",
+          "text": "사건 파일에서 누락된 피해 기록을 수첩 첫 장에 적는다.",
+          "next_type": "Dialog",
+          "next_id": "newsroom_name",
+          "reward_state_id": "InvestigationScore",
+          "reward_value": 1,
+          "reward_mode": "Add"
+        },
+        {
+          "order": 3,
+          "choice_group_id": "ChoiceGroup_NewsroomInvestigation",
+          "choice_id": "Ch1NewsroomMarkCensor",
+          "text": "편집장이 피하라던 단어와 삭제 지시를 표시한다.",
+          "next_type": "Dialog",
+          "next_id": "newsroom_censor",
+          "reward_state_id": "InvestigationScore",
+          "reward_value": 1,
+          "reward_mode": "Add"
+        }
+      ],
+      "evidence": [],
+      "investigation_title": "첫 취재에서 무엇을 먼저 확인할 것인가",
+      "investigation_hint": "법정 기록, 누락된 피해 기록, 편집장의 금지선 가운데 두 가지를 확인해 취재의 출발점을 정하세요.",
+      "investigation_dialogues": {
+        "newsroom_record": [
+          {
+            "order": 1,
+            "text": "판결문 가장자리엔 지워진 증언의 흔적이 남아 있다. 사건은 끝난 것이 아니라 기록에서만 밀려난 셈이다.",
+            "style": "narration"
+          }
+        ],
+        "newsroom_name": [
+          {
+            "order": 1,
+            "text": "사건 파일에서 빠진 피해 기록을 먼저 수첩 첫 장에 적는다. 이름이 비어 있다는 사실부터 다음 질문이 된다.",
+            "style": "thought",
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
+          }
+        ],
+        "newsroom_censor": [
+          {
+            "order": 1,
+            "text": "편집장이 피하라던 단어들을 표시한다. 금지선이 선명할수록 그 안쪽에 숨긴 것이 있다는 뜻이다.",
+            "style": "thought",
+            "speaker_id": "Yuu",
+            "emotion_type": "Neutral",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
+          }
+        ]
+      }
+    },
+    "ch3_room4_conclusion": {
+      "id": "ch3_room4_conclusion",
+      "chapter": 3,
+      "title": "4호실의 결론",
+      "background": "assets/bg/storage.jpeg",
+      "music": "assets/sfx/sad.mp3",
+      "effect": null,
+      "evidence_prompt_title": "4호실에서 확인한 구조를 뒷받침하라",
+      "evidence_prompt_hint": "의식의 계획성과 송금의 실종을 함께 보여 주는 단서를 골라야 한다.",
+      "branches": [
+        {
+          "branch_id": "Br_ch3_room4_conclusion_Default",
+          "order": 1,
+          "condition_group_id": null,
+          "next_scene": "ch4a_library"
+        }
+      ],
+      "dialogues": [
+        {
+          "order": 1,
+          "text": "방 안의 옷, 가면, 기록은 서로 다른 방향을 가리킬 수도 있다. 결론은 단서를 겹쳐 확인한 뒤에만 적는다.",
+          "style": "thought",
+          "speaker_id": "Yuu",
+          "emotion_type": "Tense",
+          "standing_slot": "Right",
+          "focus_type": "Speaker"
+        }
+      ],
+      "choices": [],
+      "evidence_choices": [
+        {
+          "order": 101,
+          "choice_group_id": "ChoiceGroup_Room4Conclusion",
+          "choice_id": "Ch3Room4ConclusionScore",
+          "text": "감응 악보로 노래가 정해진 절차였음을 입증한다.",
+          "evidence_id": "EvRitualScore",
+          "is_correct": true,
+          "next_type": "Dialog",
+          "next_id": "room4_conclusion_correct"
+        },
+        {
+          "order": 102,
+          "choice_group_id": "ChoiceGroup_Room4Conclusion",
+          "choice_id": "Ch3Room4ConclusionDiary",
+          "text": "숨겨진 일기로 송금이 역할로 밀려났음을 입증한다.",
+          "evidence_id": "EvDiary",
+          "is_correct": true,
+          "next_type": "Dialog",
+          "next_id": "room4_conclusion_correct"
+        }
+      ],
+      "evidence_dialogues": {
+        "room4_conclusion_correct": [
+          {
+            "order": 1,
+            "text": "노래와 기록이 같은 방향을 가리킨다. 누군가는 사람을 의례의 순서에 넣고, 그 흔적을 도피와 광신으로 덮었다.",
+            "style": "narration"
+          }
+        ],
+        "room4_conclusion_wrong": [
+          {
+            "order": 1,
+            "text": "이 단서만으로는 방 안의 공포가 계획된 구조였다는 결론까지 닿지 못한다. 노래의 순서나 송금의 기록을 다시 짚어야 한다.",
+            "style": "thought",
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
+          }
+        ]
+      },
+      "evidence": []
     }
   }
 };

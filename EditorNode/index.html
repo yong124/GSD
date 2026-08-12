@@ -50,7 +50,6 @@
           <button class="data-tab" type="button" data-data-tab="effects">이펙트</button>
           <button class="data-tab" type="button" data-data-tab="choice-groups">선택그룹</button>
           <button class="data-tab" type="button" data-data-tab="evidence-categories">단서분류</button>
-          <button class="data-tab" type="button" data-data-tab="investigations">조사</button>
           <button class="data-tab" type="button" data-data-tab="questions">질문</button>
           <button class="data-tab" type="button" data-data-tab="state-descriptors">상태</button>
         </div>
@@ -91,10 +90,9 @@
         </div>
 
         <div class="panel-section" data-panel-tab="node">
-          <div class="section-label">조사 연결</div>
-          <select id="field-investigation-id">
-            <option value="">(none)</option>
-          </select>
+          <div class="section-label">조사 안내</div>
+          <input id="field-investigation-title" type="text" placeholder="조사 중 HUD에 표시할 제목">
+          <textarea id="field-investigation-hint" rows="2" placeholder="조사 중 HUD에 표시할 안내 문구"></textarea>
         </div>
 
         <div class="panel-section" data-panel-tab="node">
@@ -154,7 +152,7 @@
         </div>
 
         <div class="panel-section" data-panel-tab="node">
-          <div class="section-label">조사 분기 대사 (priority_dialogues)
+          <div class="section-label">조사 분기 대사 (investigation_dialogues)
             <button id="btn-add-priority-group" class="small">+</button>
           </div>
           <div id="priority-dialogue-list"></div>
@@ -224,13 +222,6 @@
             <button id="btn-add-evidence-category" class="small">+</button>
           </div>
           <div id="evidence-category-list"></div>
-        </div>
-
-        <div class="panel-section" data-panel-tab="data" data-data-tab="investigations">
-          <div class="section-label">조사
-            <button id="btn-add-investigation" class="small">+</button>
-          </div>
-          <div id="investigation-list"></div>
         </div>
 
         <div class="panel-section" data-panel-tab="data" data-data-tab="questions">

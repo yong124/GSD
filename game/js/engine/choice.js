@@ -49,10 +49,13 @@ const Choice = (() => {
   }
 
   function getChoiceType(choice, isPriority = false) {
-    if (isPriority) return 'choice-investigation';
-    if (getChoiceAnswerType(choice) === 'Evidence' || choice?.choice_group_type === 'Evidence') return 'choice-evidence';
-    if (choice?.evidence_id) return 'choice-investigation';
-    return 'choice-decision';
+    const base = (() => {
+      if (isPriority) return 'choice-investigation';
+      if (getChoiceAnswerType(choice) === 'Evidence' || choice?.choice_group_type === 'Evidence') return 'choice-evidence';
+      if (choice?.evidence_id) return 'choice-investigation';
+      return 'choice-decision';
+    })();
+    return choice?.locked ? `${base} choice-locked` : base;
   }
 
   function applyChoiceEffects(choice) {
@@ -69,7 +72,6 @@ const Choice = (() => {
   function finishChoice(callback, picked) {
     setTimeout(() => {
       UIManager.setChoiceBoxVisible(false);
-      UIManager.hideEvidenceInventory?.();
       if (callback) callback(picked);
     }, PICK_DELAY_MS);
   }
@@ -102,7 +104,7 @@ const Choice = (() => {
     };
   }
 
-  function buildEvidenceInventoryEntries(evidenceChoices = []) {
+  function buildEvidenceEntries(evidenceChoices = []) {
     const evidenceById = new Map();
     (window.GAME_DATA?.scenes ? Object.values(window.GAME_DATA.scenes) : []).forEach(scene => {
       (scene?.evidence || []).forEach(evidence => {
@@ -144,7 +146,7 @@ const Choice = (() => {
       UIManager.setDialogueBoxVisible(false);
       const choices = mapChoices(scene.choices, true);
       const budget = scene?.investigation?.budget ?? 0;
-      const priorityDialogues = scene.investigation?.priority_dialogues || {};
+      const priorityDialogues = scene.investigation_dialogues || {};
       const sourceSceneId = scene?.id || State.currentSceneId || null;
       let spent = 0;
       const pickedSet = new Set();
@@ -216,34 +218,68 @@ const Choice = (() => {
 
     showEvidence(scene, evidenceChoices, onChoose) {
       UIManager.setDialogueBoxVisible(false);
-      UIManager.setChoiceBoxVisible(false);
-      const inventoryEntries = buildEvidenceInventoryEntries(evidenceChoices);
-      const meta = getEvidenceMeta(scene, inventoryEntries.length);
       const choiceGroup = getChoiceGroup(evidenceChoices[0]) || null;
+      const isGate = !!choiceGroup?.is_gate;
 
-      UIManager.showEvidenceInventory?.(inventoryEntries, meta, pickedEvidenceId => {
-        const matchedChoice = evidenceChoices.find(choice => choice?.evidence_id === pickedEvidenceId) || null;
-        const fallbackChoice = choiceGroup?.default_dialog_id
-          ? { text: pickedEvidenceId, next_type: 'Dialog', next_id: choiceGroup.default_dialog_id }
-          : null;
-        const picked = matchedChoice || fallbackChoice;
-        if (!picked) return;
-        if (matchedChoice) applyChoiceEffects(picked);
-        showChoiceImpact({ ...picked, text: matchedChoice?.text || pickedEvidenceId });
-        finishChoice(onChoose, picked);
-      });
+      const attempt = () => {
+        const evidenceEntries = buildEvidenceEntries(evidenceChoices);
+        const meta = getEvidenceMeta(scene, evidenceEntries.length);
+
+        const evidenceOptions = evidenceEntries.map(entry => ({
+          text: entry.text,
+          desc: entry.detail || '',
+          type: 'choice-evidence',
+          evidence_id: entry.evidence_id,
+        }));
+
+        UIManager.renderChoiceList(evidenceOptions, pickedOption => {
+          const pickedEvidenceId = pickedOption.evidence_id;
+          const matchedChoice = evidenceChoices.find(choice => choice?.evidence_id === pickedEvidenceId) || null;
+          const fallbackChoice = choiceGroup?.default_dialog_id
+            ? {
+                text: pickedEvidenceId,
+                next_type: 'Dialog',
+                next_id: choiceGroup.default_dialog_id,
+                effect_group_id: choiceGroup.default_effect_group_id || null,
+              }
+            : null;
+          const picked = matchedChoice || fallbackChoice;
+          if (!picked) return;
+
+          const isWrongPick = isGate && !matchedChoice?.is_correct;
+          if (isWrongPick) {
+            if (picked.effect_group_id) applyEffectGroup(picked.effect_group_id);
+            showChoiceImpact({ ...picked, text: matchedChoice?.text || pickedEvidenceId });
+            const branchLines = (scene.evidence_dialogues || {})[picked.next_id || ''] || [];
+            const retry = () => attempt();
+            if (branchLines.length > 0) {
+              UIManager.setChoiceBoxVisible(false);
+              Dialogue.start(branchLines, retry, null);
+            } else {
+              retry();
+            }
+            return;
+          }
+
+          if (matchedChoice) applyChoiceEffects(picked);
+          showChoiceImpact({ ...picked, text: matchedChoice?.text || pickedEvidenceId });
+          finishChoice(onChoose, picked);
+        }, meta);
+
+        UIManager.setChoiceBoxVisible(true);
+      };
+
+      attempt();
     },
 
     hide() {
       UIManager.updateHUD(null, null);
-      UIManager.hideEvidenceInventory?.();
       UIManager.setChoiceBoxVisible(false);
     },
 
     isVisible() {
       const el = document.getElementById(Config.SELECTORS.CHOICE_BOX);
-      const inventoryVisible = UIManager.isEvidenceInventoryVisible?.() || false;
-      return (el && !el.classList.contains('hidden')) || inventoryVisible;
+      return !!(el && !el.classList.contains('hidden'));
     }
   };
 })();

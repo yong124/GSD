@@ -141,10 +141,6 @@ const State = (() => {
         _state.trusts[characterId] = Number(value || 0);
       }
 
-      if (typeof key === 'string' && key.startsWith('QuestionSolved_') && value === true) {
-        this.recordChoice(key);
-      }
-
       if (prev !== value) {
         _emit(`change:${key}`, value);
         _emit('change', { key, value });

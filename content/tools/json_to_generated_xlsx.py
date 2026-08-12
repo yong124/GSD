@@ -38,7 +38,7 @@ SHEET_DEFS = {
         "headers": ["EffectGroupID", "EffectType", "GaugeID", "GaugeDelta", "EvidenceID", "TrustCharacterID", "TrustDelta"],
     },
     "SceneTable": {
-        "headers": ["SceneID", "Chapter", "Title", "Background", "Music", "Effect", "GoalKicker", "GoalText", "EvidencePromptTitle", "EvidencePromptHint"],
+        "headers": ["SceneID", "Chapter", "Title", "Background", "Music", "Effect", "GoalKicker", "GoalText", "EvidencePromptTitle", "EvidencePromptHint", "InvestigationTitle", "InvestigationHint"],
     },
     "DialogTable": {
         "headers": ["DialogID", "SceneID", "Order", "CharacterID", "EmotionType", "StandingSlot", "FocusType", "EnterMotion", "ExitMotion", "IdleMotion", "FxType", "Text", "Style", "ConditionGroupID", "ChoiceGroupID", "NextDialogID", "Speaker", "Portrait", "Label"],
@@ -63,9 +63,6 @@ SHEET_DEFS = {
     },
     "CharacterEmotionTable": {
         "headers": ["CharacterID", "EmotionType", "ImagePath"],
-    },
-    "InvestigationTable": {
-        "headers": ["InvestigationID", "Title", "Hint", "Budget", "ChoiceGroupID"],
     },
     "QuestionTable": {
         "headers": ["QuestionID", "Title", "Detail", "SortOrder", "Category", "ResolutionType", "VisibleConditionGroupIDs", "StateConditionsJSON", "RelatedEvidenceIDs", "SolutionEvidenceIDs", "SolutionMode", "ContradictionPrompt", "ContradictionStatement", "SolvedStateID", "ResolvedDetail", "SuccessToast", "FailureToast", "RewardStateID", "RewardValue", "RewardMode"],
@@ -139,6 +136,8 @@ def build_scene_rows(data):
             "GoalText": scene.get("goal_text"),
             "EvidencePromptTitle": scene.get("evidence_prompt_title"),
             "EvidencePromptHint": scene.get("evidence_prompt_hint"),
+            "InvestigationTitle": scene.get("investigation_title"),
+            "InvestigationHint": scene.get("investigation_hint"),
         })
     return rows
 
@@ -353,20 +352,6 @@ def build_character_emotion_rows(data):
     return rows
 
 
-def build_investigation_rows(data):
-    rows = []
-    for item in data.get("investigations", []) or []:
-        rows.append({
-            "InvestigationID": item.get("investigation_id"),
-            "Title": item.get("title"),
-            "Hint": item.get("hint"),
-            "Budget": item.get("budget"),
-            "ChoiceGroupID": item.get("choice_group_id"),
-        })
-    rows.sort(key=lambda x: (x.get("InvestigationID") or ""))
-    return rows
-
-
 def build_question_rows(data):
     rows = []
     for question in data.get("questions", []) or []:
@@ -425,7 +410,6 @@ def build_sheet_rows(data):
         "EvidenceCategoryTable": build_evidence_category_rows(data),
         "CharacterTable": build_character_rows(data),
         "CharacterEmotionTable": build_character_emotion_rows(data),
-        "InvestigationTable": build_investigation_rows(data),
         "QuestionTable": build_question_rows(data),
         "StateDescriptorTable": build_state_descriptor_rows(data),
     }

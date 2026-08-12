@@ -97,16 +97,18 @@ py -m http.server 4173
 
 ---
 
-## 데이터 스키마 요약 (2026-07 기준 실측)
+## 데이터 스키마 요약 (2026-08 기준 실측)
 
-`window.GAME_DATA`의 top-level 키는 13개다:
+`window.GAME_DATA`의 top-level 키는 12개다:
 
 ```text
 first_scene, characters, character_emotions,
 choice_groups, conditions, evidence_categories,
-investigations, questions, state_descriptors,
+questions, state_descriptors,
 gauges, gauge_states, effects, scenes
 ```
+
+`investigations` 테이블은 제거됐다(SceneTable + ChoiceGroupTable로 완전 흡수, `TABLE_SPEC.md` 기준).
 
 씬 구조 (실제 사용 중인 키):
 
@@ -129,22 +131,22 @@ scenes: {
     evidence: [ { evidence_id, trigger, name, description, image } ],
     // 증거 제출 확장
     evidence_choices, evidence_dialogues, evidence_prompt_title, evidence_prompt_hint,
-    // 조사 루프 확장 (예산·분기 대사는 investigations 테이블이 가짐)
-    investigation_id,
+    // 조사 루프 확장 (예산은 choice_groups[].max_selectable이 가짐)
+    investigation_title, investigation_hint, investigation_dialogues,
     // 씬 목표 HUD
     goal_kicker, goal_text
   }
 }
 ```
 
-조사 씬은 `scene.investigation_id → investigations[]` 참조로 돌아간다.
-`investigations` 항목: `investigation_id, title, hint, budget, choice_group_id, priority_dialogues`.
+조사 씬은 `scene.choices`에서 `choice_group_id`로 참조하는 `choice_groups[]` 항목(`type: "Investigation"`)의 `max_selectable`이 조사 예산이 된다.
+조사 중 HUD 제목/안내는 `scene.investigation_title`/`investigation_hint`, 분기 대사는 `scene.investigation_dialogues`(키: 대사 그룹 id → 대사 배열)가 가진다.
 
 ### 새 모델이 자주 틀리는 지점 (하드 룰)
 
 - `next_type` 값은 `"Scene"` 또는 **`"Dialog"`** 다. `"Dialogue"`가 아니다. 오타 하나로 분기 점프가 통째로 죽는다.
 - 대사 점프 라벨 필드는 `dialog_id`다. `label`이라는 필드는 없다.
-- `next_type: "Dialog"`의 `next_id`는 문맥에 따라 `dialogues[].dialog_id`, `investigations[].priority_dialogues`의 키, `scene.evidence_dialogues`의 키 중 하나와 매칭되어야 한다.
+- `next_type: "Dialog"`의 `next_id`는 문맥에 따라 `dialogues[].dialog_id`, `scene.investigation_dialogues`의 키, `scene.evidence_dialogues`의 키 중 하나와 매칭되어야 한다.
 - 조사 선택지는 기본 `next_type: "Dialog"`. `"Scene"`으로 두면 분기 대사가 재생되지 않는다.
 - 고아 씬 탐지 시 choices의 `next_id`(Scene 타입), branches의 `next_scene`을 모두 참조로 간주한다.
 - EditorNode 저장은 tables와 game_data.js **동시 기록**이다. 한쪽만 고치고 끝내지 않는다.

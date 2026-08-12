@@ -10,7 +10,6 @@
     { id: 'effects', label: '이펙트' },
     { id: 'choice-groups', label: '선택그룹' },
     { id: 'evidence-categories', label: '단서분류' },
-    { id: 'investigations', label: '조사' },
     { id: 'questions', label: '질문' },
     { id: 'state-descriptors', label: '상태' },
   ];
@@ -20,6 +19,7 @@
     'Trust',
     'EvidenceOwned',
     'ChoiceSelected',
+    'QuestionSolved',
     'RevealedCharacter',
     'SceneProgressIndex',
     'SceneVisited',
@@ -93,10 +93,6 @@
     return uniqueSorted((data?.choice_groups || []).map(item => item?.choice_group_id));
   }
 
-  function collectInvestigationIds(data) {
-    return uniqueSorted((data?.investigations || []).map(item => item?.investigation_id));
-  }
-
   function collectEvidenceCategoryIds(data) {
     return uniqueSorted((data?.evidence_categories || []).map(item => item?.category_id));
   }
@@ -150,6 +146,8 @@
         return collectEvidenceIds(data);
       case 'ChoiceSelected':
         return collectChoiceIds(data);
+      case 'QuestionSolved':
+        return collectBooleanStateIds(data);
       case 'GaugeValue':
         return collectGaugeIds(data);
       case 'SceneVisited':
@@ -176,7 +174,6 @@
     collectEvidenceIds,
     collectConditionGroupIds,
     collectChoiceGroupIds,
-    collectInvestigationIds,
     collectEvidenceCategoryIds,
     collectGaugeIds,
     collectBooleanStateIds,

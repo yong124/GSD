@@ -169,7 +169,8 @@
       "EvRitualScore",
       "EvOldArticles",
       "EvRitualNote",
-      "EvMask"
+      "EvMask",
+      "EvSlumWitness"
     ],
     "solution_evidence_ids": [
       "EvRitualScore",
@@ -243,5 +244,86 @@
         "priority": 10
       }
     ]
+  },
+  {
+    "question_id": "QCallPattern",
+    "title": "호출의 쪽지와 푸른 천은 같은 명령의 흔적인가",
+    "detail": "공장에 남은 두 물건이 우연한 폐기물이 아니라 사람을 낙원으로 이끄는 표식인지 확인한다.",
+    "sort_order": 18,
+    "category": "Witness",
+    "related_evidence_ids": [
+      "EvNote",
+      "EvBlueCloth"
+    ],
+    "solution_evidence_ids": [
+      "EvNote",
+      "EvBlueCloth"
+    ],
+    "solution_mode": "All",
+    "solved_state_id": "QuestionSolved_QCallPattern",
+    "resolved_detail": "쪽지의 지시와 푸른 천의 표식은 같은 호출이 사람을 낙원으로 밀어 넣었다는 흔적이다.",
+    "success_toast": "질문 정리: 호출의 표식이 하나로 이어졌다.",
+    "failure_toast": "두 흔적을 함께 대조해야 호출의 구조가 드러난다."
+  },
+  {
+    "question_id": "QRoom4Purpose",
+    "title": "4호실은 무엇을 위해 쓰였는가",
+    "detail": "방 안의 의복과 가면이 단순한 소품인지, 사람을 의례의 역할로 바꾸는 장치인지 가린다.",
+    "sort_order": 28,
+    "category": "Missing",
+    "related_evidence_ids": [
+      "EvBlueHanbok",
+      "EvMask",
+      "EvDiary"
+    ],
+    "solution_evidence_ids": [
+      "EvBlueHanbok",
+      "EvMask"
+    ],
+    "solution_mode": "All",
+    "solved_state_id": "QuestionSolved_QRoom4Purpose",
+    "resolved_detail": "청색 한복과 네 눈 가면은 4호실이 사람을 의례의 배역으로 바꾸던 준비실이었음을 보여 준다.",
+    "success_toast": "질문 정리: 4호실의 용도를 붙들었다.",
+    "failure_toast": "의복과 가면을 함께 읽어야 방의 역할이 보인다."
+  },
+  {
+    "question_id": "QArchivePattern",
+    "title": "과거 기사와 현재 실종은 같은 구조인가",
+    "detail": "삭제된 기사와 빈민가의 목격담을 이어, 반복된 실종이 개인 사건이 아니었음을 확인한다.",
+    "sort_order": 38,
+    "category": "Record",
+    "related_evidence_ids": [
+      "EvOldArticles",
+      "EvSlumWitness"
+    ],
+    "solution_evidence_ids": [
+      "EvOldArticles",
+      "EvSlumWitness"
+    ],
+    "solution_mode": "All",
+    "solved_state_id": "QuestionSolved_QArchivePattern",
+    "resolved_detail": "과거 기사와 목격담은 같은 방식의 실종이 기록에서 반복해서 지워졌음을 보여 준다.",
+    "success_toast": "질문 정리: 반복된 삭제의 계보를 찾았다.",
+    "failure_toast": "기사와 목격담이 함께 있어야 반복의 구조를 말할 수 있다."
+  },
+  {
+    "question_id": "QRitualErasure",
+    "title": "의식은 어떻게 사람의 이름을 지우는가",
+    "detail": "악보와 의례실 기록을 맞대, 노래가 사람을 역할로 바꾸는 절차를 밝힌다.",
+    "sort_order": 45,
+    "category": "Ritual",
+    "related_evidence_ids": [
+      "EvRitualScore",
+      "EvRitualNote"
+    ],
+    "solution_evidence_ids": [
+      "EvRitualScore",
+      "EvRitualNote"
+    ],
+    "solution_mode": "All",
+    "solved_state_id": "QuestionSolved_QRitualErasure",
+    "resolved_detail": "악보와 의례실 기록은 노래가 이름을 흐리고 사람을 의례의 몫으로 바꾸는 정해진 절차였음을 보여 준다.",
+    "success_toast": "질문 정리: 이름을 지우는 절차를 밝혔다.",
+    "failure_toast": "노래의 순서와 의례실 기록을 함께 봐야 한다."
   }
 ]

@@ -1,17 +1,25 @@
 /**
- * effects.js — 씬 이펙트 트리거
- * scene.effect 값에 따라 CSS 클래스 적용
+ * effects.js — 씬/대사 이펙트 트리거
+ * apply(): scene.effect 값에 따라 CSS 클래스 적용 (씬 진입 시 1회)
+ * pulse(): dialogue.fx_type 값에 따라 순간 이펙트 적용 (대사 라인마다)
  *
- * 지원 이펙트:
+ * apply() 지원 이펙트:
  *   flicker    — 조명 깜빡임 (감응 전조)
  *   resonance  — 청색 오버레이 (감응 중)
  *   shake      — 화면 흔들림 (공포)
  *   blood      — 붉은 오버레이 (이해심 등장)
  *   none / ''  — 이펙트 없음
+ *
+ * pulse() 지원 fx_type (PascalCase로 전달됨, 내부에서 kebab-case로 변환):
+ *   Flicker, BlueTrace, RitualGlow, BloodSmear,
+ *   ScreenShake, Flash, FlashDark, Fade
  */
 const Effects = (() => {
   const EFFECT_CLASSES = ['effect-flicker', 'effect-resonance', 'effect-shake', 'effect-blood'];
-  const MOMENTARY_EFFECT_CLASSES = ['effect-blue-trace', 'effect-ritual-glow', 'effect-blood-smear', 'effect-flicker'];
+  const MOMENTARY_EFFECT_CLASSES = [
+    'effect-blue-trace', 'effect-ritual-glow', 'effect-blood-smear', 'effect-flicker',
+    'effect-screen-shake', 'effect-flash', 'effect-flash-dark', 'effect-fade',
+  ];
   const container = () => document.getElementById('game-container');
   let _momentaryTimer = null;
 
@@ -63,7 +71,7 @@ const Effects = (() => {
       clearMomentary();
       if (!effectName) return;
 
-      const normalized = `effect-${String(effectName).trim().replace(/_/g, '-').toLowerCase()}`;
+      const normalized = `effect-${String(effectName).trim().replace(/_/g, '-').replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()}`;
       if (!MOMENTARY_EFFECT_CLASSES.includes(normalized)) return;
 
       container().classList.add(normalized);

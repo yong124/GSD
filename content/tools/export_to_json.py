@@ -20,7 +20,6 @@ Excel 컬럼 규칙 (PascalCase):
   EvidenceCategoryTable / EvidenceCategories
   CharacterTable / Characters
   CharacterEmotionTable / CharacterEmotions
-  InvestigationTable / Investigations
   QuestionTable / Questions : QuestionID, Title, Detail, SortOrder, Category, ResolutionType, VisibleConditionGroupIDs, StateConditionsJSON, RelatedEvidenceIDs, SolutionEvidenceIDs, SolutionMode, ContradictionPrompt, ContradictionStatement, SolvedStateID, ResolvedDetail, SuccessToast, FailureToast, RewardStateID, RewardValue, RewardMode
   StateDescriptorTable / StateDescriptors : DescriptorID, TargetStateID, MinValue, MaxValue, Label, Detail
 
@@ -68,6 +67,8 @@ def normalize_condition_row(row):
         elif target_id == "CalledEditor":
             normalized_type = "ChoiceSelected"
             normalized_target_id = "Ch5PathContactEditor" if row.get("ConditionValue") is True else "Ch5PathNoContact"
+        elif isinstance(target_id, str) and target_id.startswith("QuestionSolved_"):
+            normalized_type = "QuestionSolved"
         else:
             normalized_type = "ChoiceSelected"
             normalized_target_id = {
@@ -145,7 +146,6 @@ def build_game_data(wb):
     evidence_categories_raw = read_sheet(resolve_sheet(wb, "EvidenceCategoryTable", "EvidenceCategories")) if "EvidenceCategoryTable" in wb.sheetnames or "EvidenceCategories" in wb.sheetnames else []
     characters_raw = read_sheet(resolve_sheet(wb, "CharacterTable", "Characters")) if "CharacterTable" in wb.sheetnames or "Characters" in wb.sheetnames else []
     character_emotions_raw = read_sheet(resolve_sheet(wb, "CharacterEmotionTable", "CharacterEmotions")) if "CharacterEmotionTable" in wb.sheetnames or "CharacterEmotions" in wb.sheetnames else []
-    investigations_raw = read_sheet(resolve_sheet(wb, "InvestigationTable", "Investigations")) if "InvestigationTable" in wb.sheetnames or "Investigations" in wb.sheetnames else []
     questions_raw = read_sheet(resolve_sheet(wb, "QuestionTable", "Questions")) if "QuestionTable" in wb.sheetnames or "Questions" in wb.sheetnames else []
     state_descriptors_raw = read_sheet(resolve_sheet(wb, "StateDescriptorTable", "StateDescriptors")) if "StateDescriptorTable" in wb.sheetnames or "StateDescriptors" in wb.sheetnames else []
     gauges_ws = resolve_optional_sheet(wb, "GaugeTable", "Gauges")
@@ -328,19 +328,6 @@ def build_game_data(wb):
             "category_hint": row.get("CategoryHint") or "",
         })
 
-    investigations = []
-    for row in investigations_raw:
-        investigation_id = row.get("InvestigationID")
-        if not investigation_id:
-            continue
-        investigations.append({
-            "investigation_id": investigation_id,
-            "title": row.get("Title") or "",
-            "hint": row.get("Hint") or "",
-            "budget": row.get("Budget"),
-            "choice_group_id": row.get("ChoiceGroupID"),
-        })
-
     questions = []
     for q in questions_raw:
         question_id = q.get("QuestionID")
@@ -444,7 +431,6 @@ def build_game_data(wb):
         "evidence_categories": evidence_categories,
         "characters": characters,
         "character_emotions": character_emotions,
-        "investigations": investigations,
         "questions": questions,
         "state_descriptors": state_descriptors,
         "gauges": gauges,

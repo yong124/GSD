@@ -56,6 +56,54 @@
     "condition_value": true
   },
   {
+    "condition_id": "Cond_Proof_Person_01",
+    "condition_group_id": "CG_Proof_Person",
+    "condition_type": "QuestionSolved",
+    "condition_target_id": "QuestionSolved_QSonggeumMissing|QuestionSolved_QSonggeumRunaway|QuestionSolved_QRoom4Purpose",
+    "compare_type": "Equal",
+    "condition_value": true
+  },
+  {
+    "condition_id": "Cond_Proof_Structure_01",
+    "condition_group_id": "CG_Proof_Structure",
+    "condition_type": "QuestionSolved",
+    "condition_target_id": "QuestionSolved_QIpangyuCall|QuestionSolved_QIpangyuMadness|QuestionSolved_QCallPattern|QuestionSolved_QArchivePattern",
+    "compare_type": "Equal",
+    "condition_value": true
+  },
+  {
+    "condition_id": "Cond_Proof_Ritual_01",
+    "condition_group_id": "CG_Proof_Ritual",
+    "condition_type": "QuestionSolved",
+    "condition_target_id": "QuestionSolved_QRitualLead|QuestionSolved_QRitualAccident|QuestionSolved_QRitualErasure",
+    "compare_type": "Equal",
+    "condition_value": true
+  },
+  {
+    "condition_id": "Cond_Proof_All_01",
+    "condition_group_id": "CG_Proof_All",
+    "condition_type": "QuestionSolved",
+    "condition_target_id": "QuestionSolved_QSonggeumMissing|QuestionSolved_QSonggeumRunaway|QuestionSolved_QRoom4Purpose",
+    "compare_type": "Equal",
+    "condition_value": true
+  },
+  {
+    "condition_id": "Cond_Proof_All_02",
+    "condition_group_id": "CG_Proof_All",
+    "condition_type": "QuestionSolved",
+    "condition_target_id": "QuestionSolved_QIpangyuCall|QuestionSolved_QIpangyuMadness|QuestionSolved_QCallPattern|QuestionSolved_QArchivePattern",
+    "compare_type": "Equal",
+    "condition_value": true
+  },
+  {
+    "condition_id": "Cond_Proof_All_03",
+    "condition_group_id": "CG_Proof_All",
+    "condition_type": "QuestionSolved",
+    "condition_target_id": "QuestionSolved_QRitualLead|QuestionSolved_QRitualAccident|QuestionSolved_QRitualErasure",
+    "compare_type": "Equal",
+    "condition_value": true
+  },
+  {
     "condition_id": "Cond_Branch_FinalChoice_A",
     "condition_group_id": "CG_Branch_FinalChoice_A",
     "condition_type": "ChoiceSelected",
@@ -67,7 +115,7 @@
     "condition_id": "Cond_Branch_FinalChoice_B",
     "condition_group_id": "CG_Branch_FinalChoice_B",
     "condition_type": "ChoiceSelected",
-    "condition_target_id": "Ch6FinalBlock|Ch6FinalExpose",
+    "condition_target_id": "Ch6FinalBlock|Ch6FinalRecord",
     "compare_type": "Equal",
     "condition_value": true
   },
@@ -126,8 +174,9 @@
     "condition_target_id": "SolvedQuestionCount",
     "compare_type": "Equal",
     "condition_value": [
-      2,
-      3
+      4,
+      5,
+      6
     ]
   },
   {
@@ -197,34 +246,38 @@
   {
     "condition_id": "Cond_Epilogue_EndingA_01",
     "condition_group_id": "CG_Epilogue_EndingA",
-    "condition_type": "Trust",
-    "condition_target_id": "Songsoon",
+    "condition_type": "GaugeValue",
+    "condition_target_id": "SolvedQuestionCount",
     "compare_type": "GreaterEqual",
-    "condition_value": 1
+    "condition_value": 7
   },
   {
     "condition_id": "Cond_Epilogue_EndingA_02",
     "condition_group_id": "CG_Epilogue_EndingA",
-    "condition_type": "ChoiceSelected",
-    "condition_target_id": "article_q1_correct",
-    "compare_type": "Equal",
-    "condition_value": true
-  },
-  {
-    "condition_id": "Cond_Epilogue_EndingB_01",
-    "condition_group_id": "CG_Epilogue_EndingB",
     "condition_type": "GaugeValue",
     "condition_target_id": "Credibility",
     "compare_type": "GreaterEqual",
     "condition_value": 7
   },
   {
+    "condition_id": "Cond_Epilogue_EndingB_01",
+    "condition_group_id": "CG_Epilogue_EndingB",
+    "condition_type": "GaugeValue",
+    "condition_target_id": "SolvedQuestionCount",
+    "compare_type": "Equal",
+    "condition_value": [
+      4,
+      5,
+      6
+    ]
+  },
+  {
     "condition_id": "Cond_Epilogue_EndingB_02",
     "condition_group_id": "CG_Epilogue_EndingB",
-    "condition_type": "ChoiceSelected",
-    "condition_target_id": "article_q3_correct",
-    "compare_type": "Equal",
-    "condition_value": true
+    "condition_type": "GaugeValue",
+    "condition_target_id": "Credibility",
+    "compare_type": "GreaterEqual",
+    "condition_value": 7
   },
   {
     "condition_id": "Cond_Hospital_Info2_01",
@@ -261,7 +314,7 @@
   {
     "condition_id": "Cond_Library_RunawaySolved_01",
     "condition_group_id": "CG_Library_QSonggeumRunaway",
-    "condition_type": "ChoiceSelected",
+    "condition_type": "QuestionSolved",
     "condition_target_id": "QuestionSolved_QSonggeumRunaway",
     "compare_type": "Equal",
     "condition_value": true
@@ -269,7 +322,7 @@
   {
     "condition_id": "Cond_Outcome_QMadness_01",
     "condition_group_id": "CG_Outcome_QMadness",
-    "condition_type": "ChoiceSelected",
+    "condition_type": "QuestionSolved",
     "condition_target_id": "QuestionSolved_QIpangyuMadness",
     "compare_type": "Equal",
     "condition_value": true
@@ -277,7 +330,7 @@
   {
     "condition_id": "Cond_Outcome_QRunaway_01",
     "condition_group_id": "CG_Outcome_QRunaway",
-    "condition_type": "ChoiceSelected",
+    "condition_type": "QuestionSolved",
     "condition_target_id": "QuestionSolved_QSonggeumRunaway",
     "compare_type": "Equal",
     "condition_value": true
@@ -289,14 +342,15 @@
     "condition_target_id": "SolvedQuestionCount",
     "compare_type": "Equal",
     "condition_value": [
-      2,
-      3
+      4,
+      5,
+      6
     ]
   },
   {
     "condition_id": "Cond_RitualRoom_AccidentSolved_01",
     "condition_group_id": "CG_RitualRoom_QRitualAccident",
-    "condition_type": "ChoiceSelected",
+    "condition_type": "QuestionSolved",
     "condition_target_id": "QuestionSolved_QRitualAccident",
     "compare_type": "Equal",
     "condition_value": true
@@ -312,7 +366,7 @@
   {
     "condition_id": "Cond_RitualRoom_QRitualAccident_01",
     "condition_group_id": "CG_RitualRoom_QRitualAccident",
-    "condition_type": "ChoiceSelected",
+    "condition_type": "QuestionSolved",
     "condition_target_id": "QuestionSolved_QRitualAccident",
     "compare_type": "Equal",
     "condition_value": true
@@ -338,12 +392,8 @@
     "condition_group_id": "CG_RitualScene_SolvedHigh",
     "condition_type": "GaugeValue",
     "condition_target_id": "SolvedQuestionCount",
-    "compare_type": "Equal",
-    "condition_value": [
-      4,
-      5,
-      6
-    ]
+    "compare_type": "GreaterEqual",
+    "condition_value": 7
   },
   {
     "condition_id": "Cond_Room4_ReadRitual_01",
@@ -408,8 +458,9 @@
     "condition_target_id": "SolvedQuestionCount",
     "compare_type": "Equal",
     "condition_value": [
-      2,
-      3
+      4,
+      5,
+      6
     ]
   },
   {
@@ -417,14 +468,6 @@
     "condition_group_id": "CG_Threshold_TrustedSongsoon",
     "condition_type": "ChoiceSelected",
     "condition_target_id": "Ch3WarehouseTrustSongsoon|Ch3Room4ComfortSongsoon",
-    "compare_type": "Equal",
-    "condition_value": true
-  },
-  {
-    "condition_id": "Cond_Epilogue_EndingA_03",
-    "condition_group_id": "CG_Epilogue_EndingA",
-    "condition_type": "ChoiceSelected",
-    "condition_target_id": "Ch5IpangyuDealAccept",
     "compare_type": "Equal",
     "condition_value": true
   },
@@ -517,7 +560,7 @@
     "condition_group_id": "CG_QR_RitualOpen_03"
   },
   {
-    "condition_type": "ChoiceSelected",
+    "condition_type": "QuestionSolved",
     "condition_target_id": "QuestionSolved_QIpangyuCall",
     "compare_type": "Equal",
     "condition_value": true,
@@ -533,7 +576,7 @@
     "condition_group_id": "CG_QS_IpangyuCall_02"
   },
   {
-    "condition_type": "ChoiceSelected",
+    "condition_type": "QuestionSolved",
     "condition_target_id": "QuestionSolved_QIpangyuMadness",
     "compare_type": "Equal",
     "condition_value": true,
@@ -549,7 +592,7 @@
     "condition_group_id": "CG_QS_IpangyuMadness_02"
   },
   {
-    "condition_type": "ChoiceSelected",
+    "condition_type": "QuestionSolved",
     "condition_target_id": "QuestionSolved_QSonggeumMissing",
     "compare_type": "Equal",
     "condition_value": true,
@@ -565,7 +608,7 @@
     "condition_group_id": "CG_QS_SonggeumMissing_02"
   },
   {
-    "condition_type": "ChoiceSelected",
+    "condition_type": "QuestionSolved",
     "condition_target_id": "QuestionSolved_QSonggeumRunaway",
     "compare_type": "Equal",
     "condition_value": true,
@@ -581,7 +624,7 @@
     "condition_group_id": "CG_QS_SonggeumRunaway_02"
   },
   {
-    "condition_type": "ChoiceSelected",
+    "condition_type": "QuestionSolved",
     "condition_target_id": "QuestionSolved_QRitualLead",
     "compare_type": "Equal",
     "condition_value": true,
@@ -597,7 +640,7 @@
     "condition_group_id": "CG_QS_RitualLead_02"
   },
   {
-    "condition_type": "ChoiceSelected",
+    "condition_type": "QuestionSolved",
     "condition_target_id": "QuestionSolved_QRitualAccident",
     "compare_type": "Equal",
     "condition_value": true,
@@ -611,5 +654,117 @@
     "condition_value": true,
     "condition_id": "Cond_RR_QRitualAccidentState_01",
     "condition_group_id": "CG_QS_RitualAccident_02"
+  },
+  {
+    "condition_id": "Cond_Room4_HasNote_01",
+    "condition_group_id": "CG_Room4_HasNote",
+    "condition_type": "EvidenceOwned",
+    "condition_target_id": "EvNote",
+    "compare_type": "Equal",
+    "condition_value": true
+  },
+  {
+    "condition_id": "Cond_Archive_QPattern_01",
+    "condition_group_id": "CG_Archive_QPattern",
+    "condition_type": "QuestionSolved",
+    "condition_target_id": "QuestionSolved_QArchivePattern",
+    "compare_type": "Equal",
+    "condition_value": true
+  },
+  {
+    "condition_id": "Cond_Ritual_QRoom4Purpose_01",
+    "condition_group_id": "CG_Ritual_QRoom4Purpose",
+    "condition_type": "QuestionSolved",
+    "condition_target_id": "QuestionSolved_QRoom4Purpose",
+    "compare_type": "Equal",
+    "condition_value": true
+  },
+  {
+    "condition_id": "Cond_Article_QCallPattern_01",
+    "condition_group_id": "CG_Article_QCallPattern",
+    "condition_type": "QuestionSolved",
+    "condition_target_id": "QuestionSolved_QCallPattern",
+    "compare_type": "Equal",
+    "condition_value": true
+  },
+  {
+    "condition_id": "Cond_Article_QRitualErasure_01",
+    "condition_group_id": "CG_Article_QRitualErasure",
+    "condition_type": "QuestionSolved",
+    "condition_target_id": "QuestionSolved_QRitualErasure",
+    "compare_type": "Equal",
+    "condition_value": true
+  },
+  {
+    "condition_id": "Cond_GuardedDoor_HasScore_01",
+    "condition_group_id": "CG_GuardedDoor_HasScore",
+    "condition_type": "EvidenceOwned",
+    "condition_target_id": "EvRitualScore",
+    "compare_type": "Equal",
+    "condition_value": true
+  },
+  {
+    "condition_id": "Cond_Slum_HasHanbok_01",
+    "condition_group_id": "CG_Slum_HasHanbok",
+    "condition_type": "EvidenceOwned",
+    "condition_target_id": "EvBlueHanbok",
+    "compare_type": "Equal",
+    "condition_value": true
+  },
+  {
+    "condition_id": "Cond_Backroom_HasArticles_01",
+    "condition_group_id": "CG_Backroom_HasArticles",
+    "condition_type": "EvidenceOwned",
+    "condition_target_id": "EvOldArticles",
+    "compare_type": "Equal",
+    "condition_value": true
+  },
+  {
+    "condition_id": "Cond_Threshold_Credibility7_01",
+    "condition_group_id": "CG_Threshold_Credibility7",
+    "condition_type": "GaugeValue",
+    "condition_target_id": "Credibility",
+    "compare_type": "GreaterEqual",
+    "condition_value": 7
+  },
+  {
+    "condition_id": "Cond_Cafe4b_Erosion2_01",
+    "condition_group_id": "CG_Cafe4b_Erosion2",
+    "condition_type": "GaugeValue",
+    "condition_target_id": "Erosion",
+    "compare_type": "GreaterEqual",
+    "condition_value": 2
+  },
+  {
+    "condition_id": "Cond_ParticipantLedger_Erosion3_01",
+    "condition_group_id": "CG_ParticipantLedger_Erosion3",
+    "condition_type": "GaugeValue",
+    "condition_target_id": "Erosion",
+    "compare_type": "GreaterEqual",
+    "condition_value": 3
+  },
+  {
+    "condition_id": "Cond_Threshold_Erosion6_01",
+    "condition_group_id": "CG_Threshold_Erosion6",
+    "condition_type": "GaugeValue",
+    "condition_target_id": "Erosion",
+    "compare_type": "GreaterEqual",
+    "condition_value": 6
+  },
+  {
+    "condition_id": "Cond_Descent_Erosion3_01",
+    "condition_group_id": "CG_Descent_Erosion3",
+    "condition_type": "GaugeValue",
+    "condition_target_id": "Erosion",
+    "compare_type": "GreaterEqual",
+    "condition_value": 3
+  },
+  {
+    "condition_id": "Cond_Ritual_Erosion6_01",
+    "condition_group_id": "CG_Ritual_Erosion6",
+    "condition_type": "GaugeValue",
+    "condition_target_id": "Erosion",
+    "compare_type": "GreaterEqual",
+    "condition_value": 6
   }
 ]

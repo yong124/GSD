@@ -113,7 +113,6 @@
 
     hideTitleScreen();
     Choice.hide();
-    UIManager.hideEvidenceInventory?.();
     UIManager.setChoiceBoxVisible(false);
     UIManager.setDialogueBoxVisible(true);
     Scene.load(config.sceneId, config.dialogId);
@@ -150,7 +149,6 @@
     _titleVisible = true;
     InputManager.setTitleVisible(true);
     Choice.hide();
-    UIManager.hideEvidenceInventory?.();
     UIManager.setChoiceBoxVisible(false);
     UIManager.setDialogueBoxVisible(false);
     $('title-screen').classList.remove('hidden');
@@ -240,7 +238,6 @@
       State.reset();
       Evidence.resetSession();
       Choice.hide();
-      UIManager.hideEvidenceInventory?.();
       UIManager.setChoiceBoxVisible(false);
       UIManager.setDialogueBoxVisible(false);
       showTitleScreen();

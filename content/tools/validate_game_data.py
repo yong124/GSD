@@ -125,6 +125,7 @@ def validate_conditions(data, issues):
         "Trust",
         "EvidenceOwned",
         "ChoiceSelected",
+        "QuestionSolved",
         "RevealedCharacter",
         "SceneProgressIndex",
         "SceneVisited",
@@ -138,11 +139,11 @@ def validate_conditions(data, issues):
         for choice in ((scene.get("choices", []) or []) + (scene.get("evidence_choices", []) or []))
         if choice.get("choice_id")
     }
-    choice_ids.update({
+    solved_state_ids = {
         question.get("solved_state_id")
         for question in (data.get("questions", []) or [])
         if question.get("solved_state_id")
-    })
+    }
     evidence_ids = {
         evidence.get("evidence_id")
         for scene in (data.get("scenes", {}) or {}).values()
@@ -171,6 +172,11 @@ def validate_conditions(data, issues):
             for choice_id in target_ids:
                 if choice_id not in choice_ids:
                     issues.append(f"[Condition.condition_target_id] {condition_id} -> {choice_id} (missing ChoiceID)")
+        if condition_type == "QuestionSolved" and target_id:
+            target_ids = [value.strip() for value in str(target_id).split("|") if value.strip()]
+            for state_id in target_ids:
+                if state_id not in solved_state_ids:
+                    issues.append(f"[Condition.condition_target_id] {condition_id} -> {state_id} (missing Question SolvedStateID)")
         if condition_type == "EvidenceOwned" and target_id and target_id not in evidence_ids:
             issues.append(f"[Condition.condition_target_id] {condition_id} -> {target_id} (missing EvidenceID)")
         if condition_type == "GaugeValue" and target_id and target_id not in gauge_ids:
@@ -248,14 +254,6 @@ def validate_evidence_categories(data, issues):
     duplicates = find_duplicates(category_ids)
     for dup in duplicates:
         issues.append(f"[Duplicate.evidence_category_id] {dup}")
-
-
-def validate_investigations(data, issues):
-    investigations = data.get("investigations", []) or []
-    investigation_ids = [item.get("investigation_id") for item in investigations if item.get("investigation_id")]
-    duplicates = find_duplicates(investigation_ids)
-    for dup in duplicates:
-        issues.append(f"[Duplicate.investigation_id] {dup}")
 
 
 def validate_gauges(data, scenes, issues):
@@ -476,7 +474,6 @@ def main():
     validate_choice_groups(data, issues)
     validate_choice_answer_types(data, issues)
     validate_evidence_categories(data, issues)
-    validate_investigations(data, issues)
     validate_gauges(data, scenes, issues)
     validate_effects(data, issues)
     validate_questions(data, issues)

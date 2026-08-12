@@ -1,5 +1,14 @@
 [
   {
+    "effect_group_id": "eff_ch4a_slum_ask_masked",
+    "effect_type": "EvidenceGive",
+    "gauge_id": null,
+    "gauge_delta": null,
+    "evidence_id": "EvSlumWitness",
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
     "effect_group_id": "eff_article_correct",
     "effect_type": "GaugeChange",
     "gauge_id": "Credibility",
@@ -99,33 +108,6 @@
     "trust_delta": null
   },
   {
-    "effect_group_id": "eff_ipangyu_correct",
-    "effect_type": "GaugeChange",
-    "gauge_id": "Credibility",
-    "gauge_delta": 1,
-    "evidence_id": null,
-    "trust_character_id": null,
-    "trust_delta": null
-  },
-  {
-    "effect_group_id": "eff_ipangyu_correct",
-    "effect_type": "GaugeChange",
-    "gauge_id": "Erosion",
-    "gauge_delta": 1,
-    "evidence_id": null,
-    "trust_character_id": null,
-    "trust_delta": null
-  },
-  {
-    "effect_group_id": "eff_ipangyu_wrong",
-    "effect_type": "GaugeChange",
-    "gauge_id": "Credibility",
-    "gauge_delta": -1,
-    "evidence_id": null,
-    "trust_character_id": null,
-    "trust_delta": null
-  },
-  {
     "effect_group_id": "eff_okryeon_diary",
     "effect_type": "GaugeChange",
     "gauge_id": "Credibility",
@@ -171,6 +153,78 @@
     "trust_delta": 1
   },
   {
+    "effect_group_id": "eff_songsoon_wrong",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Credibility",
+    "gauge_delta": -1,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_ritual_wrong",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Credibility",
+    "gauge_delta": -1,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_ch3_room4_touch_wall",
+    "effect_type": "EvidenceGive",
+    "gauge_id": null,
+    "gauge_delta": null,
+    "evidence_id": "EvMask",
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_ch3_room4_comfort_hanbok",
+    "effect_type": "EvidenceGive",
+    "gauge_id": null,
+    "gauge_delta": null,
+    "evidence_id": "EvBlueHanbok",
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_room4_conclusion_wrong",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Credibility",
+    "gauge_delta": -1,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_r9_document",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Credibility",
+    "gauge_delta": 1,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_r9_follow_sound",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Erosion",
+    "gauge_delta": 1,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_r9_songsoon_support",
+    "effect_type": "TrustChange",
+    "gauge_id": null,
+    "gauge_delta": null,
+    "evidence_id": null,
+    "trust_character_id": "Songsoon",
+    "trust_delta": 1
+  },
+  {
     "effect_group_id": "eff_editor_defy",
     "effect_type": "GaugeChange",
     "gauge_id": "Credibility",
@@ -180,38 +234,38 @@
     "trust_delta": null
   },
   {
-    "effect_group_id": "eff_ch5_observe",
-    "effect_type": "GaugeChange",
-    "gauge_id": "Credibility",
-    "gauge_delta": 1,
+    "effect_group_id": "eff_editor_obey",
+    "effect_type": "TrustChange",
+    "gauge_id": null,
+    "gauge_delta": null,
     "evidence_id": null,
-    "trust_character_id": null,
-    "trust_delta": null
+    "trust_character_id": "Editor",
+    "trust_delta": 1
   },
   {
-    "effect_group_id": "eff_ch5_observe",
-    "effect_type": "GaugeChange",
-    "gauge_id": "Erosion",
-    "gauge_delta": 1,
-    "evidence_id": null,
-    "trust_character_id": null,
-    "trust_delta": null
-  },
-  {
-    "effect_group_id": "eff_ipangyu_deal_accept",
-    "effect_type": "GaugeChange",
-    "gauge_id": "Erosion",
-    "gauge_delta": 1,
-    "evidence_id": null,
-    "trust_character_id": null,
-    "trust_delta": null
-  },
-  {
-    "effect_group_id": "eff_ipangyu_deal_accept",
+    "effect_group_id": "eff_participant_ledger",
     "effect_type": "EvidenceGain",
     "gauge_id": null,
     "gauge_delta": null,
-    "evidence_id": "EvIpangyuName",
+    "evidence_id": "EvParticipantLedger",
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_participant_ledger_reveal",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Erosion",
+    "gauge_delta": 1,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_participant_ledger_reveal",
+    "effect_type": "EvidenceGain",
+    "gauge_id": null,
+    "gauge_delta": null,
+    "evidence_id": "EvParticipantLedger",
     "trust_character_id": null,
     "trust_delta": null
   },
@@ -232,5 +286,59 @@
     "evidence_id": null,
     "trust_character_id": "Editor",
     "trust_delta": 1
+  },
+  {
+    "effect_group_id": "eff_room4_note_match",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Credibility",
+    "gauge_delta": 1,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_guarded_door_score_read",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Credibility",
+    "gauge_delta": 1,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_slum_hanbok_press",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Erosion",
+    "gauge_delta": 1,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_cafe_press_credential",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Credibility",
+    "gauge_delta": 1,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_cafe4b_erosion_lean",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Erosion",
+    "gauge_delta": 1,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
+  },
+  {
+    "effect_group_id": "eff_threshold_erosion_touch",
+    "effect_type": "GaugeChange",
+    "gauge_id": "Erosion",
+    "gauge_delta": 1,
+    "evidence_id": null,
+    "trust_character_id": null,
+    "trust_delta": null
   }
 ]

@@ -6,6 +6,24 @@
     "max_selectable": 2
   },
   {
+    "choice_group_id": "ChoiceGroup_CafeManagerEvidence",
+    "type": "Evidence",
+    "answer_type": "Evidence",
+    "condition_group_id": null,
+    "max_selectable": 1,
+    "is_gate": true,
+    "default_dialog_id": "cafe_manager_need_note"
+  },
+  {
+    "choice_group_id": "ChoiceGroup_CafeWaitressEvidence",
+    "type": "Evidence",
+    "answer_type": "Evidence",
+    "condition_group_id": null,
+    "max_selectable": 1,
+    "is_gate": true,
+    "default_dialog_id": "cafe_waitress_need_trace"
+  },
+  {
     "choice_group_id": "ChoiceGroup_Room4Investigation",
     "type": "Investigation",
     "condition_group_id": null,
@@ -13,9 +31,36 @@
   },
   {
     "choice_group_id": "ChoiceGroup_RitualFinal",
-    "type": "Investigation",
+    "type": "Normal",
     "condition_group_id": null,
     "max_selectable": 1
+  },
+  {
+    "choice_group_id": "ChoiceGroup_SlumInvestigation",
+    "type": "Investigation",
+    "condition_group_id": null,
+    "max_selectable": 2
+  },
+  {
+    "choice_group_id": "ChoiceGroup_NewsroomInvestigation",
+    "type": "Investigation",
+    "condition_group_id": null,
+    "max_selectable": 2
+  },
+  {
+    "choice_group_id": "ChoiceGroup_GuardedDoorInvestigation",
+    "type": "Investigation",
+    "condition_group_id": null,
+    "max_selectable": 2
+  },
+  {
+    "choice_group_id": "ChoiceGroup_Room4Conclusion",
+    "type": "Evidence",
+    "condition_group_id": null,
+    "max_selectable": 1,
+    "is_gate": true,
+    "default_dialog_id": "room4_conclusion_wrong",
+    "default_effect_group_id": "eff_room4_conclusion_wrong"
   },
   {
     "choice_group_id": "ChoiceGroup_LibraryEvidence",
@@ -31,15 +76,8 @@
     "answer_type": "Evidence",
     "condition_group_id": null,
     "max_selectable": 1,
-    "default_dialog_id": "present_ritual_default"
-  },
-  {
-    "choice_group_id": "ChoiceGroup_Ipangyu_Confront",
-    "type": "Evidence",
-    "answer_type": "Evidence",
-    "condition_group_id": null,
-    "max_selectable": 1,
-    "default_dialog_id": "dlg_ipangyu_default"
+    "default_dialog_id": "present_ritual_default",
+    "is_gate": true
   },
   {
     "choice_group_id": "ChoiceGroup_Okryeon_Confront",
@@ -47,7 +85,8 @@
     "answer_type": "Evidence",
     "condition_group_id": null,
     "max_selectable": 1,
-    "default_dialog_id": "dlg_okryeon_close"
+    "default_dialog_id": "dlg_okryeon_close",
+    "is_gate": true
   },
   {
     "choice_group_id": "ChoiceGroup_Songsoon_Trust",
@@ -55,7 +94,8 @@
     "answer_type": "Evidence",
     "condition_group_id": null,
     "max_selectable": 1,
-    "default_dialog_id": "dlg_songsoon_skeptical"
+    "default_dialog_id": "dlg_songsoon_skeptical",
+    "is_gate": true
   },
   {
     "choice_group_id": "ChoiceGroup_Editor_Confront",
@@ -102,7 +142,49 @@
     "max_selectable": 1
   },
   {
-    "choice_group_id": "ChoiceGroup_IpangyuDeal",
+    "choice_group_id": "ChoiceGroup_ParticipantLedger",
+    "type": "Normal",
+    "condition_group_id": null,
+    "max_selectable": 1
+  },
+  {
+    "choice_group_id": "ChoiceGroup_Backroom",
+    "type": "Normal",
+    "condition_group_id": null,
+    "max_selectable": 1
+  },
+  {
+    "choice_group_id": "ChoiceGroup_BackroomInvestigation",
+    "type": "Investigation",
+    "condition_group_id": null,
+    "max_selectable": 2
+  },
+  {
+    "choice_group_id": "ChoiceGroup_Threshold",
+    "type": "Normal",
+    "condition_group_id": null,
+    "max_selectable": 1
+  },
+  {
+    "choice_group_id": "ChoiceGroup_Descent",
+    "type": "Normal",
+    "condition_group_id": null,
+    "max_selectable": 1
+  },
+  {
+    "choice_group_id": "ChoiceGroup_HallwayBonus",
+    "type": "Normal",
+    "condition_group_id": null,
+    "max_selectable": 1
+  },
+  {
+    "choice_group_id": "ChoiceGroup_EditorRoomBonus",
+    "type": "Normal",
+    "condition_group_id": null,
+    "max_selectable": 1
+  },
+  {
+    "choice_group_id": "ChoiceGroup_ArticleBonus",
     "type": "Normal",
     "condition_group_id": null,
     "max_selectable": 1

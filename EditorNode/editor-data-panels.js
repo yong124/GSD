@@ -721,7 +721,7 @@
       if (field === 'ConditionType' || field === 'CompareType') renderConditionList(ctx);
     };
 
-    const booleanConditionTypes = new Set(['ChoiceSelected', 'EvidenceOwned', 'RevealedCharacter', 'SceneVisited']);
+    const booleanConditionTypes = new Set(['ChoiceSelected', 'QuestionSolved', 'EvidenceOwned', 'RevealedCharacter', 'SceneVisited']);
     const numericConditionTypes = new Set(['GaugeValue', 'Trust', 'SceneProgressIndex']);
 
     const applyConditionValueInputs = (container) => {
@@ -863,69 +863,6 @@
     els.choiceGroupList.appendChild(cards);
   }
 
-  function renderInvestigationList(ctx) {
-    const {
-      els,
-      state,
-      makeCard,
-      rebindCardCollection,
-      replaceComboboxInputs,
-      getDataOptions,
-      escapeAttr,
-      escapeHtml,
-      markDirty,
-      afterChange,
-      swap,
-      newInvestigation,
-    } = ctx;
-
-    els.investigationList.innerHTML = '';
-    const rows = (state.data.investigations || []).map(item => ({
-      InvestigationID: item?.investigation_id || '',
-      Title: item?.title || '',
-      Hint: item?.hint || '',
-      Budget: item?.budget ?? '',
-      ChoiceGroupID: item?.choice_group_id || '',
-    }));
-
-    const handleInvestigationChange = (row, field, value) => {
-      const target = state.data.investigations.find(item => (item.investigation_id || '') === row.InvestigationID) || state.data.investigations.find((_, idx) => rows[idx] === row);
-      if (!target) return;
-      if (field === 'InvestigationID') target.investigation_id = value || '';
-      if (field === 'Title') target.title = value || '';
-      if (field === 'Hint') target.hint = value || '';
-      if (field === 'Budget') target.budget = value === '' ? null : Number.parseInt(value, 10);
-      if (field === 'ChoiceGroupID') target.choice_group_id = value || '';
-      markDirty();
-    };
-
-    const cards = makeCard(
-      'Investigation', rows,
-      (row) => `
-        <label><span>InvestigationID</span>
-          <input data-field="InvestigationID" value="${escapeAttr(row.InvestigationID || '')}" placeholder="예: INV_Cafe"></label>
-        <label><span>Title</span>
-          <input data-field="Title" value="${escapeAttr(row.Title || '')}" placeholder="조사 제목"></label>
-        <label><span>Hint</span>
-          <textarea data-field="Hint" rows="2">${escapeHtml(row.Hint || '')}</textarea></label>
-        <label><span>Budget</span>
-          <input data-field="Budget" type="number" min="0" step="1" value="${escapeAttr(row.Budget != null ? String(row.Budget) : '')}"></label>
-        <label><span>ChoiceGroupID</span>
-          <input data-field="ChoiceGroupID" value="${escapeAttr(row.ChoiceGroupID || '')}" placeholder="예: CG_CafeInvestigation"></label>
-      `,
-      () => { state.data.investigations.push(newInvestigation()); afterChange(); },
-      (i) => { state.data.investigations.splice(i, 1); afterChange(); },
-      (i) => { if (swap(state.data.investigations, i - 1, i)) afterChange(); },
-      (i) => { if (swap(state.data.investigations, i, i + 1)) afterChange(); },
-      handleInvestigationChange
-    );
-
-    replaceComboboxInputs(cards, [
-      { field: 'ChoiceGroupID', options: () => getDataOptions('choiceGroupIds') },
-    ]);
-    rebindCardCollection(cards, rows, handleInvestigationChange);
-    els.investigationList.appendChild(cards);
-  }
 
   function renderStateDescriptorList(ctx) {
     const {
@@ -1017,7 +954,6 @@
     renderConditionList,
     renderChoiceGroupList,
     renderEvidenceCategoryList,
-    renderInvestigationList,
     renderQuestionList,
     renderStateDescriptorList,
     renderGaugeList,

@@ -133,7 +133,7 @@ const Evidence = (() => {
     const matched = rows
       .sort((a, b) => Number(a?.priority || 0) - Number(b?.priority || 0))
       .find(entry => entry?.condition_group_id && Scene.passesConditionGroup(entry.condition_group_id, context));
-    return matched?.result_value || '?? ?';
+    return matched?.result_value || '추적 중';
   }
 
   function getStatusCards() {

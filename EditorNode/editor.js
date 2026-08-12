@@ -21,7 +21,7 @@
   const EDITOR_DATA_UI = window.EditorDataUI || {};
   const EDITOR_CARD_UI = window.EditorCardUI || {};
   const EDITOR_DATA_PANELS = window.EditorDataPanels || {};
-  const CONDITION_TYPE_OPTIONS = EDITOR_DATA_UI.CONDITION_TYPE_OPTIONS || ['GaugeValue', 'Trust', 'EvidenceOwned', 'ChoiceSelected', 'RevealedCharacter', 'SceneProgressIndex', 'SceneVisited'];
+  const CONDITION_TYPE_OPTIONS = EDITOR_DATA_UI.CONDITION_TYPE_OPTIONS || ['GaugeValue', 'Trust', 'EvidenceOwned', 'ChoiceSelected', 'QuestionSolved', 'RevealedCharacter', 'SceneProgressIndex', 'SceneVisited'];
   const NUMERIC_STATE_OPTIONS = EDITOR_DATA_UI.NUMERIC_STATE_OPTIONS || ['ResonanceLevel', 'InvestigationScore', 'SongsoonTrust', 'ReadRitualScore', 'SolvedQuestionCount'];
   const DERIVED_STATE_OPTIONS = EDITOR_DATA_UI.DERIVED_STATE_OPTIONS || ['InvestigationProgress'];
   const STATE_DESCRIPTOR_TYPE_OPTIONS = EDITOR_DATA_UI.STATE_DESCRIPTOR_TYPE_OPTIONS || ['Numeric', 'Derived'];
@@ -38,7 +38,6 @@
     effects: [],
     choice_groups: [],
     evidence_categories: [],
-    investigations: [],
     questions: [],
     state_descriptors: [],
     scenes: {},
@@ -50,7 +49,6 @@
     ['choice_groups.json', 'choice_groups'],
     ['conditions.json', 'conditions'],
     ['evidence_categories.json', 'evidence_categories'],
-    ['investigations.json', 'investigations'],
     ['questions.json', 'questions'],
     ['state_descriptors.json', 'state_descriptors'],
     ['gauges.json', 'gauges'],
@@ -91,7 +89,6 @@
   // ── DOM 참조 ──────────────────────────────────────────
   const $ = id => document.getElementById(id);
   const els = {};
-  const INVESTIGATION_DATALIST_ID = 'field-investigation-id-options';
   let renderSelectOptions;
   let replaceEnumInputs;
   let replaceSelectInputs;
@@ -131,7 +128,8 @@
     els.fieldEffect  = $('field-effect');
     els.fieldGoalKicker = $('field-goal-kicker');
     els.fieldGoalText = $('field-goal-text');
-    els.fieldInvestigationId = $('field-investigation-id');
+    els.fieldInvestigationTitle = $('field-investigation-title');
+    els.fieldInvestigationHint = $('field-investigation-hint');
     els.fieldEvidencePromptTitle = $('field-evidence-prompt-title');
     els.fieldEvidencePromptHint = $('field-evidence-prompt-hint');
     els.fieldQaCurrentDialog = $('field-qa-current-dialog');
@@ -150,7 +148,6 @@
     els.effectList = $('effect-list');
     els.choiceGroupList = $('choice-group-list');
     els.evidenceCategoryList = $('evidence-category-list');
-    els.investigationList = $('investigation-list');
     els.questionList = $('question-list');
     els.stateDescriptorList = $('state-descriptor-list');
     els.analysisSummary = $('analysis-summary');
@@ -182,29 +179,6 @@
     els.branchList   = $('branch-list');
     els.status       = $('status');
     els.qaHint = document.querySelector('.qa-action-row + .section-hint');
-  }
-
-  function ensureStandaloneCombobox(inputEl, listId) {
-    if (!inputEl) return null;
-    if (inputEl.tagName === 'INPUT') return inputEl;
-
-    const combo = document.createElement('input');
-    combo.type = 'text';
-    combo.id = inputEl.id;
-    combo.className = inputEl.className || '';
-    combo.placeholder = inputEl.getAttribute('placeholder') || '';
-    combo.value = inputEl.value || '';
-    combo.setAttribute('list', listId);
-
-    let datalist = $(listId);
-    if (!datalist) {
-      datalist = document.createElement('datalist');
-      datalist.id = listId;
-    }
-
-    inputEl.replaceWith(combo);
-    combo.insertAdjacentElement('afterend', datalist);
-    return combo;
   }
 
   // ── 유틸 ──────────────────────────────────────────────
@@ -273,7 +247,6 @@
     if (type === 'evidenceIds' && typeof ui.collectEvidenceIds === 'function') return ui.collectEvidenceIds(state.data);
     if (type === 'conditionGroupIds' && typeof ui.collectConditionGroupIds === 'function') return ui.collectConditionGroupIds(state.data);
     if (type === 'choiceGroupIds' && typeof ui.collectChoiceGroupIds === 'function') return ui.collectChoiceGroupIds(state.data);
-    if (type === 'investigationIds' && typeof ui.collectInvestigationIds === 'function') return ui.collectInvestigationIds(state.data);
     if (type === 'evidenceCategoryIds' && typeof ui.collectEvidenceCategoryIds === 'function') return ui.collectEvidenceCategoryIds(state.data);
     if (type === 'gaugeIds' && typeof ui.collectGaugeIds === 'function') return ui.collectGaugeIds(state.data);
     if (type === 'booleanStateIds' && typeof ui.collectBooleanStateIds === 'function') return ui.collectBooleanStateIds(state.data);
@@ -355,7 +328,7 @@
     data.first_scene = data.first_scene || '';
     if (!data.characters || typeof data.characters !== 'object' || Array.isArray(data.characters)) data.characters = {};
     if (!data.character_emotions || typeof data.character_emotions !== 'object' || Array.isArray(data.character_emotions)) data.character_emotions = {};
-    ['conditions', 'gauges', 'gauge_states', 'effects', 'choice_groups', 'evidence_categories', 'investigations', 'questions', 'state_descriptors'].forEach((key) => {
+    ['conditions', 'gauges', 'gauge_states', 'effects', 'choice_groups', 'evidence_categories', 'questions', 'state_descriptors'].forEach((key) => {
       if (!Array.isArray(data[key])) data[key] = [];
     });
     if (!data.scenes || typeof data.scenes !== 'object' || Array.isArray(data.scenes)) data.scenes = {};
@@ -427,7 +400,6 @@
       ['choice_groups.json', payload.choice_groups || []],
       ['conditions.json', payload.conditions || []],
       ['evidence_categories.json', payload.evidence_categories || []],
-      ['investigations.json', payload.investigations || []],
       ['questions.json', payload.questions || []],
       ['state_descriptors.json', payload.state_descriptors || []],
       ['gauges.json', payload.gauges || []],
@@ -915,7 +887,8 @@
       scene.background,
       scene.music,
       scene.effect,
-      scene.investigation_id,
+      scene.investigation_title,
+      scene.investigation_hint,
     ];
 
     (scene.dialogues || []).forEach(dialogue => {
@@ -1272,7 +1245,6 @@
       renderEffectList,
       renderChoiceGroupList,
       renderEvidenceCategoryList,
-      renderInvestigationList,
       renderQuestionList,
       renderStateDescriptorList,
     ].forEach((renderSection) => renderSection());
@@ -1318,18 +1290,8 @@
     els.fieldEffect.value = scene.effect || '';
     els.fieldGoalKicker.value = scene.goal_kicker || '';
     els.fieldGoalText.value = scene.goal_text || '';
-    if (els.fieldInvestigationId) {
-      const investigationOptions = getDataOptions('investigationIds');
-      const investigationValue = scene.investigation_id || '';
-      const optionList = $(INVESTIGATION_DATALIST_ID);
-      if (optionList) {
-        const uniqueOptions = investigationValue && !investigationOptions.includes(investigationValue)
-          ? [investigationValue, ...investigationOptions]
-          : investigationOptions;
-        optionList.innerHTML = uniqueOptions.map(option => `<option value="${escapeAttr(option)}"></option>`).join('');
-      }
-      els.fieldInvestigationId.value = investigationValue;
-    }
+    if (els.fieldInvestigationTitle) els.fieldInvestigationTitle.value = scene.investigation_title || '';
+    if (els.fieldInvestigationHint) els.fieldInvestigationHint.value = scene.investigation_hint || '';
     els.fieldEvidencePromptTitle.value = scene.evidence_prompt_title || '';
     els.fieldEvidencePromptHint.value = scene.evidence_prompt_hint || '';
     els.fieldSceneId.value = id;
@@ -1592,7 +1554,7 @@
   }
 
   function getNextPriorityGroupKey(scene) {
-    const existing = new Set(Object.keys(scene.priority_dialogues || {}));
+    const existing = new Set(Object.keys(scene.investigation_dialogues || {}));
     const suggested = (scene.choices || [])
       .filter(choice => choice.next_type === 'Dialog')
       .map(choice => String(choice.next_id || '').trim())
@@ -1613,9 +1575,9 @@
   function renamePriorityDialogueGroup(scene, oldKey, nextKey) {
     const trimmed = (nextKey || '').trim();
     if (!trimmed || trimmed === oldKey) return true;
-    if (scene.priority_dialogues?.[trimmed]) return false;
-    scene.priority_dialogues[trimmed] = scene.priority_dialogues[oldKey] || [];
-    delete scene.priority_dialogues[oldKey];
+    if (scene.investigation_dialogues?.[trimmed]) return false;
+    scene.investigation_dialogues[trimmed] = scene.investigation_dialogues[oldKey] || [];
+    delete scene.investigation_dialogues[oldKey];
     (scene.choices || []).forEach(choice => {
       if (choice.next_type === 'Dialog' && choice.next_id === oldKey) choice.next_id = trimmed;
     });
@@ -1623,10 +1585,10 @@
   }
 
   function renderPriorityDialogueList(scene) {
-    scene.priority_dialogues = scene.priority_dialogues || {};
+    scene.investigation_dialogues = scene.investigation_dialogues || {};
     els.priorityDialogueList.innerHTML = '';
 
-    const groupEntries = Object.entries(scene.priority_dialogues);
+    const groupEntries = Object.entries(scene.investigation_dialogues);
     if (groupEntries.length === 0) {
       els.priorityDialogueList.innerHTML = '<div class="preview-choice-empty">등록된 조사 분기 대사가 없습니다.</div>';
       return;
@@ -1679,14 +1641,14 @@
 
       groupCard.querySelector('[data-action="add-line"]').addEventListener('click', () => {
         pushHistory();
-        scene.priority_dialogues[groupKey] = scene.priority_dialogues[groupKey] || [];
-        scene.priority_dialogues[groupKey].push(createPriorityDialogueLine());
+        scene.investigation_dialogues[groupKey] = scene.investigation_dialogues[groupKey] || [];
+        scene.investigation_dialogues[groupKey].push(createPriorityDialogueLine());
         afterChange();
       });
 
       groupCard.querySelector('[data-action="delete-group"]').addEventListener('click', () => {
         pushHistory();
-        delete scene.priority_dialogues[groupKey];
+        delete scene.investigation_dialogues[groupKey];
         afterChange();
       });
 
@@ -1707,15 +1669,15 @@
             <textarea data-field="text">${escapeHtml(line.text || '')}</textarea></label>
         `,
         () => {
-          scene.priority_dialogues[groupKey].push(createPriorityDialogueLine());
+          scene.investigation_dialogues[groupKey].push(createPriorityDialogueLine());
           afterChange();
         },
         (index) => {
-          scene.priority_dialogues[groupKey].splice(index, 1);
+          scene.investigation_dialogues[groupKey].splice(index, 1);
           afterChange();
         },
-        (index) => { if (swap(scene.priority_dialogues[groupKey], index - 1, index)) afterChange(); },
-        (index) => { if (swap(scene.priority_dialogues[groupKey], index, index + 1)) afterChange(); },
+        (index) => { if (swap(scene.investigation_dialogues[groupKey], index - 1, index)) afterChange(); },
+        (index) => { if (swap(scene.investigation_dialogues[groupKey], index, index + 1)) afterChange(); },
         (line, field, value) => {
           line[field] = value || (field === 'style' ? 'narration' : '');
           markDirty();
@@ -2038,23 +2000,6 @@
     });
   }
 
-  function renderInvestigationList() {
-    return EDITOR_DATA_PANELS.renderInvestigationList({
-      els,
-      state,
-      makeCard,
-      rebindCardCollection,
-      replaceComboboxInputs,
-      getDataOptions,
-      escapeAttr,
-      escapeHtml,
-      markDirty,
-      afterChange,
-      swap,
-      newInvestigation,
-    });
-  }
-
   function renderStateDescriptorList() {
     return EDITOR_DATA_PANELS.renderStateDescriptorList({
       els,
@@ -2146,9 +2091,6 @@
   function newEvidenceCategory() {
     return { category_id: '', category_title: '', category_hint: '' };
   }
-  function newInvestigation() {
-    return { investigation_id: '', title: '', hint: '', budget: null, choice_group_id: '' };
-  }
   function newQuestion() {
     return {
       question_id: '',
@@ -2179,8 +2121,8 @@
   function newScene(id) {
     return {
       id, chapter: null, title: id, background: null, music: null, effect: null,
-      goal_kicker: null, goal_text: null, investigation_id: null, evidence_prompt_title: null, evidence_prompt_hint: null,
-      priority_dialogues: {},
+      goal_kicker: null, goal_text: null, investigation_title: null, investigation_hint: null, evidence_prompt_title: null, evidence_prompt_hint: null,
+      investigation_dialogues: {},
       branches: [], dialogues: [], choices: [], evidence: []
     };
   }
@@ -2232,7 +2174,7 @@
     });
 
     const normalizedPriorityDialogues = {};
-    Object.entries(scene.priority_dialogues || {}).forEach(([groupKey, lines]) => {
+    Object.entries(scene.investigation_dialogues || {}).forEach(([groupKey, lines]) => {
       const trimmedKey = String(groupKey || '').trim();
       if (!trimmedKey) return;
       normalizedPriorityDialogues[trimmedKey] = (lines || []).map((line, index) => ({
@@ -2271,7 +2213,8 @@
       effect: scene.effect || null,
       goal_kicker: scene.goal_kicker || null,
       goal_text: scene.goal_text || null,
-      investigation_id: scene.investigation_id || null,
+      investigation_title: scene.investigation_title || null,
+      investigation_hint: scene.investigation_hint || null,
       evidence_prompt_title: scene.evidence_prompt_title || null,
       evidence_prompt_hint: scene.evidence_prompt_hint || null,
       dialogues: normalizedDialogues,
@@ -2280,7 +2223,7 @@
       branches: normalizedBranches,
     };
 
-    if (Object.keys(normalizedPriorityDialogues).length > 0) result.priority_dialogues = normalizedPriorityDialogues;
+    if (Object.keys(normalizedPriorityDialogues).length > 0) result.investigation_dialogues = normalizedPriorityDialogues;
 
     return result;
   }
@@ -2305,7 +2248,6 @@
       effects: state.data.effects || [],
       choice_groups: state.data.choice_groups || [],
       evidence_categories: state.data.evidence_categories || [],
-      investigations: state.data.investigations || [],
       questions: state.data.questions || [],
       state_descriptors: state.data.state_descriptors || [],
       scenes: normalizedScenes,
@@ -2997,7 +2939,6 @@
     registerCollectionAddButton('btn-add-effect', 'effects', newEffect, 'effect_group_id', 'Effect');
     registerCollectionAddButton('btn-add-choice-group', 'choice_groups', newChoiceGroup, 'choice_group_id', 'ChoiceGroup');
     registerCollectionAddButton('btn-add-evidence-category', 'evidence_categories', newEvidenceCategory, 'category_id', 'Category');
-    registerCollectionAddButton('btn-add-investigation', 'investigations', newInvestigation, 'investigation_id', 'Investigation');
 
     // 패널 필드
     els.fieldTitle.addEventListener('input', () => {
@@ -3050,10 +2991,17 @@
       markDirty();
       refreshMetaViews();
     });
-    els.fieldInvestigationId.addEventListener('change', () => {
+    els.fieldInvestigationTitle.addEventListener('input', () => {
       const scene = state.data.scenes[state.selectedId];
       if (!scene) return;
-      scene.investigation_id = els.fieldInvestigationId.value || null;
+      scene.investigation_title = els.fieldInvestigationTitle.value || null;
+      markDirty();
+      refreshMetaViews();
+    });
+    els.fieldInvestigationHint.addEventListener('input', () => {
+      const scene = state.data.scenes[state.selectedId];
+      if (!scene) return;
+      scene.investigation_hint = els.fieldInvestigationHint.value || null;
       markDirty();
       refreshMetaViews();
     });
@@ -3077,9 +3025,9 @@
         const scene = state.data.scenes[state.selectedId];
         if (!scene) return;
         pushHistory();
-        scene.priority_dialogues = scene.priority_dialogues || {};
+        scene.investigation_dialogues = scene.investigation_dialogues || {};
         const nextKey = getNextPriorityGroupKey(scene);
-        scene.priority_dialogues[nextKey] = [createPriorityDialogueLine()];
+        scene.investigation_dialogues[nextKey] = [createPriorityDialogueLine()];
         afterChange();
       });
     }
@@ -3091,7 +3039,8 @@
     els.fieldEffect.addEventListener('focus', pushHistory);
     els.fieldGoalKicker.addEventListener('focus', pushHistory);
     els.fieldGoalText.addEventListener('focus', pushHistory);
-    els.fieldInvestigationId.addEventListener('focus', pushHistory);
+    els.fieldInvestigationTitle.addEventListener('focus', pushHistory);
+    els.fieldInvestigationHint.addEventListener('focus', pushHistory);
     els.fieldEvidencePromptTitle.addEventListener('focus', pushHistory);
     els.fieldEvidencePromptHint.addEventListener('focus', pushHistory);
     els.fieldSceneId.addEventListener('focus', pushHistory);
@@ -3308,7 +3257,6 @@
   // ── 초기화 ────────────────────────────────────────────
   function init() {
     bindElements();
-    els.fieldInvestigationId = ensureStandaloneCombobox(els.fieldInvestigationId, INVESTIGATION_DATALIST_ID);
     bindEvents();
     applyCamera();
     renderPanel();

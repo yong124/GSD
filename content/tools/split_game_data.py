@@ -14,7 +14,6 @@ TABLE_FILES = {
     "choice_groups.json": ("choice_groups",),
     "conditions.json": ("conditions",),
     "evidence_categories.json": ("evidence_categories",),
-    "investigations.json": ("investigations",),
     "questions.json": ("questions",),
     "state_descriptors.json": ("state_descriptors",),
     "gauges.json": ("gauges",),
