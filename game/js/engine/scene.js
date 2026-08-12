@@ -9,6 +9,8 @@ const Scene = (() => {
   let _choiceGroups = new Map();
   let _gauges = [];
   let _gaugeStates = [];
+  let _gaugeTransitionPending = false;
+  let _fallbackGaugeTransition = null;
   const _gaugeListeners = new Map();
 
   const SCENE_THEMES = {
@@ -76,13 +78,24 @@ const Scene = (() => {
 
   function handleGaugeStateChange(event) {
     UIManager.updateGaugeHUD?.(event?.gaugeId, event?.value, event?.previousState, event?.state);
-    const erosionValue = State.getGauge('Erosion');
-    const erosionGameover = getGaugeStates('Erosion').find(row => (
-      row?.trigger_scene_id && erosionValue >= Number(row.min_value) && erosionValue <= Number(row.max_value)
-    ));
-    const triggerSceneId = erosionGameover?.trigger_scene_id || event?.state?.trigger_scene_id;
-    if (!triggerSceneId) return;
-    Scene.load(triggerSceneId);
+    if (event?.state?.trigger_scene_id) _fallbackGaugeTransition ||= event.state.trigger_scene_id;
+    if (_gaugeTransitionPending || !_fallbackGaugeTransition) return;
+
+    _gaugeTransitionPending = true;
+    queueMicrotask(() => {
+      const getCurrentTrigger = gaugeId => {
+        const value = State.getGauge(gaugeId);
+        return getGaugeStates(gaugeId).find(row => (
+          row?.trigger_scene_id && value >= Number(row.min_value) && value <= Number(row.max_value)
+        ))?.trigger_scene_id || null;
+      };
+      const triggerSceneId = getCurrentTrigger('Erosion')
+        || getCurrentTrigger('Credibility')
+        || _fallbackGaugeTransition;
+      _gaugeTransitionPending = false;
+      _fallbackGaugeTransition = null;
+      if (triggerSceneId) Scene.load(triggerSceneId);
+    });
   }
 
   function bindGaugeStateListeners() {
@@ -492,6 +505,8 @@ const Scene = (() => {
       _choiceGroups = new Map((gameData.choice_groups || []).map(item => [item.choice_group_id, item]));
       _gauges = Array.isArray(gameData.gauges) ? gameData.gauges : [];
       _gaugeStates = Array.isArray(gameData.gauge_states) ? gameData.gauge_states : [];
+      _gaugeTransitionPending = false;
+      _fallbackGaugeTransition = null;
       bindGaugeStateListeners();
     },
 

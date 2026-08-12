@@ -318,7 +318,7 @@ const Evidence = (() => {
         return {
           ...answer,
           text: answer.answer_text || answer.answer_id,
-          type: 'choice-decision',
+          type: locked ? 'choice-decision choice-locked' : 'choice-decision',
           locked,
           lockedHint: locked ? '필요한 단서를 아직 확보하지 못했습니다.' : '',
         };
