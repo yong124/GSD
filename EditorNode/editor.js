@@ -28,6 +28,7 @@
   const COMPARE_TYPE_OPTIONS = ['Equal', 'NotEqual', 'Greater', 'GreaterEqual', 'Less', 'LessEqual'];
   const CHOICE_GROUP_TYPE_OPTIONS = ['Normal', 'Investigation', 'Evidence'];
   const NEXT_TYPE_OPTIONS = ['Scene', 'Dialog', 'None'];
+  const QUESTION_ANSWER_NEXT_TYPE_OPTIONS = ['Resume', 'Dialog', 'Scene'];
   const EMPTY_DATA = {
     first_scene: '',
     characters: {},
@@ -1932,7 +1933,7 @@
       afterChange,
       swap,
       newQuestionAnswer,
-      nextTypeOptions: NEXT_TYPE_OPTIONS,
+      nextTypeOptions: QUESTION_ANSWER_NEXT_TYPE_OPTIONS,
     });
   }
 
@@ -2163,7 +2164,7 @@
       is_correct: false,
       effect_group_id: '',
       result_text: '',
-      next_type: 'None',
+      next_type: 'Resume',
       next_id: '',
     };
   }
@@ -2192,6 +2193,7 @@
   function normalizeScene(sceneId, scene) {
     const normalizedDialogues = (scene.dialogues || []).map((dialogue, index) => {
       return {
+        ...structuredClone(dialogue),
         order: normalizeOrder(dialogue.order, index + 1),
         dialog_id: dialogue.dialog_id || null,
         speaker_id: dialogue.speaker_id || null,
@@ -2212,6 +2214,7 @@
 
     const normalizedChoices = (scene.choices || []).map((choice, index) => {
       const c = {
+        ...structuredClone(choice),
         order: normalizeOrder(choice.order, index + 1),
         choice_id: choice.choice_id || null,
         choice_group_id: choice.choice_group_id || null,
@@ -2230,6 +2233,7 @@
       const trimmedKey = String(groupKey || '').trim();
       if (!trimmedKey) return;
       normalizedPriorityDialogues[trimmedKey] = (lines || []).map((line, index) => ({
+        ...structuredClone(line),
         order: normalizeOrder(line.order, index + 1),
         speaker: line.speaker || '',
         speaker_id: line.speaker_id || null,
@@ -2241,6 +2245,7 @@
     });
 
     const normalizedBranches = (scene.branches || []).map((branch, index) => ({
+      ...structuredClone(branch),
       branch_id: branch.branch_id || null,
       order: normalizeOrder(branch.order, index + 1),
       condition_group_id: branch.condition_group_id || null,
@@ -2248,6 +2253,7 @@
     }));
 
     const normalizedEvidence = (scene.evidence || []).map((evidence) => ({
+      ...structuredClone(evidence),
       evidence_id: evidence.evidence_id || evidence.id || '',
       trigger: evidence.trigger || 'auto',
       name: evidence.name || '',
@@ -2257,6 +2263,7 @@
     }));
 
     const result = {
+      ...structuredClone(scene),
       id: scene.id || sceneId,
       chapter: scene.chapter === '' || scene.chapter == null ? null : Number.parseInt(scene.chapter, 10),
       title: scene.title || sceneId,
@@ -2507,6 +2514,7 @@
     const stack = [];
     const evidenceOwners = new Map();
     const sceneIdOwners = new Map();
+    const checkpointScenesByQuestion = new Map();
     const questionIds = new Set((state.data.questions || []).map(question => question?.question_id).filter(Boolean));
     const effectGroupIds = new Set((state.data.effects || []).map(effect => effect?.effect_group_id).filter(Boolean));
 
@@ -2557,6 +2565,8 @@
       } else {
         const seenQuestionIds = new Set();
         forcedQuestionIds.forEach(questionId => {
+          if (!checkpointScenesByQuestion.has(questionId)) checkpointScenesByQuestion.set(questionId, []);
+          checkpointScenesByQuestion.get(questionId).push([sceneKey, scene]);
           if (seenQuestionIds.has(questionId)) {
             findings.push({
               type: 'error',
@@ -2688,7 +2698,7 @@
         });
       }
 
-      if (!NEXT_TYPE_OPTIONS.includes(answer?.next_type)) {
+      if (!QUESTION_ANSWER_NEXT_TYPE_OPTIONS.includes(answer?.next_type)) {
         findings.push({
           type: 'error',
           title: '답변 다음 타입 오류',
@@ -2700,6 +2710,18 @@
           title: '답변 씬 참조 누락',
           body: `${displayId}가 "${answer.next_id || '(none)'}"를 가리키지만 해당 씬이 없습니다.`,
         });
+      } else if (answer.next_type === 'Dialog') {
+        const owners = checkpointScenesByQuestion.get(answer.question_id) || [];
+        const missingOwners = owners.filter(([, scene]) => (
+          !answer.next_id || !Object.prototype.hasOwnProperty.call(scene.evidence_dialogues || {}, answer.next_id)
+        ));
+        if (owners.length === 0 || missingOwners.length > 0) {
+          findings.push({
+            type: 'error',
+            title: '답변 대사 참조 누락',
+            body: `${displayId}의 EvidenceDialog "${answer.next_id || '(none)'}"가 체크포인트 씬 ${missingOwners.map(([sceneId]) => sceneId).join(', ') || '(none)'}에 없습니다.`,
+          });
+        }
       }
     });
 
@@ -3470,6 +3492,14 @@
     updatePersistenceUi();
     // 서버 환경이면 자동 로드 시도
     if (location.protocol !== 'file:') loadData();
+  }
+
+  if (new URLSearchParams(location.search).has('qa')) {
+    window.EditorNodeQA = {
+      setData(data) { state.data = ensureDataShape(structuredClone(data)); },
+      buildExportData,
+      collectValidation,
+    };
   }
 
   if (document.readyState === 'loading') {

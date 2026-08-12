@@ -376,6 +376,9 @@ def build_game_data(wb):
         answer_id = row.get("AnswerID")
         if not answer_id:
             continue
+        next_type = row.get("NextType") or "Resume"
+        if next_type not in {"Resume", "Dialog", "Scene"}:
+            raise ValueError(f"QuestionAnswerTable {answer_id} invalid NextType: {next_type}")
         question_answers.append({
             "answer_id": answer_id,
             "question_id": row.get("QuestionID") or "",
@@ -385,7 +388,7 @@ def build_game_data(wb):
             "is_correct": str(row.get("IsCorrect") or "").strip().lower() in {"true", "1", "yes"},
             "effect_group_id": row.get("EffectGroupID") or "",
             "result_text": row.get("ResultText") or "",
-            "next_type": row.get("NextType") or "None",
+            "next_type": next_type,
             "next_id": row.get("NextID") or "",
         })
 

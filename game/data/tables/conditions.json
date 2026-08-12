@@ -766,5 +766,45 @@
     "condition_target_id": "Erosion",
     "compare_type": "GreaterEqual",
     "condition_value": 6
+  },
+  {
+    "condition_id": "Cond_QR_CheckpointFactoryShock_01",
+    "condition_group_id": "CG_QR_CheckpointFactoryShock",
+    "condition_type": "SceneVisited",
+    "condition_target_id": "ch2_factory_shock",
+    "compare_type": "Equal",
+    "condition_value": true
+  },
+  {
+    "condition_id": "Cond_QR_CheckpointWell_01",
+    "condition_group_id": "CG_QR_CheckpointWell",
+    "condition_type": "SceneVisited",
+    "condition_target_id": "ch2_well",
+    "compare_type": "Equal",
+    "condition_value": true
+  },
+  {
+    "condition_id": "Cond_QR_CheckpointRoom4Conclusion_01",
+    "condition_group_id": "CG_QR_CheckpointRoom4Conclusion",
+    "condition_type": "SceneVisited",
+    "condition_target_id": "ch3_room4_conclusion",
+    "compare_type": "Equal",
+    "condition_value": true
+  },
+  {
+    "condition_id": "Cond_QR_CheckpointSlum_01",
+    "condition_group_id": "CG_QR_CheckpointSlum",
+    "condition_type": "SceneVisited",
+    "condition_target_id": "ch4a_slum",
+    "compare_type": "Equal",
+    "condition_value": true
+  },
+  {
+    "condition_id": "Cond_QR_CheckpointRitualRoom_01",
+    "condition_group_id": "CG_QR_CheckpointRitualRoom",
+    "condition_type": "SceneVisited",
+    "condition_target_id": "ch5_ritual_room",
+    "compare_type": "Equal",
+    "condition_value": true
   }
 ]

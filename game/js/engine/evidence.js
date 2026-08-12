@@ -361,8 +361,16 @@ const Evidence = (() => {
             Dialogue.start(lines, advance, null);
             return;
           }
+          console.error(`[Evidence] Missing forced answer dialogue: ${sceneId} -> ${answer.next_id}`);
+          UIManager.showToast('답변 후속 대사를 찾지 못해 진행할 수 없습니다.', 'error');
+          return;
         }
-        advance();
+        if (answer.next_type === 'Resume') {
+          advance();
+          return;
+        }
+        console.error(`[Evidence] Invalid forced answer navigation: ${answer.answer_id} -> ${answer.next_type}`);
+        UIManager.showToast('답변의 다음 진행 설정이 올바르지 않습니다.', 'error');
       }, {
         kicker: '추론',
         title: question.title,

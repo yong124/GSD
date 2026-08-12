@@ -118,12 +118,25 @@ const Scene = (() => {
     leaveScene(scene, nextSceneId);
   }
 
-  function leaveScene(scene, nextSceneId) {
+  function resumeQuestionCheckpoint(scene) {
+    const checkpoint = State.questionCheckpoint;
+    if (!checkpoint || checkpoint.scene_id !== scene?.id) return false;
     const proceed = () => {
-      if (nextSceneId) Scene.load(nextSceneId);
+      State.clearQuestionCheckpoint();
+      if (checkpoint.next_scene_id) Scene.load(checkpoint.next_scene_id);
       else triggerEnding();
     };
     if (!Evidence.startQuestionCheckpoint(scene, proceed)) proceed();
+    else Save.save(true);
+    return true;
+  }
+
+  function leaveScene(scene, nextSceneId) {
+    State.setQuestionCheckpoint({
+      scene_id: scene.id,
+      next_scene_id: nextSceneId || null,
+    });
+    resumeQuestionCheckpoint(scene);
   }
 
   function parseConditionValue(value) {
@@ -417,6 +430,8 @@ const Scene = (() => {
 
     Save.save(true);
 
+    if (restoreProgress && resumeQuestionCheckpoint(scene)) return;
+
     function afterDialogue() {
       Evidence.collectOnClick(scene);
       const choices = getAvailableChoices(scene, 'Normal');
@@ -519,6 +534,10 @@ const Scene = (() => {
           this.load(_firstSceneId, null, { restoreProgress: false });
         }
         return;
+      }
+
+      if (State.questionCheckpoint && State.questionCheckpoint.scene_id !== sceneId) {
+        State.clearQuestionCheckpoint();
       }
 
       const prevChapter = State.chapter;

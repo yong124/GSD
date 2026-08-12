@@ -8,10 +8,21 @@ const QA_DIR = path.join(ROOT, '.qa-node');
 const OUT_DIR = path.join(ROOT, '.qa-artifacts');
 const GAME_DATA_PATH = path.join(ROOT, 'game', 'data', 'game_data.js');
 
-const QA_SCENES = String(process.env.QA_SCENES || '')
-  .split(',')
-  .map(value => value.trim())
-  .filter(Boolean);
+const QA_PROFILES = {
+  'question-checkpoints': [
+    'ch2_factory_shock', 'ch2_cafe',
+    'ch2_well', 'ch3_warehouse',
+    'ch3_room4_conclusion', 'ch4a_library',
+    'ch4a_slum', 'ch4a_editor_room',
+    'ch5_ritual_room', 'ch5_participant_ledger',
+  ],
+};
+const QA_PROFILE = String(process.env.QA_PROFILE || '').trim();
+
+const QA_SCENES = QA_PROFILES[QA_PROFILE] || String(process.env.QA_SCENES || '')
+    .split(',')
+    .map(value => value.trim())
+    .filter(Boolean);
 const QA_LIMIT = Number(process.env.QA_LIMIT || '0');
 const QA_CONCURRENCY = Math.max(1, Number(process.env.QA_CONCURRENCY || '4'));
 const QA_INCLUDE_BOOT = String(process.env.QA_INCLUDE_BOOT || '1').trim() !== '0';
@@ -276,8 +287,9 @@ async function main() {
     const options = Array.isArray(discovery.state.options) ? discovery.state.options : [];
 
     if (QA_INCLUDE_CHOICES && discovery.state.kind === 'choice') {
+      const disabledOptions = Array.isArray(discovery.state.disabledOptions) ? discovery.state.disabledOptions : [];
       options.forEach((_option, actionIndex) => {
-        choiceJobs.push({ sceneId: discovery.sceneId, actionIndex });
+        if (!disabledOptions[actionIndex]) choiceJobs.push({ sceneId: discovery.sceneId, actionIndex });
       });
     }
 

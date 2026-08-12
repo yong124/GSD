@@ -222,18 +222,34 @@ async function testAll(page) {
     count: State.getNumericState('SolvedQuestionCount'),
     callback: window.__checkpointQa.completed,
     proof: (() => {
-      const category = GAME_DATA.conditions
-        .find(condition => condition.condition_group_id === 'CG_Proof_All')
-        ?.condition_target_id.split('|');
+      const rows = GAME_DATA.conditions.filter(condition => condition.condition_group_id === 'CG_Proof_All');
+      const categories = rows.map(row => row.condition_target_id.split('|'));
+      const expectedStateIds = [
+        'QuestionSolved_QIpangyuCall', 'QuestionSolved_QIpangyuMadness', 'QuestionSolved_QCallPattern',
+        'QuestionSolved_QSonggeumMissing', 'QuestionSolved_QSonggeumRunaway', 'QuestionSolved_QRoom4Purpose', 'QuestionSolved_QArchivePattern',
+        'QuestionSolved_QRitualLead', 'QuestionSolved_QRitualAccident', 'QuestionSolved_QRitualErasure',
+      ].sort();
       const reachableAfterCorrect = Scene.passesConditionGroup('CG_Proof_All');
-      category.forEach(stateId => State.setBooleanState(stateId, false));
-      const lockedWithoutCategory = !Scene.passesConditionGroup('CG_Proof_All');
-      category.forEach(stateId => State.setBooleanState(stateId, true));
-      return { reachableAfterCorrect, lockedWithoutCategory };
+      const lockedWithoutEachCategory = categories.map(category => {
+        category.forEach(stateId => State.setBooleanState(stateId, false));
+        const locked = !Scene.passesConditionGroup('CG_Proof_All');
+        category.forEach(stateId => State.setBooleanState(stateId, true));
+        return locked;
+      });
+      return {
+        rows: rows.length,
+        expectedStateIds,
+        actualStateIds: categories.flat().sort(),
+        categories,
+        reachableAfterCorrect,
+        lockedWithoutEachCategory,
+      };
     })(),
   }), questionIds);
   assert(result.completed && result.answered.every(Boolean) && result.count === 10 && result.callback === 1, 'All mode mismatch');
-  assert(result.proof.reachableAfterCorrect && result.proof.lockedWithoutCategory, 'CG_Proof_All reachability mismatch');
+  assert(result.proof.rows === 3, 'CG_Proof_All must contain three category rows');
+  assert(JSON.stringify(result.proof.actualStateIds) === JSON.stringify(result.proof.expectedStateIds), 'CG_Proof_All solved-state membership mismatch');
+  assert(result.proof.reachableAfterCorrect && result.proof.lockedWithoutEachCategory.every(Boolean), 'CG_Proof_All reachability mismatch');
   return result;
 }
 
@@ -288,53 +304,118 @@ async function testNavigation(page) {
   return { resume, dialog, scene };
 }
 
-async function testSerializedResume(page) {
-  const questionIds = ['QRitualLead', 'QRitualAccident'];
-  const correctAnswerIds = [ANSWERS.ritualLead, ANSWERS.ritualAccident];
-  await prepareCheckpoint(page, { sceneId: 'qa_saved', questionIds });
-  await clickAnswer(page, ANSWERS.ritualLead);
-  const serialized = await page.evaluate(() => State.serialize());
-  const resumed = await page.evaluate(saved => {
-    State.reset();
-    State.deserialize(saved);
-    window.__checkpointQa.completed = 0;
-    return Evidence.startQuestionCheckpoint(window.__checkpointQa.scene, () => { window.__checkpointQa.completed += 1; });
-  }, serialized);
-  assert(resumed, 'serialized partial checkpoint did not resume');
-  assert((await page.locator('#choice-box .priority-title').textContent()).includes('즉흥적 광신'), 'serialized resume repeated answered question');
-  const partial = await page.evaluate(() => ({
-    answered: State.getBooleanState('QuestionAnswered_qa_saved_QRitualLead'),
-    solved: State.getBooleanState('QuestionSolved_QRitualLead'),
-    recorded: State.hasChoice('QRitualLead_Correct'),
+async function testActualSaveResume(page) {
+  let pickedChoice = false;
+  for (let step = 0; step < 220; step += 1) {
+    const state = await page.evaluate(() => ({
+      title: (document.querySelector('#choice-box .priority-title')?.textContent || '').trim(),
+      choiceVisible: !document.querySelector('#choice-box')?.classList.contains('hidden'),
+      dialogueVisible: !document.querySelector('#dialogue-box')?.classList.contains('hidden'),
+    }));
+    if (state.title === '이판규는 누구에게 불려갔는가') break;
+    if (state.choiceVisible && !pickedChoice) {
+      await page.locator('#choice-box .choice-btn:not([disabled])').nth(1).click();
+      pickedChoice = true;
+    } else if (state.dialogueVisible) {
+      await advanceDialogue(page);
+    } else {
+      await page.waitForTimeout(20);
+    }
+  }
+  assert(pickedChoice, 'save resume setup did not apply the original scene choice');
+  await page.waitForFunction(() => document.querySelector('#choice-box .priority-title')?.textContent.includes('이판규는 누구에게'));
+  const beforeSave = await page.evaluate(() => ({
+    erosion: State.getGauge('Erosion'),
+    checkpoint: State.questionCheckpoint,
+    choiceRecorded: State.hasChoice('Ch2FactoryShockFollowSong'),
   }));
-  assert(partial.answered && partial.solved && partial.recorded, 'serialized partial checkpoint facts missing');
-  await clickAnswer(page, ANSWERS.ritualAccident);
-  const result = await page.evaluate(() => ({
-    first: State.getBooleanState('QuestionAnswered_qa_saved_QRitualLead'),
-    second: State.getBooleanState('QuestionAnswered_qa_saved_QRitualAccident'),
-    completed: State.getBooleanState('QuestionCheckpointCompleted_qa_saved'),
-    firstSolved: State.getBooleanState('QuestionSolved_QRitualLead'),
-    secondSolved: State.getBooleanState('QuestionSolved_QRitualAccident'),
-    firstRecorded: State.hasChoice('QRitualLead_Correct'),
-    callback: window.__checkpointQa.completed,
+  assert(beforeSave.erosion === 1 && beforeSave.choiceRecorded, 'original scene choice effect/setup mismatch');
+  assert(beforeSave.checkpoint?.scene_id === 'ch2_factory_shock' && beforeSave.checkpoint?.next_scene_id === 'ch2_cafe', 'deferred checkpoint state missing');
+
+  await page.evaluate(() => Save.save(false));
+  await page.locator('#slot-list .slot-btn').first().click();
+  const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('gyeongseong_save_1')));
+  assert(stored.question_checkpoint?.scene_id === 'ch2_factory_shock', 'actual save slot omitted checkpoint continuation');
+
+  await page.evaluate(() => State.setGauge('Erosion', 7));
+  await page.evaluate(() => Save.load());
+  await page.locator('#slot-list .slot-btn').first().click();
+  await page.waitForFunction(() => (
+    State.currentSceneId === 'ch2_factory_shock'
+    && document.querySelector('#choice-box .priority-title')?.textContent.includes('이판규는 누구에게')
+  ));
+  const resumed = await page.evaluate(() => ({
+    erosion: State.getGauge('Erosion'),
+    dialogueVisible: !document.querySelector('#dialogue-box')?.classList.contains('hidden'),
+    checkpoint: State.questionCheckpoint,
+    originalChoiceButtons: Array.from(document.querySelectorAll('#choice-box .choice-btn'))
+      .filter(button => button.textContent.includes('환청의 방향')).length,
   }));
-  assert(result.first && result.second && result.completed && result.firstSolved && result.secondSolved && result.firstRecorded && result.callback === 1, 'serialized resume state mismatch');
-  const replay = await page.evaluate(({ saved, questionIds, correctAnswerIds }) => {
+  assert(resumed.erosion === 1 && !resumed.dialogueVisible && resumed.originalChoiceButtons === 0, 'Save.load replayed prior dialogue or choice effect');
+  assert(resumed.checkpoint?.next_scene_id === 'ch2_cafe', 'Save.load lost deferred destination');
+
+  await clickAnswer(page, ANSWERS.callCorrect);
+  await page.waitForFunction(() => State.currentSceneId === 'ch2_cafe');
+  const completed = await page.evaluate(() => ({
+    erosion: State.getGauge('Erosion'),
+    checkpoint: State.questionCheckpoint,
+    completed: State.getBooleanState('QuestionCheckpointCompleted_ch2_factory_shock'),
+    originalChoiceCount: State.getChoiceHistory().filter(id => id === 'Ch2FactoryShockFollowSong').length,
+  }));
+  assert(completed.erosion === 1 && completed.originalChoiceCount === 1, 'original choice effect was applied twice');
+  assert(completed.completed && completed.checkpoint === null, 'completed checkpoint continuation was not cleared');
+
+  await page.evaluate(() => Save.load());
+  await page.locator('#slot-list .slot-btn').first().click();
+  await page.waitForFunction(() => State.currentSceneId === 'ch2_cafe');
+  const reloadedCompleted = await page.evaluate(() => ({
+    sceneId: State.currentSceneId,
+    checkpoint: State.questionCheckpoint,
+    questionOpen: !document.querySelector('#choice-box')?.classList.contains('hidden')
+      && (document.querySelector('#choice-box .priority-title')?.textContent.includes('이판규는 누구에게') || false),
+  }));
+  assert(!reloadedCompleted.questionOpen && reloadedCompleted.checkpoint === null, 'completed checkpoint reopened after actual load');
+  return { beforeSave, storedCheckpoint: stored.question_checkpoint, resumed, completed, reloadedCompleted };
+}
+
+async function testQuestionVisibility(page) {
+  const checkpoints = [
+    ['ch2_factory_shock', ['QIpangyuCall']],
+    ['ch2_well', ['QIpangyuMadness', 'QCallPattern']],
+    ['ch3_room4_conclusion', ['QSonggeumMissing', 'QSonggeumRunaway', 'QRoom4Purpose']],
+    ['ch4a_slum', ['QArchivePattern']],
+    ['ch5_ritual_room', ['QRitualLead', 'QRitualAccident', 'QRitualErasure']],
+  ];
+  const snapshots = await page.evaluate(sequence => {
     State.reset();
-    State.deserialize(saved);
-    window.__checkpointQa.completed = 0;
-    const started = Evidence.startQuestionCheckpoint(window.__checkpointQa.scene, () => { window.__checkpointQa.completed += 1; });
-    return {
-      started,
-      completed: State.getBooleanState('QuestionCheckpointCompleted_qa_saved'),
-      answered: questionIds.map(questionId => State.getBooleanState(`QuestionAnswered_qa_saved_${questionId}`)),
-      solved: questionIds.map(questionId => State.getBooleanState(`QuestionSolved_${questionId}`)),
-      recorded: correctAnswerIds.map(answerId => State.hasChoice(answerId)),
-      callback: window.__checkpointQa.completed,
+    State.currentSceneId = GAME_DATA.first_scene;
+    const renderIds = () => {
+      Evidence.hide();
+      document.getElementById('memo-btn').click();
+      document.querySelector('#memo-tabs [data-tab="questions"]').click();
+      return Array.from(document.querySelectorAll('#memo-list [data-question-id]')).map(node => node.dataset.questionId);
     };
-  }, { saved: await page.evaluate(() => State.serialize()), questionIds, correctAnswerIds });
-  assert(!replay.started && replay.completed && replay.answered.every(Boolean) && replay.solved.every(Boolean) && replay.recorded.every(Boolean) && replay.callback === 0, 'completed serialized checkpoint repeated or lost facts');
-  return { ...result, partial, replay };
+    const result = [{ sceneId: 'before-all', ids: renderIds() }];
+    sequence.forEach(([sceneId]) => {
+      State.currentSceneId = sceneId;
+      State.visitScene(sceneId);
+      result.push({ sceneId, ids: renderIds() });
+    });
+    Evidence.hide();
+    return result;
+  }, checkpoints);
+  assert(snapshots[0].ids.length === 0, 'questions visible before their checkpoints');
+  const visible = new Set();
+  checkpoints.forEach(([sceneId, questionIds], index) => {
+    questionIds.forEach(questionId => {
+      assert(!visible.has(questionId), `${questionId} was visible before ${sceneId}`);
+      visible.add(questionId);
+    });
+    const actual = snapshots[index + 1].ids;
+    assert(actual.length === visible.size && [...visible].every(questionId => actual.includes(questionId)), `${sceneId} visibility mismatch`);
+  });
+  assert(visible.size === 10 && snapshots.at(-1).ids.length === 10, 'not all checkpoint questions became visible');
+  return snapshots;
 }
 
 async function testReadOnlyNotebook(page) {
@@ -369,7 +450,8 @@ async function main() {
     results.push(await withPage(browser, 'all-mode', testAll));
     results.push(await withPage(browser, 'any-mode', testAny));
     results.push(await withPage(browser, 'answer-navigation', testNavigation));
-    results.push(await withPage(browser, 'serialized-state-resume', testSerializedResume));
+    results.push(await withPage(browser, 'actual-save-api-resume', testActualSaveResume, 'qa_scene=ch2_factory_shock&qa_evidence=all'));
+    results.push(await withPage(browser, 'checkpoint-question-visibility', testQuestionVisibility));
     results.push(await withPage(browser, 'read-only-notebook', testReadOnlyNotebook));
   } finally {
     await browser.close();

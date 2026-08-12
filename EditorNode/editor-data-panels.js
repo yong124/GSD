@@ -708,7 +708,7 @@
       IsCorrect: answer?.is_correct === true,
       EffectGroupID: answer?.effect_group_id || '',
       ResultText: answer?.result_text || '',
-      NextType: answer?.next_type || 'None',
+      NextType: answer?.next_type || 'Resume',
       NextID: answer?.next_id || '',
     }));
 
@@ -728,7 +728,7 @@
       if (field === 'IsCorrect') target.is_correct = value === true;
       if (field === 'EffectGroupID') target.effect_group_id = value || '';
       if (field === 'ResultText') target.result_text = value || '';
-      if (field === 'NextType') target.next_type = value || 'None';
+      if (field === 'NextType') target.next_type = value || 'Resume';
       if (field === 'NextID') target.next_id = value || '';
       markDirty();
     };
@@ -753,9 +753,9 @@
         <label><span>ResultText</span>
           <textarea data-field="ResultText" rows="3">${escapeHtml(row.ResultText || '')}</textarea></label>
         <label><span>NextType</span>
-          <input data-field="NextType" value="${escapeAttr(row.NextType || 'None')}" placeholder="Scene / Dialog / None"></label>
+          <input data-field="NextType" value="${escapeAttr(row.NextType || 'Resume')}" placeholder="Resume / Dialog / Scene"></label>
         <label><span>NextID</span>
-          <input data-field="NextID" value="${escapeAttr(row.NextID || '')}" placeholder="SceneID"></label>
+          <input data-field="NextID" value="${escapeAttr(row.NextID || '')}" placeholder="SceneID / EvidenceDialogID"></label>
       `,
       () => { state.data.question_answers.push(newQuestionAnswer()); afterChange(); },
       (index) => { state.data.question_answers.splice(index, 1); afterChange(); },
@@ -770,8 +770,18 @@
     replaceComboboxInputs(cards, [
       { field: 'QuestionID', options: () => getDataOptions('questionIds') },
       { field: 'EffectGroupID', options: () => getDataOptions('effectGroupIds') },
-      { field: 'NextID', options: () => getDataOptions('sceneIds') },
     ]);
+    cards.querySelectorAll('.pcard').forEach((card, index) => {
+      const row = rows[index];
+      const owners = Object.values(state.data.scenes || {})
+        .filter(scene => (scene.forced_question_ids || []).includes(row?.QuestionID));
+      const options = row?.NextType === 'Scene'
+        ? getDataOptions('sceneIds')
+        : row?.NextType === 'Dialog'
+          ? [...new Set(owners.flatMap(scene => Object.keys(scene.evidence_dialogues || {})))].sort()
+          : [];
+      replaceComboboxInputs(card, [{ field: 'NextID', options }]);
+    });
     replaceMultiSelectInputs(cards, [
       { field: 'RequiredEvidenceIDs', options: () => getDataOptions('evidenceIds'), size: 6 },
     ]);

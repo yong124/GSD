@@ -87,6 +87,7 @@ const State = (() => {
     evidence: [],
     choice_history: [],
     chapter: 1,
+    question_checkpoint: null,
   };
 
   const _listeners = {};
@@ -120,6 +121,16 @@ const State = (() => {
 
     get chapter()  { return _state.chapter; },
     set chapter(v) { _state.chapter = v; },
+
+    get questionCheckpoint() { return _state.question_checkpoint; },
+
+    setQuestionCheckpoint(checkpoint) {
+      _state.question_checkpoint = checkpoint ? { ...checkpoint } : null;
+    },
+
+    clearQuestionCheckpoint() {
+      _state.question_checkpoint = null;
+    },
 
     setFact(key, value) {
       const prev = _state.facts[key];
@@ -370,6 +381,9 @@ const State = (() => {
           evidence: Array.isArray(parsed.evidence) ? parsed.evidence : [],
           choice_history: Array.isArray(parsed.choice_history) ? parsed.choice_history : [],
           chapter: Number.isFinite(parsed.chapter) ? parsed.chapter : 1,
+          question_checkpoint: parsed.question_checkpoint && typeof parsed.question_checkpoint === 'object'
+            ? parsed.question_checkpoint
+            : null,
         };
         _emit('loaded', _state);
         return true;
@@ -390,6 +404,7 @@ const State = (() => {
         evidence: [],
         choice_history: [],
         chapter: 1,
+        question_checkpoint: null,
       };
       _emit('reset');
     },

@@ -434,6 +434,10 @@ def validate_question_answers(data, scenes, issues):
         for effect in (data.get("effects", []) or [])
         if effect.get("effect_group_id")
     }
+    checkpoint_scenes_by_question = {}
+    for scene_id, scene in scenes.items():
+        for question_id in scene.get("forced_question_ids", []) or []:
+            checkpoint_scenes_by_question.setdefault(question_id, []).append((scene_id, scene))
     answer_ids = [answer.get("answer_id") for answer in answers if answer.get("answer_id")]
     for duplicate in find_duplicates(answer_ids):
         issues.append(f"[Duplicate.answer_id] {duplicate}")
@@ -462,12 +466,20 @@ def validate_question_answers(data, scenes, issues):
             issues.append(f"[QuestionAnswer.effect_group_id] {answer_id} -> {effect_group_id} (missing EffectGroupID)")
 
         next_type = answer.get("next_type")
-        if next_type not in {"Scene", "Dialog", "None"}:
+        if next_type not in {"Resume", "Dialog", "Scene"}:
             issues.append(f"[QuestionAnswer.next_type] {answer_id} invalid NextType: {next_type}")
         elif next_type == "Scene":
             next_id = answer.get("next_id")
             if not next_id or next_id not in scenes:
                 issues.append(f"[QuestionAnswer.next_id] {answer_id} -> {next_id or '(missing)'} (missing SceneID)")
+        elif next_type == "Dialog":
+            next_id = answer.get("next_id")
+            owners = checkpoint_scenes_by_question.get(question_id, [])
+            if not owners:
+                issues.append(f"[QuestionAnswer.next_id] {answer_id} -> {next_id or '(missing)'} (question has no checkpoint scene)")
+            for scene_id, scene in owners:
+                if not next_id or next_id not in (scene.get("evidence_dialogues") or {}):
+                    issues.append(f"[QuestionAnswer.next_id] {answer_id} -> {scene_id}/{next_id or '(missing)'} (missing EvidenceDialogID)")
 
     for question_id, question_answers in answers_by_question.items():
         if not any(answer.get("is_correct") is True for answer in question_answers):

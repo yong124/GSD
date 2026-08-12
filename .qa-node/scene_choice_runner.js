@@ -52,6 +52,9 @@ async function readUiState(page) {
         : evidenceVisible
           ? Array.from(document.querySelectorAll('#evidence-inventory .inventory-list-item')).map(el => (el.querySelector('span:last-child')?.textContent || '').trim()).filter(Boolean)
           : [],
+      disabledOptions: choiceVisible
+        ? Array.from(document.querySelectorAll('#choice-box .choice-btn')).map(el => el.disabled)
+        : [],
     };
   });
 }

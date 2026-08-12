@@ -1138,6 +1138,46 @@ window.GAME_DATA = {
       "condition_target_id": "Erosion",
       "compare_type": "GreaterEqual",
       "condition_value": 6
+    },
+    {
+      "condition_id": "Cond_QR_CheckpointFactoryShock_01",
+      "condition_group_id": "CG_QR_CheckpointFactoryShock",
+      "condition_type": "SceneVisited",
+      "condition_target_id": "ch2_factory_shock",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_QR_CheckpointWell_01",
+      "condition_group_id": "CG_QR_CheckpointWell",
+      "condition_type": "SceneVisited",
+      "condition_target_id": "ch2_well",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_QR_CheckpointRoom4Conclusion_01",
+      "condition_group_id": "CG_QR_CheckpointRoom4Conclusion",
+      "condition_type": "SceneVisited",
+      "condition_target_id": "ch3_room4_conclusion",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_QR_CheckpointSlum_01",
+      "condition_group_id": "CG_QR_CheckpointSlum",
+      "condition_type": "SceneVisited",
+      "condition_target_id": "ch4a_slum",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_QR_CheckpointRitualRoom_01",
+      "condition_group_id": "CG_QR_CheckpointRitualRoom",
+      "condition_type": "SceneVisited",
+      "condition_target_id": "ch5_ritual_room",
+      "compare_type": "Equal",
+      "condition_value": true
     }
   ],
   "evidence_categories": [
@@ -1180,7 +1220,7 @@ window.GAME_DATA = {
       "reward_value": 1,
       "reward_mode": "Add",
       "visible_condition_group_ids": [
-        "CG_QR_IpangyuSeen_01"
+        "CG_QR_CheckpointFactoryShock"
       ],
       "state_conditions": [
         {
@@ -1220,7 +1260,7 @@ window.GAME_DATA = {
       "reward_value": 1,
       "reward_mode": "Add",
       "visible_condition_group_ids": [
-        "CG_QR_IpangyuSeen_01"
+        "CG_QR_CheckpointWell"
       ],
       "state_conditions": [
         {
@@ -1257,10 +1297,7 @@ window.GAME_DATA = {
       "reward_value": 1,
       "reward_mode": "Add",
       "visible_condition_group_ids": [
-        "CG_QR_SonggeumOpen_01",
-        "CG_QR_SonggeumOpen_02",
-        "CG_QR_SonggeumOpen_03",
-        "CG_QR_SonggeumOpen_04"
+        "CG_QR_CheckpointRoom4Conclusion"
       ],
       "state_conditions": [
         {
@@ -1300,10 +1337,7 @@ window.GAME_DATA = {
       "reward_value": 1,
       "reward_mode": "Add",
       "visible_condition_group_ids": [
-        "CG_QR_SonggeumOpen_01",
-        "CG_QR_SonggeumOpen_02",
-        "CG_QR_SonggeumOpen_03",
-        "CG_QR_SonggeumOpen_04"
+        "CG_QR_CheckpointRoom4Conclusion"
       ],
       "state_conditions": [
         {
@@ -1344,9 +1378,7 @@ window.GAME_DATA = {
       "reward_value": 1,
       "reward_mode": "Add",
       "visible_condition_group_ids": [
-        "CG_QR_RitualOpen_01",
-        "CG_QR_RitualOpen_02",
-        "CG_QR_RitualOpen_03"
+        "CG_QR_CheckpointRitualRoom"
       ],
       "state_conditions": [
         {
@@ -1387,9 +1419,7 @@ window.GAME_DATA = {
       "reward_value": 1,
       "reward_mode": "Add",
       "visible_condition_group_ids": [
-        "CG_QR_RitualOpen_01",
-        "CG_QR_RitualOpen_02",
-        "CG_QR_RitualOpen_03"
+        "CG_QR_CheckpointRitualRoom"
       ],
       "state_conditions": [
         {
@@ -1422,7 +1452,10 @@ window.GAME_DATA = {
       "solved_state_id": "QuestionSolved_QCallPattern",
       "resolved_detail": "쪽지의 지시와 푸른 천의 표식은 같은 호출이 사람을 낙원으로 밀어 넣었다는 흔적이다.",
       "success_toast": "질문 정리: 호출의 표식이 하나로 이어졌다.",
-      "failure_toast": "두 흔적을 함께 대조해야 호출의 구조가 드러난다."
+      "failure_toast": "두 흔적을 함께 대조해야 호출의 구조가 드러난다.",
+      "visible_condition_group_ids": [
+        "CG_QR_CheckpointWell"
+      ]
     },
     {
       "question_id": "QRoom4Purpose",
@@ -1443,7 +1476,10 @@ window.GAME_DATA = {
       "solved_state_id": "QuestionSolved_QRoom4Purpose",
       "resolved_detail": "청색 한복과 네 눈 가면은 4호실이 사람을 의례의 배역으로 바꾸던 준비실이었음을 보여 준다.",
       "success_toast": "질문 정리: 4호실의 용도를 붙들었다.",
-      "failure_toast": "의복과 가면을 함께 읽어야 방의 역할이 보인다."
+      "failure_toast": "의복과 가면을 함께 읽어야 방의 역할이 보인다.",
+      "visible_condition_group_ids": [
+        "CG_QR_CheckpointRoom4Conclusion"
+      ]
     },
     {
       "question_id": "QArchivePattern",
@@ -1463,7 +1499,10 @@ window.GAME_DATA = {
       "solved_state_id": "QuestionSolved_QArchivePattern",
       "resolved_detail": "과거 기사와 목격담은 같은 방식의 실종이 기록에서 반복해서 지워졌음을 보여 준다.",
       "success_toast": "질문 정리: 반복된 삭제의 계보를 찾았다.",
-      "failure_toast": "기사와 목격담이 함께 있어야 반복의 구조를 말할 수 있다."
+      "failure_toast": "기사와 목격담이 함께 있어야 반복의 구조를 말할 수 있다.",
+      "visible_condition_group_ids": [
+        "CG_QR_CheckpointSlum"
+      ]
     },
     {
       "question_id": "QRitualErasure",
@@ -1483,7 +1522,10 @@ window.GAME_DATA = {
       "solved_state_id": "QuestionSolved_QRitualErasure",
       "resolved_detail": "악보와 의례실 기록은 노래가 이름을 흐리고 사람을 의례의 몫으로 바꾸는 정해진 절차였음을 보여 준다.",
       "success_toast": "질문 정리: 이름을 지우는 절차를 밝혔다.",
-      "failure_toast": "노래의 순서와 의례실 기록을 함께 봐야 한다."
+      "failure_toast": "노래의 순서와 의례실 기록을 함께 봐야 한다.",
+      "visible_condition_group_ids": [
+        "CG_QR_CheckpointRitualRoom"
+      ]
     }
   ],
   "question_answers": [
@@ -1498,7 +1540,7 @@ window.GAME_DATA = {
       "is_correct": true,
       "effect_group_id": "",
       "result_text": "쪽지의 지시가 이판규의 행선지와 맞물린다. 그는 우연히 달아난 것이 아니라 낙원 쪽 호출에 떠밀렸다.",
-      "next_type": "None",
+      "next_type": "Resume",
       "next_id": ""
     },
     {
@@ -1512,7 +1554,7 @@ window.GAME_DATA = {
       "is_correct": false,
       "effect_group_id": "eff_question_erosion",
       "result_text": "의식의 기척을 너무 쉽게 의지로 읽었다. 기록보다 공포가 먼저 결론을 밀어 넣는다.",
-      "next_type": "None",
+      "next_type": "Resume",
       "next_id": ""
     },
     {
@@ -1524,7 +1566,7 @@ window.GAME_DATA = {
       "is_correct": false,
       "effect_group_id": "eff_question_credibility",
       "result_text": "푸른 천만으로는 누가 누구를 불렀는지 증명할 수 없다. 추측이 기록의 빈칸을 대신했다.",
-      "next_type": "None",
+      "next_type": "Resume",
       "next_id": ""
     },
     {
@@ -1538,7 +1580,7 @@ window.GAME_DATA = {
       "is_correct": true,
       "effect_group_id": "",
       "result_text": "발작처럼 흘린 말과 쪽지의 호출이 맞물린다. 그의 말은 죄를 피하려 지어낸 헛소리만은 아니다.",
-      "next_type": "None",
+      "next_type": "Resume",
       "next_id": ""
     },
     {
@@ -1552,7 +1594,7 @@ window.GAME_DATA = {
       "is_correct": false,
       "effect_group_id": "eff_question_erosion",
       "result_text": "불안한 기척을 곧장 공모의 증거로 바꿨다. 사람의 말이 의식의 소음 속으로 가라앉는다.",
-      "next_type": "None",
+      "next_type": "Resume",
       "next_id": ""
     },
     {
@@ -1564,7 +1606,7 @@ window.GAME_DATA = {
       "is_correct": false,
       "effect_group_id": "eff_question_credibility",
       "result_text": "천 조각 하나로 진술 전체를 보증할 수는 없다. 반박은 근거가 아니라 성급한 단정이 되었다.",
-      "next_type": "None",
+      "next_type": "Resume",
       "next_id": ""
     },
     {
@@ -1578,7 +1620,7 @@ window.GAME_DATA = {
       "is_correct": true,
       "effect_group_id": "",
       "result_text": "일기는 송금의 실종이 도피가 아니라, 사람을 의례의 몫으로 바꾸는 순서 안에서 벌어진 소거였음을 남긴다.",
-      "next_type": "None",
+      "next_type": "Resume",
       "next_id": ""
     },
     {
@@ -1592,7 +1634,7 @@ window.GAME_DATA = {
       "is_correct": false,
       "effect_group_id": "eff_question_erosion",
       "result_text": "의복에 남은 기척을 사람의 운명으로 덮어썼다. 남은 기록을 읽기보다 공포가 빈자리를 채운다.",
-      "next_type": "None",
+      "next_type": "Resume",
       "next_id": ""
     },
     {
@@ -1604,7 +1646,7 @@ window.GAME_DATA = {
       "is_correct": false,
       "effect_group_id": "eff_question_credibility",
       "result_text": "기사의 반복은 구조를 암시할 뿐 송금의 행적을 확정하지 않는다. 시대와 사람을 억지로 한 줄에 묶었다.",
-      "next_type": "None",
+      "next_type": "Resume",
       "next_id": ""
     },
     {
@@ -1618,7 +1660,7 @@ window.GAME_DATA = {
       "is_correct": true,
       "effect_group_id": "",
       "result_text": "송금의 실종은 스스로 떠난 도피가 아니다. 선택당한 사람을 지워 버리는 의례의 순서가 그를 밀어 넣었다.",
-      "next_type": "None",
+      "next_type": "Resume",
       "next_id": ""
     },
     {
@@ -1632,7 +1674,7 @@ window.GAME_DATA = {
       "is_correct": false,
       "effect_group_id": "eff_question_erosion",
       "result_text": "옷의 상징을 송금의 자발적 선택으로 바꿔 버렸다. 의식이 강요한 자리에 그의 목소리는 남지 않는다.",
-      "next_type": "None",
+      "next_type": "Resume",
       "next_id": ""
     },
     {
@@ -1644,7 +1686,7 @@ window.GAME_DATA = {
       "is_correct": false,
       "effect_group_id": "eff_question_credibility",
       "result_text": "과거 기사는 반복을 의심하게 할 뿐, 송금의 선택을 말해 주지 않는다. 비교가 증언을 대신했다.",
-      "next_type": "None",
+      "next_type": "Resume",
       "next_id": ""
     },
     {
@@ -1659,7 +1701,7 @@ window.GAME_DATA = {
       "is_correct": true,
       "effect_group_id": "",
       "result_text": "악보의 결과 기록의 숫자가 같은 구조를 가리킨다. 낙원의 의식은 우발적 소문이 아니라 누군가 끝까지 쥔 판이었다.",
-      "next_type": "None",
+      "next_type": "Resume",
       "next_id": ""
     },
     {
@@ -1673,7 +1715,7 @@ window.GAME_DATA = {
       "is_correct": false,
       "effect_group_id": "eff_question_erosion",
       "result_text": "시선의 감각을 주체의 증거로 삼았다. 사람과 물건의 경계가 흐려질수록 기록은 멀어진다.",
-      "next_type": "None",
+      "next_type": "Resume",
       "next_id": ""
     },
     {
@@ -1685,7 +1727,7 @@ window.GAME_DATA = {
       "is_correct": false,
       "effect_group_id": "eff_question_credibility",
       "result_text": "삭제된 이름은 은폐의 흔적이지 주도자의 서명은 아니다. 빈칸을 범인으로 발표할 수는 없다.",
-      "next_type": "None",
+      "next_type": "Resume",
       "next_id": ""
     },
     {
@@ -1699,7 +1741,7 @@ window.GAME_DATA = {
       "is_correct": true,
       "effect_group_id": "",
       "result_text": "종이에 남은 순서와 숫자는 우발적 광신이라는 설명을 무너뜨린다. 누군가가 사람 수까지 세며 의식을 준비했다.",
-      "next_type": "None",
+      "next_type": "Resume",
       "next_id": ""
     },
     {
@@ -1713,7 +1755,7 @@ window.GAME_DATA = {
       "is_correct": false,
       "effect_group_id": "eff_question_erosion",
       "result_text": "섬뜩한 인상을 원인으로 단정했다. 두려움은 계획을 읽는 대신 스스로 움직이는 물건을 만들어 낸다.",
-      "next_type": "None",
+      "next_type": "Resume",
       "next_id": ""
     },
     {
@@ -1725,7 +1767,7 @@ window.GAME_DATA = {
       "is_correct": false,
       "effect_group_id": "eff_question_credibility",
       "result_text": "기사의 소란이라는 표현만으로 준비 여부를 가를 수 없다. 요약 문장이 현장의 구조를 지웠다.",
-      "next_type": "None",
+      "next_type": "Resume",
       "next_id": ""
     },
     {
@@ -1740,7 +1782,7 @@ window.GAME_DATA = {
       "is_correct": true,
       "effect_group_id": "",
       "result_text": "글로 남은 지시와 몸에 남는 표식이 겹친다. 호출은 우연한 폐기물이 아니라 사람을 움직이는 명령이었다.",
-      "next_type": "None",
+      "next_type": "Resume",
       "next_id": ""
     },
     {
@@ -1754,7 +1796,7 @@ window.GAME_DATA = {
       "is_correct": false,
       "effect_group_id": "eff_question_erosion",
       "result_text": "명령의 흔적을 곧장 저주의 힘으로 바꿨다. 누가 사람을 몰았는지 묻는 질문이 사라진다.",
-      "next_type": "None",
+      "next_type": "Resume",
       "next_id": ""
     },
     {
@@ -1766,7 +1808,7 @@ window.GAME_DATA = {
       "is_correct": false,
       "effect_group_id": "eff_question_credibility",
       "result_text": "표식 하나는 의심의 출발점일 뿐 연결의 증거는 아니다. 서로 다른 장소를 너무 빨리 한 사건으로 묶었다.",
-      "next_type": "None",
+      "next_type": "Resume",
       "next_id": ""
     },
     {
@@ -1781,7 +1823,7 @@ window.GAME_DATA = {
       "is_correct": true,
       "effect_group_id": "",
       "result_text": "의복과 가면은 장식이 아니라 역할을 갈아 끼우는 도구였다. 4호실은 사람을 의례의 몫으로 준비시키던 자리다.",
-      "next_type": "None",
+      "next_type": "Resume",
       "next_id": ""
     },
     {
@@ -1795,7 +1837,7 @@ window.GAME_DATA = {
       "is_correct": false,
       "effect_group_id": "eff_question_erosion",
       "result_text": "사람을 지운 구조를 방의 괴물로 바꿔 버렸다. 벽보다 그 벽을 사용한 이들이 먼저 사라진다.",
-      "next_type": "None",
+      "next_type": "Resume",
       "next_id": ""
     },
     {
@@ -1807,7 +1849,7 @@ window.GAME_DATA = {
       "is_correct": false,
       "effect_group_id": "eff_question_credibility",
       "result_text": "한 벌의 옷만으로 방의 용도를 줄여 버렸다. 가면과 기록이 가리키는 강제의 구조를 놓쳤다.",
-      "next_type": "None",
+      "next_type": "Resume",
       "next_id": ""
     },
     {
@@ -1822,7 +1864,7 @@ window.GAME_DATA = {
       "is_correct": true,
       "effect_group_id": "",
       "result_text": "신문의 삭제와 목격자의 공포가 같은 빈자리를 가리킨다. 실종은 개인의 불운이 아니라 반복된 구조였다.",
-      "next_type": "None",
+      "next_type": "Resume",
       "next_id": ""
     },
     {
@@ -1836,7 +1878,7 @@ window.GAME_DATA = {
       "is_correct": false,
       "effect_group_id": "eff_question_erosion",
       "result_text": "두려운 증언을 유령의 증거로 바꿨다. 반복을 만든 기록의 손길은 다시 어둠 속으로 숨는다.",
-      "next_type": "None",
+      "next_type": "Resume",
       "next_id": ""
     },
     {
@@ -1848,7 +1890,7 @@ window.GAME_DATA = {
       "is_correct": false,
       "effect_group_id": "eff_question_credibility",
       "result_text": "기사만으로는 현재의 실종을 단정할 수 없다. 시간의 간격과 증언의 빈칸을 무시한 기사거리가 된다.",
-      "next_type": "None",
+      "next_type": "Resume",
       "next_id": ""
     },
     {
@@ -1863,7 +1905,7 @@ window.GAME_DATA = {
       "is_correct": true,
       "effect_group_id": "",
       "result_text": "노래의 결과 기록의 순서가 맞물린다. 의식은 사람을 단번에 없애지 않고, 이름부터 의례의 몫으로 바꿨다.",
-      "next_type": "None",
+      "next_type": "Resume",
       "next_id": ""
     },
     {
@@ -1877,7 +1919,7 @@ window.GAME_DATA = {
       "is_correct": false,
       "effect_group_id": "eff_question_both",
       "result_text": "의식의 위험을 현재의 확정된 운명으로 발표했다. 공포가 기록을 잠식하며, 남길 문장마저 흔들린다.",
-      "next_type": "None",
+      "next_type": "Resume",
       "next_id": ""
     },
     {
@@ -1889,7 +1931,7 @@ window.GAME_DATA = {
       "is_correct": false,
       "effect_group_id": "eff_question_credibility",
       "result_text": "종이는 절차의 일부를 보여 줄 뿐 노래의 작동 전체를 증명하지 않는다. 한 조각을 결론으로 삼았다.",
-      "next_type": "None",
+      "next_type": "Resume",
       "next_id": ""
     }
   ],

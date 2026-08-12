@@ -99,12 +99,13 @@ py -m http.server 4173
 
 ## 데이터 스키마 요약 (2026-08 기준 실측)
 
-`window.GAME_DATA`의 top-level 키는 12개다:
+`window.GAME_DATA`의 top-level 키는 13개다:
 
 ```text
 first_scene, characters, character_emotions,
 choice_groups, conditions, evidence_categories,
 questions, state_descriptors,
+question_answers,
 gauges, gauge_states, effects, scenes
 ```
 

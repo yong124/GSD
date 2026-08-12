@@ -21,7 +21,7 @@
     "reward_value": 1,
     "reward_mode": "Add",
     "visible_condition_group_ids": [
-      "CG_QR_IpangyuSeen_01"
+      "CG_QR_CheckpointFactoryShock"
     ],
     "state_conditions": [
       {
@@ -61,7 +61,7 @@
     "reward_value": 1,
     "reward_mode": "Add",
     "visible_condition_group_ids": [
-      "CG_QR_IpangyuSeen_01"
+      "CG_QR_CheckpointWell"
     ],
     "state_conditions": [
       {
@@ -98,10 +98,7 @@
     "reward_value": 1,
     "reward_mode": "Add",
     "visible_condition_group_ids": [
-      "CG_QR_SonggeumOpen_01",
-      "CG_QR_SonggeumOpen_02",
-      "CG_QR_SonggeumOpen_03",
-      "CG_QR_SonggeumOpen_04"
+      "CG_QR_CheckpointRoom4Conclusion"
     ],
     "state_conditions": [
       {
@@ -141,10 +138,7 @@
     "reward_value": 1,
     "reward_mode": "Add",
     "visible_condition_group_ids": [
-      "CG_QR_SonggeumOpen_01",
-      "CG_QR_SonggeumOpen_02",
-      "CG_QR_SonggeumOpen_03",
-      "CG_QR_SonggeumOpen_04"
+      "CG_QR_CheckpointRoom4Conclusion"
     ],
     "state_conditions": [
       {
@@ -185,9 +179,7 @@
     "reward_value": 1,
     "reward_mode": "Add",
     "visible_condition_group_ids": [
-      "CG_QR_RitualOpen_01",
-      "CG_QR_RitualOpen_02",
-      "CG_QR_RitualOpen_03"
+      "CG_QR_CheckpointRitualRoom"
     ],
     "state_conditions": [
       {
@@ -228,9 +220,7 @@
     "reward_value": 1,
     "reward_mode": "Add",
     "visible_condition_group_ids": [
-      "CG_QR_RitualOpen_01",
-      "CG_QR_RitualOpen_02",
-      "CG_QR_RitualOpen_03"
+      "CG_QR_CheckpointRitualRoom"
     ],
     "state_conditions": [
       {
@@ -263,7 +253,10 @@
     "solved_state_id": "QuestionSolved_QCallPattern",
     "resolved_detail": "쪽지의 지시와 푸른 천의 표식은 같은 호출이 사람을 낙원으로 밀어 넣었다는 흔적이다.",
     "success_toast": "질문 정리: 호출의 표식이 하나로 이어졌다.",
-    "failure_toast": "두 흔적을 함께 대조해야 호출의 구조가 드러난다."
+    "failure_toast": "두 흔적을 함께 대조해야 호출의 구조가 드러난다.",
+    "visible_condition_group_ids": [
+      "CG_QR_CheckpointWell"
+    ]
   },
   {
     "question_id": "QRoom4Purpose",
@@ -284,7 +277,10 @@
     "solved_state_id": "QuestionSolved_QRoom4Purpose",
     "resolved_detail": "청색 한복과 네 눈 가면은 4호실이 사람을 의례의 배역으로 바꾸던 준비실이었음을 보여 준다.",
     "success_toast": "질문 정리: 4호실의 용도를 붙들었다.",
-    "failure_toast": "의복과 가면을 함께 읽어야 방의 역할이 보인다."
+    "failure_toast": "의복과 가면을 함께 읽어야 방의 역할이 보인다.",
+    "visible_condition_group_ids": [
+      "CG_QR_CheckpointRoom4Conclusion"
+    ]
   },
   {
     "question_id": "QArchivePattern",
@@ -304,7 +300,10 @@
     "solved_state_id": "QuestionSolved_QArchivePattern",
     "resolved_detail": "과거 기사와 목격담은 같은 방식의 실종이 기록에서 반복해서 지워졌음을 보여 준다.",
     "success_toast": "질문 정리: 반복된 삭제의 계보를 찾았다.",
-    "failure_toast": "기사와 목격담이 함께 있어야 반복의 구조를 말할 수 있다."
+    "failure_toast": "기사와 목격담이 함께 있어야 반복의 구조를 말할 수 있다.",
+    "visible_condition_group_ids": [
+      "CG_QR_CheckpointSlum"
+    ]
   },
   {
     "question_id": "QRitualErasure",
@@ -324,6 +323,9 @@
     "solved_state_id": "QuestionSolved_QRitualErasure",
     "resolved_detail": "악보와 의례실 기록은 노래가 이름을 흐리고 사람을 의례의 몫으로 바꾸는 정해진 절차였음을 보여 준다.",
     "success_toast": "질문 정리: 이름을 지우는 절차를 밝혔다.",
-    "failure_toast": "노래의 순서와 의례실 기록을 함께 봐야 한다."
+    "failure_toast": "노래의 순서와 의례실 기록을 함께 봐야 한다.",
+    "visible_condition_group_ids": [
+      "CG_QR_CheckpointRitualRoom"
+    ]
   }
 ]
