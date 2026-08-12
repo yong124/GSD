@@ -290,6 +290,7 @@ async function testNavigation(page) {
 
 async function testSerializedResume(page) {
   const questionIds = ['QRitualLead', 'QRitualAccident'];
+  const correctAnswerIds = [ANSWERS.ritualLead, ANSWERS.ritualAccident];
   await prepareCheckpoint(page, { sceneId: 'qa_saved', questionIds });
   await clickAnswer(page, ANSWERS.ritualLead);
   const serialized = await page.evaluate(() => State.serialize());
@@ -318,7 +319,7 @@ async function testSerializedResume(page) {
     callback: window.__checkpointQa.completed,
   }));
   assert(result.first && result.second && result.completed && result.firstSolved && result.secondSolved && result.firstRecorded && result.callback === 1, 'serialized resume state mismatch');
-  const replay = await page.evaluate(saved => {
+  const replay = await page.evaluate(({ saved, questionIds, correctAnswerIds }) => {
     State.reset();
     State.deserialize(saved);
     window.__checkpointQa.completed = 0;
@@ -326,13 +327,13 @@ async function testSerializedResume(page) {
     return {
       started,
       completed: State.getBooleanState('QuestionCheckpointCompleted_qa_saved'),
-      answered: State.getBooleanState('QuestionAnswered_qa_saved_QRitualLead'),
-      solved: State.getBooleanState('QuestionSolved_QRitualLead'),
-      recorded: State.hasChoice('QRitualLead_Correct'),
+      answered: questionIds.map(questionId => State.getBooleanState(`QuestionAnswered_qa_saved_${questionId}`)),
+      solved: questionIds.map(questionId => State.getBooleanState(`QuestionSolved_${questionId}`)),
+      recorded: correctAnswerIds.map(answerId => State.hasChoice(answerId)),
       callback: window.__checkpointQa.completed,
     };
-  }, await page.evaluate(() => State.serialize()));
-  assert(!replay.started && replay.completed && replay.answered && replay.solved && replay.recorded && replay.callback === 0, 'completed serialized checkpoint repeated or lost facts');
+  }, { saved: await page.evaluate(() => State.serialize()), questionIds, correctAnswerIds });
+  assert(!replay.started && replay.completed && replay.answered.every(Boolean) && replay.solved.every(Boolean) && replay.recorded.every(Boolean) && replay.callback === 0, 'completed serialized checkpoint repeated or lost facts');
   return { ...result, partial, replay };
 }
 

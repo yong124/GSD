@@ -499,13 +499,10 @@ def write_delimited_files(output_path, selected_sheets, sheet_rows):
 
         tsv_path = os.path.join(base_dir, f"{sheet_name}.tsv")
         with open(tsv_path, "w", encoding="utf-8-sig", newline="") as tsv_file:
-            writer = csv.writer(tsv_file, delimiter="\t")
+            writer = csv.writer(tsv_file, delimiter="\t", quoting=csv.QUOTE_ALL)
             writer.writerow(headers)
             for row in rows:
-                values = [normalize_value(row.get(header)) for header in headers]
-                while values and values[-1] in (None, ""):
-                    values.pop()
-                writer.writerow(values)
+                writer.writerow([normalize_value(row.get(header)) for header in headers])
 
     return base_dir
 

@@ -1,56 +1,56 @@
-﻿SceneID	Chapter	Title	Background	Music	Effect	GoalKicker	GoalText	EvidencePromptTitle	EvidencePromptHint	InvestigationTitle	InvestigationHint	ForcedQuestionIDs	QuestionMode
-ch1_court	1	묻힌 판결	assets/bg/court.jpeg	assets/sfx/ambient.mp3		첫 기록	법정에서 지워진 흔적을 어떤 기록으로 남길지 정한다.
-ch1_newsroom	1	난향일보 편집국	assets/bg/newsroom.jpeg	assets/sfx/newsroom.mp3
-ch1_newsroom_defiant	1	난향일보 편집국	assets/bg/newsroom.jpeg	assets/sfx/newsroom.mp3
-ch1_newsroom_investigation	1	취재의 첫 줄	assets/bg/newsroom.jpeg	assets/sfx/newsroom.mp3		조사 목표	첫 취재에서 기록이 어디서 끊겼는지 확인해, 병원 접견으로 이어질 질문을 만든다.			첫 취재에서 무엇을 먼저 확인할 것인가	법정 기록, 누락된 피해 기록, 편집장의 금지선 가운데 두 가지를 확인해 취재의 출발점을 정하세요.
-ch1_newsroom_obedient	1	난향일보 편집국	assets/bg/newsroom.jpeg	assets/sfx/newsroom.mp3
-ch2_cafe	2	카페 낙원	assets/bg/cafe.jpeg	assets/sfx/jazz.mp3		조사 목표	폐공장에서 얻은 물증을 먼저 제시해, 낙원이 숨기는 사람과 밤을 특정한다.			낙원에서 먼저 흔들어 볼 결은 무엇인가	점장의 입, 여급들의 빚, 구석 손님의 침묵 가운데 어디를 먼저 건드릴지 정하세요.
-ch2_factory	2	경성 외곽 폐공장	assets/bg/factory.jpeg	assets/sfx/creepy.mp3
-ch2_factory_shock	2	폐공장 — 침식	assets/bg/factory.jpeg	assets/sfx/creepy_2.mp3	3							QIpangyuCall	All
-ch2_hospital	2	정신병원 접견실	assets/bg/hospital.jpeg	assets/sfx/tense.mp3
-ch2_hospital_a	2	정신병원 — 감응 질문	assets/bg/hospital.jpeg	assets/sfx/tense.mp3	1
-ch2_hospital_b	2	정신병원 — 문 질문	assets/bg/hospital.jpeg	assets/sfx/tense.mp3	1
-ch2_hospital_end	2	정신병원 — 탈주	assets/bg/hospital.jpeg	assets/sfx/tense.mp3	3
-ch2_well	2	우물터 담벼락	assets/bg/storage.jpeg	assets/sfx/jazz_dark.mp3				송순의 신뢰를 얻어라	네가 가진 것이 이 사건과 연결된 증거라는 걸 보여줘야 송순이 입을 연다.			QIpangyuMadness, QCallPattern	All
-ch3_hallway	3	낙원 2층 복도	assets/bg/cafe.jpeg	assets/sfx/sad.mp3
-ch3_room4	3	기숙사 4번 방	assets/bg/storage.jpeg	assets/sfx/sad.mp3		조사 목표	방 안에 남은 흔적 중 무엇이 의식의 구조를 밝히고, 무엇이 송금의 마지막 저항을 보여 주는지 가려낸다.			이 방에서 먼저 붙들 진실은 무엇인가	벽의 흔적, 남겨진 기록, 송순의 흔들림 가운데 어디부터 잡아야 사건의 구조가 드러나는지 고르세요.
-ch3_room4_conclusion	3	4호실의 결론	assets/bg/storage.jpeg	assets/sfx/sad.mp3				4호실에서 확인한 구조를 뒷받침하라	의식의 계획성과 송금의 실종을 함께 보여 주는 단서를 골라야 한다.			QSonggeumMissing, QSonggeumRunaway, QRoom4Purpose	All
-ch3_score_read	3	악보의 안쪽	assets/bg/warehouse.jpg	assets/sfx/mystery.mp3
-ch3_score_trust	3	송순의 귀	assets/bg/warehouse.jpg	assets/sfx/mystery.mp3
-ch3_warehouse	3	낙원 무대 뒤 창고	assets/bg/warehouse.jpg	assets/sfx/tense.mp3
-ch4a_articles_expose	4	삭제된 문장을 잇다	assets/bg/newsroom.jpeg	assets/sfx/mystery.mp3
-ch4a_articles_note	4	핵심만 베끼다	assets/bg/newsroom.jpeg	assets/sfx/mystery.mp3
-ch4a_articles_take	4	접힌 문장을 챙기다	assets/bg/newsroom.jpeg	assets/sfx/mystery.mp3
-ch4a_editor_room	4	편집장실	assets/bg/newsroom.jpeg	assets/sfx/newsroom.mp3				편집장에게 핵심 증거를 들이밀어라	그가 직접 연관된 증거를 꺼내야만 그의 입이 열린다. 무관한 것을 내밀면 외면한다.
-ch4a_library	4	난향일보 자료실	assets/bg/newsroom.jpeg	assets/sfx/mystery.mp3				기사와 단서를 맞대 본다	자료실 기사 위에 지금 가진 단서를 직접 겹쳐 보며, 무엇이 같은 손에 의해 지워졌는지 확인한다.
-ch4a_slum	4	경성 외곽 빈민가	assets/bg/storage.jpeg	assets/sfx/gloomy.mp3		조사 목표	이해심이 무엇을 파는지, 뒤에 누가 있는지, 이 골목에서 또 누가 사라졌는지 가운데 무엇을 먼저 캘지 정한다.			이 골목에서 이해심의 무엇을 먼저 캐낼 것인가	여자가 파는 믿음, 뒤에 숨은 사내, 최근에 사라진 이들의 흔적 가운데 어디를 먼저 건드릴지 정하세요.	QArchivePattern	All
-ch4b_backroom	4	낙원 뒷방	assets/bg/cafe.jpeg	assets/sfx/sad.mp3						낙원 뒷방에서 지하 진입의 근거를 확인한다	결근·세탁 기록과 출입 동선을 서로 다른 두 축으로 확인해, 사라짐과 지하 문을 연결한다.
-ch4b_cafe	4	밤의 낙원	assets/bg/cafe.jpeg	assets/sfx/jazz_dark.mp3				옥련에게 사건과 연결된 증거를 보여라	옥련이 알고 있는 것과 연결된 단서만이 그녀의 입을 더 열게 한다.
-ch4b_cafe_hold	4	낙원의 침묵	assets/bg/cafe.jpeg	assets/sfx/jazz_dark.mp3
-ch4b_cafe_press	4	낙원의 상처	assets/bg/cafe.jpeg	assets/sfx/jazz_dark.mp3
-ch5_contact_editor	5	짧은 연락	assets/bg/storage.jpeg	assets/sfx/creepy_2.mp3
-ch5_descent	5	숨겨진 계단	assets/bg/storage.jpeg	assets/sfx/creepy_2.mp3	3
-ch5_guarded_door	5	문 앞의 정적	assets/bg/storage.jpeg	assets/sfx/creepy_2.mp3		결단 목표	문 안의 의식으로 들어가기 전, 두려움에 끌려가지 않고 어떤 태도로 버틸지 결정한다.			문 앞에서 무엇을 먼저 읽어 낼 것인가	노랫소리, 문 안의 배치, 송순의 호흡 가운데 두 가지를 확인하고 의례실에 들어갈 준비를 하세요.
-ch5_no_contact	5	둘만의 약속	assets/bg/storage.jpeg	assets/sfx/creepy_2.mp3
-ch5_participant_ledger	5	염료 묻은 참여자 명부	assets/bg/ritual_room.jpg	assets/sfx/ritual.mp3		의식 순번	송금이 자발적 무녀가 아니라 강제로 편입됐음을 확인하고, 이번 밤 끊어야 할 순번을 읽는다.
-ch5_ritual_path	5	지하 진입로	assets/bg/storage.jpeg	assets/sfx/creepy_2.mp3	1
-ch5_ritual_room	5	지하 의례실	assets/bg/ritual_room.jpg	assets/sfx/ritual.mp3	2			지금 가진 증거를 제단 앞에 들이민다	의례실에서 붙든 구조와 단서를 지금 이 자리의 흔적에 겹쳐, 무엇이 반복되고 있는지 더 분명하게 확인한다.			QRitualLead, QRitualAccident, QRitualErasure	All
-ch6_article	6	기사 완성	assets/bg/newsroom.jpeg	assets/sfx/newsroom.mp3		기사	피해자, 의식, 배후를 각각 입증해 기사 한 장으로 끝까지 몰아붙일 근거를 완성한다.	기사의 이 항목을 증거로 뒷받침하라	올바른 증거를 고르면 신용이 오른다. 맞지 않는 증거를 내밀면 기사의 신뢰가 흔들린다.
-ch6_choice_a	6	붙드는 쪽	assets/bg/ritual_room.jpg	assets/sfx/ritual_climax.mp3
-ch6_choice_b	6	막아서는 쪽	assets/bg/ritual_room.jpg	assets/sfx/ritual_climax.mp3
-ch6_choice_c	6	멈춘 쪽	assets/bg/ritual_room.jpg	assets/sfx/ritual_climax.mp3
-ch6_ending_a	6	엔딩 A — 돌아오지 않은 언니	assets/bg/ritual_room.jpg	assets/sfx/ending.mp3
-ch6_ending_b	6	엔딩 B — 기록된 것들	assets/bg/ritual_room.jpg	assets/sfx/ending.mp3
-ch6_ending_c	6	엔딩 C — 문 너머	assets/bg/ritual_room.jpg	assets/sfx/ending.mp3	2
-ch6_epilogue	6	에필로그	assets/bg/newsroom.jpeg	assets/sfx/ending.mp3
-ch6_final_decision	6	폭로 뒤의 결단	assets/bg/ritual_room.jpg	assets/sfx/ritual_climax.mp3		마지막 결단	폭로로 만든 틈을 어디에 쓸지 고른다. 사람을 붙들거나, 의식을 끊거나, 기록을 남긴다.
-ch6_outcome	6	의식의 균열	assets/bg/ritual_room.jpg	assets/sfx/ritual_climax.mp3	2
-ch6_path_a	6	콧노래의 응답	assets/bg/ritual_room.jpg	assets/sfx/ritual_climax.mp3
-ch6_path_a2	6	돌아오지 않은 숨	assets/bg/ritual_room.jpg	assets/sfx/ending.mp3
-ch6_path_b	6	기록자의 선택	assets/bg/ritual_room.jpg	assets/sfx/ritual_climax.mp3
-ch6_path_b2	6	남겨진 기록	assets/bg/ritual_room.jpg	assets/sfx/ending.mp3
-ch6_ritual_scene	6	의식 현장	assets/bg/ritual_room.jpg	assets/sfx/ritual_climax.mp3	4	결단 목표	송금, 이해심, 그리고 이 방에 쌓인 질문들 사이에서 무엇을 사람 쪽으로 남길지 지금 결정한다.
-ch6_threshold	6	의식 직전	assets/bg/ritual_room.jpg	assets/sfx/ritual.mp3
-scene_ending_erosion	6	침식의 끝	assets/bg/ritual_room.jpg	assets/sfx/ritual_climax.mp3
-scene_gameover_credibility	0	평판 붕괴 — 게임오버	assets/bg/newsroom.jpeg	assets/sfx/ending.mp3
-scene_gameover_erosion	0	게임 오버 - 침식	assets/bg/factory.jpeg	assets/sfx/ending.mp3
+﻿"SceneID"	"Chapter"	"Title"	"Background"	"Music"	"Effect"	"GoalKicker"	"GoalText"	"EvidencePromptTitle"	"EvidencePromptHint"	"InvestigationTitle"	"InvestigationHint"	"ForcedQuestionIDs"	"QuestionMode"
+"ch1_court"	"1"	"묻힌 판결"	"assets/bg/court.jpeg"	"assets/sfx/ambient.mp3"	""	"첫 기록"	"법정에서 지워진 흔적을 어떤 기록으로 남길지 정한다."	""	""	""	""	""	""
+"ch1_newsroom"	"1"	"난향일보 편집국"	"assets/bg/newsroom.jpeg"	"assets/sfx/newsroom.mp3"	""	""	""	""	""	""	""	""	""
+"ch1_newsroom_defiant"	"1"	"난향일보 편집국"	"assets/bg/newsroom.jpeg"	"assets/sfx/newsroom.mp3"	""	""	""	""	""	""	""	""	""
+"ch1_newsroom_investigation"	"1"	"취재의 첫 줄"	"assets/bg/newsroom.jpeg"	"assets/sfx/newsroom.mp3"	""	"조사 목표"	"첫 취재에서 기록이 어디서 끊겼는지 확인해, 병원 접견으로 이어질 질문을 만든다."	""	""	"첫 취재에서 무엇을 먼저 확인할 것인가"	"법정 기록, 누락된 피해 기록, 편집장의 금지선 가운데 두 가지를 확인해 취재의 출발점을 정하세요."	""	""
+"ch1_newsroom_obedient"	"1"	"난향일보 편집국"	"assets/bg/newsroom.jpeg"	"assets/sfx/newsroom.mp3"	""	""	""	""	""	""	""	""	""
+"ch2_cafe"	"2"	"카페 낙원"	"assets/bg/cafe.jpeg"	"assets/sfx/jazz.mp3"	""	"조사 목표"	"폐공장에서 얻은 물증을 먼저 제시해, 낙원이 숨기는 사람과 밤을 특정한다."	""	""	"낙원에서 먼저 흔들어 볼 결은 무엇인가"	"점장의 입, 여급들의 빚, 구석 손님의 침묵 가운데 어디를 먼저 건드릴지 정하세요."	""	""
+"ch2_factory"	"2"	"경성 외곽 폐공장"	"assets/bg/factory.jpeg"	"assets/sfx/creepy.mp3"	""	""	""	""	""	""	""	""	""
+"ch2_factory_shock"	"2"	"폐공장 — 침식"	"assets/bg/factory.jpeg"	"assets/sfx/creepy_2.mp3"	"3"	""	""	""	""	""	""	"QIpangyuCall"	"All"
+"ch2_hospital"	"2"	"정신병원 접견실"	"assets/bg/hospital.jpeg"	"assets/sfx/tense.mp3"	""	""	""	""	""	""	""	""	""
+"ch2_hospital_a"	"2"	"정신병원 — 감응 질문"	"assets/bg/hospital.jpeg"	"assets/sfx/tense.mp3"	"1"	""	""	""	""	""	""	""	""
+"ch2_hospital_b"	"2"	"정신병원 — 문 질문"	"assets/bg/hospital.jpeg"	"assets/sfx/tense.mp3"	"1"	""	""	""	""	""	""	""	""
+"ch2_hospital_end"	"2"	"정신병원 — 탈주"	"assets/bg/hospital.jpeg"	"assets/sfx/tense.mp3"	"3"	""	""	""	""	""	""	""	""
+"ch2_well"	"2"	"우물터 담벼락"	"assets/bg/storage.jpeg"	"assets/sfx/jazz_dark.mp3"	""	""	""	"송순의 신뢰를 얻어라"	"네가 가진 것이 이 사건과 연결된 증거라는 걸 보여줘야 송순이 입을 연다."	""	""	"QIpangyuMadness, QCallPattern"	"All"
+"ch3_hallway"	"3"	"낙원 2층 복도"	"assets/bg/cafe.jpeg"	"assets/sfx/sad.mp3"	""	""	""	""	""	""	""	""	""
+"ch3_room4"	"3"	"기숙사 4번 방"	"assets/bg/storage.jpeg"	"assets/sfx/sad.mp3"	""	"조사 목표"	"방 안에 남은 흔적 중 무엇이 의식의 구조를 밝히고, 무엇이 송금의 마지막 저항을 보여 주는지 가려낸다."	""	""	"이 방에서 먼저 붙들 진실은 무엇인가"	"벽의 흔적, 남겨진 기록, 송순의 흔들림 가운데 어디부터 잡아야 사건의 구조가 드러나는지 고르세요."	""	""
+"ch3_room4_conclusion"	"3"	"4호실의 결론"	"assets/bg/storage.jpeg"	"assets/sfx/sad.mp3"	""	""	""	"4호실에서 확인한 구조를 뒷받침하라"	"의식의 계획성과 송금의 실종을 함께 보여 주는 단서를 골라야 한다."	""	""	"QSonggeumMissing, QSonggeumRunaway, QRoom4Purpose"	"All"
+"ch3_score_read"	"3"	"악보의 안쪽"	"assets/bg/warehouse.jpg"	"assets/sfx/mystery.mp3"	""	""	""	""	""	""	""	""	""
+"ch3_score_trust"	"3"	"송순의 귀"	"assets/bg/warehouse.jpg"	"assets/sfx/mystery.mp3"	""	""	""	""	""	""	""	""	""
+"ch3_warehouse"	"3"	"낙원 무대 뒤 창고"	"assets/bg/warehouse.jpg"	"assets/sfx/tense.mp3"	""	""	""	""	""	""	""	""	""
+"ch4a_articles_expose"	"4"	"삭제된 문장을 잇다"	"assets/bg/newsroom.jpeg"	"assets/sfx/mystery.mp3"	""	""	""	""	""	""	""	""	""
+"ch4a_articles_note"	"4"	"핵심만 베끼다"	"assets/bg/newsroom.jpeg"	"assets/sfx/mystery.mp3"	""	""	""	""	""	""	""	""	""
+"ch4a_articles_take"	"4"	"접힌 문장을 챙기다"	"assets/bg/newsroom.jpeg"	"assets/sfx/mystery.mp3"	""	""	""	""	""	""	""	""	""
+"ch4a_editor_room"	"4"	"편집장실"	"assets/bg/newsroom.jpeg"	"assets/sfx/newsroom.mp3"	""	""	""	"편집장에게 핵심 증거를 들이밀어라"	"그가 직접 연관된 증거를 꺼내야만 그의 입이 열린다. 무관한 것을 내밀면 외면한다."	""	""	""	""
+"ch4a_library"	"4"	"난향일보 자료실"	"assets/bg/newsroom.jpeg"	"assets/sfx/mystery.mp3"	""	""	""	"기사와 단서를 맞대 본다"	"자료실 기사 위에 지금 가진 단서를 직접 겹쳐 보며, 무엇이 같은 손에 의해 지워졌는지 확인한다."	""	""	""	""
+"ch4a_slum"	"4"	"경성 외곽 빈민가"	"assets/bg/storage.jpeg"	"assets/sfx/gloomy.mp3"	""	"조사 목표"	"이해심이 무엇을 파는지, 뒤에 누가 있는지, 이 골목에서 또 누가 사라졌는지 가운데 무엇을 먼저 캘지 정한다."	""	""	"이 골목에서 이해심의 무엇을 먼저 캐낼 것인가"	"여자가 파는 믿음, 뒤에 숨은 사내, 최근에 사라진 이들의 흔적 가운데 어디를 먼저 건드릴지 정하세요."	"QArchivePattern"	"All"
+"ch4b_backroom"	"4"	"낙원 뒷방"	"assets/bg/cafe.jpeg"	"assets/sfx/sad.mp3"	""	""	""	""	""	"낙원 뒷방에서 지하 진입의 근거를 확인한다"	"결근·세탁 기록과 출입 동선을 서로 다른 두 축으로 확인해, 사라짐과 지하 문을 연결한다."	""	""
+"ch4b_cafe"	"4"	"밤의 낙원"	"assets/bg/cafe.jpeg"	"assets/sfx/jazz_dark.mp3"	""	""	""	"옥련에게 사건과 연결된 증거를 보여라"	"옥련이 알고 있는 것과 연결된 단서만이 그녀의 입을 더 열게 한다."	""	""	""	""
+"ch4b_cafe_hold"	"4"	"낙원의 침묵"	"assets/bg/cafe.jpeg"	"assets/sfx/jazz_dark.mp3"	""	""	""	""	""	""	""	""	""
+"ch4b_cafe_press"	"4"	"낙원의 상처"	"assets/bg/cafe.jpeg"	"assets/sfx/jazz_dark.mp3"	""	""	""	""	""	""	""	""	""
+"ch5_contact_editor"	"5"	"짧은 연락"	"assets/bg/storage.jpeg"	"assets/sfx/creepy_2.mp3"	""	""	""	""	""	""	""	""	""
+"ch5_descent"	"5"	"숨겨진 계단"	"assets/bg/storage.jpeg"	"assets/sfx/creepy_2.mp3"	"3"	""	""	""	""	""	""	""	""
+"ch5_guarded_door"	"5"	"문 앞의 정적"	"assets/bg/storage.jpeg"	"assets/sfx/creepy_2.mp3"	""	"결단 목표"	"문 안의 의식으로 들어가기 전, 두려움에 끌려가지 않고 어떤 태도로 버틸지 결정한다."	""	""	"문 앞에서 무엇을 먼저 읽어 낼 것인가"	"노랫소리, 문 안의 배치, 송순의 호흡 가운데 두 가지를 확인하고 의례실에 들어갈 준비를 하세요."	""	""
+"ch5_no_contact"	"5"	"둘만의 약속"	"assets/bg/storage.jpeg"	"assets/sfx/creepy_2.mp3"	""	""	""	""	""	""	""	""	""
+"ch5_participant_ledger"	"5"	"염료 묻은 참여자 명부"	"assets/bg/ritual_room.jpg"	"assets/sfx/ritual.mp3"	""	"의식 순번"	"송금이 자발적 무녀가 아니라 강제로 편입됐음을 확인하고, 이번 밤 끊어야 할 순번을 읽는다."	""	""	""	""	""	""
+"ch5_ritual_path"	"5"	"지하 진입로"	"assets/bg/storage.jpeg"	"assets/sfx/creepy_2.mp3"	"1"	""	""	""	""	""	""	""	""
+"ch5_ritual_room"	"5"	"지하 의례실"	"assets/bg/ritual_room.jpg"	"assets/sfx/ritual.mp3"	"2"	""	""	"지금 가진 증거를 제단 앞에 들이민다"	"의례실에서 붙든 구조와 단서를 지금 이 자리의 흔적에 겹쳐, 무엇이 반복되고 있는지 더 분명하게 확인한다."	""	""	"QRitualLead, QRitualAccident, QRitualErasure"	"All"
+"ch6_article"	"6"	"기사 완성"	"assets/bg/newsroom.jpeg"	"assets/sfx/newsroom.mp3"	""	"기사"	"피해자, 의식, 배후를 각각 입증해 기사 한 장으로 끝까지 몰아붙일 근거를 완성한다."	"기사의 이 항목을 증거로 뒷받침하라"	"올바른 증거를 고르면 신용이 오른다. 맞지 않는 증거를 내밀면 기사의 신뢰가 흔들린다."	""	""	""	""
+"ch6_choice_a"	"6"	"붙드는 쪽"	"assets/bg/ritual_room.jpg"	"assets/sfx/ritual_climax.mp3"	""	""	""	""	""	""	""	""	""
+"ch6_choice_b"	"6"	"막아서는 쪽"	"assets/bg/ritual_room.jpg"	"assets/sfx/ritual_climax.mp3"	""	""	""	""	""	""	""	""	""
+"ch6_choice_c"	"6"	"멈춘 쪽"	"assets/bg/ritual_room.jpg"	"assets/sfx/ritual_climax.mp3"	""	""	""	""	""	""	""	""	""
+"ch6_ending_a"	"6"	"엔딩 A — 돌아오지 않은 언니"	"assets/bg/ritual_room.jpg"	"assets/sfx/ending.mp3"	""	""	""	""	""	""	""	""	""
+"ch6_ending_b"	"6"	"엔딩 B — 기록된 것들"	"assets/bg/ritual_room.jpg"	"assets/sfx/ending.mp3"	""	""	""	""	""	""	""	""	""
+"ch6_ending_c"	"6"	"엔딩 C — 문 너머"	"assets/bg/ritual_room.jpg"	"assets/sfx/ending.mp3"	"2"	""	""	""	""	""	""	""	""
+"ch6_epilogue"	"6"	"에필로그"	"assets/bg/newsroom.jpeg"	"assets/sfx/ending.mp3"	""	""	""	""	""	""	""	""	""
+"ch6_final_decision"	"6"	"폭로 뒤의 결단"	"assets/bg/ritual_room.jpg"	"assets/sfx/ritual_climax.mp3"	""	"마지막 결단"	"폭로로 만든 틈을 어디에 쓸지 고른다. 사람을 붙들거나, 의식을 끊거나, 기록을 남긴다."	""	""	""	""	""	""
+"ch6_outcome"	"6"	"의식의 균열"	"assets/bg/ritual_room.jpg"	"assets/sfx/ritual_climax.mp3"	"2"	""	""	""	""	""	""	""	""
+"ch6_path_a"	"6"	"콧노래의 응답"	"assets/bg/ritual_room.jpg"	"assets/sfx/ritual_climax.mp3"	""	""	""	""	""	""	""	""	""
+"ch6_path_a2"	"6"	"돌아오지 않은 숨"	"assets/bg/ritual_room.jpg"	"assets/sfx/ending.mp3"	""	""	""	""	""	""	""	""	""
+"ch6_path_b"	"6"	"기록자의 선택"	"assets/bg/ritual_room.jpg"	"assets/sfx/ritual_climax.mp3"	""	""	""	""	""	""	""	""	""
+"ch6_path_b2"	"6"	"남겨진 기록"	"assets/bg/ritual_room.jpg"	"assets/sfx/ending.mp3"	""	""	""	""	""	""	""	""	""
+"ch6_ritual_scene"	"6"	"의식 현장"	"assets/bg/ritual_room.jpg"	"assets/sfx/ritual_climax.mp3"	"4"	"결단 목표"	"송금, 이해심, 그리고 이 방에 쌓인 질문들 사이에서 무엇을 사람 쪽으로 남길지 지금 결정한다."	""	""	""	""	""	""
+"ch6_threshold"	"6"	"의식 직전"	"assets/bg/ritual_room.jpg"	"assets/sfx/ritual.mp3"	""	""	""	""	""	""	""	""	""
+"scene_ending_erosion"	"6"	"침식의 끝"	"assets/bg/ritual_room.jpg"	"assets/sfx/ritual_climax.mp3"	""	""	""	""	""	""	""	""	""
+"scene_gameover_credibility"	"0"	"평판 붕괴 — 게임오버"	"assets/bg/newsroom.jpeg"	"assets/sfx/ending.mp3"	""	""	""	""	""	""	""	""	""
+"scene_gameover_erosion"	"0"	"게임 오버 - 침식"	"assets/bg/factory.jpeg"	"assets/sfx/ending.mp3"	""	""	""	""	""	""	""	""	""

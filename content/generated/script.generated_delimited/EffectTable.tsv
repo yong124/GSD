@@ -1,43 +1,43 @@
-﻿EffectGroupID	EffectType	GaugeID	GaugeDelta	EvidenceID	TrustCharacterID	TrustDelta
-eff_article_correct	GaugeChange	Credibility	1
-eff_article_wrong	GaugeChange	Credibility	-1
-eff_cafe4b_erosion_lean	GaugeChange	Erosion	1
-eff_cafe_press_credential	GaugeChange	Credibility	1
-eff_ch1_court_comply	TrustChange				Editor	1
-eff_ch1_court_pursue	GaugeChange	Credibility	1
-eff_ch1_newsroom_obedient	TrustChange				Editor	1
-eff_ch3_room4_comfort_hanbok	EvidenceGive			EvBlueHanbok
-eff_ch3_room4_read_record	GaugeChange	Credibility	1
-eff_ch3_room4_touch_wall	EvidenceGive			EvMask
-eff_ch3_room4_touch_wall	GaugeChange	Erosion	2
-eff_ch3_warehouse_read_ritual	GaugeChange	Credibility	1
-eff_ch4a_library_note_articles	GaugeChange	Credibility	3
-eff_ch4a_slum_ask_masked	EvidenceGive			EvSlumWitness
-eff_ch5_guarded_door_listen	GaugeChange	Erosion	2
-eff_ch5_guarded_door_steady	TrustChange				Songsoon	2
-eff_editor_correct	GaugeChange	Credibility	2
-eff_editor_defy	GaugeChange	Credibility	-1
-eff_editor_obey	TrustChange				Editor	1
-eff_editor_wrong	GaugeChange	Credibility	-1
-eff_guarded_door_score_read	GaugeChange	Credibility	1
-eff_okryeon_diary	GaugeChange	Credibility	1
-eff_okryeon_hanbok	GaugeChange	Credibility	1
-eff_okryeon_hanbok	GaugeChange	Erosion	1
-eff_okryeon_wrong	GaugeChange	Credibility	-1
-eff_participant_ledger	EvidenceGain			EvParticipantLedger
-eff_participant_ledger_reveal	EvidenceGain			EvParticipantLedger
-eff_participant_ledger_reveal	GaugeChange	Erosion	1
-eff_question_both	GaugeChange	Erosion	1
-eff_question_both	GaugeChange	Credibility	-1
-eff_question_credibility	GaugeChange	Credibility	-1
-eff_question_erosion	GaugeChange	Erosion	1
-eff_r9_document	GaugeChange	Credibility	1
-eff_r9_follow_sound	GaugeChange	Erosion	1
-eff_r9_songsoon_support	TrustChange				Songsoon	1
-eff_ritual_wrong	GaugeChange	Credibility	-1
-eff_room4_conclusion_wrong	GaugeChange	Credibility	-1
-eff_room4_note_match	GaugeChange	Credibility	1
-eff_slum_hanbok_press	GaugeChange	Erosion	1
-eff_songsoon_trust	TrustChange				Songsoon	1
-eff_songsoon_wrong	GaugeChange	Credibility	-1
-eff_threshold_erosion_touch	GaugeChange	Erosion	1
+﻿"EffectGroupID"	"EffectType"	"GaugeID"	"GaugeDelta"	"EvidenceID"	"TrustCharacterID"	"TrustDelta"
+"eff_article_correct"	"GaugeChange"	"Credibility"	"1"	""	""	""
+"eff_article_wrong"	"GaugeChange"	"Credibility"	"-1"	""	""	""
+"eff_cafe4b_erosion_lean"	"GaugeChange"	"Erosion"	"1"	""	""	""
+"eff_cafe_press_credential"	"GaugeChange"	"Credibility"	"1"	""	""	""
+"eff_ch1_court_comply"	"TrustChange"	""	""	""	"Editor"	"1"
+"eff_ch1_court_pursue"	"GaugeChange"	"Credibility"	"1"	""	""	""
+"eff_ch1_newsroom_obedient"	"TrustChange"	""	""	""	"Editor"	"1"
+"eff_ch3_room4_comfort_hanbok"	"EvidenceGive"	""	""	"EvBlueHanbok"	""	""
+"eff_ch3_room4_read_record"	"GaugeChange"	"Credibility"	"1"	""	""	""
+"eff_ch3_room4_touch_wall"	"EvidenceGive"	""	""	"EvMask"	""	""
+"eff_ch3_room4_touch_wall"	"GaugeChange"	"Erosion"	"2"	""	""	""
+"eff_ch3_warehouse_read_ritual"	"GaugeChange"	"Credibility"	"1"	""	""	""
+"eff_ch4a_library_note_articles"	"GaugeChange"	"Credibility"	"3"	""	""	""
+"eff_ch4a_slum_ask_masked"	"EvidenceGive"	""	""	"EvSlumWitness"	""	""
+"eff_ch5_guarded_door_listen"	"GaugeChange"	"Erosion"	"2"	""	""	""
+"eff_ch5_guarded_door_steady"	"TrustChange"	""	""	""	"Songsoon"	"2"
+"eff_editor_correct"	"GaugeChange"	"Credibility"	"2"	""	""	""
+"eff_editor_defy"	"GaugeChange"	"Credibility"	"-1"	""	""	""
+"eff_editor_obey"	"TrustChange"	""	""	""	"Editor"	"1"
+"eff_editor_wrong"	"GaugeChange"	"Credibility"	"-1"	""	""	""
+"eff_guarded_door_score_read"	"GaugeChange"	"Credibility"	"1"	""	""	""
+"eff_okryeon_diary"	"GaugeChange"	"Credibility"	"1"	""	""	""
+"eff_okryeon_hanbok"	"GaugeChange"	"Credibility"	"1"	""	""	""
+"eff_okryeon_hanbok"	"GaugeChange"	"Erosion"	"1"	""	""	""
+"eff_okryeon_wrong"	"GaugeChange"	"Credibility"	"-1"	""	""	""
+"eff_participant_ledger"	"EvidenceGain"	""	""	"EvParticipantLedger"	""	""
+"eff_participant_ledger_reveal"	"EvidenceGain"	""	""	"EvParticipantLedger"	""	""
+"eff_participant_ledger_reveal"	"GaugeChange"	"Erosion"	"1"	""	""	""
+"eff_question_both"	"GaugeChange"	"Erosion"	"1"	""	""	""
+"eff_question_both"	"GaugeChange"	"Credibility"	"-1"	""	""	""
+"eff_question_credibility"	"GaugeChange"	"Credibility"	"-1"	""	""	""
+"eff_question_erosion"	"GaugeChange"	"Erosion"	"1"	""	""	""
+"eff_r9_document"	"GaugeChange"	"Credibility"	"1"	""	""	""
+"eff_r9_follow_sound"	"GaugeChange"	"Erosion"	"1"	""	""	""
+"eff_r9_songsoon_support"	"TrustChange"	""	""	""	"Songsoon"	"1"
+"eff_ritual_wrong"	"GaugeChange"	"Credibility"	"-1"	""	""	""
+"eff_room4_conclusion_wrong"	"GaugeChange"	"Credibility"	"-1"	""	""	""
+"eff_room4_note_match"	"GaugeChange"	"Credibility"	"1"	""	""	""
+"eff_slum_hanbok_press"	"GaugeChange"	"Erosion"	"1"	""	""	""
+"eff_songsoon_trust"	"TrustChange"	""	""	""	"Songsoon"	"1"
+"eff_songsoon_wrong"	"GaugeChange"	"Credibility"	"-1"	""	""	""
+"eff_threshold_erosion_touch"	"GaugeChange"	"Erosion"	"1"	""	""	""
