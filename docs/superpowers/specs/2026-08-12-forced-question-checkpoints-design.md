@@ -76,7 +76,7 @@
 
 - `Erosion >= 10`: 결과 피드백을 보여준 뒤 `scene_gameover_erosion`으로 이동
 - `Credibility <= 0`: 결과 피드백을 보여준 뒤 `scene_gameover_credibility`로 이동
-- 두 한계가 동시에 충족되면 답변에 지정된 우선 게임오버가 있으면 그것을 사용하고, 없으면 침식 게임오버를 우선한다.
+- 두 한계가 동시에 충족되면 침식 게임오버를 우선한다.
 
 오답은 질문 해결 상태를 만들지 않지만 해당 체크포인트에서 그 질문에 답한 사실은 기록한다. 따라서 오답 분기가 진행된 뒤 같은 체크포인트가 반복해서 열리지 않는다.
 
@@ -110,7 +110,6 @@
 | `ResultText` | 선택 직후 결과 설명 |
 | `NextType` | `Resume`, `Dialog`, `Scene` |
 | `NextID` | 후속 대사 또는 장면 ID |
-| `GameOverPriority` | 동시 한계 도달 시 `Erosion` 또는 `Credibility`; 비어 있으면 기본 우선순위 사용 |
 
 런타임 top-level 키는 `question_answers`, 분리 파일은 `game/data/tables/question_answers.json`으로 한다.
 
@@ -122,11 +121,8 @@
 |---|---|
 | `ForcedQuestionIDs` | 순서가 있는 질문 ID 목록 |
 | `QuestionMode` | `All` 또는 `Any` |
-| `QuestionTrigger` | 초기 범위에서는 `AfterContent`만 사용 |
-| `QuestionCompleteNextType` | 체크포인트 완료 후 기본 이동 유형; 선택 사항 |
-| `QuestionCompleteNextID` | 체크포인트 완료 후 기본 이동 대상; 선택 사항 |
 
-`AfterContent`는 장면의 대사와 조사·선택 처리가 끝난 직후를 뜻한다. 완료 후 기본 이동 대상이 비어 있으면 질문 진입 전에 보류한 원래 전환을 재개한다. 초기 구현에서는 대사 중간 인덱스 삽입 기능을 만들지 않는다. 필요한 질문은 별도 결론 씬을 사용해 시점을 명확히 한다.
+체크포인트는 장면의 대사와 조사·선택 처리가 끝나 장면을 이탈하기 직전에 열린다. 완료하면 질문 진입 전에 보류한 원래 전환을 재개한다. 초기 구현에서는 대사 중간 인덱스 삽입이나 트리거 종류 설정을 만들지 않는다. 실제로 두 번째 트리거 위치가 필요해질 때 필드를 추가한다.
 
 ### 저장 상태
 
@@ -154,7 +150,7 @@
 
 | 체크포인트 장면 | 모드 | 질문 |
 |---|---|---|
-| `ch2_factory` | `All` | `QIpangyuCall` |
+| `ch2_factory_shock` | `All` | `QIpangyuCall` |
 | `ch2_well` | `All` | `QIpangyuMadness`, `QCallPattern` |
 | `ch3_room4_conclusion` | `All` | `QSonggeumMissing`, `QSonggeumRunaway`, `QRoom4Purpose` |
 | `ch4a_slum` | `All` | `QArchivePattern` |
@@ -171,12 +167,12 @@
 ## 런타임 책임 분리
 
 - `scene.js`: 체크포인트 진입 시점 감지, 보류된 전환 저장, 완료 후 전환 재개
-- `question.js`: 질문·답변 데이터 준비, 정답 처리, 체크포인트 진행, 답변 기록
+- `evidence.js`: 단서 수집, 질문·답변 데이터 준비, 정답 처리, 체크포인트 진행, 답변 기록
 - `ui.js`: 강제 질문 화면 렌더링과 입력 잠금
 - `state.js`: 체크포인트·답변·질문 해결 상태 저장
 - `choice.js`: 일반 조사 선택 흐름은 유지하고 장면 전환 전에 체크포인트 훅만 호출
 
-기존 `evidence.js`의 질문 조회·해결 로직은 `game/js/engine/question.js`로 옮긴다. `evidence.js`는 단서 수집과 수첩 단서 표시 책임만 유지한다.
+기존 질문 조회·해결 로직이 이미 `evidence.js`에 있으므로 별도 모듈을 만들지 않는다. 질문 코드가 실제로 독립 변경이 어려울 정도로 커질 때만 분리한다.
 
 ## 에디터와 파이프라인
 
@@ -210,7 +206,7 @@
 - 모든 체크포인트의 질문 ID가 존재한다.
 - 모든 답변의 질문·단서·효과·후속 ID가 존재한다.
 - 질문마다 답변이 둘 이상이고 정답이 하나 이상이다.
-- `QuestionMode`, `QuestionTrigger`, `NextType` 값이 허용 목록에 속한다.
+- `QuestionMode`, `NextType` 값이 허용 목록에 속한다.
 - `game_data.js`와 분리 tables의 구조가 일치한다.
 - 런타임과 EditorNode JS 구문 검사가 통과한다.
 
