@@ -1344,6 +1344,13 @@
     }
 
   // ── 씬 ID 변경 ───────────────────────────────────────
+  function rewriteQuestionAnswerSceneRefs(targetSceneIds, nextSceneId) {
+    const targets = new Set(Array.isArray(targetSceneIds) ? targetSceneIds : [targetSceneIds]);
+    (state.data.question_answers || []).forEach(answer => {
+      if (answer.next_type === 'Scene' && targets.has(answer.next_id)) answer.next_id = nextSceneId;
+    });
+  }
+
   function renameScene(oldId, newId) {
     newId = newId.trim();
     if (!newId || newId === oldId) return;
@@ -1369,6 +1376,7 @@
         if (c.next_type === 'Scene' && c.next_id === oldId) c.next_id = newId;
       });
     });
+    rewriteQuestionAnswerSceneRefs(oldId, newId);
     state.selectedIds.delete(oldId);
     state.selectedIds.add(newId);
     state.selectedId = newId;
@@ -2637,6 +2645,7 @@
     });
 
     const seenAnswerIds = new Set();
+    const answersByQuestion = new Map([...questionIds].map(questionId => [questionId, []]));
     (state.data.question_answers || []).forEach((answer, index) => {
       const answerId = answer?.answer_id || '';
       const displayId = answerId || `답변 ${index + 1}`;
@@ -2653,6 +2662,8 @@
           title: '답변 질문 참조 누락',
           body: `${displayId}가 "${answer?.question_id || '(none)'}"를 가리키지만 해당 질문이 없습니다.`,
         });
+      } else {
+        answersByQuestion.get(answer.question_id).push(answer);
       }
 
       if (!Array.isArray(answer?.required_evidence_ids)) {
@@ -2688,6 +2699,23 @@
           type: 'error',
           title: '답변 씬 참조 누락',
           body: `${displayId}가 "${answer.next_id || '(none)'}"를 가리키지만 해당 씬이 없습니다.`,
+        });
+      }
+    });
+
+    answersByQuestion.forEach((answers, questionId) => {
+      if (!answers.some(answer => answer?.is_correct === true)) {
+        findings.push({
+          type: 'error',
+          title: '질문 정답 누락',
+          body: `${questionId}에 IsCorrect 답변이 없습니다.`,
+        });
+      }
+      if (!answers.some(answer => Array.isArray(answer?.required_evidence_ids) && answer.required_evidence_ids.length === 0)) {
+        findings.push({
+          type: 'error',
+          title: '항상 선택 가능한 답변 누락',
+          body: `${questionId}에 RequiredEvidenceIDs가 빈 답변이 없습니다.`,
         });
       }
     });
@@ -2953,6 +2981,7 @@
         if (c.next_type === 'Scene' && c.next_id === id) c.next_id = '';
       });
     });
+    rewriteQuestionAnswerSceneRefs(id, '');
     state.selectedIds.delete(id);
     ensurePrimarySelection();
     saveLayout();
@@ -2976,6 +3005,7 @@
         if (c.next_type === 'Scene' && selected.includes(c.next_id)) c.next_id = '';
       });
     });
+    rewriteQuestionAnswerSceneRefs(selected, '');
     clearSelection();
     saveLayout();
     markDirty();
