@@ -452,8 +452,6 @@ def validate_question_answers(data, scenes, issues):
         required_evidence_ids = answer.get("required_evidence_ids")
         if not isinstance(required_evidence_ids, list):
             issues.append(f"[QuestionAnswer.required_evidence_ids] {answer_id} must be a list")
-        elif not required_evidence_ids:
-            issues.append(f"[QuestionAnswer.required_evidence_ids] {answer_id} must not be always selectable")
         else:
             for evidence_id in required_evidence_ids:
                 if evidence_id not in evidence_ids:
@@ -474,6 +472,8 @@ def validate_question_answers(data, scenes, issues):
     for question_id, question_answers in answers_by_question.items():
         if not any(answer.get("is_correct") is True for answer in question_answers):
             issues.append(f"[QuestionAnswer.is_correct] {question_id} has no correct answer")
+        if not any(isinstance(answer.get("required_evidence_ids"), list) and not answer["required_evidence_ids"] for answer in question_answers):
+            issues.append(f"[QuestionAnswer.required_evidence_ids] {question_id} has no always-selectable answer")
 
 
 def validate_forced_questions(data, scenes, issues):
