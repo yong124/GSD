@@ -679,6 +679,112 @@
     els.questionList.appendChild(cards);
   }
 
+  function renderQuestionAnswerList(ctx) {
+    const {
+      els,
+      state,
+      makeCard,
+      rebindCardCollection,
+      replaceEnumInputs,
+      replaceComboboxInputs,
+      replaceMultiSelectInputs,
+      getDataOptions,
+      escapeAttr,
+      escapeHtml,
+      markDirty,
+      afterChange,
+      swap,
+      newQuestionAnswer,
+      nextTypeOptions,
+    } = ctx;
+
+    els.questionAnswerList.innerHTML = '';
+    const rows = (state.data.question_answers || []).map(answer => ({
+      AnswerID: answer?.answer_id || '',
+      QuestionID: answer?.question_id || '',
+      SortOrder: answer?.sort_order ?? '',
+      AnswerText: answer?.answer_text || '',
+      RequiredEvidenceIDs: Array.isArray(answer?.required_evidence_ids) ? answer.required_evidence_ids.join(', ') : '',
+      IsCorrect: answer?.is_correct === true,
+      EffectGroupID: answer?.effect_group_id || '',
+      ResultText: answer?.result_text || '',
+      NextType: answer?.next_type || 'None',
+      NextID: answer?.next_id || '',
+    }));
+
+    const handleQuestionAnswerChange = (row, field, value) => {
+      if (!field) return;
+      const rowIndex = rows.indexOf(row);
+      const target = state.data.question_answers[rowIndex]
+        || state.data.question_answers.find(answer => (answer.answer_id || '') === row.AnswerID);
+      if (!target) return;
+      if (field === 'AnswerID') target.answer_id = value || '';
+      if (field === 'QuestionID') target.question_id = value || '';
+      if (field === 'SortOrder') target.sort_order = value === '' ? null : Number.parseInt(value, 10);
+      if (field === 'AnswerText') target.answer_text = value || '';
+      if (field === 'RequiredEvidenceIDs') {
+        target.required_evidence_ids = String(value || '').split(',').map(part => part.trim()).filter(Boolean);
+      }
+      if (field === 'IsCorrect') target.is_correct = value === true;
+      if (field === 'EffectGroupID') target.effect_group_id = value || '';
+      if (field === 'ResultText') target.result_text = value || '';
+      if (field === 'NextType') target.next_type = value || 'None';
+      if (field === 'NextID') target.next_id = value || '';
+      markDirty();
+    };
+
+    const cards = makeCard(
+      'QuestionAnswer', rows,
+      (row) => `
+        <label><span>AnswerID</span>
+          <input data-field="AnswerID" value="${escapeAttr(row.AnswerID || '')}" placeholder="예: QSonggeumMissing_Correct"></label>
+        <label><span>QuestionID</span>
+          <input data-field="QuestionID" value="${escapeAttr(row.QuestionID || '')}" placeholder="예: QSonggeumMissing"></label>
+        <label><span>SortOrder</span>
+          <input data-field="SortOrder" type="number" min="0" step="1" value="${escapeAttr(row.SortOrder != null ? String(row.SortOrder) : '')}"></label>
+        <label><span>AnswerText</span>
+          <textarea data-field="AnswerText" rows="3">${escapeHtml(row.AnswerText || '')}</textarea></label>
+        <label><span>RequiredEvidenceIDs</span>
+          <input data-field="RequiredEvidenceIDs" value="${escapeAttr(row.RequiredEvidenceIDs || '')}" placeholder="예: EvDiary, EvOldArticles"></label>
+        <label><span>IsCorrect</span>
+          <input data-role="answer-is-correct" type="checkbox"${row.IsCorrect ? ' checked' : ''}></label>
+        <label><span>EffectGroupID</span>
+          <input data-field="EffectGroupID" value="${escapeAttr(row.EffectGroupID || '')}" placeholder="예: eff_question_erosion"></label>
+        <label><span>ResultText</span>
+          <textarea data-field="ResultText" rows="3">${escapeHtml(row.ResultText || '')}</textarea></label>
+        <label><span>NextType</span>
+          <input data-field="NextType" value="${escapeAttr(row.NextType || 'None')}" placeholder="Scene / Dialog / None"></label>
+        <label><span>NextID</span>
+          <input data-field="NextID" value="${escapeAttr(row.NextID || '')}" placeholder="SceneID"></label>
+      `,
+      () => { state.data.question_answers.push(newQuestionAnswer()); afterChange(); },
+      (index) => { state.data.question_answers.splice(index, 1); afterChange(); },
+      (index) => { if (swap(state.data.question_answers, index - 1, index)) afterChange(); },
+      (index) => { if (swap(state.data.question_answers, index, index + 1)) afterChange(); },
+      handleQuestionAnswerChange
+    );
+
+    replaceEnumInputs(cards, [
+      { field: 'NextType', options: nextTypeOptions, includeBlank: false },
+    ]);
+    replaceComboboxInputs(cards, [
+      { field: 'QuestionID', options: () => getDataOptions('questionIds') },
+      { field: 'EffectGroupID', options: () => getDataOptions('effectGroupIds') },
+      { field: 'NextID', options: () => getDataOptions('sceneIds') },
+    ]);
+    replaceMultiSelectInputs(cards, [
+      { field: 'RequiredEvidenceIDs', options: () => getDataOptions('evidenceIds'), size: 6 },
+    ]);
+
+    rebindCardCollection(cards, rows, handleQuestionAnswerChange);
+    cards.querySelectorAll('.pcard').forEach((card, index) => {
+      card.querySelector('[data-role="answer-is-correct"]')?.addEventListener('change', event => {
+        handleQuestionAnswerChange(rows[index], 'IsCorrect', event.currentTarget.checked);
+      });
+    });
+    els.questionAnswerList.appendChild(cards);
+  }
+
   function renderConditionList(ctx) {
     const {
       els,
@@ -955,6 +1061,7 @@
     renderChoiceGroupList,
     renderEvidenceCategoryList,
     renderQuestionList,
+    renderQuestionAnswerList,
     renderStateDescriptorList,
     renderGaugeList,
     renderGaugeStateList,

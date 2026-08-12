@@ -39,6 +39,7 @@
     choice_groups: [],
     evidence_categories: [],
     questions: [],
+    question_answers: [],
     state_descriptors: [],
     scenes: {},
   };
@@ -50,6 +51,7 @@
     ['conditions.json', 'conditions'],
     ['evidence_categories.json', 'evidence_categories'],
     ['questions.json', 'questions'],
+    ['question_answers.json', 'question_answers'],
     ['state_descriptors.json', 'state_descriptors'],
     ['gauges.json', 'gauges'],
     ['gauge_states.json', 'gauge_states'],
@@ -132,6 +134,8 @@
     els.fieldInvestigationHint = $('field-investigation-hint');
     els.fieldEvidencePromptTitle = $('field-evidence-prompt-title');
     els.fieldEvidencePromptHint = $('field-evidence-prompt-hint');
+    els.fieldForcedQuestionIds = $('field-forced-question-ids');
+    els.fieldQuestionMode = $('field-question-mode');
     els.fieldQaCurrentDialog = $('field-qa-current-dialog');
     els.fieldQaAllEvidence = $('field-qa-all-evidence');
     els.btnOpenSceneQa = $('btn-open-scene-qa');
@@ -149,6 +153,7 @@
     els.choiceGroupList = $('choice-group-list');
     els.evidenceCategoryList = $('evidence-category-list');
     els.questionList = $('question-list');
+    els.questionAnswerList = $('question-answer-list');
     els.stateDescriptorList = $('state-descriptor-list');
     els.analysisSummary = $('analysis-summary');
     els.validationSummary = $('validation-summary');
@@ -244,6 +249,7 @@
     if (type === 'choiceIds' && typeof ui.collectChoiceIds === 'function') return ui.collectChoiceIds(state.data);
     if (type === 'dialogIds' && typeof ui.collectDialogIds === 'function') return ui.collectDialogIds(state.data);
     if (type === 'sceneIds' && typeof ui.collectSceneIds === 'function') return ui.collectSceneIds(state.data);
+    if (type === 'questionIds' && typeof ui.collectQuestionIds === 'function') return ui.collectQuestionIds(state.data);
     if (type === 'evidenceIds' && typeof ui.collectEvidenceIds === 'function') return ui.collectEvidenceIds(state.data);
     if (type === 'conditionGroupIds' && typeof ui.collectConditionGroupIds === 'function') return ui.collectConditionGroupIds(state.data);
     if (type === 'choiceGroupIds' && typeof ui.collectChoiceGroupIds === 'function') return ui.collectChoiceGroupIds(state.data);
@@ -328,7 +334,7 @@
     data.first_scene = data.first_scene || '';
     if (!data.characters || typeof data.characters !== 'object' || Array.isArray(data.characters)) data.characters = {};
     if (!data.character_emotions || typeof data.character_emotions !== 'object' || Array.isArray(data.character_emotions)) data.character_emotions = {};
-    ['conditions', 'gauges', 'gauge_states', 'effects', 'choice_groups', 'evidence_categories', 'questions', 'state_descriptors'].forEach((key) => {
+    ['conditions', 'gauges', 'gauge_states', 'effects', 'choice_groups', 'evidence_categories', 'questions', 'question_answers', 'state_descriptors'].forEach((key) => {
       if (!Array.isArray(data[key])) data[key] = [];
     });
     if (!data.scenes || typeof data.scenes !== 'object' || Array.isArray(data.scenes)) data.scenes = {};
@@ -401,6 +407,7 @@
       ['conditions.json', payload.conditions || []],
       ['evidence_categories.json', payload.evidence_categories || []],
       ['questions.json', payload.questions || []],
+      ['question_answers.json', payload.question_answers || []],
       ['state_descriptors.json', payload.state_descriptors || []],
       ['gauges.json', payload.gauges || []],
       ['gauge_states.json', payload.gauge_states || []],
@@ -1246,6 +1253,7 @@
       renderChoiceGroupList,
       renderEvidenceCategoryList,
       renderQuestionList,
+      renderQuestionAnswerList,
       renderStateDescriptorList,
     ].forEach((renderSection) => renderSection());
   }
@@ -1294,6 +1302,8 @@
     if (els.fieldInvestigationHint) els.fieldInvestigationHint.value = scene.investigation_hint || '';
     els.fieldEvidencePromptTitle.value = scene.evidence_prompt_title || '';
     els.fieldEvidencePromptHint.value = scene.evidence_prompt_hint || '';
+    els.fieldForcedQuestionIds.value = Array.isArray(scene.forced_question_ids) ? scene.forced_question_ids.join(', ') : '';
+    els.fieldQuestionMode.value = scene.question_mode || '';
     els.fieldSceneId.value = id;
 
     renderDialoguePreview(scene);
@@ -1898,6 +1908,26 @@
     });
   }
 
+  function renderQuestionAnswerList() {
+    return EDITOR_DATA_PANELS.renderQuestionAnswerList({
+      els,
+      state,
+      makeCard,
+      rebindCardCollection,
+      replaceEnumInputs,
+      replaceComboboxInputs,
+      replaceMultiSelectInputs,
+      getDataOptions,
+      escapeAttr,
+      escapeHtml,
+      markDirty,
+      afterChange,
+      swap,
+      newQuestionAnswer,
+      nextTypeOptions: NEXT_TYPE_OPTIONS,
+    });
+  }
+
   function renderConditionList() {
     return EDITOR_DATA_PANELS.renderConditionList({
       els,
@@ -2115,6 +2145,20 @@
       reward_mode: '',
     };
   }
+  function newQuestionAnswer() {
+    return {
+      answer_id: '',
+      question_id: '',
+      sort_order: null,
+      answer_text: '',
+      required_evidence_ids: [],
+      is_correct: false,
+      effect_group_id: '',
+      result_text: '',
+      next_type: 'None',
+      next_id: '',
+    };
+  }
   function newStateDescriptor() {
     return { descriptor_id: '', target_state_type: 'Numeric', target_state_id: '', min_value: 0, max_value: 0, label: '', detail: '' };
   }
@@ -2224,6 +2268,10 @@
     };
 
     if (Object.keys(normalizedPriorityDialogues).length > 0) result.investigation_dialogues = normalizedPriorityDialogues;
+    if (Array.isArray(scene.forced_question_ids)) {
+      result.forced_question_ids = scene.forced_question_ids.map(id => String(id || '').trim()).filter(Boolean);
+    }
+    if (scene.question_mode != null && scene.question_mode !== '') result.question_mode = scene.question_mode;
 
     return result;
   }
@@ -2249,6 +2297,7 @@
       choice_groups: state.data.choice_groups || [],
       evidence_categories: state.data.evidence_categories || [],
       questions: state.data.questions || [],
+      question_answers: state.data.question_answers || [],
       state_descriptors: state.data.state_descriptors || [],
       scenes: normalizedScenes,
     };
@@ -2450,6 +2499,8 @@
     const stack = [];
     const evidenceOwners = new Map();
     const sceneIdOwners = new Map();
+    const questionIds = new Set((state.data.questions || []).map(question => question?.question_id).filter(Boolean));
+    const effectGroupIds = new Set((state.data.effects || []).map(effect => effect?.effect_group_id).filter(Boolean));
 
     if (firstScene && scenes[firstScene]) {
       stack.push(firstScene);
@@ -2476,6 +2527,55 @@
       );
       if (!sceneIdOwners.has(declaredId)) sceneIdOwners.set(declaredId, []);
       sceneIdOwners.get(declaredId).push(sceneKey);
+
+      const forcedQuestionIds = scene.forced_question_ids;
+      const questionMode = scene.question_mode;
+      if (forcedQuestionIds == null) {
+        if (questionMode != null && questionMode !== '') {
+          findings.push({
+            type: 'error',
+            sceneId: sceneKey,
+            title: '강제 질문 목록 누락',
+            body: `${sceneKey}에 QuestionMode가 있지만 ForcedQuestionIDs가 없습니다.`,
+          });
+        }
+      } else if (!Array.isArray(forcedQuestionIds)) {
+        findings.push({
+          type: 'error',
+          sceneId: sceneKey,
+          title: '강제 질문 형식 오류',
+          body: `${sceneKey}의 ForcedQuestionIDs는 배열이어야 합니다.`,
+        });
+      } else {
+        const seenQuestionIds = new Set();
+        forcedQuestionIds.forEach(questionId => {
+          if (seenQuestionIds.has(questionId)) {
+            findings.push({
+              type: 'error',
+              sceneId: sceneKey,
+              title: '중복 강제 질문',
+              body: `${sceneKey}에 "${questionId}"가 중복 지정되어 있습니다.`,
+            });
+          }
+          seenQuestionIds.add(questionId);
+          if (!questionIds.has(questionId)) {
+            findings.push({
+              type: 'error',
+              sceneId: sceneKey,
+              title: '강제 질문 참조 누락',
+              body: `${sceneKey}가 "${questionId}"를 가리키지만 해당 질문이 없습니다.`,
+            });
+          }
+        });
+        if (!['All', 'Any'].includes(questionMode)) {
+          findings.push({
+            type: 'error',
+            sceneId: sceneKey,
+            title: '질문 모드 오류',
+            body: `${sceneKey}의 QuestionMode "${questionMode || '(none)'}"는 All 또는 Any여야 합니다.`,
+          });
+        }
+      }
 
       (scene.choices || []).forEach((choice, index) => {
         if (choice.next_type === 'Scene' && choice.next_id && !scenes[choice.next_id]) {
@@ -2532,6 +2632,62 @@
           type: 'error',
           title: '중복 EvidenceID',
           body: `"${id}"가 ${owners.join(', ')}에서 중복 사용되고 있습니다.`,
+        });
+      }
+    });
+
+    const seenAnswerIds = new Set();
+    (state.data.question_answers || []).forEach((answer, index) => {
+      const answerId = answer?.answer_id || '';
+      const displayId = answerId || `답변 ${index + 1}`;
+      if (!answerId) {
+        findings.push({ type: 'error', title: 'AnswerID 누락', body: `${displayId}에 AnswerID가 없습니다.` });
+      } else if (seenAnswerIds.has(answerId)) {
+        findings.push({ type: 'error', title: '중복 AnswerID', body: `"${answerId}"가 중복 선언되어 있습니다.` });
+      }
+      if (answerId) seenAnswerIds.add(answerId);
+
+      if (!questionIds.has(answer?.question_id)) {
+        findings.push({
+          type: 'error',
+          title: '답변 질문 참조 누락',
+          body: `${displayId}가 "${answer?.question_id || '(none)'}"를 가리키지만 해당 질문이 없습니다.`,
+        });
+      }
+
+      if (!Array.isArray(answer?.required_evidence_ids)) {
+        findings.push({ type: 'error', title: '답변 단서 형식 오류', body: `${displayId}의 RequiredEvidenceIDs는 배열이어야 합니다.` });
+      } else {
+        answer.required_evidence_ids.forEach(evidenceId => {
+          if (!evidenceOwners.has(evidenceId)) {
+            findings.push({
+              type: 'error',
+              title: '답변 단서 참조 누락',
+              body: `${displayId}가 "${evidenceId}"를 가리키지만 해당 단서가 없습니다.`,
+            });
+          }
+        });
+      }
+
+      if (answer?.effect_group_id && !effectGroupIds.has(answer.effect_group_id)) {
+        findings.push({
+          type: 'error',
+          title: '답변 이펙트 참조 누락',
+          body: `${displayId}가 "${answer.effect_group_id}"를 가리키지만 해당 이펙트 그룹이 없습니다.`,
+        });
+      }
+
+      if (!NEXT_TYPE_OPTIONS.includes(answer?.next_type)) {
+        findings.push({
+          type: 'error',
+          title: '답변 다음 타입 오류',
+          body: `${displayId}의 NextType "${answer?.next_type || '(none)'}"가 올바르지 않습니다.`,
+        });
+      } else if (answer.next_type === 'Scene' && (!answer.next_id || !scenes[answer.next_id])) {
+        findings.push({
+          type: 'error',
+          title: '답변 씬 참조 누락',
+          body: `${displayId}가 "${answer.next_id || '(none)'}"를 가리키지만 해당 씬이 없습니다.`,
         });
       }
     });
@@ -2932,6 +3088,7 @@
       afterChange();
     });
     registerCollectionAddButton('btn-add-question', 'questions', newQuestion, 'question_id', 'Question');
+    registerCollectionAddButton('btn-add-question-answer', 'question_answers', newQuestionAnswer, 'answer_id', 'Answer');
     registerCollectionAddButton('btn-add-state-descriptor', 'state_descriptors', newStateDescriptor, 'descriptor_id', 'Descriptor');
     registerCollectionAddButton('btn-add-condition', 'conditions', newCondition, 'condition_id', 'Condition');
     registerCollectionAddButton('btn-add-gauge', 'gauges', newGauge, 'gauge_id', 'Gauge');
@@ -3019,6 +3176,23 @@
       markDirty();
       refreshMetaViews();
     });
+    els.fieldForcedQuestionIds.addEventListener('input', () => {
+      const scene = state.data.scenes[state.selectedId];
+      if (!scene) return;
+      const questionIds = els.fieldForcedQuestionIds.value.split(',').map(part => part.trim()).filter(Boolean);
+      if (questionIds.length > 0) scene.forced_question_ids = questionIds;
+      else delete scene.forced_question_ids;
+      markDirty();
+      renderValidationPanel();
+    });
+    els.fieldQuestionMode.addEventListener('change', () => {
+      const scene = state.data.scenes[state.selectedId];
+      if (!scene) return;
+      if (els.fieldQuestionMode.value) scene.question_mode = els.fieldQuestionMode.value;
+      else delete scene.question_mode;
+      markDirty();
+      renderValidationPanel();
+    });
 
     if (els.btnAddPriorityGroup) {
       els.btnAddPriorityGroup.addEventListener('click', () => {
@@ -3043,6 +3217,8 @@
     els.fieldInvestigationHint.addEventListener('focus', pushHistory);
     els.fieldEvidencePromptTitle.addEventListener('focus', pushHistory);
     els.fieldEvidencePromptHint.addEventListener('focus', pushHistory);
+    els.fieldForcedQuestionIds.addEventListener('focus', pushHistory);
+    els.fieldQuestionMode.addEventListener('focus', pushHistory);
     els.fieldSceneId.addEventListener('focus', pushHistory);
 
     els.btnPreviewPrev.addEventListener('click', () => {

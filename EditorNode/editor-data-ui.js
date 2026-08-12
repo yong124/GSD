@@ -71,6 +71,10 @@
     return Object.keys(data?.scenes || {}).sort();
   }
 
+  function collectQuestionIds(data) {
+    return uniqueSorted((data?.questions || []).map(question => question?.question_id));
+  }
+
   function collectCharacterIds(data) {
     return Object.keys(data?.characters || {}).sort();
   }
@@ -170,6 +174,7 @@
     collectChoiceIds,
     collectDialogIds,
     collectSceneIds,
+    collectQuestionIds,
     collectCharacterIds,
     collectEvidenceIds,
     collectConditionGroupIds,

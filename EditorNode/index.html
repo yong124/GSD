@@ -102,6 +102,16 @@
         </div>
 
         <div class="panel-section" data-panel-tab="node">
+          <div class="section-label">강제 질문 체크포인트</div>
+          <input id="field-forced-question-ids" type="text" placeholder="QuestionID를 쉼표로 구분">
+          <select id="field-question-mode">
+            <option value="">(none)</option>
+            <option value="All">All</option>
+            <option value="Any">Any</option>
+          </select>
+        </div>
+
+        <div class="panel-section" data-panel-tab="node">
           <div class="section-label">QA 미리보기</div>
           <div class="qa-toggle-list">
             <label class="qa-toggle"><input id="field-qa-current-dialog" type="checkbox"> 현재 미리보기 대사부터 시작</label>
@@ -229,6 +239,10 @@
             <button id="btn-add-question" class="small">+</button>
           </div>
           <div id="question-list"></div>
+          <div class="section-label">질문 답변
+            <button id="btn-add-question-answer" class="small">+</button>
+          </div>
+          <div id="question-answer-list"></div>
         </div>
 
         <div class="panel-section" data-panel-tab="data" data-data-tab="state-descriptors">
