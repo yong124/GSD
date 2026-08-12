@@ -209,16 +209,31 @@ async function testGameover(page, kind) {
 }
 
 async function testAll(page) {
-  const questionIds = ['QRitualLead', 'QRitualAccident', 'QRitualErasure'];
+  const questionIds = await page.evaluate(() => Object.values(GAME_DATA.scenes)
+    .flatMap(scene => scene.forced_question_ids || []));
   await prepareCheckpoint(page, { sceneId: 'qa_all', questionIds });
-  for (const answerId of [ANSWERS.ritualLead, ANSWERS.ritualAccident, ANSWERS.ritualErasure]) await clickAnswer(page, answerId);
+  const answerIds = await page.evaluate(ids => ids.map(questionId => GAME_DATA.question_answers
+    .find(answer => answer.question_id === questionId && answer.is_correct)?.answer_id), questionIds);
+  assert(answerIds.length === 10 && answerIds.every(Boolean), 'checkpoint correct answer coverage mismatch');
+  for (const answerId of answerIds) await clickAnswer(page, answerId);
   const result = await page.evaluate(ids => ({
     completed: State.getBooleanState('QuestionCheckpointCompleted_qa_all'),
     answered: ids.map(id => State.getBooleanState(`QuestionAnswered_qa_all_${id}`)),
     count: State.getNumericState('SolvedQuestionCount'),
     callback: window.__checkpointQa.completed,
+    proof: (() => {
+      const category = GAME_DATA.conditions
+        .find(condition => condition.condition_group_id === 'CG_Proof_All')
+        ?.condition_target_id.split('|');
+      const reachableAfterCorrect = Scene.passesConditionGroup('CG_Proof_All');
+      category.forEach(stateId => State.setBooleanState(stateId, false));
+      const lockedWithoutCategory = !Scene.passesConditionGroup('CG_Proof_All');
+      category.forEach(stateId => State.setBooleanState(stateId, true));
+      return { reachableAfterCorrect, lockedWithoutCategory };
+    })(),
   }), questionIds);
-  assert(result.completed && result.answered.every(Boolean) && result.count === 3 && result.callback === 1, 'All mode mismatch');
+  assert(result.completed && result.answered.every(Boolean) && result.count === 10 && result.callback === 1, 'All mode mismatch');
+  assert(result.proof.reachableAfterCorrect && result.proof.lockedWithoutCategory, 'CG_Proof_All reachability mismatch');
   return result;
 }
 
@@ -286,16 +301,39 @@ async function testSerializedResume(page) {
   }, serialized);
   assert(resumed, 'serialized partial checkpoint did not resume');
   assert((await page.locator('#choice-box .priority-title').textContent()).includes('즉흥적 광신'), 'serialized resume repeated answered question');
+  const partial = await page.evaluate(() => ({
+    answered: State.getBooleanState('QuestionAnswered_qa_saved_QRitualLead'),
+    solved: State.getBooleanState('QuestionSolved_QRitualLead'),
+    recorded: State.hasChoice('QRitualLead_Correct'),
+  }));
+  assert(partial.answered && partial.solved && partial.recorded, 'serialized partial checkpoint facts missing');
   await clickAnswer(page, ANSWERS.ritualAccident);
   const result = await page.evaluate(() => ({
     first: State.getBooleanState('QuestionAnswered_qa_saved_QRitualLead'),
     second: State.getBooleanState('QuestionAnswered_qa_saved_QRitualAccident'),
     completed: State.getBooleanState('QuestionCheckpointCompleted_qa_saved'),
+    firstSolved: State.getBooleanState('QuestionSolved_QRitualLead'),
+    secondSolved: State.getBooleanState('QuestionSolved_QRitualAccident'),
     firstRecorded: State.hasChoice('QRitualLead_Correct'),
     callback: window.__checkpointQa.completed,
   }));
-  assert(result.first && result.second && result.completed && result.firstRecorded && result.callback === 1, 'serialized resume state mismatch');
-  return result;
+  assert(result.first && result.second && result.completed && result.firstSolved && result.secondSolved && result.firstRecorded && result.callback === 1, 'serialized resume state mismatch');
+  const replay = await page.evaluate(saved => {
+    State.reset();
+    State.deserialize(saved);
+    window.__checkpointQa.completed = 0;
+    const started = Evidence.startQuestionCheckpoint(window.__checkpointQa.scene, () => { window.__checkpointQa.completed += 1; });
+    return {
+      started,
+      completed: State.getBooleanState('QuestionCheckpointCompleted_qa_saved'),
+      answered: State.getBooleanState('QuestionAnswered_qa_saved_QRitualLead'),
+      solved: State.getBooleanState('QuestionSolved_QRitualLead'),
+      recorded: State.hasChoice('QRitualLead_Correct'),
+      callback: window.__checkpointQa.completed,
+    };
+  }, await page.evaluate(() => State.serialize()));
+  assert(!replay.started && replay.completed && replay.answered && replay.solved && replay.recorded && replay.callback === 0, 'completed serialized checkpoint repeated or lost facts');
+  return { ...result, partial, replay };
 }
 
 async function testReadOnlyNotebook(page) {
