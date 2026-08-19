@@ -189,6 +189,7 @@
   line-height: 1.5;
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 12px;
   overflow: hidden;
   backdrop-filter: var(--panel-blur);
