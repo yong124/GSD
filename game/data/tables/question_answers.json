@@ -4,7 +4,9 @@
     "question_id": "QIpangyuCall",
     "sort_order": 10,
     "answer_text": "붉은 쪽지는 낙원 쪽에서 이판규를 직접 불러낸 호출이다.",
-    "required_evidence_ids": ["EvNote"],
+    "required_evidence_ids": [
+      "EvNote"
+    ],
     "is_correct": true,
     "effect_group_id": "",
     "result_text": "쪽지의 지시가 이판규의 행선지와 맞물린다. 그는 우연히 달아난 것이 아니라 낙원 쪽 호출에 떠밀렸다.",
@@ -16,7 +18,9 @@
     "question_id": "QIpangyuCall",
     "sort_order": 20,
     "answer_text": "이판규를 부른 것은 쪽지가 아니라 공장 안에 남은 의식 그 자체다.",
-    "required_evidence_ids": ["EvRitualNote"],
+    "required_evidence_ids": [
+      "EvRitualNote"
+    ],
     "is_correct": false,
     "effect_group_id": "eff_question_erosion",
     "result_text": "의식의 기척을 너무 쉽게 의지로 읽었다. 기록보다 공포가 먼저 결론을 밀어 넣는다.",
@@ -40,7 +44,9 @@
     "question_id": "QIpangyuMadness",
     "sort_order": 10,
     "answer_text": "붉은 쪽지가 남아 있으므로, 이판규의 호출 이야기는 실제 흔적과 맞닿아 있다.",
-    "required_evidence_ids": ["EvNote"],
+    "required_evidence_ids": [
+      "EvNote"
+    ],
     "is_correct": true,
     "effect_group_id": "",
     "result_text": "발작처럼 흘린 말과 쪽지의 호출이 맞물린다. 그의 말은 죄를 피하려 지어낸 헛소리만은 아니다.",
@@ -52,7 +58,9 @@
     "question_id": "QIpangyuMadness",
     "sort_order": 20,
     "answer_text": "이판규는 공장에 남은 노래를 들었기에 이미 의식의 편이 되었다.",
-    "required_evidence_ids": ["EvRitualNote"],
+    "required_evidence_ids": [
+      "EvRitualNote"
+    ],
     "is_correct": false,
     "effect_group_id": "eff_question_erosion",
     "result_text": "불안한 기척을 곧장 공모의 증거로 바꿨다. 사람의 말이 의식의 소음 속으로 가라앉는다.",
@@ -76,7 +84,9 @@
     "question_id": "QSonggeumMissing",
     "sort_order": 10,
     "answer_text": "송금은 일기에 적힌 대로 의례의 배역으로 밀려 들어가며 사라졌다.",
-    "required_evidence_ids": ["EvDiary"],
+    "required_evidence_ids": [
+      "EvDiary"
+    ],
     "is_correct": true,
     "effect_group_id": "",
     "result_text": "일기는 송금의 실종이 도피가 아니라, 사람을 의례의 몫으로 바꾸는 순서 안에서 벌어진 소거였음을 남긴다.",
@@ -88,7 +98,9 @@
     "question_id": "QSonggeumMissing",
     "sort_order": 20,
     "answer_text": "청색 한복이 송금의 몸을 삼켜 낙원 안으로 데려갔다.",
-    "required_evidence_ids": ["EvBlueHanbok"],
+    "required_evidence_ids": [
+      "EvBlueHanbok"
+    ],
     "is_correct": false,
     "effect_group_id": "eff_question_erosion",
     "result_text": "의복에 남은 기척을 사람의 운명으로 덮어썼다. 남은 기록을 읽기보다 공포가 빈자리를 채운다.",
@@ -112,7 +124,9 @@
     "question_id": "QSonggeumRunaway",
     "sort_order": 10,
     "answer_text": "일기는 송금에게 도망칠 틈이 없었고, 의례의 배역으로 정해졌음을 보여 준다.",
-    "required_evidence_ids": ["EvDiary"],
+    "required_evidence_ids": [
+      "EvDiary"
+    ],
     "is_correct": true,
     "effect_group_id": "",
     "result_text": "송금의 실종은 스스로 떠난 도피가 아니다. 선택당한 사람을 지워 버리는 의례의 순서가 그를 밀어 넣었다.",
@@ -124,7 +138,9 @@
     "question_id": "QSonggeumRunaway",
     "sort_order": 20,
     "answer_text": "송금은 청색 한복을 입는 순간 자기 이름을 버리고 사라지기로 했다.",
-    "required_evidence_ids": ["EvBlueHanbok"],
+    "required_evidence_ids": [
+      "EvBlueHanbok"
+    ],
     "is_correct": false,
     "effect_group_id": "eff_question_erosion",
     "result_text": "옷의 상징을 송금의 자발적 선택으로 바꿔 버렸다. 의식이 강요한 자리에 그의 목소리는 남지 않는다.",
@@ -148,7 +164,10 @@
     "question_id": "QRitualLead",
     "sort_order": 10,
     "answer_text": "감응 악보와 의례실 기록은 누군가가 순서와 사람 수를 세며 의식을 주도했음을 보여 준다.",
-    "required_evidence_ids": ["EvRitualScore", "EvRitualNote"],
+    "required_evidence_ids": [
+      "EvRitualScore",
+      "EvRitualNote"
+    ],
     "is_correct": true,
     "effect_group_id": "",
     "result_text": "악보의 결과 기록의 숫자가 같은 구조를 가리킨다. 낙원의 의식은 우발적 소문이 아니라 누군가 끝까지 쥔 판이었다.",
@@ -160,7 +179,9 @@
     "question_id": "QRitualLead",
     "sort_order": 20,
     "answer_text": "가면의 눈이 나를 바라보았으니, 가면 자체가 의식을 주도했다.",
-    "required_evidence_ids": ["EvMask"],
+    "required_evidence_ids": [
+      "EvMask"
+    ],
     "is_correct": false,
     "effect_group_id": "eff_question_erosion",
     "result_text": "시선의 감각을 주체의 증거로 삼았다. 사람과 물건의 경계가 흐려질수록 기록은 멀어진다.",
@@ -184,7 +205,9 @@
     "question_id": "QRitualAccident",
     "sort_order": 10,
     "answer_text": "의례실 종이의 순서와 몫은 이 일이 준비된 구조였음을 반박한다.",
-    "required_evidence_ids": ["EvRitualNote"],
+    "required_evidence_ids": [
+      "EvRitualNote"
+    ],
     "is_correct": true,
     "effect_group_id": "",
     "result_text": "종이에 남은 순서와 숫자는 우발적 광신이라는 설명을 무너뜨린다. 누군가가 사람 수까지 세며 의식을 준비했다.",
@@ -196,7 +219,9 @@
     "question_id": "QRitualAccident",
     "sort_order": 20,
     "answer_text": "가면의 네 눈이 움직였으니 그날의 광기는 저절로 시작됐다.",
-    "required_evidence_ids": ["EvMask"],
+    "required_evidence_ids": [
+      "EvMask"
+    ],
     "is_correct": false,
     "effect_group_id": "eff_question_erosion",
     "result_text": "섬뜩한 인상을 원인으로 단정했다. 두려움은 계획을 읽는 대신 스스로 움직이는 물건을 만들어 낸다.",
@@ -220,7 +245,10 @@
     "question_id": "QCallPattern",
     "sort_order": 10,
     "answer_text": "쪽지의 지시와 푸른 천의 표식은 사람을 낙원으로 몰아넣은 같은 호출의 흔적이다.",
-    "required_evidence_ids": ["EvNote", "EvBlueCloth"],
+    "required_evidence_ids": [
+      "EvNote",
+      "EvBlueCloth"
+    ],
     "is_correct": true,
     "effect_group_id": "",
     "result_text": "글로 남은 지시와 몸에 남는 표식이 겹친다. 호출은 우연한 폐기물이 아니라 사람을 움직이는 명령이었다.",
@@ -232,7 +260,9 @@
     "question_id": "QCallPattern",
     "sort_order": 20,
     "answer_text": "붉은 쪽지는 읽는 사람마다 제 발로 낙원으로 끌려가게 만든다.",
-    "required_evidence_ids": ["EvNote"],
+    "required_evidence_ids": [
+      "EvNote"
+    ],
     "is_correct": false,
     "effect_group_id": "eff_question_erosion",
     "result_text": "명령의 흔적을 곧장 저주의 힘으로 바꿨다. 누가 사람을 몰았는지 묻는 질문이 사라진다.",
@@ -256,7 +286,10 @@
     "question_id": "QRoom4Purpose",
     "sort_order": 10,
     "answer_text": "청색 한복과 네 눈 가면은 4호실이 사람을 의례의 배역으로 준비시키던 곳임을 보여 준다.",
-    "required_evidence_ids": ["EvBlueHanbok", "EvMask"],
+    "required_evidence_ids": [
+      "EvBlueHanbok",
+      "EvMask"
+    ],
     "is_correct": true,
     "effect_group_id": "",
     "result_text": "의복과 가면은 장식이 아니라 역할을 갈아 끼우는 도구였다. 4호실은 사람을 의례의 몫으로 준비시키던 자리다.",
@@ -268,7 +301,9 @@
     "question_id": "QRoom4Purpose",
     "sort_order": 20,
     "answer_text": "일기에 남은 이름이 흐려졌으니 4호실 벽이 사람의 이름을 먹었다.",
-    "required_evidence_ids": ["EvDiary"],
+    "required_evidence_ids": [
+      "EvDiary"
+    ],
     "is_correct": false,
     "effect_group_id": "eff_question_erosion",
     "result_text": "사람을 지운 구조를 방의 괴물로 바꿔 버렸다. 벽보다 그 벽을 사용한 이들이 먼저 사라진다.",
@@ -292,7 +327,10 @@
     "question_id": "QArchivePattern",
     "sort_order": 10,
     "answer_text": "과거 기사와 빈민가 목격담은 같은 방식의 실종이 기록에서 반복해 지워졌음을 보여 준다.",
-    "required_evidence_ids": ["EvOldArticles", "EvSlumWitness"],
+    "required_evidence_ids": [
+      "EvOldArticles",
+      "EvSlumWitness"
+    ],
     "is_correct": true,
     "effect_group_id": "",
     "result_text": "신문의 삭제와 목격자의 공포가 같은 빈자리를 가리킨다. 실종은 개인의 불운이 아니라 반복된 구조였다.",
@@ -304,7 +342,9 @@
     "question_id": "QArchivePattern",
     "sort_order": 20,
     "answer_text": "목격자가 떨었으니, 사라진 사람들은 아직 빈민가 골목에서 이름을 부른다.",
-    "required_evidence_ids": ["EvSlumWitness"],
+    "required_evidence_ids": [
+      "EvSlumWitness"
+    ],
     "is_correct": false,
     "effect_group_id": "eff_question_erosion",
     "result_text": "두려운 증언을 유령의 증거로 바꿨다. 반복을 만든 기록의 손길은 다시 어둠 속으로 숨는다.",
@@ -328,7 +368,10 @@
     "question_id": "QRitualErasure",
     "sort_order": 10,
     "answer_text": "악보의 노래와 의례실 기록은 사람의 이름을 흐리고 배역으로 바꾸는 정해진 절차다.",
-    "required_evidence_ids": ["EvRitualScore", "EvRitualNote"],
+    "required_evidence_ids": [
+      "EvRitualScore",
+      "EvRitualNote"
+    ],
     "is_correct": true,
     "effect_group_id": "",
     "result_text": "노래의 결과 기록의 순서가 맞물린다. 의식은 사람을 단번에 없애지 않고, 이름부터 의례의 몫으로 바꿨다.",
@@ -340,7 +383,9 @@
     "question_id": "QRitualErasure",
     "sort_order": 20,
     "answer_text": "악보를 읽는 순간 노래가 내 이름까지 지워 버린다.",
-    "required_evidence_ids": ["EvRitualScore"],
+    "required_evidence_ids": [
+      "EvRitualScore"
+    ],
     "is_correct": false,
     "effect_group_id": "eff_question_both",
     "result_text": "의식의 위험을 현재의 확정된 운명으로 발표했다. 공포가 기록을 잠식하며, 남길 문장마저 흔들린다.",

@@ -128,6 +128,30 @@
     "condition_value": true
   },
   {
+    "condition_id": "Cond_FinalChoice_BlockOnly",
+    "condition_group_id": "CG_FinalChoice_BlockOnly",
+    "condition_type": "ChoiceSelected",
+    "condition_target_id": "Ch6FinalBlock",
+    "compare_type": "Equal",
+    "condition_value": true
+  },
+  {
+    "condition_id": "Cond_FinalChoice_RecordOnly",
+    "condition_group_id": "CG_FinalChoice_RecordOnly",
+    "condition_type": "ChoiceSelected",
+    "condition_target_id": "Ch6FinalRecord",
+    "compare_type": "Equal",
+    "condition_value": true
+  },
+  {
+    "condition_id": "Cond_Epilogue_NotExposed",
+    "condition_group_id": "CG_Epilogue_NotExposed",
+    "condition_type": "ChoiceSelected",
+    "condition_target_id": "Ch6FinalExpose",
+    "compare_type": "NotEqual",
+    "condition_value": true
+  },
+  {
     "condition_id": "Cond_Branch_FoundOldArticles_01",
     "condition_group_id": "CG_Branch_FoundOldArticles",
     "condition_type": "ChoiceSelected",

@@ -500,6 +500,30 @@ window.GAME_DATA = {
       "condition_value": true
     },
     {
+      "condition_id": "Cond_FinalChoice_BlockOnly",
+      "condition_group_id": "CG_FinalChoice_BlockOnly",
+      "condition_type": "ChoiceSelected",
+      "condition_target_id": "Ch6FinalBlock",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_FinalChoice_RecordOnly",
+      "condition_group_id": "CG_FinalChoice_RecordOnly",
+      "condition_type": "ChoiceSelected",
+      "condition_target_id": "Ch6FinalRecord",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Epilogue_NotExposed",
+      "condition_group_id": "CG_Epilogue_NotExposed",
+      "condition_type": "ChoiceSelected",
+      "condition_target_id": "Ch6FinalExpose",
+      "compare_type": "NotEqual",
+      "condition_value": true
+    },
+    {
       "condition_id": "Cond_Branch_FoundOldArticles_01",
       "condition_group_id": "CG_Branch_FoundOldArticles",
       "condition_type": "ChoiceSelected",
@@ -2665,7 +2689,7 @@ window.GAME_DATA = {
           "order": 1,
           "choice_id": "Ch1CourtPursue",
           "effect_group_id": "eff_ch1_court_pursue",
-          "text": "판결문에서 푸른 천과 이판규의 시선을 따로 기록한다.",
+          "text": "판결문 여백에 이판규의 흔들리던 시선을 따로 기록한다.",
           "next_type": "Scene",
           "next_id": "ch1_newsroom",
           "impact_text": "평판 +1 · 기사 밖의 기록을 남겼다."
@@ -2791,7 +2815,7 @@ window.GAME_DATA = {
         {
           "order": 2,
           "choice_id": "Ch1NewsroomDefiant",
-          "text": "신문감은 되겠지만, 이대로 덮을 마음은 없습니다.",
+          "text": "신문감이야 되겠지만, 사람 둘 지운 자리에 괴담만 얹을 마음은 없습니다.",
           "next_type": "Scene",
           "next_id": "ch1_newsroom_defiant",
           "next_scene": "ch1_newsroom_defiant",
@@ -2880,7 +2904,7 @@ window.GAME_DATA = {
           "emotion_type": "Tense",
           "standing_slot": "Right",
           "focus_type": "Speaker",
-          "text": "덮으라는 말은 들었습니다. 그래도 묻힌 문장까지 눈감아 줄 생각은 없습니다. 읽히는 기사와 남겨야 할 기록은 따로 갈 겁니다.",
+          "text": "괴담으로 감싸라는 말은 들었습니다. 그래도 사람 지운 자리까지 눈감아 줄 생각은 없습니다. 읽히는 기사와 남겨야 할 기록은 따로 갈 겁니다.",
           "style": "thought",
           "dialog_id": "choice_defiant_react"
         },
@@ -3367,7 +3391,7 @@ window.GAME_DATA = {
         {
           "evidence_id": "EvBlueCloth",
           "name": "푸른 흔적",
-          "description": "이판규의 등뼈가 U자로 완전히 꺾어 부러진 채, 비정상적으로 치솟은 목이 하늘을 노려보며 굳어있다. 파여나간 두 눈구멍 안쪽엔 축축한 푸른 촉수 같은 점액질이 엉겨 말라붙었고, 찢겨진 흉곽 안쪽에서는 벌레들이 갉아먹은 푸른 천 쪼가리가 기괴하게 튀어나와 썩은 내를 풍기고 있다. 명백히 무언가가 그의 안쪽에서부터 터져 나온 흔적이다.",
+          "description": "이판규의 찢겨진 흉곽 안쪽에서 벌레들이 갉아먹은 푸른 천 쪼가리가 튀어나와 썩은 내를 풍기고 있었다. 명백히 그의 몸속에서부터 터져 나온 흔적이다.",
           "image": "assets/ev/bluecloth.jpeg",
           "category_id": "trace",
           "trigger": 1
@@ -4253,7 +4277,7 @@ window.GAME_DATA = {
         },
         {
           "order": 6,
-          "text": "눈이 네 개인 가면과 이중 바닥의 일기장…. 누가 무엇을 감추었는지, 아직 단정할 순 없습니다.",
+          "text": "눈이 네 개인 가면이라… 이게 뭘 의미하는지, 아직 단정할 순 없습니다.",
           "style": "normal",
           "speaker_id": "Yuu",
           "emotion_type": "Neutral",
@@ -4262,7 +4286,7 @@ window.GAME_DATA = {
         },
         {
           "order": 7,
-          "text": "일기장의 첫 장은 젖은 손자국에 번져 있다. 읽을수록 누군가가 쓴 말인지, 누군가에게 받아 적힌 말인지부터 가려야 한다.",
+          "text": "서랍 이중 바닥에서 일기장 하나가 나온다. 첫 장은 젖은 손자국에 번져 있다. 읽을수록 누군가가 쓴 말인지, 누군가에게 받아 적힌 말인지부터 가려야 한다.",
           "style": "normal",
           "speaker_id": "Yuu",
           "emotion_type": "Neutral",
@@ -4436,6 +4460,12 @@ window.GAME_DATA = {
             "text": "그걸 직접 만지고도 그런 소릴 하세요? ...그래도 이제 저도 모른 체는 못 하겠어요.",
             "style": "normal",
             "condition": null
+          },
+          {
+            "order": 4,
+            "text": "문양 아래 벽감에 반쯤 가려져 있던 것 — 눈구멍이 네 개 뚫린 가면 하나가 먼지를 뒤집어쓴 채 놓여 있다.",
+            "style": "narration",
+            "condition": null
           }
         ],
         "room4_record": [
@@ -4499,6 +4529,12 @@ window.GAME_DATA = {
             "focus_type": "Speaker",
             "text": "탓은 나중에 합시다. 지금은 누가 지웠는지부터 찾아야지요.",
             "style": "normal",
+            "condition": null
+          },
+          {
+            "order": 4,
+            "text": "송순이 눈물을 훔치다 말고 책상 상자를 연다. 안에는 개켜진 청색 비단 한복 한 벌이 들어 있다.",
+            "style": "narration",
             "condition": null
           }
         ],
@@ -6393,7 +6429,7 @@ window.GAME_DATA = {
           "effect_group_id": "eff_guarded_door_score_read",
           "text": "감응 악보를 펼쳐 지금 흘러나오는 노래의 순서와 맞춰 본다.",
           "next_type": "Dialog",
-          "next_id": "door_listen"
+          "next_id": "guarded_door_score_react"
         }
       ],
       "evidence_dialogues": {
@@ -7295,6 +7331,7 @@ window.GAME_DATA = {
           "order": 1,
           "text": "말은 이쯤이면 충분하겠지. 사람 갈아 넣고도 정화라 부를 셈이면, 이번엔 글이 아니라 몸으로라도 그 입부터 막아야지.",
           "style": "normal",
+          "condition_group_id": "CG_FinalChoice_BlockOnly",
           "speaker_id": "Yuu",
           "emotion_type": "Neutral",
           "standing_slot": "Right",
@@ -7302,6 +7339,16 @@ window.GAME_DATA = {
         },
         {
           "order": 2,
+          "text": "기록으로 남기려 했는데, 이 틈은 말보다 몸이 먼저 메워야 한다. 일단 막아 두면, 그다음에 남길 수 있으니까.",
+          "style": "normal",
+          "condition_group_id": "CG_FinalChoice_RecordOnly",
+          "speaker_id": "Yuu",
+          "emotion_type": "Neutral",
+          "standing_slot": "Right",
+          "focus_type": "Speaker"
+        },
+        {
+          "order": 3,
           "text": "유웅룡이 제단 쪽으로 몸을 던진다. 글로는 늦는 순간이 있다. 이번만큼은 몸이 문장보다 먼저 나간다.",
           "style": "narration"
         }
@@ -7707,6 +7754,12 @@ window.GAME_DATA = {
       "branches": [],
       "dialogues": [
         {
+          "order": 0,
+          "text": "기사가 짧은 화재 소식으로 지면에 실리고도, 그날 밤 의식 현장의 장면은 여전히 몸이 먼저 기억한다. 며칠이 지나도 그 순간만은 지워지지 않는다.",
+          "style": "narration",
+          "condition_group_id": "CG_Epilogue_NotExposed"
+        },
+        {
           "order": 1,
           "text": "(창고 벽 앞에서 들었던 그 멜로디로 응답한다. 언니의 노래에 맞서는 콧노래)",
           "style": "normal",
@@ -7805,6 +7858,12 @@ window.GAME_DATA = {
       "effect": null,
       "branches": [],
       "dialogues": [
+        {
+          "order": 0,
+          "text": "기사가 짧은 화재 소식으로 지면에 실리고도, 그날 밤 벌어진 일은 따로 적어 두지 않고는 넘길 수 없었다. 유웅룡은 그 순간을 다시 떠올린다.",
+          "style": "narration",
+          "condition_group_id": "CG_Epilogue_NotExposed"
+        },
         {
           "order": 1,
           "text": "유웅룡이 이해심을 향해 달려든다. 짧은 충돌. 이해심이 쓰러지고 의식의 결이 끊긴다. 사람 몸으로 겨우 멈춘 의식은 끝내 아름답지도 장엄하지도 않다. 그저 비싼 대가를 치른 범죄 현장처럼 남는다. 대신 이번엔 누가 무엇을 했는지 적을 문장만은 남았다.",
@@ -8496,14 +8555,7 @@ window.GAME_DATA = {
       "background": "assets/bg/ritual_room.jpg",
       "music": "assets/sfx/ritual_climax.mp3",
       "effect": null,
-      "branches": [
-        {
-          "branch_id": "Br_ending_erosion_End",
-          "order": 1,
-          "condition_group_id": null,
-          "next_scene": "ch6_ending_b"
-        }
-      ],
+      "branches": [],
       "dialogues": [
         {
           "order": 1,
@@ -8683,7 +8735,7 @@ window.GAME_DATA = {
           "order": 3,
           "choice_group_id": "ChoiceGroup_NewsroomInvestigation",
           "choice_id": "Ch1NewsroomMarkCensor",
-          "text": "편집장이 피하라던 단어와 삭제 지시를 표시한다.",
+          "text": "클리핑에 남은 재조사 메모와 번진 글자를 표시한다.",
           "next_type": "Dialog",
           "next_id": "newsroom_censor",
           "reward_state_id": "InvestigationScore",
@@ -8716,7 +8768,7 @@ window.GAME_DATA = {
         "newsroom_censor": [
           {
             "order": 1,
-            "text": "편집장이 피하라던 단어들을 표시한다. 금지선이 선명할수록 그 안쪽에 숨긴 것이 있다는 뜻이다.",
+            "text": "클리핑에 남은 재조사 메모와 번진 글자를 표시한다. 지운 흔적이 선명할수록 그 안쪽에 숨긴 것이 있다는 뜻이다.",
             "style": "thought",
             "speaker_id": "Yuu",
             "emotion_type": "Neutral",
