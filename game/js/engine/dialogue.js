@@ -73,7 +73,7 @@ const Dialogue = (() => {
 
   function markCurrentLineSeenAndSchedule(wasSeenAtStart) {
     State.markLineSeen(State.currentSceneId, _index);
-    if (_skipMode && wasSeenAtStart) {
+    if (_skipMode) {
       scheduleAutoAdvance(Config.TYPING?.SKIP_DELAY || 150);
     } else if (_autoMode) {
       scheduleAutoAdvance(Config.TYPING?.AUTO_DELAY || 1400);
@@ -85,7 +85,7 @@ const Dialogue = (() => {
     clearTimeout(_autoTimer);
 
     const wasSeen = State.hasSeenLine(State.currentSceneId, _index);
-    if (_skipMode && wasSeen) {
+    if (_skipMode) {
       _typing = false;
       UIManager.setDialogue(speaker, text, portrait);
       UIManager.setClickHintVisible(true);
