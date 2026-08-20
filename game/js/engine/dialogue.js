@@ -5,6 +5,9 @@ const Dialogue = (() => {
   let _typing = false;
   let _timer = null;
   let _stageState = { Left: null, Center: null, Right: null };
+  let _skipMode = false;
+  let _autoMode = false;
+  let _autoTimer = null;
 
   function passesCondition(line) {
     if (!line?.condition_group_id || typeof Scene?.passesConditionGroup !== 'function') return true;
@@ -38,6 +41,7 @@ const Dialogue = (() => {
   function resetStage() {
     _stageState = { Left: null, Center: null, Right: null };
     UIManager.clearStandingAll();
+    UIManager.setCgImage(null);
   }
 
   function renderStage(line) {
@@ -59,19 +63,47 @@ const Dialogue = (() => {
     });
   }
 
+  function scheduleAutoAdvance(delay) {
+    clearTimeout(_autoTimer);
+    _autoTimer = setTimeout(() => {
+      if (Choice.isVisible() || Save.isPanelOpen() || Evidence.isOpen()) return;
+      advance();
+    }, delay);
+  }
+
+  function markCurrentLineSeenAndSchedule(wasSeenAtStart) {
+    State.markLineSeen(State.currentSceneId, _index);
+    if (_skipMode && wasSeenAtStart) {
+      scheduleAutoAdvance(Config.TYPING?.SKIP_DELAY || 150);
+    } else if (_autoMode) {
+      scheduleAutoAdvance(Config.TYPING?.AUTO_DELAY || 1400);
+    }
+  }
+
   function typeText(speaker, text, portrait, onComplete) {
+    clearInterval(_timer);
+    clearTimeout(_autoTimer);
+
+    const wasSeen = State.hasSeenLine(State.currentSceneId, _index);
+    if (_skipMode && wasSeen) {
+      _typing = false;
+      UIManager.setDialogue(speaker, text, portrait);
+      UIManager.setClickHintVisible(true);
+      if (onComplete) onComplete(wasSeen);
+      return;
+    }
+
     let currentText = '';
     _typing = true;
     UIManager.setClickHintVisible(false);
 
     let i = 0;
-    clearInterval(_timer);
     _timer = setInterval(() => {
       if (i >= text.length) {
         clearInterval(_timer);
         _typing = false;
         UIManager.setClickHintVisible(true);
-        if (onComplete) onComplete();
+        if (onComplete) onComplete(wasSeen);
         return;
       }
       currentText += text[i++];
@@ -81,22 +113,31 @@ const Dialogue = (() => {
 
   function showLine(line) {
     renderStage(line);
-    
+
+    UIManager.setCgImage(line.cg_image || null);
+
     if (typeof Effects?.pulse === 'function') {
       Effects.pulse(line.fx_type || '', 950);
+    }
+    if (line.sfx && typeof AudioManager?.playSfx === 'function') {
+      AudioManager.playSfx(line.sfx);
     }
     if (line?.effect_group_id && typeof Choice?.applyEffectGroup === 'function') {
       Choice.applyEffectGroup(line.effect_group_id);
     }
-    
+
     const speakerName = getCharacterName(line);
     const portrait = (line.style === 'narration' || !speakerName || isSpeakerOnStage(line)) ? null : getCharacterImage(line);
     const displaySpeaker = (line.style === 'narration' || !speakerName) ? '' : speakerName;
 
-    typeText(displaySpeaker, line.text, portrait);
+    State.pushBacklog({ speaker: displaySpeaker, text: line.text });
+
+    typeText(displaySpeaker, line.text, portrait, markCurrentLineSeenAndSchedule);
   }
 
   function advance() {
+    clearTimeout(_autoTimer);
+
     if (_typing) {
       _typing = false;
       clearInterval(_timer);
@@ -106,6 +147,7 @@ const Dialogue = (() => {
       const displaySpeaker = (line.style === 'narration' || !speakerName) ? '' : speakerName;
       UIManager.setDialogue(displaySpeaker, line.text, portrait);
       UIManager.setClickHintVisible(true);
+      markCurrentLineSeenAndSchedule(State.hasSeenLine(State.currentSceneId, _index));
       return;
     }
 
@@ -120,6 +162,28 @@ const Dialogue = (() => {
     }
 
     showLine(_lines[_index]);
+  }
+
+  function updateModeButtons() {
+    const skipBtn = document.getElementById('skip-btn');
+    const autoBtn = document.getElementById('auto-btn');
+    if (skipBtn) skipBtn.classList.toggle('is-active', _skipMode);
+    if (autoBtn) autoBtn.classList.toggle('is-active', _autoMode);
+  }
+
+  function setSkipMode(value) {
+    _skipMode = !!value;
+    if (_skipMode) _autoMode = false;
+    clearTimeout(_autoTimer);
+    updateModeButtons();
+  }
+
+  function setAutoMode(value) {
+    _autoMode = !!value;
+    if (_autoMode) _skipMode = false;
+    clearTimeout(_autoTimer);
+    updateModeButtons();
+    if (_autoMode && !_typing) scheduleAutoAdvance(Config.TYPING?.AUTO_DELAY || 1400);
   }
 
   return {
@@ -137,6 +201,18 @@ const Dialogue = (() => {
           e.preventDefault();
           Dialogue.advance();
         }
+      });
+
+      const skipBtn = document.getElementById('skip-btn');
+      const autoBtn = document.getElementById('auto-btn');
+      if (skipBtn) skipBtn.addEventListener('click', () => setSkipMode(!_skipMode));
+      if (autoBtn) autoBtn.addEventListener('click', () => setAutoMode(!_autoMode));
+
+      State.on('reset', () => {
+        clearTimeout(_autoTimer);
+        _skipMode = false;
+        _autoMode = false;
+        updateModeButtons();
       });
     },
 
@@ -166,6 +242,10 @@ const Dialogue = (() => {
     },
 
     advance,
-    isTyping() { return _typing; }
+    isTyping() { return _typing; },
+    toggleSkip() { setSkipMode(!_skipMode); },
+    toggleAuto() { setAutoMode(!_autoMode); },
+    isSkip() { return _skipMode; },
+    isAuto() { return _autoMode; },
   };
 })();

@@ -1,10 +1,11 @@
 /**
- * audio.js — 씬 BGM 재생 관리
+ * audio.js — 씬 BGM/SFX 재생 관리
  */
 const AudioManager = (() => {
   let _bgm = null;
   let _currentSrc = '';
   let _enabled = false;
+  const SFX_VOLUME = 0.85;
 
   function ensureBgm() {
     if (_bgm) return _bgm;
@@ -50,6 +51,15 @@ const AudioManager = (() => {
       const bgm = ensureBgm();
       bgm.pause();
       _currentSrc = '';
+    },
+
+    playSfx(src) {
+      if (!src || !_enabled) return;
+      const sfx = new Audio(src);
+      sfx.volume = SFX_VOLUME;
+      sfx.play().catch(err => {
+        console.warn('SFX 재생 실패:', src, err);
+      });
     }
   };
 })();

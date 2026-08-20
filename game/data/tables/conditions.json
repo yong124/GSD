@@ -1,5 +1,21 @@
 [
   {
+    "condition_id": "Cond_Ch2Well_ShowedNote_01",
+    "condition_group_id": "CG_Ch2Well_ShowedNote",
+    "condition_type": "ChoiceSelected",
+    "condition_target_id": "Ch2WellTrustNote",
+    "compare_type": "Equal",
+    "condition_value": true
+  },
+  {
+    "condition_id": "Cond_Ch2Well_ShowedCloth_01",
+    "condition_group_id": "CG_Ch2Well_ShowedCloth",
+    "condition_type": "ChoiceSelected",
+    "condition_target_id": "Ch2WellTrustCloth",
+    "compare_type": "Equal",
+    "condition_value": true
+  },
+  {
     "condition_id": "Cond_Backroom_EditorRel0_01",
     "condition_group_id": "CG_Backroom_EditorRel0",
     "condition_type": "Trust",

@@ -180,6 +180,12 @@ window.GAME_DATA = {
   },
   "choice_groups": [
     {
+      "choice_group_id": "ChoiceGroup_FactoryInvestigation",
+      "type": "Investigation",
+      "condition_group_id": null,
+      "max_selectable": 4
+    },
+    {
       "choice_group_id": "ChoiceGroup_CafeInvestigation",
       "type": "Investigation",
       "condition_group_id": null,
@@ -371,6 +377,22 @@ window.GAME_DATA = {
     }
   ],
   "conditions": [
+    {
+      "condition_id": "Cond_Ch2Well_ShowedNote_01",
+      "condition_group_id": "CG_Ch2Well_ShowedNote",
+      "condition_type": "ChoiceSelected",
+      "condition_target_id": "Ch2WellTrustNote",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Ch2Well_ShowedCloth_01",
+      "condition_group_id": "CG_Ch2Well_ShowedCloth",
+      "condition_type": "ChoiceSelected",
+      "condition_target_id": "Ch2WellTrustCloth",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
     {
       "condition_id": "Cond_Backroom_EditorRel0_01",
       "condition_group_id": "CG_Backroom_EditorRel0",
@@ -2649,7 +2671,9 @@ window.GAME_DATA = {
         {
           "order": 10,
           "text": "판결봉이 차갑게 울리고, 방청석의 조선인들은 억눌린 숨만 삼킨다. 항의보다 먼저 체념이 퍼진다. 이 법정에선 억울함조차 순서를 기다려야 한다.",
-          "style": "narration"
+          "style": "narration",
+          "fx_type": "ScreenShake",
+          "sfx": "assets/sfx/gavel_strike.mp3"
         },
         {
           "order": 11,
@@ -2681,7 +2705,9 @@ window.GAME_DATA = {
           "speaker_id": "Yuu",
           "emotion_type": "Shaken",
           "standing_slot": "Right",
-          "focus_type": "Speaker"
+          "focus_type": "Speaker",
+          "fx_type": "FlashDark",
+          "sfx": "assets/sfx/whisper_dissonant.mp3"
         }
       ],
       "choices": [
@@ -2764,7 +2790,8 @@ window.GAME_DATA = {
           "speaker_id": "Editor",
           "emotion_type": "Angry",
           "standing_slot": "Left",
-          "focus_type": "Speaker"
+          "focus_type": "Speaker",
+          "fx_type": "ScreenShake"
         },
         {
           "order": 6,
@@ -2792,7 +2819,8 @@ window.GAME_DATA = {
           "speaker_id": "Yuu",
           "emotion_type": "Tense",
           "standing_slot": "Right",
-          "focus_type": "Speaker"
+          "focus_type": "Speaker",
+          "fx_type": "BloodSmear"
         },
         {
           "order": 10,
@@ -2991,7 +3019,8 @@ window.GAME_DATA = {
           "emotion_type": "Trance",
           "standing_slot": "Center",
           "focus_type": "Speaker",
-          "idle_motion": "ShakeHard"
+          "idle_motion": "ShakeHard",
+          "fx_type": "RitualGlow"
         },
         {
           "order": 6,
@@ -3010,7 +3039,8 @@ window.GAME_DATA = {
           "emotion_type": "Crazy",
           "standing_slot": "Center",
           "focus_type": "Speaker",
-          "idle_motion": "ShakeLight"
+          "idle_motion": "ShakeLight",
+          "fx_type": "BlueTrace"
         },
         {
           "order": 8,
@@ -3268,7 +3298,8 @@ window.GAME_DATA = {
           "emotion_type": "Crazy",
           "standing_slot": "Center",
           "idle_motion": "ShakeHard",
-          "fx_type": "ScreenShake"
+          "fx_type": "ScreenShake",
+          "sfx": "assets/sfx/wet_crack.mp3"
         },
         {
           "order": 5,
@@ -3283,7 +3314,8 @@ window.GAME_DATA = {
           "order": 6,
           "text": "(기괴한 뼈 파열음) 이판규가 짐승처럼 네 발로 접혀 교도관의 면상을 짓밟고 뛰어오른다.",
           "style": "narration",
-          "fx_type": "Flash"
+          "fx_type": "Flash",
+          "sfx": "assets/sfx/bone_snap.mp3"
         },
         {
           "order": 7,
@@ -3299,7 +3331,8 @@ window.GAME_DATA = {
           "order": 9,
           "text": "병원 복도 끝 쇠문이 굉음과 함께 뜯길 듯 부딪친다.",
           "style": "narration",
-          "fx_type": "ScreenShake"
+          "fx_type": "ScreenShake",
+          "sfx": "assets/sfx/door_slam.mp3"
         },
         {
           "order": 10,
@@ -3352,7 +3385,8 @@ window.GAME_DATA = {
         {
           "order": 3,
           "text": "시신 주변 진흙엔 사람 발도 짐승 발도 아닌 자국이 짓이겨져 있다. 발가락이 없고 뒤꿈치만 깊다. 천장 철골 아래엔 푸른 얼룩이 금속을 갉아먹은 듯 번져 있다.",
-          "style": "narration"
+          "style": "narration",
+          "fx_type": "Flicker"
         },
         {
           "order": 4,
@@ -3366,7 +3400,41 @@ window.GAME_DATA = {
       ],
       "choices": [
         {
+          "choice_id": "Ch2FactoryCheckFootprint",
+          "choice_group_id": "ChoiceGroup_FactoryInvestigation",
+          "text": "진흙에 남은 자국을 자세히 살핀다.",
+          "reward_state_id": "InvestigationScore",
+          "reward_value": 1,
+          "reward_mode": "Add",
+          "next_type": "Dialog",
+          "next_id": "factory_footprint",
+          "order": 1
+        },
+        {
+          "choice_id": "Ch2FactoryCheckStain",
+          "choice_group_id": "ChoiceGroup_FactoryInvestigation",
+          "text": "천장 철골의 푸른 얼룩을 살핀다.",
+          "reward_state_id": "InvestigationScore",
+          "reward_value": 1,
+          "reward_mode": "Add",
+          "next_type": "Dialog",
+          "next_id": "factory_stain",
+          "order": 2
+        },
+        {
+          "choice_id": "Ch2FactoryAskPoliceman",
+          "choice_group_id": "ChoiceGroup_FactoryInvestigation",
+          "text": "경찰에게 다른 목격 사항이 있는지 캐묻는다.",
+          "reward_state_id": "InvestigationScore",
+          "reward_value": 1,
+          "reward_mode": "Add",
+          "next_type": "Dialog",
+          "next_id": "factory_policeman",
+          "order": 3
+        },
+        {
           "choice_id": "Ch2Factory_LookCloser",
+          "choice_group_id": "ChoiceGroup_FactoryInvestigation",
           "text": "시신의 찢겨진 흉곽 안쪽을 홀린 듯 쳐다본다.",
           "type": "choice-risk",
           "kicker": "위험",
@@ -3375,10 +3443,47 @@ window.GAME_DATA = {
           "reward_mode": "Add",
           "next_type": "Scene",
           "next_id": "ch2_factory_shock",
-          "order": 1,
+          "order": 4,
           "next_scene": "ch2_factory_shock"
         }
       ],
+      "investigation_title": "폐공장 현장을 살펴라",
+      "investigation_hint": "시신에 다가가기 전에, 남은 흔적과 목격담부터 확인할 수 있습니다.",
+      "investigation_dialogues": {
+        "factory_footprint": [
+          {
+            "order": 1,
+            "text": "발가락이 없고 뒤꿈치만 깊게 파였어... 사람 걸음이 아니라, 사람 걸음을 흉내 낸 무언가의 자국이야.",
+            "style": "thought",
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
+          }
+        ],
+        "factory_stain": [
+          {
+            "order": 1,
+            "text": "쇠가 그냥 녹슨 게 아니야. 안쪽에서부터 갉아 먹힌 흔적이군. 이 공장 전체가 이런 식으로 좀먹고 있었다는 건가.",
+            "style": "thought",
+            "speaker_id": "Yuu",
+            "emotion_type": "Tense",
+            "standing_slot": "Right",
+            "focus_type": "Speaker"
+          }
+        ],
+        "factory_policeman": [
+          {
+            "order": 1,
+            "text": "야간 순찰 돌던 순사 하나가 여기서 이상한 노랫소리를 들었다고 했었소. 대수롭잖게 넘겼는데, 이제 와 보니 영 찜찜하구려.",
+            "style": "normal",
+            "speaker_id": "Policeman",
+            "emotion_type": "Neutral",
+            "standing_slot": "Left",
+            "focus_type": "Speaker"
+          }
+        ]
+      },
       "evidence": [
         {
           "evidence_id": "EvNote",
@@ -3751,6 +3856,26 @@ window.GAME_DATA = {
         "dlg_songsoon_open": [
           {
             "order": 1,
+            "text": "토요일, 낙원, 노래하면 문이 열린다… 이거, 언니가 사라진 날도 토요일이었어요.",
+            "style": "normal",
+            "speaker_id": "Songsoon",
+            "emotion_type": "Uneasy",
+            "standing_slot": "Left",
+            "focus_type": "Speaker",
+            "condition_group_id": "CG_Ch2Well_ShowedNote"
+          },
+          {
+            "order": 1,
+            "text": "...(천 조각을 보자마자 낯빛이 굳는다) 이 색, 언니가 마지막으로 입고 나간 저고리 색이에요.",
+            "style": "normal",
+            "speaker_id": "Songsoon",
+            "emotion_type": "Shaken",
+            "standing_slot": "Left",
+            "focus_type": "Speaker",
+            "condition_group_id": "CG_Ch2Well_ShowedCloth"
+          },
+          {
+            "order": 2,
             "text": "...이걸 갖고 계셨군요. 그럼 기자님은 소문이 아니라 현장을 보고 오신 거네요.",
             "style": "normal",
             "speaker_id": "Songsoon",
@@ -3759,7 +3884,7 @@ window.GAME_DATA = {
             "focus_type": "Speaker"
           },
           {
-            "order": 2,
+            "order": 3,
             "text": "언니는 무대 뒤 창고를 자꾸 서성였어요. 안에서 노래 같은 걸 들었다고 했고요. 저는 혼자선 못 들어갔어요. 그 문은 낙원 안쪽으로 이어져요.",
             "style": "normal",
             "speaker_id": "Songsoon",
@@ -3768,7 +3893,7 @@ window.GAME_DATA = {
             "focus_type": "Speaker"
           },
           {
-            "order": 3,
+            "order": 4,
             "text": "사라진 건 언니 하나가 아니에요. 처음엔 병가라 하고, 다음엔 고향 갔다고 했어요. 이제는 이름을 입에 올리는 사람까지 없어져요.",
             "style": "narration"
           }
@@ -3841,7 +3966,8 @@ window.GAME_DATA = {
           "order": 5,
           "text": "흩어진 악보들 사이, 유독 한 장만 젖은 비단처럼 번들거린다. 푸른 잉크로 덧씌운 음표가 빛을 받지 않아도 희미하게 떠오른다.",
           "style": "narration",
-          "fx_type": "BlueTrace"
+          "fx_type": "BlueTrace",
+          "cg_image": "assets/ev/score.jpeg"
         },
         {
           "order": 6,
@@ -3852,7 +3978,9 @@ window.GAME_DATA = {
           "standing_slot": "Right",
           "focus_type": "Speaker",
           "fx_type": "BlueTrace",
-          "idle_motion": "ShakeLight"
+          "idle_motion": "ShakeLight",
+          "cg_image": "assets/ev/score.jpeg",
+          "sfx": "assets/sfx/whisper_dissonant.mp3"
         },
         {
           "order": 7,
@@ -3863,7 +3991,8 @@ window.GAME_DATA = {
           "standing_slot": "Left",
           "focus_type": "Speaker",
           "fx_type": "Flicker",
-          "idle_motion": "ShakeHard"
+          "idle_motion": "ShakeHard",
+          "cg_image": "assets/ev/score.jpeg"
         },
         {
           "order": 8,
@@ -3872,7 +4001,8 @@ window.GAME_DATA = {
           "speaker_id": "Songsoon",
           "emotion_type": "Uneasy",
           "standing_slot": "Left",
-          "focus_type": "Speaker"
+          "focus_type": "Speaker",
+          "cg_image": "assets/ev/score.jpeg"
         },
         {
           "order": 9,
@@ -3881,7 +4011,8 @@ window.GAME_DATA = {
           "speaker_id": "Songsoon",
           "emotion_type": "Uneasy",
           "standing_slot": "Left",
-          "focus_type": "Speaker"
+          "focus_type": "Speaker",
+          "cg_image": "assets/ev/score.jpeg"
         },
         {
           "order": 10,
@@ -3890,7 +4021,8 @@ window.GAME_DATA = {
           "speaker_id": "Yuu",
           "emotion_type": "Neutral",
           "standing_slot": "Right",
-          "focus_type": "Speaker"
+          "focus_type": "Speaker",
+          "cg_image": ""
         },
         {
           "order": 11,
@@ -3986,7 +4118,8 @@ window.GAME_DATA = {
         {
           "order": 2,
           "text": "유웅룡은 눈을 찌르는 통증을 참고 악보 끝까지 시선을 밀어 넣는다. 음표 아래 숨은 글씨가 뒤늦게 한 줄로 이어진다. '문이 열리면 먼저 이름이 벗겨진다.'",
-          "style": "narration"
+          "style": "narration",
+          "fx_type": "Flash"
         },
         {
           "order": 3,
@@ -4110,7 +4243,8 @@ window.GAME_DATA = {
         {
           "order": 3,
           "text": "잠긴 문 앞에 서자, 아주 짧은 콧노래가 복도 끝에서 흘렀다가 사라진다. 이번엔 방 안이 아니라 복도 자체가 따라 부른 것처럼 들린다.",
-          "style": "narration"
+          "style": "narration",
+          "fx_type": "Flicker"
         },
         {
           "order": 4,
@@ -4273,7 +4407,8 @@ window.GAME_DATA = {
           "speaker_id": "Songsoon",
           "emotion_type": "Uneasy",
           "standing_slot": "Left",
-          "focus_type": "Speaker"
+          "focus_type": "Speaker",
+          "fx_type": "Flash"
         },
         {
           "order": 6,
@@ -4341,7 +4476,8 @@ window.GAME_DATA = {
         {
           "order": 13,
           "text": "방 안 어딘가에서 다시 짧은 콧노래가 스친다. 이번엔 송순의 손끝이 멈추지 않는다. 대신 벽지 아래, 누군가 손톱으로 긁어 남긴 듯한 문양이 처음으로 눈에 들어온다.",
-          "style": "narration"
+          "style": "narration",
+          "fx_type": "RitualGlow"
         },
         {
           "order": 14,
@@ -4584,7 +4720,7 @@ window.GAME_DATA = {
           "text": "1924년 기사… 지금과 닮은 꼴의 실종 사건입니다. 푸른 천, 눈 없는 시신, 여자들의 실종.",
           "style": "thought",
           "speaker_id": "Yuu",
-          "emotion_type": "Tense",
+          "emotion_type": "Neutral",
           "standing_slot": "Right",
           "focus_type": "Speaker"
         },
@@ -4593,9 +4729,10 @@ window.GAME_DATA = {
           "text": "게다가 이 기사의 필자가… 편집장이라니? 기사 말미엔 '낙원이라 불리는 장소에서—'까지만 남고 뒤는 잘려 있다. 삭제라기보다, 입을 틀어막은 문장 같다.",
           "style": "thought",
           "speaker_id": "Yuu",
-          "emotion_type": "Tense",
+          "emotion_type": "Shaken",
           "standing_slot": "Right",
-          "focus_type": "Speaker"
+          "focus_type": "Speaker",
+          "fx_type": "Flash"
         },
         {
           "order": 4,
@@ -5254,7 +5391,8 @@ window.GAME_DATA = {
           "speaker_id": "Okryeon",
           "emotion_type": "Afraid",
           "standing_slot": "Center",
-          "focus_type": "Speaker"
+          "focus_type": "Speaker",
+          "fx_type": "BloodSmear"
         },
         {
           "order": 6,
@@ -5569,7 +5707,8 @@ window.GAME_DATA = {
         {
           "order": 5,
           "text": "아주 멀리서, 익숙한 콧노래 한 자락이 스친다. 이번엔 송순이 고개를 들고 그 소리를 외면하지 않는다.",
-          "style": "narration"
+          "style": "narration",
+          "fx_type": "RitualGlow"
         },
         {
           "order": 6,
@@ -5678,7 +5817,8 @@ window.GAME_DATA = {
           "speaker_id": "Editor",
           "emotion_type": "Angry",
           "standing_slot": "Left",
-          "focus_type": "Speaker"
+          "focus_type": "Speaker",
+          "fx_type": "ScreenShake"
         },
         {
           "order": 5,
@@ -5754,7 +5894,8 @@ window.GAME_DATA = {
           "speaker_id": "Editor",
           "emotion_type": "Angry",
           "standing_slot": "Left",
-          "focus_type": "Speaker"
+          "focus_type": "Speaker",
+          "fx_type": "Flash"
         },
         {
           "order": 13,
@@ -6211,7 +6352,8 @@ window.GAME_DATA = {
         {
           "order": 5,
           "text": "계단 벽면엔 손톱으로 긁은 듯한 자국과 말라붙은 푸른 얼룩이 이어진다. 누군가 위로 올라오려다 실패한 흔적처럼 보인다.",
-          "style": "narration"
+          "style": "narration",
+          "fx_type": "Flicker"
         },
         {
           "order": 6,
@@ -6239,7 +6381,8 @@ window.GAME_DATA = {
           "speaker_id": "Yuu",
           "emotion_type": "Shaken",
           "standing_slot": "Right",
-          "focus_type": "Speaker"
+          "focus_type": "Speaker",
+          "fx_type": "BlueTrace"
         },
         {
           "order": 9,
@@ -6320,7 +6463,8 @@ window.GAME_DATA = {
         {
           "order": 1,
           "text": "계단 끝엔 나무도 쇠도 아닌 재질의 문이 서 있다. 젖은 살갗처럼 미세하게 꿈틀거리며, 가까이 갈수록 사람 체온을 거꾸로 빨아들이는 것처럼 서늘하다.",
-          "style": "narration"
+          "style": "narration",
+          "fx_type": "Flicker"
         },
         {
           "order": 2,
@@ -6343,7 +6487,8 @@ window.GAME_DATA = {
         {
           "order": 4,
           "text": "문 틈 사이로 흘러나오는 노랫소리는 이제 분명히 사람 목소리다. 그러나 감정이 빠져 있다. 사람이 부르는데 사람 것 같지 않고, 누군가 그 목소리를 안쪽에서 빌려 쓰는 것처럼 들린다.",
-          "style": "narration"
+          "style": "narration",
+          "fx_type": "BlueTrace"
         },
         {
           "order": 5,
@@ -6352,7 +6497,8 @@ window.GAME_DATA = {
           "speaker_id": "Songsoon",
           "emotion_type": "Afraid",
           "standing_slot": "Left",
-          "focus_type": "Speaker"
+          "focus_type": "Speaker",
+          "fx_type": "FlashDark"
         },
         {
           "order": 6,
@@ -6562,13 +6708,16 @@ window.GAME_DATA = {
           "order": 6,
           "text": "제단 주변엔 크기 다른 파란 천 조각이 흩어져 있다. 아이 옷에서 뜯어낸 듯한 자국, 여급 옷감에서 잘라 낸 듯한 비단 결, 마른 피가 스민 매듭이 한데 뒤엉켜 있다.",
           "style": "narration",
-          "fx_type": "BloodSmear"
+          "fx_type": "BloodSmear",
+          "cg_image": "assets/ev/bluecloth.jpeg"
         },
         {
           "order": 7,
           "text": "제단 기둥 너머 검은 얼룩 하나가 순간 사람 형상처럼 일그러진다. 폐공장에서 본 이판규의 꺾인 목과 비슷한 윤곽이 스쳤다가, 촛농과 그을음이 엉긴 얼룩으로 다시 흩어진다. 시체가 다시 여기 있을 리는 없다. 다만 그 죽음이 이 방 안에 아직 눌어붙어 있는 것처럼 보인다.",
           "style": "narration",
-          "fx_type": "BloodSmear"
+          "fx_type": "BloodSmear",
+          "cg_image": "assets/ev/bluecloth.jpeg",
+          "sfx": "assets/sfx/sting_horror.mp3"
         },
         {
           "order": 8,
@@ -6578,13 +6727,15 @@ window.GAME_DATA = {
           "emotion_type": "Afraid",
           "standing_slot": "Left",
           "focus_type": "Speaker",
-          "idle_motion": "Tremble"
+          "idle_motion": "Tremble",
+          "cg_image": ""
         },
         {
           "order": 9,
           "text": "그때, 더 깊은 곳에서 여성의 노랫소리가 흘러나온다. 표정 없는, 감정 없는 노래. 기도를 흉내 내지만 기원은 없고, 위로를 흉내 내지만 사람 숨을 더 얇게 만드는 소리다.",
           "style": "narration",
-          "fx_type": "RitualGlow"
+          "fx_type": "RitualGlow",
+          "sfx": "assets/sfx/ritual_chant.mp3"
         },
         {
           "order": 10,
@@ -7053,7 +7204,8 @@ window.GAME_DATA = {
         {
           "order": 1,
           "text": "지하 의례실 깊숙이. 이해심이 제단 앞에 선다. 송금은 청색 한복 차림으로 노래하고 있다. 표정이 없다. 살기 위해 버틴 끝에 생기는 무표정이 아니라, 지나치게 오래 빌려 쓰여 자기 얼굴을 잃어버린 사람의 무표정이다.",
-          "style": "narration"
+          "style": "narration",
+          "cg_image": "assets/ev/hanbok.jpeg"
         },
         {
           "order": 2,
@@ -7062,12 +7214,15 @@ window.GAME_DATA = {
           "speaker_id": "Haesim",
           "emotion_type": "Trance",
           "standing_slot": "Center",
-          "focus_type": "Speaker"
+          "focus_type": "Speaker",
+          "cg_image": "assets/ev/hanbok.jpeg"
         },
         {
           "order": 3,
           "text": "이해심의 뒤편 어둠 속엔 흰 천으로 얼굴을 가린 남자의 형체가 희미하게 선다. 가까이 있는데도 사람이라기보다 남의 신앙을 뒤에서 빨아먹는 그늘처럼 보인다. 향냄새 밑에 눌린 비린내가 그쪽에서 더 짙다.",
-          "style": "narration"
+          "style": "narration",
+          "fx_type": "Flicker",
+          "cg_image": ""
         },
         {
           "order": 4,
@@ -7082,7 +7237,8 @@ window.GAME_DATA = {
           "order": 5,
           "text": "그 순간 유웅룡의 귓속에서 문 앞 콧노래가 다시 울린다. 방 안 노래와 어긋나지 않는다. 아까 문에 귀를 댄 뒤로, 이 공간은 이미 몸 안쪽까지 파고든 듯하다.",
           "style": "narration",
-          "condition_group_id": "CG_RitualScene_Resonance2"
+          "condition_group_id": "CG_RitualScene_Resonance2",
+          "fx_type": "BlueTrace"
         },
         {
           "order": 6,
@@ -7091,7 +7247,9 @@ window.GAME_DATA = {
           "speaker_id": "Songgeum",
           "emotion_type": "Trance",
           "standing_slot": "Center",
-          "focus_type": "Speaker"
+          "focus_type": "Speaker",
+          "fx_type": "RitualGlow",
+          "sfx": "assets/sfx/ritual_chant.mp3"
         },
         {
           "order": 7,
@@ -7105,7 +7263,9 @@ window.GAME_DATA = {
         {
           "order": 8,
           "text": "이해심의 안대 아래로 피가 번지기 시작한다. 하나는 불빛, 하나는 서릿발. 문이 열리고 있다. 방 안 촛불이 바깥바람 없이도 같은 방향으로 눕고, 벽면의 푸른 흔적이 젖은 살처럼 미세하게 꿈틀거린다.",
-          "style": "narration"
+          "style": "narration",
+          "fx_type": "FlashDark",
+          "sfx": "assets/sfx/heartbeat_low.mp3"
         },
         {
           "order": 9,
@@ -7168,7 +7328,8 @@ window.GAME_DATA = {
           "speaker_id": "Songsoon",
           "emotion_type": "Uneasy",
           "standing_slot": "Left",
-          "focus_type": "Speaker"
+          "focus_type": "Speaker",
+          "fx_type": "ScreenShake"
         }
       ],
       "choices": [
@@ -7771,12 +7932,14 @@ window.GAME_DATA = {
         {
           "order": 2,
           "text": "감응이 흔들린다. 이해심이 비틀거리며 무너진다. 문은 반쯤 열린 채 억지로 닫힌다. 닫히는 마지막 순간까지 콧노래는 한 사람의 이름을 놓치지 않으려는 것처럼 떨린다. 누군가를 완전히 데려오진 못해도, 끝내 사람 쪽으로 당겨 두려는 힘만은 남는다.",
-          "style": "narration"
+          "style": "narration",
+          "fx_type": "ScreenShake"
         },
         {
           "order": 3,
           "text": "송금이 천천히 고개를 돌린다. 눈이 텅 비어 있다. 살아있지만, 돌아오지 않았다.",
-          "style": "narration"
+          "style": "narration",
+          "fx_type": "FlashDark"
         },
         {
           "order": 4,
@@ -7872,7 +8035,8 @@ window.GAME_DATA = {
         {
           "order": 2,
           "text": "문이 닫힌다. 노래가 멎는다. 송금은 그 자리에 쓰러진다. 숨은 붙어 있다. 하지만 눈을 뜨지 않는다.",
-          "style": "narration"
+          "style": "narration",
+          "fx_type": "Fade"
         },
         {
           "order": 3,
@@ -7963,7 +8127,8 @@ window.GAME_DATA = {
         {
           "order": 1,
           "text": "문이 활짝 열린다. 무엇이 나왔는지 보이지 않는다. 공간 전체가 잠시 정지한다. 소리가 없다. 빛이 없다. 보는 쪽이 먼저 멈춘 건지, 세상이 먼저 숨을 죽인 건지도 알 수 없다.",
-          "style": "narration"
+          "style": "narration",
+          "fx_type": "FlashDark"
         },
         {
           "order": 2,
@@ -7991,7 +8156,8 @@ window.GAME_DATA = {
         {
           "order": 5,
           "text": "대답 대신, 멀리서 아주 짧은 콧노래가 한 번 더 스친다. 둘 다 그 소리를 들었는지조차 확신하지 못한다. 확신하지 못한다는 사실이 오히려 더 오래 남는다. 아무것도 택하지 못했던 순간의 공백이, 이후의 모든 밤에 질문처럼 달라붙는다.",
-          "style": "narration"
+          "style": "narration",
+          "fx_type": "BlueTrace"
         },
         {
           "order": 6,
@@ -8197,23 +8363,30 @@ window.GAME_DATA = {
           "emotion_type": "Shaken",
           "standing_slot": "Right",
           "idle_motion": "ShakeHard",
-          "fx_type": "ScreenShake"
+          "fx_type": "ScreenShake",
+          "sfx": "assets/sfx/gasp.mp3"
         },
         {
           "order": 4,
           "text": "이판규의 등뼈는 역관절로 완전히 꺾여 있으며, 비정상적으로 치솟은 목은 허공을 노려본 채 굳어 있다.",
-          "style": "narration"
+          "style": "narration",
+          "fx_type": "ScreenShake",
+          "cg_image": "assets/ev/corpse.jpeg",
+          "sfx": "assets/sfx/sting_horror.mp3"
         },
         {
           "order": 5,
           "text": "파여나간 두 눈구멍 안쪽엔 축축한 푸른 점액이 엉겨붙어 있고, 찢긴 흉곽 밖으론 벌레가 갉아먹은 푸른 천 조각이 참혹하게 튀어나와 있다.",
-          "style": "narration"
+          "style": "narration",
+          "fx_type": "BloodSmear",
+          "cg_image": "assets/ev/corpse.jpeg"
         },
         {
           "order": 6,
           "text": "이것은 외부 침입자가 가한 폭행의 결과가 아니다. 명백히 무언가가 그의 안쪽에서부터 껍질을 찢고 '터져 나온' 흔적이다.",
           "style": "narration",
-          "fx_type": "Flicker"
+          "fx_type": "Flicker",
+          "cg_image": "assets/ev/corpse.jpeg"
         },
         {
           "order": 7,
@@ -8222,7 +8395,8 @@ window.GAME_DATA = {
           "speaker_id": "Yuu",
           "emotion_type": "Shaken",
           "standing_slot": "Right",
-          "idle_motion": "Tremble"
+          "idle_motion": "Tremble",
+          "cg_image": "assets/ev/corpse.jpeg"
         },
         {
           "order": 8,
@@ -8230,13 +8404,15 @@ window.GAME_DATA = {
           "style": "thought",
           "speaker_id": "Yuu",
           "emotion_type": "Shaken",
-          "standing_slot": "Right"
+          "standing_slot": "Right",
+          "cg_image": "assets/ev/corpse.jpeg"
         },
         {
           "order": 9,
           "text": "유웅룡은 간신히 억눌린 숨을 내쉬며, 시신이 사후경직으로 악착같이 움켜쥐고 있는 오른손을 억지로 펴낸다.",
           "style": "narration",
-          "fx_type": "Fade"
+          "fx_type": "Fade",
+          "cg_image": ""
         },
         {
           "order": 10,
@@ -8254,7 +8430,8 @@ window.GAME_DATA = {
         {
           "order": 12,
           "text": "글줄을 읽어 내린 순간, 귓가를 스쳐가는 기묘한 불협화음이 아주 짧게 환청처럼 울린다. 입술 새로 새어나오는 '콧노래' 소리 같다.",
-          "style": "narration"
+          "style": "narration",
+          "sfx": "assets/sfx/hum_dissonant.mp3"
         },
         {
           "order": 13,

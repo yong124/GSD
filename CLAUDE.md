@@ -122,6 +122,9 @@ scenes: {
       // 필수: order, text, style
       // 선택: dialog_id(대사 점프 라벨), speaker_id, emotion_type, standing_slot,
       //        focus_type, enter_motion, exit_motion, idle_motion, fx_type,
+      //        cg_image(대사 라인 단위 CG 삽화. 명시한 줄에서만 유지되므로
+      //          유지하려면 각 줄마다 반복 입력, 빈 문자열이면 그 줄부터 해제),
+      //        sfx(그 줄이 표시될 때 1회 재생되는 효과음 경로. BGM과 별개, 반복 없음),
       //        condition_group_id, effect_group_id
     ],
     choices: [

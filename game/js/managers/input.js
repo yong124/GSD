@@ -57,6 +57,20 @@ const InputManager = (() => {
       Save.load();
       return;
     }
+
+    // Skip (X)
+    if (e.key === 'x' || e.key === 'X') {
+      e.preventDefault();
+      Dialogue.toggleSkip();
+      return;
+    }
+
+    // Auto (A)
+    if (e.key === 'a' || e.key === 'A') {
+      e.preventDefault();
+      Dialogue.toggleAuto();
+      return;
+    }
   }
 
   function isTitleVisible() {

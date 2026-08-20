@@ -9,7 +9,8 @@ const Config = (() => {
     TYPING: {
       DEFAULT_SPEED: 32,
       FAST_SPEED: 8,
-      SKIP_DELAY: 150
+      SKIP_DELAY: 150,
+      AUTO_DELAY: 1400
     },
 
     // Visual timings (ms)

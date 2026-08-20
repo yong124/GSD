@@ -88,7 +88,11 @@ const State = (() => {
     choice_history: [],
     chapter: 1,
     question_checkpoint: null,
+    seen_lines: [],
+    backlog: [],
   };
+
+  const BACKLOG_LIMIT = 200;
 
   const _listeners = {};
 
@@ -361,6 +365,29 @@ const State = (() => {
       return [..._state.evidence];
     },
 
+    markLineSeen(sceneId, index) {
+      if (!sceneId) return;
+      const key = `${sceneId}#${index}`;
+      if (!_state.seen_lines.includes(key)) _state.seen_lines.push(key);
+    },
+
+    hasSeenLine(sceneId, index) {
+      if (!sceneId) return false;
+      return _state.seen_lines.includes(`${sceneId}#${index}`);
+    },
+
+    pushBacklog(entry) {
+      if (!entry?.text) return;
+      _state.backlog.push(entry);
+      if (_state.backlog.length > BACKLOG_LIMIT) {
+        _state.backlog.splice(0, _state.backlog.length - BACKLOG_LIMIT);
+      }
+    },
+
+    getBacklog() {
+      return [..._state.backlog];
+    },
+
     serialize() {
       return JSON.stringify(_state);
     },
@@ -384,6 +411,8 @@ const State = (() => {
           question_checkpoint: parsed.question_checkpoint && typeof parsed.question_checkpoint === 'object'
             ? parsed.question_checkpoint
             : null,
+          seen_lines: Array.isArray(parsed.seen_lines) ? parsed.seen_lines : [],
+          backlog: Array.isArray(parsed.backlog) ? parsed.backlog : [],
         };
         _emit('loaded', _state);
         return true;
@@ -405,6 +434,8 @@ const State = (() => {
         choice_history: [],
         chapter: 1,
         question_checkpoint: null,
+        seen_lines: [],
+        backlog: [],
       };
       _emit('reset');
     },

@@ -397,6 +397,7 @@ const Evidence = (() => {
       evidenceGroups: prepareMemoData(),
       questions,
       selectedQuestionId: _selectedQuestionId,
+      backlog: State.getBacklog(),
     }, _activeTab, {
       onTabChange: (tab) => {
         _activeTab = tab;

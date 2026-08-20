@@ -202,6 +202,8 @@ def build_game_data(wb):
                 "exit_motion": d.get("ExitMotion"),
                 "idle_motion": d.get("IdleMotion"),
                 "fx_type": d.get("FxType"),
+                "cg_image": d.get("CgImage"),
+                "sfx": d.get("Sfx"),
                 "choice_group_id": d.get("ChoiceGroupID"),
                 "next_dialog_id": d.get("NextDialogID"),
                 "effect_group_id": d.get("EffectGroupID"),

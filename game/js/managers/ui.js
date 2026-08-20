@@ -293,6 +293,18 @@ const UIManager = (() => {
     }
   }
 
+  function setCgImage(path) {
+    const layer = $('cg-layer');
+    const img = $('cg-image');
+    if (!layer || !img) return;
+    if (path) {
+      img.src = path;
+      layer.classList.add('is-visible');
+    } else {
+      layer.classList.remove('is-visible');
+    }
+  }
+
   function setClickHintVisible(visible) {
     const el = $('click-hint');
     if (el) el.classList.toggle('hidden-hint', !visible);
@@ -610,6 +622,19 @@ const UIManager = (() => {
       return;
     }
 
+    if (activeTab === 'log') {
+      const entries = data?.backlog || [];
+      list.innerHTML = entries.length
+        ? entries.slice().reverse().map(entry => `
+            <div class="backlog-line">
+              ${entry.speaker ? `<div class="backlog-speaker">${entry.speaker}</div>` : ''}
+              <div class="backlog-text">${entry.text}</div>
+            </div>
+          `).join('')
+        : '<div class="memo-empty">아직 기록된 대사가 없습니다.</div>';
+      return;
+    }
+
     renderMemo(data?.evidenceGroups || []);
   }
 
@@ -622,6 +647,7 @@ const UIManager = (() => {
     showToast,
     setDialogue,
     setDialogueBoxVisible,
+    setCgImage,
     setClickHintVisible,
     setStandingSlot,
     clearStandingAll,

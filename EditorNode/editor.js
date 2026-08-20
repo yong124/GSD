@@ -1426,6 +1426,10 @@
           <input data-field="idle_motion" value="${escapeAttr(d.idle_motion || '')}" placeholder="?? Tremble"></label>
         <label><span>FxType</span>
           <input data-field="fx_type" value="${escapeAttr(d.fx_type || '')}" placeholder="?? BlueTrace"></label>
+        <label><span>CgImage</span>
+          <input data-field="cg_image" value="${escapeAttr(d.cg_image || '')}" placeholder="예: assets/ev/corpse.jpeg (유지하려면 각 줄마다 반복 입력, 비우면 해제)"></label>
+        <label><span>Sfx</span>
+          <input data-field="sfx" value="${escapeAttr(d.sfx || '')}" placeholder="예: assets/sfx/gasp.mp3 (이 줄이 표시될 때 한 번 재생)"></label>
         <label><span>스타일</span>
           <select data-field="style">
             ${STYLE_OPTIONS.map(s => `<option value="${s}"${(d.style||'normal')===s?' selected':''}>${s}</option>`).join('')}
@@ -2079,6 +2083,8 @@
       exit_motion: '',
       idle_motion: '',
       fx_type: '',
+      cg_image: '',
+      sfx: '',
       text: '',
       portrait: null,
       style: 'normal',
@@ -2204,6 +2210,8 @@
         exit_motion: dialogue.exit_motion || null,
         idle_motion: dialogue.idle_motion || null,
         fx_type: dialogue.fx_type || null,
+        cg_image: dialogue.cg_image || null,
+        sfx: dialogue.sfx || null,
         text: dialogue.text || '',
         style: dialogue.style || 'normal',
         condition_group_id: dialogue.condition_group_id || null,

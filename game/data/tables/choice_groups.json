@@ -1,5 +1,11 @@
 [
   {
+    "choice_group_id": "ChoiceGroup_FactoryInvestigation",
+    "type": "Investigation",
+    "condition_group_id": null,
+    "max_selectable": 4
+  },
+  {
     "choice_group_id": "ChoiceGroup_CafeInvestigation",
     "type": "Investigation",
     "condition_group_id": null,

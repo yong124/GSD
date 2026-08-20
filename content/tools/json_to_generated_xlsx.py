@@ -41,7 +41,7 @@ SHEET_DEFS = {
         "headers": ["SceneID", "Chapter", "Title", "Background", "Music", "Effect", "GoalKicker", "GoalText", "EvidencePromptTitle", "EvidencePromptHint", "InvestigationTitle", "InvestigationHint", "ForcedQuestionIDs", "QuestionMode"],
     },
     "DialogTable": {
-        "headers": ["DialogID", "SceneID", "Order", "CharacterID", "EmotionType", "StandingSlot", "FocusType", "EnterMotion", "ExitMotion", "IdleMotion", "FxType", "Text", "Style", "ConditionGroupID", "ChoiceGroupID", "NextDialogID", "Speaker", "Portrait", "Label"],
+        "headers": ["DialogID", "SceneID", "Order", "CharacterID", "EmotionType", "StandingSlot", "FocusType", "EnterMotion", "ExitMotion", "IdleMotion", "FxType", "CgImage", "Sfx", "Text", "Style", "ConditionGroupID", "ChoiceGroupID", "NextDialogID", "Speaker", "Portrait", "Label"],
     },
     "ChoiceGroupTable": {
         "headers": ["ChoiceGroupID", "Type", "ConditionGroupID", "MaxSelectable"],
@@ -181,6 +181,8 @@ def build_dialog_rows(data):
                 "ExitMotion": line.get("exit_motion"),
                 "IdleMotion": line.get("idle_motion"),
                 "FxType": line.get("fx_type"),
+                "CgImage": line.get("cg_image"),
+                "Sfx": line.get("sfx"),
                 "Text": line.get("text"),
                 "Style": line.get("style"),
                 "ConditionGroupID": line.get("condition_group_id"),
