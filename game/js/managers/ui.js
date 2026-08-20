@@ -6,7 +6,7 @@ const UIManager = (() => {
   const _gaugeListeners = new Map();
 
   function getGaugeDefinitions() {
-    return Array.isArray(window.GAME_DATA?.gauges) ? window.GAME_DATA.gauges : [];
+    return Data.getGauges();
   }
 
   function getGaugeDefinition(gaugeId) {
@@ -14,7 +14,7 @@ const UIManager = (() => {
   }
 
   function getGaugeStateRows(gaugeId) {
-    return (window.GAME_DATA?.gauge_states || []).filter(row => row?.gauge_id === gaugeId);
+    return Data.getGaugeStates(gaugeId);
   }
 
   function getGaugeStateForValue(gaugeId, value) {

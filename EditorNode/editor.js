@@ -468,6 +468,26 @@
     return `window.GAME_DATA = ${JSON.stringify(payload, null, 2)};\n`;
   }
 
+  function groupScenesByChapter(scenes) {
+    const groups = new Map();
+    for (const sceneId of Object.keys(scenes || {}).sort()) {
+      const scene = scenes[sceneId];
+      const chapter = scene?.chapter;
+      if (!groups.has(chapter)) groups.set(chapter, {});
+      groups.get(chapter)[sceneId] = scene;
+    }
+    return groups;
+  }
+
+  function buildCoreBundleContent(payload) {
+    const corePayload = { ...payload, scenes: {} };
+    return buildBundleContent(corePayload);
+  }
+
+  function buildChapterFileContent(chapterScenes) {
+    return `Object.assign(window.GAME_DATA.scenes, ${JSON.stringify(chapterScenes, null, 2)});\n`;
+  }
+
   async function verifyReadWritePermission(handle) {
     const readWrite = { mode: 'readwrite' };
     if ((await handle.queryPermission(readWrite)) === 'granted') return true;
@@ -499,7 +519,8 @@
     const gameDir = await rootHandle.getDirectoryHandle('game');
     const dataDir = await gameDir.getDirectoryHandle('data');
     const tablesDir = await dataDir.getDirectoryHandle('tables', { create: true });
-    return { dataDir, tablesDir };
+    const chaptersDir = await dataDir.getDirectoryHandle('chapters', { create: true });
+    return { dataDir, tablesDir, chaptersDir };
   }
 
   async function writeFileHandle(dirHandle, filename, content) {
@@ -509,9 +530,17 @@
     await writable.close();
   }
 
+  async function removeStaleChapterFiles(chaptersDir, keepFilenames) {
+    for await (const [name, handle] of chaptersDir.entries()) {
+      if (handle.kind === 'file' && name.endsWith('.js') && !keepFilenames.has(name)) {
+        await chaptersDir.removeEntry(name);
+      }
+    }
+  }
+
   async function saveWorkspaceFiles(payload) {
     const rootHandle = await ensureWorkspaceDirHandle();
-    const { dataDir, tablesDir } = await getWorkspaceDataDirectories(rootHandle);
+    const { dataDir, tablesDir, chaptersDir } = await getWorkspaceDataDirectories(rootHandle);
     const tablePayloads = buildTablePayloadMap(payload);
 
     for (const [filename] of TABLE_FILE_MAP) {
@@ -519,7 +548,14 @@
       await writeFileHandle(tablesDir, filename, content);
     }
 
-    await writeFileHandle(dataDir, 'game_data.js', buildBundleContent(payload));
+    await writeFileHandle(dataDir, 'game_data.js', buildCoreBundleContent(payload));
+
+    const chapterGroups = groupScenesByChapter(payload.scenes);
+    const keepFilenames = new Set([...chapterGroups.keys()].map(chapter => `ch${chapter}.js`));
+    await removeStaleChapterFiles(chaptersDir, keepFilenames);
+    for (const [chapter, chapterScenes] of chapterGroups) {
+      await writeFileHandle(chaptersDir, `ch${chapter}.js`, buildChapterFileContent(chapterScenes));
+    }
   }
   function markDirty() {
     state.dirty = true;

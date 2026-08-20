@@ -18,13 +18,15 @@ import re
 import sys
 from collections import Counter
 
-
-DEFAULT_INPUT = os.path.join(os.path.dirname(__file__), "../../game/data/game_data.js")
+import game_data_io
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description="game_data.js 구조 검수")
-    parser.add_argument("input", nargs="?", default=DEFAULT_INPUT, help="검수할 game_data.js 경로")
+    parser.add_argument(
+        "input", nargs="?", default=None,
+        help="검수할 game_data.js 경로 (생략하면 game/data/game_data.js + game/data/chapters/*.js 를 합쳐서 검수)",
+    )
     return parser.parse_args()
 
 
@@ -543,13 +545,17 @@ def validate_state_descriptors(data, issues):
 
 def main():
     args = parse_args()
-    input_path = os.path.abspath(args.input)
 
-    if not os.path.exists(input_path):
-        print(f"파일 없음: {input_path}")
-        sys.exit(1)
+    if args.input is None:
+        input_path = f"{game_data_io.CORE_PATH} + {game_data_io.CHAPTERS_DIR}/*.js"
+        data = game_data_io.load_game_data()
+    else:
+        input_path = os.path.abspath(args.input)
+        if not os.path.exists(input_path):
+            print(f"파일 없음: {input_path}")
+            sys.exit(1)
+        data = parse_game_data(read_text(input_path))
 
-    data = parse_game_data(read_text(input_path))
     scenes = data.get("scenes", {})
     issues = []
 

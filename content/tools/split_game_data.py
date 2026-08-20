@@ -2,9 +2,10 @@ import json
 import os
 import sys
 
+import game_data_io
+
 
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-GAME_DATA_JS_PATH = os.path.join(ROOT_DIR, "game", "data", "game_data.js")
 TABLE_DIR = os.path.join(ROOT_DIR, "game", "data", "tables")
 
 TABLE_FILES = {
@@ -22,21 +23,6 @@ TABLE_FILES = {
     "effects.json": ("effects",),
     "scenes.json": ("scenes",),
 }
-
-
-def parse_game_data_js(path):
-    with open(path, "r", encoding="utf-8-sig") as f:
-        raw = f.read().strip()
-
-    prefix = "window.GAME_DATA ="
-    if not raw.startswith(prefix):
-        raise ValueError(f"Unsupported bundle format: {path}")
-
-    payload = raw[len(prefix):].strip()
-    if payload.endswith(";"):
-        payload = payload[:-1].strip()
-
-    return json.loads(payload)
 
 
 def write_tables(data):
@@ -75,24 +61,16 @@ def load_tables():
     return merged
 
 
-def write_bundle(data):
-    os.makedirs(os.path.dirname(GAME_DATA_JS_PATH), exist_ok=True)
-    with open(GAME_DATA_JS_PATH, "w", encoding="utf-8") as f:
-        f.write("window.GAME_DATA = ")
-        json.dump(data, f, ensure_ascii=False, indent=2)
-        f.write(";\n")
-
-
 def split_mode():
-    data = parse_game_data_js(GAME_DATA_JS_PATH)
+    data = game_data_io.load_game_data()
     write_tables(data)
-    print(f"Split {GAME_DATA_JS_PATH} -> {TABLE_DIR}")
+    print(f"Split {game_data_io.CORE_PATH} + {game_data_io.CHAPTERS_DIR}/*.js -> {TABLE_DIR}")
 
 
 def bundle_mode():
     data = load_tables()
-    write_bundle(data)
-    print(f"Bundled {TABLE_DIR} -> {GAME_DATA_JS_PATH}")
+    game_data_io.write_game_data(data)
+    print(f"Bundled {TABLE_DIR} -> {game_data_io.CORE_PATH} + {game_data_io.CHAPTERS_DIR}/*.js")
 
 
 def main():

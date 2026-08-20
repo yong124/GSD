@@ -25,7 +25,8 @@ G:/GSD/
 │   │   ├── managers/                  # ui.js / audio.js / input.js / effects.js
 │   │   └── engine/                    # scene / dialogue / choice / evidence / state / save
 │   ├── data/
-│   │   ├── game_data.js               # 런타임 데이터 번들 (게임이 로드하는 파일)
+│   │   ├── game_data.js               # 런타임 core 데이터 (scenes 제외 전 테이블 + first_scene)
+│   │   ├── chapters/                  # ch0.js ~ ch6.js — 챕터별 scenes만 (Object.assign으로 병합됨)
 │   │   ├── tables/                    # 테이블별 분리 JSON (EditorNode가 로드하는 파일)
 │   │   └── prompts.md                 # 에셋 생성 프롬프트
 │   └── assets/                        # bg / portraits / items / ev / sfx
@@ -49,32 +50,36 @@ G:/GSD/
 
 ## 소스 오브 트루스와 파이프라인
 
-- 런타임 소스 오브 트루스: `game/data/game_data.js`. 게임(`game/index.html`)은 이 파일 하나만 로드한다.
-- `game/data/tables/*.json`은 같은 데이터를 테이블 단위로 분리한 것이다. EditorNode는 이 tables를 로드해서 편집하고, 저장 시 **tables JSON과 game_data.js를 함께** 기록한다.
+- 런타임 소스 오브 트루스는 두 조각이다: `game/data/game_data.js`(core — scenes 제외 나머지 12개 테이블 + first_scene) + `game/data/chapters/ch{0..6}.js`(챕터별 scenes). 게임(`game/index.html`)은 core 뒤에 챕터 파일 7개를 순서대로 로드하며, 각 챕터 파일이 `Object.assign(window.GAME_DATA.scenes, {...})`로 자기 몫을 채워 넣는다.
+  - **왜 쪼갰나**: scenes가 데이터 부피의 대부분을 차지해서, 하나로 합쳐두면 씬 하나만 고치려 해도 파일 전체(9000줄대)를 읽어야 했다. 지금은 특정 챕터만 수정할 때 그 챕터 파일(`game/data/chapters/ch{N}.js`, 수백~2000줄대)만 열면 된다. 부팅 시 전부 즉시 로드하는 건 그대로다 — 지연 로딩이 아니라 편집 편의성을 위한 분할이다.
+  - 씬을 직접 수정할 땐 그 씬의 `chapter` 값에 맞는 `game/data/chapters/ch{N}.js`를 연다. scenes 외 나머지 테이블(characters/conditions/choice_groups/effects/questions/gauges 등)을 고칠 땐 `game/data/game_data.js`(core)를 연다.
+  - 공용 파이썬 로더/라이터: `content/tools/game_data_io.py`의 `load_game_data()`/`write_game_data()`. core+chapters를 기존 단일 game_data.js 하나처럼 다루고 싶으면 이 두 함수를 쓴다 — 직접 파싱/조립하지 않는다.
+- `game/data/tables/*.json`은 같은 데이터(scenes는 챕터 구분 없이 전체 병합)를 테이블 단위로 분리한 것이다. EditorNode는 이 tables를 로드해서 편집하고, 저장 시 **tables JSON + core game_data.js + chapters/ch{N}.js를 함께** 기록한다.
 - 흐름 요약:
 
 ```text
-EditorNode ↔ tables/*.json + game_data.js  →  게임 런타임
-game_data.js → split_game_data.py → tables/*.json   (수동 분리 갱신)
-game_data.js → json_to_generated_xlsx.py → generated xlsx   (검수/공유용)
-script.xlsx → export_to_json.py → game_data.js   (구형 방향. 실행하면 game_data.js가 덮어써짐 — 주의)
+EditorNode ↔ tables/*.json + (game_data.js + chapters/ch{N}.js)  →  게임 런타임
+(game_data.js + chapters/ch{N}.js) → split_game_data.py → tables/*.json   (수동 분리 갱신)
+(game_data.js + chapters/ch{N}.js) → json_to_generated_xlsx.py → generated xlsx   (검수/공유용)
+script.xlsx → export_to_json.py → game_data.js + chapters/ch{N}.js   (구형 방향. 실행하면 덮어써짐 — 주의)
 ```
 
 - `content/tools/` 주요 스크립트:
+  - `game_data_io.py` — core+chapters 로드/저장 공용 헬퍼. 아래 스크립트들이 전부 이걸 통해 읽고 쓴다.
   - `validate_game_data.py` — 구조 검수 (first_scene, 참조 씬, order/label 중복 등). 오류 시 exit 1.
-  - `split_game_data.py` — game_data.js → tables JSON 분리.
+  - `split_game_data.py` — (game_data.js + chapters) → tables JSON 분리. `bundle` 모드는 반대 방향.
   - `json_to_generated_xlsx.py` — 검수용 xlsx 생성.
-  - `export_to_json.py` — xlsx → game_data.js. **game_data.js를 통째로 덮어쓴다.**
+  - `export_to_json.py` — xlsx → game_data.js + chapters/ch{N}.js. **덮어쓴다.**
   - `check_story_flow.py`, `run_browser_playtest_*.ps1` — 보조/레거시 QA.
-- `game_data.js`를 직접 수정했으면, 다음 EditorNode 세션이 낡은 tables를 읽지 않도록 `split_game_data.py`로 tables도 갱신한다.
+- `game_data.js`나 `chapters/ch{N}.js`를 직접 수정했으면, 다음 EditorNode 세션이 낡은 tables를 읽지 않도록 `split_game_data.py`로 tables도 갱신한다.
 
 ## 데이터 수정 원칙
 
 - 구조 편집과 일반 데이터 수정은 `EditorNode`를 우선한다.
 - 테이블 검수, 대량 편집, 복붙 작업은 `script.xlsx`와 generated xlsx를 사용한다. generated 파일은 원본이 아니라 보조 산출물이다.
-- 시나리오 밀도 조정, 캐릭터성 보강, 관계 아크 반영 같은 **빠른 서사 반복 작업**은 `game_data.js` 직접 수정을 적극 허용한다.
+- 시나리오 밀도 조정, 캐릭터성 보강, 관계 아크 반영 같은 **빠른 서사 반복 작업**은 해당 씬이 속한 `game/data/chapters/ch{N}.js` 직접 수정을 적극 허용한다. scenes 외 테이블(캐릭터/조건/게이지 등)은 `game/data/game_data.js`(core)를 직접 고친다.
 - 직접 수정 후에는 필요 시 generated xlsx를 다시 뽑아 검수 흐름으로 되돌린다.
-- 어떤 파일(`game_data.js` / tables / `script.xlsx`)을 기준으로 작업 중인지 항상 먼저 명확히 한다.
+- 어떤 파일(`game_data.js` core / `chapters/ch{N}.js` / tables / `script.xlsx`)을 기준으로 작업 중인지 항상 먼저 명확히 한다.
 - 한국어 텍스트 수정은 Edit 도구(정확 문자열 패치)로 한다. PowerShell/shell 인라인 문자열로 한국어를 삽입하면 실제 `???` 손상을 만들 수 있으므로 금지.
 
 ---
@@ -153,7 +158,7 @@ scenes: {
 - `next_type: "Dialog"`의 `next_id`는 문맥에 따라 `dialogues[].dialog_id`, `scene.investigation_dialogues`의 키, `scene.evidence_dialogues`의 키 중 하나와 매칭되어야 한다.
 - 조사 선택지는 기본 `next_type: "Dialog"`. `"Scene"`으로 두면 분기 대사가 재생되지 않는다.
 - 고아 씬 탐지 시 choices의 `next_id`(Scene 타입), branches의 `next_scene`을 모두 참조로 간주한다.
-- EditorNode 저장은 tables와 game_data.js **동시 기록**이다. 한쪽만 고치고 끝내지 않는다.
+- EditorNode 저장은 tables, core game_data.js, chapters/ch{N}.js를 **동시 기록**이다. 한쪽만 고치고 끝내지 않는다.
 
 엔진 진행 흐름:
 
@@ -184,7 +189,7 @@ scenes: {
 
 - 메인 편집 UI는 `EditorNode/` 하나로 본다. 예전 카드형 `editor/`는 폐기됐다.
 - EditorNode는 씬 구조 편집, 대사/선택지/분기/단서 수정, 캐릭터/감정 편집, 조사 대사 편집, 검색/필터, 구조 검수, 프리뷰, generated 연동 검토까지 담당한다.
-- 데이터 로드는 `game/data/tables/*.json`, 저장은 워크스페이스 선택 후 tables + game_data.js 동시 기록(File System Access API).
+- 데이터 로드는 `game/data/tables/*.json`, 저장은 워크스페이스 선택 후 tables + core game_data.js + chapters/ch{N}.js 동시 기록(File System Access API).
 - 스키마를 바꾸면 `runtime → EditorNode → pipeline(export/split/generated) → validate → docs`를 같은 라운드에 맞춘다. 한 층에만 필드를 추가하지 않는다.
 
 ## 스킬 라우팅
@@ -241,7 +246,7 @@ UTF-8로 다시 읽어도 깨져 있으면 그때는 실제 손상이다. 그 �
 1. 데이터를 고쳤으면: `py G:\GSD\content\tools\validate_game_data.py` 통과.
 2. 런타임 JS를 고쳤으면: 건드린 파일마다 `node --check`, `game/index.html`의 `?v=` 범프 확인.
 3. EditorNode JS를 고쳤으면: `node --check G:\GSD\EditorNode\editor.js`.
-4. game_data.js를 직접 고쳤으면: tables 분리 갱신(`split_game_data.py`) 필요 여부 판단. 검수 공유가 필요하면 `json_to_generated_xlsx.py`.
+4. game_data.js(core) 또는 chapters/ch{N}.js를 직접 고쳤으면: tables 분리 갱신(`split_game_data.py`) 필요 여부 판단. 검수 공유가 필요하면 `json_to_generated_xlsx.py`.
 5. 입력 흐름 UI를 건드렸으면: `새 게임 / 이어하기 / Esc / M·S·L / 패널 열린 상태 대사 진행`을 같이 본다.
 6. 진행 로직을 건드렸으면: 최소 `scene_boot_check.js` 수준의 브라우저 QA를 실제 서버에서 돌린다.
 7. QA/도구가 만든 임시 폴더·캐시를 정리한다.

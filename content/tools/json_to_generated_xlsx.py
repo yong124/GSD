@@ -14,6 +14,8 @@ import shutil
 import sys
 from datetime import datetime
 
+import game_data_io
+
 try:
     from openpyxl import Workbook
 except ImportError:
@@ -78,7 +80,10 @@ SHEET_DEFS = {
 
 def parse_args():
     parser = argparse.ArgumentParser(description="game_data.js를 generated xlsx로 변환")
-    parser.add_argument("input", nargs="?", default=DEFAULT_INPUT, help="입력 game_data.js 경로")
+    parser.add_argument(
+        "input", nargs="?", default=None,
+        help="입력 game_data.js 경로 (생략하면 game/data/game_data.js + game/data/chapters/*.js 를 합쳐서 사용)",
+    )
     parser.add_argument("output", nargs="?", default=DEFAULT_OUTPUT, help="출력 xlsx 경로")
     parser.add_argument(
         "--sheets",
@@ -464,7 +469,8 @@ def build_workbook(data, selected_sheets, input_path):
     meta_ws = wb.create_sheet("Meta")
     meta_ws.append(["Key", "Value"])
     meta_ws.append(["GeneratedAt", created_at])
-    meta_ws.append(["Source", os.path.abspath(input_path)])
+    source_label = input_path if not os.path.exists(input_path) else os.path.abspath(input_path)
+    meta_ws.append(["Source", source_label])
     meta_ws.append(["FirstScene", data.get("first_scene")])
     meta_ws.append(["SelectedSheets", ", ".join(selected_sheets)])
     meta_ws.append(["SceneCount", len(data.get("scenes", {}))])
@@ -511,15 +517,19 @@ def write_delimited_files(output_path, selected_sheets, sheet_rows):
 
 def main():
     args = parse_args()
-    input_path = args.input
     output_path = args.output
 
-    if not os.path.exists(input_path):
-        print(f"입력 파일 없음: {input_path}")
-        sys.exit(1)
+    if args.input is None:
+        input_path = f"{game_data_io.CORE_PATH} + {game_data_io.CHAPTERS_DIR}/*.js"
+        data = game_data_io.load_game_data()
+    else:
+        input_path = args.input
+        if not os.path.exists(input_path):
+            print(f"입력 파일 없음: {input_path}")
+            sys.exit(1)
+        data = parse_game_data(read_text(input_path))
 
     selected_sheets = resolve_selected_sheets(args.sheets)
-    data = parse_game_data(read_text(input_path))
     wb, sheet_rows, created_at = build_workbook(data, selected_sheets, input_path)
 
     os.makedirs(os.path.dirname(output_path), exist_ok=True)

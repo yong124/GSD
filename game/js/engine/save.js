@@ -33,8 +33,7 @@ const Save = (() => {
   }
 
   function getSceneTitle(sceneId) {
-    const scenes = window.GAME_DATA?.scenes || {};
-    return scenes[sceneId]?.title || sceneId || '';
+    return Data.getScene(sceneId)?.title || sceneId || '';
   }
 
   let _pendingAction = null;

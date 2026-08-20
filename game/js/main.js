@@ -198,11 +198,11 @@
 
   function init() {
     const data = window.GAME_DATA;
-    if (!data) {
+    if (!data || !data.scenes || Object.keys(data.scenes).length === 0) {
       document.body.innerHTML = `
         <div style="color:#c8a84b; background:#0a0a0f; padding:40px; font-family:monospace; height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:16px;">
-          <div style="font-size:18px">⚠ game_data.js 파일이 없습니다.</div>
-          <div style="font-size:13px; color:#7a6e5a;">python export_to_json.py 를 실행해 데이터를 먼저 생성하세요.</div>
+          <div style="font-size:18px">⚠ game_data.js 파일이 없거나 챕터 데이터가 로드되지 않았습니다.</div>
+          <div style="font-size:13px; color:#7a6e5a;">python export_to_json.py 를 실행하거나, index.html의 data/chapters/ch*.js 스크립트 태그를 확인하세요.</div>
         </div>`;
       return;
     }

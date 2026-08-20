@@ -13,7 +13,7 @@ const State = (() => {
   };
 
   function getGaugeDefinitions() {
-    return Array.isArray(window.GAME_DATA?.gauges) ? window.GAME_DATA.gauges : [];
+    return Data.getGauges();
   }
 
   function getGaugeDefinition(gaugeId) {
@@ -21,8 +21,7 @@ const State = (() => {
   }
 
   function getGaugeStateRows(gaugeId) {
-    const rows = Array.isArray(window.GAME_DATA?.gauge_states) ? window.GAME_DATA.gauge_states : [];
-    return rows.filter(row => row?.gauge_id === gaugeId);
+    return Data.getGaugeStates(gaugeId);
   }
 
   function getGaugeDefaultValue(gaugeId) {

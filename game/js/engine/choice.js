@@ -6,8 +6,7 @@ const Choice = (() => {
   }
 
   function getChoiceGroup(choice) {
-    const groups = window.GAME_DATA?.choice_groups || [];
-    return groups.find(group => group?.choice_group_id === choice?.choice_group_id) || null;
+    return Data.getChoiceGroup(choice?.choice_group_id);
   }
 
   function getChoiceAnswerType(choice) {
@@ -15,8 +14,7 @@ const Choice = (() => {
   }
 
   function getEffectsByGroup(effectGroupId) {
-    if (!effectGroupId) return [];
-    return (window.GAME_DATA?.effects || []).filter(effect => effect?.effect_group_id === effectGroupId);
+    return Data.getEffectsByGroup(effectGroupId);
   }
 
   function applyEffectGroup(effectGroupId) {
@@ -52,7 +50,7 @@ const Choice = (() => {
       return `${labels[effect.gauge_id] || effect.gauge_id} ${formatSignedValue(effect.gauge_delta)}`;
     }
     if (effect.effect_type === 'TrustChange') {
-      const character = window.GAME_DATA?.characters?.[effect.trust_character_id];
+      const character = Data.getCharacter(effect.trust_character_id);
       return `${character?.display_name || effect.trust_character_id} 신뢰 ${formatSignedValue(effect.trust_delta)}`;
     }
     if ((effect.effect_type === 'EvidenceGive' || effect.effect_type === 'EvidenceGain') && effect.evidence_id) {
@@ -130,7 +128,7 @@ const Choice = (() => {
 
   function buildEvidenceEntries(evidenceChoices = []) {
     const evidenceById = new Map();
-    (window.GAME_DATA?.scenes ? Object.values(window.GAME_DATA.scenes) : []).forEach(scene => {
+    Object.values(Data.getScenes()).forEach(scene => {
       (scene?.evidence || []).forEach(evidence => {
         const evidenceId = evidence?.evidence_id || evidence?.id;
         if (evidenceId && !evidenceById.has(evidenceId)) evidenceById.set(evidenceId, evidence);

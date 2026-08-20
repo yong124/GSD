@@ -39,8 +39,9 @@ except ImportError:
     print("openpyxl 설치 필요: pip install openpyxl")
     sys.exit(1)
 
-EXCEL_PATH  = os.path.join(os.path.dirname(__file__), "../data/script.xlsx")
-OUTPUT_PATH = os.path.join(os.path.dirname(__file__), "../../game/data/game_data.js")
+import game_data_io
+
+EXCEL_PATH = os.path.join(os.path.dirname(__file__), "../data/script.xlsx")
 
 
 def normalize_condition_row(row):
@@ -484,14 +485,10 @@ def main():
         print(f"무시된 시트: {', '.join(ignored_sheets)}")
 
     data = build_game_data(wb)
-
-    os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
-    with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
-        json_str = json.dumps(data, ensure_ascii=False, indent=2)
-        f.write(f"window.GAME_DATA = {json_str};\n")
+    game_data_io.write_game_data(data)
 
     scene_count = len(data["scenes"])
-    print(f"완료: {OUTPUT_PATH}")
+    print(f"완료: {game_data_io.CORE_PATH} + {game_data_io.CHAPTERS_DIR}/*.js")
     print(f"  씬 {scene_count}개 변환됨 / 첫 씬: {data['first_scene']}")
 
 
