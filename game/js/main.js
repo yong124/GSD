@@ -183,6 +183,7 @@
 
     document.addEventListener('keydown', e => {
       if (!_titleVisible) return;
+      if (Settings.isPanelOpen()) return;
       if (e.code === 'Space' || e.code === 'Enter') {
         e.preventDefault();
         if (Save.hasSave()) {

@@ -14,7 +14,19 @@ const InputManager = (() => {
   }
 
   function _handleKeyDown(e) {
-    if (_titleVisible) return;
+    if (_titleVisible) {
+      if (e.code === 'Escape' && Settings.isPanelOpen()) {
+        e.preventDefault();
+        Settings.hidePanel();
+        return;
+      }
+      if (e.key === 'o' || e.key === 'O') {
+        e.preventDefault();
+        Settings.isPanelOpen() ? Settings.hidePanel() : Settings.showPanel();
+        return;
+      }
+      return;
+    }
 
     // 1. Common Panel Escapes
     if (e.code === 'Escape') {

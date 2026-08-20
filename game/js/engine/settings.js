@@ -64,6 +64,7 @@ const Settings = (() => {
       applyTextSpeed();
 
       const btn = document.getElementById('settings-btn');
+      const titleBtn = document.getElementById('title-settings-btn');
       const closeBtn = document.getElementById('settings-close');
       const overlay = document.getElementById('settings-overlay');
       const bgmSlider = document.getElementById('settings-bgm-volume');
@@ -71,6 +72,7 @@ const Settings = (() => {
       const muteBox = document.getElementById('settings-mute');
 
       if (btn) btn.addEventListener('click', () => (isPanelOpen() ? hidePanel() : showPanel()));
+      if (titleBtn) titleBtn.addEventListener('click', () => (isPanelOpen() ? hidePanel() : showPanel()));
       if (closeBtn) closeBtn.addEventListener('click', hidePanel);
       if (overlay) overlay.addEventListener('click', hidePanel);
 
