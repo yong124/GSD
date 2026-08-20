@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>경성뎐 : 여급 실종사건</title>
-  <link rel="stylesheet" href="css/main.css?v=26">
+  <link rel="stylesheet" href="css/main.css?v=27">
   <link rel="stylesheet" href="css/dialogue.css?v=17">
   <link rel="stylesheet" href="css/effects.css?v=10">
 </head>
@@ -153,7 +153,37 @@
     <button id="auto-btn" title="자동 (A)">자동</button>
     <button id="save-btn">저장</button>
     <button id="load-btn">불러오기</button>
+    <button id="settings-btn" title="설정 (O)">설정</button>
   </div>
+
+  <!-- ── 설정 패널 ── -->
+  <div id="settings-panel" class="hidden">
+    <div id="settings-panel-title">설정</div>
+    <div class="settings-row">
+      <label class="settings-label" for="settings-bgm-volume">배경음 볼륨</label>
+      <input type="range" id="settings-bgm-volume" min="0" max="100" step="1">
+      <span class="settings-value" id="settings-bgm-value"></span>
+    </div>
+    <div class="settings-row">
+      <label class="settings-label" for="settings-sfx-volume">효과음 볼륨</label>
+      <input type="range" id="settings-sfx-volume" min="0" max="100" step="1">
+      <span class="settings-value" id="settings-sfx-value"></span>
+    </div>
+    <div class="settings-row">
+      <label class="settings-label" for="settings-mute">소리 끄기</label>
+      <input type="checkbox" id="settings-mute">
+    </div>
+    <div class="settings-row settings-row-speed">
+      <span class="settings-label">글자 속도</span>
+      <div id="settings-text-speed" class="settings-speed-group">
+        <button type="button" class="settings-speed-btn" data-speed="slow">느리게</button>
+        <button type="button" class="settings-speed-btn" data-speed="normal">보통</button>
+        <button type="button" class="settings-speed-btn" data-speed="fast">빠르게</button>
+      </div>
+    </div>
+    <button id="settings-close">닫기</button>
+  </div>
+  <div id="settings-overlay" class="hidden"></div>
 
   <!-- ── 슬롯 선택 패널 ── -->
   <div id="slot-panel" class="hidden">
@@ -184,15 +214,16 @@
 <script src="js/core/data.js?v=1"></script>
 
 <!-- 엔진 코어 -->
-<script src="js/core/engine.js?v=12"></script>
+<script src="js/core/engine.js?v=13"></script>
 <script src="js/managers/effects.js?v=11"></script>
-<script src="js/managers/audio.js?v=11"></script>
+<script src="js/managers/audio.js?v=12"></script>
 <script src="js/managers/ui.js?v=25"></script>
-<script src="js/managers/input.js?v=11"></script>
+<script src="js/managers/input.js?v=12"></script>
 
 <!-- 엔진 모듈 -->
 <script src="js/engine/state.js?v=15"></script>
 <script src="js/engine/save.js?v=12"></script>
+<script src="js/engine/settings.js?v=1"></script>
   <script src="js/engine/evidence.js?v=25"></script>
 <script src="js/engine/dialogue.js?v=17"></script>
 <script src="js/engine/choice.js?v=19"></script>

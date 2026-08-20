@@ -34,6 +34,7 @@ const Engine = (() => {
       Evidence.init();
       Dialogue.init();
       Save.init();
+      Settings.init();
       
       // 3. Hydrate session
       Evidence.hydrateSession();

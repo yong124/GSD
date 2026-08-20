@@ -23,6 +23,11 @@ const InputManager = (() => {
         Save.hidePanel();
         return;
       }
+      if (Settings.isPanelOpen()) {
+        e.preventDefault();
+        Settings.hidePanel();
+        return;
+      }
       if (Evidence.isOpen()) {
         e.preventDefault();
         Evidence.hide();
@@ -35,14 +40,22 @@ const InputManager = (() => {
 
     // Memo (M)
     if (e.key === 'm' || e.key === 'M') {
-      if (Save.isPanelOpen()) return;
+      if (Save.isPanelOpen() || Settings.isPanelOpen()) return;
       e.preventDefault();
       const btn = document.getElementById('memo-btn');
       if (btn) btn.click();
       return;
     }
 
-    if (Save.isPanelOpen() || Evidence.isOpen()) return;
+    // Settings (O)
+    if (e.key === 'o' || e.key === 'O') {
+      if (Save.isPanelOpen()) return;
+      e.preventDefault();
+      Settings.isPanelOpen() ? Settings.hidePanel() : Settings.showPanel();
+      return;
+    }
+
+    if (Save.isPanelOpen() || Settings.isPanelOpen() || Evidence.isOpen()) return;
 
     // Quick Save (S)
     if (e.key === 's' || e.key === 'S') {
