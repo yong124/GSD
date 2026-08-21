@@ -196,6 +196,22 @@ window.GAME_DATA = {
       "condition_value": true
     },
     {
+      "condition_id": "Cond_Ch2Factory_EscapePursue_01",
+      "condition_group_id": "CG_Ch2Factory_EscapePursue",
+      "condition_type": "ChoiceSelected",
+      "condition_target_id": "Ch2EscapePursue",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Ch2Factory_EscapeDocument_01",
+      "condition_group_id": "CG_Ch2Factory_EscapeDocument",
+      "condition_type": "ChoiceSelected",
+      "condition_target_id": "Ch2EscapeDocument",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
       "condition_id": "Cond_Backroom_EditorRel0_01",
       "condition_group_id": "CG_Backroom_EditorRel0",
       "condition_type": "Trust",

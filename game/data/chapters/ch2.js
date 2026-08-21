@@ -346,7 +346,45 @@ Object.assign(window.GAME_DATA.scenes, {
     "dialogues": [
       {
         "order": 1,
-        "text": "경성 외곽 폐공장. 이른 새벽. 병원에서 급보를 받고 달려왔는데도, 현장은 이미 한참 전부터 기다리고 있던 곳처럼 기묘하게 고요하다.",
+        "text": "이판규의 그림자를 놓치지 않으려 골목을 끝까지 쫓았지만, 사람의 몸으로 낼 수 없는 속도였다. 푸른 얼룩만 남긴 채 사라진 뒤, 새벽녘 폐공장에서 시신이 나왔다는 급보가 날아왔다.",
+        "style": "narration",
+        "dialog_id": null,
+        "speaker_id": null,
+        "emotion_type": null,
+        "standing_slot": null,
+        "focus_type": null,
+        "enter_motion": null,
+        "exit_motion": null,
+        "idle_motion": null,
+        "fx_type": "BlueTrace",
+        "cg_image": null,
+        "sfx": null,
+        "condition_group_id": "CG_Ch2Factory_EscapePursue",
+        "choice_group_id": null,
+        "next_dialog_id": null
+      },
+      {
+        "order": 2,
+        "text": "탈주 경로와 목격을 수첩에 남기고 있던 새벽, 폐공장에서 시신이 나왔다는 급보가 들어왔다. 기록해 둔 방향은 공장 쪽을 가리키고 있었다.",
+        "style": "narration",
+        "dialog_id": null,
+        "speaker_id": null,
+        "emotion_type": null,
+        "standing_slot": null,
+        "focus_type": null,
+        "enter_motion": null,
+        "exit_motion": null,
+        "idle_motion": null,
+        "fx_type": null,
+        "cg_image": null,
+        "sfx": null,
+        "condition_group_id": "CG_Ch2Factory_EscapeDocument",
+        "choice_group_id": null,
+        "next_dialog_id": null
+      },
+      {
+        "order": 3,
+        "text": "경성 외곽 폐공장. 이른 새벽. 현장은 이미 한참 전부터 기다리고 있던 곳처럼 기묘하게 고요하다.",
         "style": "narration",
         "dialog_id": null,
         "speaker_id": null,
@@ -364,7 +402,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "next_dialog_id": null
       },
       {
-        "order": 2,
+        "order": 4,
         "text": "기자 양반, 이리 와보쇼. 목 달아난 짐승 꼴도 이거보단 낫겠구만.",
         "style": "normal",
         "speaker_id": "Policeman",
@@ -383,7 +421,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "next_dialog_id": null
       },
       {
-        "order": 3,
+        "order": 5,
         "text": "시신 주변 진흙엔 사람 발도 짐승 발도 아닌 자국이 짓이겨져 있다. 발가락이 없고 뒤꿈치만 깊다. 천장 철골 아래엔 푸른 얼룩이 금속을 갉아먹은 듯 번져 있다.",
         "style": "narration",
         "fx_type": "Flicker",
@@ -402,7 +440,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "next_dialog_id": null
       },
       {
-        "order": 4,
+        "order": 6,
         "text": "이건 평범한 살인 현장이 아닌데... 경찰, 일단 물러서 보시오. 내가 좀 살펴볼 테니.",
         "style": "normal",
         "speaker_id": "Yuu",
