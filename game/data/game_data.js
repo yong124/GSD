@@ -311,7 +311,23 @@ window.GAME_DATA = {
       "condition_id": "Cond_Branch_FinalChoice_B",
       "condition_group_id": "CG_Branch_FinalChoice_B",
       "condition_type": "ChoiceSelected",
-      "condition_target_id": "Ch6FinalBlock|Ch6FinalRecord",
+      "condition_target_id": "Ch6FinalBlock",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Branch_FinalChoice_Record",
+      "condition_group_id": "CG_Branch_FinalChoice_Record",
+      "condition_type": "ChoiceSelected",
+      "condition_target_id": "Ch6FinalRecord",
+      "compare_type": "Equal",
+      "condition_value": true
+    },
+    {
+      "condition_id": "Cond_Branch_FinalRecordComplete",
+      "condition_group_id": "CG_Branch_FinalRecordComplete",
+      "condition_type": "QuestionSolved",
+      "condition_target_id": "QuestionSolved_QArchivePattern",
       "compare_type": "Equal",
       "condition_value": true
     },
@@ -328,14 +344,6 @@ window.GAME_DATA = {
       "condition_group_id": "CG_FinalChoice_BlockOnly",
       "condition_type": "ChoiceSelected",
       "condition_target_id": "Ch6FinalBlock",
-      "compare_type": "Equal",
-      "condition_value": true
-    },
-    {
-      "condition_id": "Cond_FinalChoice_RecordOnly",
-      "condition_group_id": "CG_FinalChoice_RecordOnly",
-      "condition_type": "ChoiceSelected",
-      "condition_target_id": "Ch6FinalRecord",
       "compare_type": "Equal",
       "condition_value": true
     },
@@ -1783,15 +1791,18 @@ window.GAME_DATA = {
       "related_evidence_ids": [
         "EvNote",
         "EvBlueCloth",
+        "EvIpangyuStatement",
         "EvRitualNote"
       ],
       "solution_evidence_ids": [
-        "EvNote"
+        "EvNote",
+        "EvIpangyuStatement"
       ],
+      "solution_mode": "All",
       "contradiction_prompt": "이 진술을 뒤집을 근거를 골라야 한다.",
       "contradiction_statement": "이판규는 그저 미쳐 날뛴 거요. 누가 불렀다느니, 문이 열린다느니 하는 말은 전부 죄를 피하려고 지어낸 소리였지.",
       "solved_state_id": "QuestionSolved_QIpangyuMadness",
-      "resolved_detail": "붉은 쪽지는 이판규의 발작적 발언이 꾸며낸 말이 아니라, 실제 호출의 흔적과 맞닿아 있었음을 보여준다. 그의 말은 헛소리가 아니라 사건의 반향이었다.",
+      "resolved_detail": "붉은 쪽지의 호출과 탈주 직전 진술이 맞물린다. 이판규는 의식의 말을 제 언어로 되뇌고 있었던 셈이다.",
       "success_toast": "모순 판별: 이판규의 말이 단순한 헛소리가 아니었다.",
       "failure_toast": "이 근거만으로는 이판규의 말을 거짓이라 뒤집을 수 없다.",
       "reward_state_id": "InvestigationScore",
@@ -1863,12 +1874,14 @@ window.GAME_DATA = {
         "EvOldArticles"
       ],
       "solution_evidence_ids": [
-        "EvDiary"
+        "EvDiary",
+        "EvBlueHanbok"
       ],
+      "solution_mode": "All",
       "contradiction_prompt": "도피로 포장된 설명을 뒤집을 근거를 골라야 한다.",
       "contradiction_statement": "송금은 겁이 나서 스스로 달아난 거야. 낙원에 남을 이유가 없었으니, 다들 없어진 뒤에 제 발로 도망친 거지.",
       "solved_state_id": "QuestionSolved_QSonggeumRunaway",
-      "resolved_detail": "일기장은 송금이 도망칠 여유조차 없이 의례의 배역으로 밀려 들어갔음을 드러낸다. 이 실종은 도피가 아니라 선택당한 소거였다.",
+      "resolved_detail": "일기와 청색 한복은 송금이 도망친 것이 아니라, 의례가 요구한 배역으로 입혀지고 밀려 들어갔음을 함께 보여 준다. 이 실종은 도피가 아니라 강요된 소거였다.",
       "success_toast": "모순 판별: 송금의 실종이 자발적 도피가 아니었다.",
       "failure_toast": "이 근거만으로는 송금이 스스로 달아났다는 말을 뒤집기 어렵다.",
       "reward_state_id": "ReadRitualScore",
@@ -2111,13 +2124,14 @@ window.GAME_DATA = {
       "answer_id": "QIpangyuMadness_Correct",
       "question_id": "QIpangyuMadness",
       "sort_order": 10,
-      "answer_text": "붉은 쪽지가 남아 있으므로, 이판규의 호출 이야기는 실제 흔적과 맞닿아 있다.",
+      "answer_text": "붉은 쪽지의 호출과 탈주 직전 진술이 맞물리므로, 이판규의 말은 실제 의식의 반향이다.",
       "required_evidence_ids": [
-        "EvNote"
+        "EvNote",
+        "EvIpangyuStatement"
       ],
       "is_correct": true,
       "effect_group_id": "",
-      "result_text": "발작처럼 흘린 말과 쪽지의 호출이 맞물린다. 그의 말은 죄를 피하려 지어낸 헛소리만은 아니다.",
+      "result_text": "쪽지가 가리킨 호출과 탈주 직전의 말이 맞물린다. 이판규는 의식의 말을 제 언어로 되뇌고 있었던 셈이다.",
       "next_type": "Resume",
       "next_id": ""
     },
@@ -2127,7 +2141,7 @@ window.GAME_DATA = {
       "sort_order": 20,
       "answer_text": "이판규는 공장에 남은 노래를 들었기에 이미 의식의 편이 되었다.",
       "required_evidence_ids": [
-        "EvRitualNote"
+        "EvIpangyuStatement"
       ],
       "is_correct": false,
       "effect_group_id": "eff_question_erosion",
@@ -2191,13 +2205,14 @@ window.GAME_DATA = {
       "answer_id": "QSonggeumRunaway_Correct",
       "question_id": "QSonggeumRunaway",
       "sort_order": 10,
-      "answer_text": "일기는 송금에게 도망칠 틈이 없었고, 의례의 배역으로 정해졌음을 보여 준다.",
+      "answer_text": "일기와 청색 한복은 송금이 의례의 배역으로 입혀진 채 끌려갔음을 보여 준다.",
       "required_evidence_ids": [
-        "EvDiary"
+        "EvDiary",
+        "EvBlueHanbok"
       ],
       "is_correct": true,
       "effect_group_id": "",
-      "result_text": "송금의 실종은 스스로 떠난 도피가 아니다. 선택당한 사람을 지워 버리는 의례의 순서가 그를 밀어 넣었다.",
+      "result_text": "일기의 증언과 한복의 용도가 겹친다. 송금의 실종은 스스로 떠난 도피가 아니라, 배역으로 입혀진 뒤 밀려난 결과다.",
       "next_type": "Resume",
       "next_id": ""
     },

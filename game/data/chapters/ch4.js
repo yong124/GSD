@@ -675,7 +675,7 @@ Object.assign(window.GAME_DATA.scenes, {
       },
       {
         "order": 4,
-        "text": "클리핑 사이사이에는 붉은 연필 자국이 남아 있다. 누군가 의도적으로 문장을 지우고, 남겨야 할 정보만 남긴 흔적이다. 덮은 자의 손길이 오히려 사건의 테두리를 또렷하게 만든다.",
+        "text": "클리핑 여백에는 붉은 연필 자국과 함께 짧은 문장이 남아 있다. ‘곪은 것은 도려내야 한다.’ 서명처럼 적힌 두 글자, 해심. 지운 이는 흔적을 감췄지만, 누군가는 그 빈자리를 이용해 더 잔인한 결론을 적어 넣었다.",
         "style": "narration",
         "dialog_id": null,
         "speaker_id": null,
@@ -1765,7 +1765,7 @@ Object.assign(window.GAME_DATA.scenes, {
       },
       {
         "order": 10,
-        "text": "...그건 모르겠어요. 저는 도망쳤으니까. 뒤를 안 봤어요.",
+        "text": "...그건 모르겠어요. 저는 도망쳤으니까. 뒤는 안 봤어요. 다만 거울에, 한쪽 눈을 가린 여자가 서 있었어요. 손님들한테는 늘 아픈 사람들을 거둬 준다고 말하던 여자요.",
         "style": "normal",
         "speaker_id": "Okryeon",
         "emotion_type": "Afraid",

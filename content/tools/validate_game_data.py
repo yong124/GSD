@@ -515,6 +515,40 @@ def validate_forced_questions(data, scenes, issues):
             issues.append(f"[Scene.question_mode] {scene_id} invalid QuestionMode: {question_mode}")
 
 
+def validate_forced_question_evidence_timing(data, scenes, issues):
+    earliest_evidence_chapter = {}
+    for scene in scenes.values():
+        chapter = to_number(scene.get("chapter"))
+        if chapter is None:
+            continue
+        for evidence in scene.get("evidence", []) or []:
+            evidence_id = evidence.get("evidence_id")
+            if evidence_id and (
+                evidence_id not in earliest_evidence_chapter
+                or chapter < earliest_evidence_chapter[evidence_id]
+            ):
+                earliest_evidence_chapter[evidence_id] = chapter
+
+    answers_by_question = {}
+    for answer in data.get("question_answers", []) or []:
+        if answer.get("is_correct") is True:
+            answers_by_question.setdefault(answer.get("question_id"), []).append(answer)
+
+    for scene_id, scene in scenes.items():
+        checkpoint_chapter = to_number(scene.get("chapter"))
+        if checkpoint_chapter is None:
+            continue
+        for question_id in scene.get("forced_question_ids", []) or []:
+            for answer in answers_by_question.get(question_id, []):
+                for evidence_id in answer.get("required_evidence_ids", []) or []:
+                    evidence_chapter = earliest_evidence_chapter.get(evidence_id)
+                    if evidence_chapter is not None and evidence_chapter > checkpoint_chapter:
+                        issues.append(
+                            f"[ForcedQuestion.evidence_timing] {scene_id}/{question_id} -> "
+                            f"{evidence_id} (chapter {evidence_chapter} after checkpoint {checkpoint_chapter})"
+                        )
+
+
 def validate_state_descriptors(data, issues):
     descriptors = data.get("state_descriptors", []) or []
     numeric_state_ids = {"ResonanceLevel", "InvestigationScore", "SongsoonTrust", "ReadRitualScore", "SolvedQuestionCount"}
@@ -582,6 +616,7 @@ def main():
     validate_questions(data, issues)
     validate_question_answers(data, scenes, issues)
     validate_forced_questions(data, scenes, issues)
+    validate_forced_question_evidence_timing(data, scenes, issues)
     validate_state_descriptors(data, issues)
 
     print(f"검수 대상: {input_path}")

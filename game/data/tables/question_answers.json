@@ -43,13 +43,14 @@
     "answer_id": "QIpangyuMadness_Correct",
     "question_id": "QIpangyuMadness",
     "sort_order": 10,
-    "answer_text": "붉은 쪽지가 남아 있으므로, 이판규의 호출 이야기는 실제 흔적과 맞닿아 있다.",
+    "answer_text": "붉은 쪽지의 호출과 탈주 직전 진술이 맞물리므로, 이판규의 말은 실제 의식의 반향이다.",
     "required_evidence_ids": [
-      "EvNote"
+      "EvNote",
+      "EvIpangyuStatement"
     ],
     "is_correct": true,
     "effect_group_id": "",
-    "result_text": "발작처럼 흘린 말과 쪽지의 호출이 맞물린다. 그의 말은 죄를 피하려 지어낸 헛소리만은 아니다.",
+    "result_text": "쪽지가 가리킨 호출과 탈주 직전의 말이 맞물린다. 이판규는 의식의 말을 제 언어로 되뇌고 있었던 셈이다.",
     "next_type": "Resume",
     "next_id": ""
   },
@@ -59,7 +60,7 @@
     "sort_order": 20,
     "answer_text": "이판규는 공장에 남은 노래를 들었기에 이미 의식의 편이 되었다.",
     "required_evidence_ids": [
-      "EvRitualNote"
+      "EvIpangyuStatement"
     ],
     "is_correct": false,
     "effect_group_id": "eff_question_erosion",
@@ -123,13 +124,14 @@
     "answer_id": "QSonggeumRunaway_Correct",
     "question_id": "QSonggeumRunaway",
     "sort_order": 10,
-    "answer_text": "일기는 송금에게 도망칠 틈이 없었고, 의례의 배역으로 정해졌음을 보여 준다.",
+    "answer_text": "일기와 청색 한복은 송금이 의례의 배역으로 입혀진 채 끌려갔음을 보여 준다.",
     "required_evidence_ids": [
-      "EvDiary"
+      "EvDiary",
+      "EvBlueHanbok"
     ],
     "is_correct": true,
     "effect_group_id": "",
-    "result_text": "송금의 실종은 스스로 떠난 도피가 아니다. 선택당한 사람을 지워 버리는 의례의 순서가 그를 밀어 넣었다.",
+    "result_text": "일기의 증언과 한복의 용도가 겹친다. 송금의 실종은 스스로 떠난 도피가 아니라, 배역으로 입혀진 뒤 밀려난 결과다.",
     "next_type": "Resume",
     "next_id": ""
   },

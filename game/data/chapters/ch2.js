@@ -1640,7 +1640,16 @@ Object.assign(window.GAME_DATA.scenes, {
         "evidence_id": null
       }
     ],
-    "evidence": [],
+    "evidence": [
+      {
+        "evidence_id": "EvIpangyuStatement",
+        "name": "이판규의 탈주 전 진술",
+        "description": "이판규는 누군가의 호출과 문이 열리는 순간을 반복해 말했다. 공포에 질린 말투와 구체적인 순서는 단순한 횡설수설로 치부하기 어렵다.",
+        "image": "assets/items/note.png",
+        "category_id": "testimony",
+        "trigger": 1
+      }
+    ],
     "goal_kicker": null,
     "goal_text": null,
     "investigation_title": null,

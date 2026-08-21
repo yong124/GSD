@@ -1625,7 +1625,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "emotion_type": "Tense",
         "standing_slot": "Right",
         "focus_type": "Speaker",
-        "text": "창고에서 챙긴 악보와 같은 결입니다. 소리를 읽는 법만 알면, 이 의식이 사람 발을 어디로 모는지도 보입니다.",
+        "text": "악보가 사람을 부르는 순서를 적어 두었다면, 제단의 기록은 그 순서가 누구에게 쓰였는지를 세고 있습니다.",
         "style": "thought",
         "condition_group_id": "CG_RitualRoom_RitualScore",
         "dialog_id": null,
@@ -1644,7 +1644,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "emotion_type": "Tense",
         "standing_slot": "Right",
         "focus_type": "Speaker",
-        "text": "자료실에서 본 낡은 기사 뭉치가 괜한 옛이야기가 아니었군요. 지워진 문장과 남겨진 제단이 같은 손 아래 놓여 있습니다.",
+        "text": "자료실 여백에 남은 ‘해심’이라는 이름도 여기까지 이어집니다. 오래된 기사는 접혔고, 그 빈자리에 의식이 자랐습니다.",
         "style": "thought",
         "condition_group_id": "CG_RitualRoom_OldArticles",
         "dialog_id": null,
@@ -1659,7 +1659,7 @@ Object.assign(window.GAME_DATA.scenes, {
       },
       {
         "order": 19,
-        "text": "이걸 우발적 광신쯤으로 넘기긴 어렵습니다. 종이에 적힌 순서와 남은 몫이 전부 맞아떨어져요. 저들은 처음부터 사람 수까지 세며 판을 굴렸습니다.",
+        "text": "이건 우발적인 광신이 아닙니다. 누군가 사람 수와 순서를 세며, 빠진 자리를 다음 사람으로 메워 왔어요.",
         "style": "thought",
         "condition_group_id": "CG_RitualRoom_QRitualAccident",
         "speaker_id": "Yuu",
@@ -1678,7 +1678,7 @@ Object.assign(window.GAME_DATA.scenes, {
       },
       {
         "order": 20,
-        "text": "4호실의 옷과 가면까지 떠올리면, 이곳은 사람을 무작정 해친 자리가 아니다. 이름과 얼굴을 벗겨 의식의 배역으로 갈아 끼우던 자리다.",
+        "text": "4호실의 옷과 가면은 그 계산의 준비물이었군요. 사람을 없애는 게 아니라, 다른 몫으로 바꾸기 위해.",
         "style": "thought",
         "condition_group_id": "CG_Ritual_QRoom4Purpose",
         "speaker_id": "Yuu",
@@ -1852,7 +1852,7 @@ Object.assign(window.GAME_DATA.scenes, {
       {
         "evidence_id": "EvRitualNote",
         "name": "의례실 종이",
-        "description": "'그릇은 셋. 둘은 쓰였고 하나가 남았다.' 마지막 무녀가 아직 남아 있다는 증거.",
+        "description": "'곪은 것은 도려내야 한다. 그릇은 셋, 둘은 쓰였고 하나가 남았다.' 이해심의 정화 논리와 마지막 무녀의 자리를 함께 적어 둔 기록.",
         "image": null,
         "category_id": "ritual",
         "trigger": 1

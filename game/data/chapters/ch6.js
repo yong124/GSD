@@ -381,25 +381,6 @@ Object.assign(window.GAME_DATA.scenes, {
       },
       {
         "order": 2,
-        "text": "기록으로 남기려 했는데, 이 틈은 말보다 몸이 먼저 메워야 한다. 일단 막아 두면, 그다음에 남길 수 있으니까.",
-        "style": "normal",
-        "condition_group_id": "CG_FinalChoice_RecordOnly",
-        "speaker_id": "Yuu",
-        "emotion_type": "Neutral",
-        "standing_slot": "Right",
-        "focus_type": "Speaker",
-        "dialog_id": null,
-        "enter_motion": null,
-        "exit_motion": null,
-        "idle_motion": null,
-        "fx_type": null,
-        "cg_image": null,
-        "sfx": null,
-        "choice_group_id": null,
-        "next_dialog_id": null
-      },
-      {
-        "order": 3,
         "text": "유웅룡이 제단 쪽으로 몸을 던진다. 글로는 늦는 순간이 있다. 이번만큼은 몸이 문장보다 먼저 나간다.",
         "style": "narration",
         "dialog_id": null,
@@ -407,6 +388,70 @@ Object.assign(window.GAME_DATA.scenes, {
         "emotion_type": null,
         "standing_slot": null,
         "focus_type": null,
+        "enter_motion": null,
+        "exit_motion": null,
+        "idle_motion": null,
+        "fx_type": null,
+        "cg_image": null,
+        "sfx": null,
+        "condition_group_id": null,
+        "choice_group_id": null,
+        "next_dialog_id": null
+      }
+    ],
+    "choices": [],
+    "evidence": [],
+    "goal_kicker": null,
+    "goal_text": null,
+    "investigation_title": null,
+    "investigation_hint": null,
+    "evidence_prompt_title": null,
+    "evidence_prompt_hint": null
+  },
+  "ch6_choice_record": {
+    "id": "ch6_choice_record",
+    "chapter": 6,
+    "title": "남기는 쪽",
+    "background": "assets/bg/ritual_room.jpg",
+    "music": "assets/sfx/ritual_climax.mp3",
+    "effect": null,
+    "branches": [
+      {
+        "branch_id": "Br_ch6_choice_record_Default",
+        "order": 1,
+        "condition_group_id": null,
+        "next_scene": "ch6_outcome"
+      }
+    ],
+    "dialogues": [
+      {
+        "order": 1,
+        "text": "유웅룡은 제단 앞의 명부를 움켜쥐고, 젖은 종이가 찢어지기 전에 이름과 순번을 수첩으로 옮긴다. 이 순간을 멈추지 못하더라도, 누가 누구를 어디로 밀어 넣었는지는 사라지게 두지 않는다.",
+        "style": "narration",
+        "dialog_id": null,
+        "speaker_id": null,
+        "emotion_type": null,
+        "standing_slot": null,
+        "focus_type": null,
+        "enter_motion": null,
+        "exit_motion": null,
+        "idle_motion": null,
+        "fx_type": null,
+        "cg_image": null,
+        "sfx": null,
+        "condition_group_id": null,
+        "choice_group_id": null,
+        "next_dialog_id": null
+      },
+      {
+        "order": 2,
+        "text": "송순 씨, 목소리를 놓치지 마요. 난 여기 적겠습니다. 누가 살아서 나가든, 이 방이 없던 일은 못 되게.",
+        "style": "normal",
+        "speaker_id": "Yuu",
+        "emotion_type": "Tense",
+        "standing_slot": "Right",
+        "focus_type": "Speaker",
+        "dialog_id": null,
         "enter_motion": null,
         "exit_motion": null,
         "idle_motion": null,
@@ -986,6 +1031,48 @@ Object.assign(window.GAME_DATA.scenes, {
     "evidence_prompt_title": null,
     "evidence_prompt_hint": null
   },
+  "ch6_ending_c_answer": {
+    "id": "ch6_ending_c_answer",
+    "chapter": 6,
+    "title": "엔딩 C — 닿지 못한 대답",
+    "background": "assets/bg/ritual_room.jpg",
+    "music": "assets/sfx/ending.mp3",
+    "effect": 2,
+    "branches": [],
+    "dialogues": [
+      {"order": 1, "text": "대답을 골랐지만, 송금의 노래는 끝내 사람의 목소리로 돌아오지 않는다. 제단은 이름 하나를 더 삼킨 채 고요해진다.", "style": "narration", "dialog_id": null, "speaker_id": null, "emotion_type": null, "standing_slot": null, "focus_type": null, "enter_motion": null, "exit_motion": null, "idle_motion": null, "fx_type": "FlashDark", "cg_image": null, "sfx": null, "condition_group_id": null, "choice_group_id": null, "next_dialog_id": null},
+      {"order": 2, "text": "그래도 맞는 말을 했다고 생각했는데요.", "style": "thought", "dialog_id": null, "speaker_id": "Yuu", "emotion_type": "Tense", "standing_slot": "Right", "focus_type": "Speaker", "enter_motion": null, "exit_motion": null, "idle_motion": null, "fx_type": null, "cg_image": null, "sfx": null, "condition_group_id": null, "choice_group_id": null, "next_dialog_id": null}
+    ],
+    "choices": [], "evidence": [], "goal_kicker": null, "goal_text": null, "investigation_title": null, "investigation_hint": null, "evidence_prompt_title": null, "evidence_prompt_hint": null
+  },
+  "ch6_ending_c_block": {
+    "id": "ch6_ending_c_block",
+    "chapter": 6,
+    "title": "엔딩 C — 끊기지 않은 의식",
+    "background": "assets/bg/ritual_room.jpg",
+    "music": "assets/sfx/ending.mp3",
+    "effect": 2,
+    "branches": [],
+    "dialogues": [
+      {"order": 1, "text": "제단을 끊으려 했지만, 오래 준비된 순서는 손 하나로 멎지 않는다. 이해심의 노래가 더 깊은 곳으로 가라앉는다.", "style": "narration", "dialog_id": null, "speaker_id": null, "emotion_type": null, "standing_slot": null, "focus_type": null, "enter_motion": null, "exit_motion": null, "idle_motion": null, "fx_type": "FlashDark", "cg_image": null, "sfx": null, "condition_group_id": null, "choice_group_id": null, "next_dialog_id": null},
+      {"order": 2, "text": "이번엔 막으려 했어요. 그런데 무엇을 끊어야 하는지도 늦게 알았습니다.", "style": "thought", "dialog_id": null, "speaker_id": "Yuu", "emotion_type": "Tense", "standing_slot": "Right", "focus_type": "Speaker", "enter_motion": null, "exit_motion": null, "idle_motion": null, "fx_type": null, "cg_image": null, "sfx": null, "condition_group_id": null, "choice_group_id": null, "next_dialog_id": null}
+    ],
+    "choices": [], "evidence": [], "goal_kicker": null, "goal_text": null, "investigation_title": null, "investigation_hint": null, "evidence_prompt_title": null, "evidence_prompt_hint": null
+  },
+  "ch6_ending_c_record": {
+    "id": "ch6_ending_c_record",
+    "chapter": 6,
+    "title": "엔딩 C — 빈 기록",
+    "background": "assets/bg/ritual_room.jpg",
+    "music": "assets/sfx/ending.mp3",
+    "effect": 2,
+    "branches": [],
+    "dialogues": [
+      {"order": 1, "text": "유웅룡은 수첩을 펼치지만, 이름과 사건을 하나로 묶을 마지막 문장이 없다. 기록은 남았으나 누군가를 구할 만큼 단단하지 못하다.", "style": "narration", "dialog_id": null, "speaker_id": null, "emotion_type": null, "standing_slot": null, "focus_type": null, "enter_motion": null, "exit_motion": null, "idle_motion": null, "fx_type": "BlueTrace", "cg_image": null, "sfx": null, "condition_group_id": null, "choice_group_id": null, "next_dialog_id": null},
+      {"order": 2, "text": "이름은 적었지만, 누가 왜 사라졌는지는 끝내 증명하지 못했습니다.", "style": "thought", "dialog_id": null, "speaker_id": "Yuu", "emotion_type": "Tense", "standing_slot": "Right", "focus_type": "Speaker", "enter_motion": null, "exit_motion": null, "idle_motion": null, "fx_type": null, "cg_image": null, "sfx": null, "condition_group_id": null, "choice_group_id": null, "next_dialog_id": null}
+    ],
+    "choices": [], "evidence": [], "goal_kicker": null, "goal_text": null, "investigation_title": null, "investigation_hint": null, "evidence_prompt_title": null, "evidence_prompt_hint": null
+  },
   "ch6_ending_c": {
     "id": "ch6_ending_c",
     "chapter": 6,
@@ -1129,25 +1216,6 @@ Object.assign(window.GAME_DATA.scenes, {
         "next_dialog_id": null
       },
       {
-        "order": 8,
-        "text": "질문을 끝까지 밀고 간 사람만이 남는 침묵도 있다. 두 사람은 아무 결론도 얻지 못했는데, 그래서 오히려 더 오래 그날 밤에서 벗어나지 못한다.",
-        "style": "narration",
-        "condition_group_id": "CG_Threshold_Investigation3",
-        "dialog_id": null,
-        "speaker_id": null,
-        "emotion_type": null,
-        "standing_slot": null,
-        "focus_type": null,
-        "enter_motion": null,
-        "exit_motion": null,
-        "idle_motion": null,
-        "fx_type": null,
-        "cg_image": null,
-        "sfx": null,
-        "choice_group_id": null,
-        "next_dialog_id": null
-      },
-      {
         "order": 9,
         "text": "귓가에 남은 콧노래는 오래도록 사라지지 않는다. 들은 자만 알아볼 수 있는 미세한 떨림이, 평범한 밤의 공기 속에서도 가끔 문득 되살아난다.",
         "style": "narration",
@@ -1157,25 +1225,6 @@ Object.assign(window.GAME_DATA.scenes, {
         "emotion_type": null,
         "standing_slot": null,
         "focus_type": null,
-        "enter_motion": null,
-        "exit_motion": null,
-        "idle_motion": null,
-        "fx_type": null,
-        "cg_image": null,
-        "sfx": null,
-        "choice_group_id": null,
-        "next_dialog_id": null
-      },
-      {
-        "order": 10,
-        "text": "답을 얻진 못했어도, 질문까지 잃어버리진 않았군요. 아마 그게 오늘 밤 남은 전부겠지.",
-        "style": "thought",
-        "condition_group_id": "CG_Threshold_Investigation3",
-        "speaker_id": "Yuu",
-        "emotion_type": "Tense",
-        "standing_slot": "Right",
-        "focus_type": "Speaker",
-        "dialog_id": null,
         "enter_motion": null,
         "exit_motion": null,
         "idle_motion": null,
@@ -1306,25 +1355,6 @@ Object.assign(window.GAME_DATA.scenes, {
         "next_dialog_id": null
       },
       {
-        "order": 4,
-        "text": "기사 한 토막으로는 아무것도 끝나지 않는다. 다만 누군가는 사람을 붙들려 했고, 누군가는 몸으로 막으려 했고, 누군가는 끝내 그 밤을 설명하지 못한 채 남았다. 그 차이는 기록보다 오래 사람들 안에 남는다.",
-        "style": "narration",
-        "dialog_id": null,
-        "speaker_id": null,
-        "emotion_type": null,
-        "standing_slot": null,
-        "focus_type": null,
-        "enter_motion": null,
-        "exit_motion": null,
-        "idle_motion": null,
-        "fx_type": null,
-        "cg_image": null,
-        "sfx": null,
-        "condition_group_id": null,
-        "choice_group_id": null,
-        "next_dialog_id": null
-      },
-      {
         "order": 5,
         "text": "기사는 짧고, 도시의 밤은 평소와 다르지 않다. 전차는 달리고, 사람들은 다음 날을 준비한다. 아무 일도 없었던 것처럼.",
         "style": "narration",
@@ -1363,86 +1393,10 @@ Object.assign(window.GAME_DATA.scenes, {
         "next_dialog_id": null
       },
       {
-        "order": 7,
-        "text": "그날 밤 문은 분명 흔들렸다. 그 틈으로 무엇이 새어 나왔는지는 아무도 모른다. 그리고 아무도 묻지 않는다. 도시는 늘 그래왔듯, 감당 못 할 대답 앞에서 질문부터 접어버린다.",
-        "style": "narration",
-        "dialog_id": null,
-        "speaker_id": null,
-        "emotion_type": null,
-        "standing_slot": null,
-        "focus_type": null,
-        "enter_motion": null,
-        "exit_motion": null,
-        "idle_motion": null,
-        "fx_type": null,
-        "cg_image": null,
-        "sfx": null,
-        "condition_group_id": null,
-        "choice_group_id": null,
-        "next_dialog_id": null
-      },
-      {
-        "order": 8,
-        "text": "묻지 않는다는 건 모른다는 뜻이 아니다. 대답을 감당할 수 없어서 외면하는 쪽에 가깝다.",
-        "style": "narration",
-        "dialog_id": null,
-        "speaker_id": null,
-        "emotion_type": null,
-        "standing_slot": null,
-        "focus_type": null,
-        "enter_motion": null,
-        "exit_motion": null,
-        "idle_motion": null,
-        "fx_type": null,
-        "cg_image": null,
-        "sfx": null,
-        "condition_group_id": null,
-        "choice_group_id": null,
-        "next_dialog_id": null
-      },
-      {
         "order": 9,
         "text": "그래도 어딘가엔 적힌 이름이 남는다. 누군가가 접지 않고 버틴 문장, 끝내 모른 체하지 않겠다고 버틴 사람 덕분에.",
         "style": "narration",
         "condition_group_id": "CG_Room4_ReadRitual",
-        "dialog_id": null,
-        "speaker_id": null,
-        "emotion_type": null,
-        "standing_slot": null,
-        "focus_type": null,
-        "enter_motion": null,
-        "exit_motion": null,
-        "idle_motion": null,
-        "fx_type": null,
-        "cg_image": null,
-        "sfx": null,
-        "choice_group_id": null,
-        "next_dialog_id": null
-      },
-      {
-        "order": 10,
-        "text": "그리고 어떤 밤은, 끝내 누군가의 말을 믿어 준 일 하나로 모양이 달라지기도 한다. 경성에선 그런 일이 기사보다 드물다.",
-        "style": "narration",
-        "condition_group_id": "CG_Threshold_TrustedSongsoon",
-        "dialog_id": null,
-        "speaker_id": null,
-        "emotion_type": null,
-        "standing_slot": null,
-        "focus_type": null,
-        "enter_motion": null,
-        "exit_motion": null,
-        "idle_motion": null,
-        "fx_type": null,
-        "cg_image": null,
-        "sfx": null,
-        "choice_group_id": null,
-        "next_dialog_id": null
-      },
-      {
-        "order": 11,
-        "text": "도시 한복판에서는 아무 일도 없었던 것처럼 전차 종이 울린다. 그러나 어떤 이름들은 한 번 적힌 뒤부터, 비록 신문에 나지 않아도 쉽게 다시 지워지지 않는다.",
-        "style": "narration",
-        "condition_group_id": "CG_Threshold_Investigation3",
         "dialog_id": null,
         "speaker_id": null,
         "emotion_type": null,
@@ -1584,7 +1538,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "choice_id": "Ch6FinalRecord",
         "text": "기사와 목격, 명부를 남겨 반복된 구조를 드러낸다.",
         "next_type": "Scene",
-        "next_id": "ch6_choice_b",
+        "next_id": "ch6_choice_record",
         "condition_group_id": null,
         "evidence_id": null,
         "effect_group_id": null
@@ -1618,13 +1572,19 @@ Object.assign(window.GAME_DATA.scenes, {
       },
       {
         "order": 3,
+        "condition_group_id": "CG_Branch_FinalChoice_Record",
+        "next_scene": "ch6_path_record",
+        "branch_id": null
+      },
+      {
+        "order": 4,
         "condition_group_id": "CG_Branch_FinalChoice_C",
         "next_scene": "ch6_ending_c",
         "branch_id": null
       },
       {
         "branch_id": "Br_ch6_outcome_Default",
-        "order": 4,
+        "order": 5,
         "condition_group_id": null,
         "next_scene": "ch6_ending_c"
       }
@@ -1632,26 +1592,7 @@ Object.assign(window.GAME_DATA.scenes, {
     "dialogues": [
       {
         "order": 1,
-        "text": "노래와 비명, 주문과 숨소리가 한순간 서로를 덮어쓴다. 의식은 흔들리기 시작하지만, 아직 어느 쪽으로 기울지 정해지지 않았다. 이 방에 남은 것은 힘겨루기가 아니라, 끝내 무엇을 사람으로 남길 것인가의 문제다.",
-        "style": "narration",
-        "dialog_id": null,
-        "speaker_id": null,
-        "emotion_type": null,
-        "standing_slot": null,
-        "focus_type": null,
-        "enter_motion": null,
-        "exit_motion": null,
-        "idle_motion": null,
-        "fx_type": null,
-        "cg_image": null,
-        "sfx": null,
-        "condition_group_id": null,
-        "choice_group_id": null,
-        "next_dialog_id": null
-      },
-      {
-        "order": 2,
-        "text": "방금의 선택은 이미 대가를 만들고 있다. 부른 이름이든, 던진 몸이든, 놓친 한 박자든 — 이 방은 그 차이를 잊지 않고 그대로 되돌려 준다.",
+        "text": "노래와 비명이 맞부딪치며 의식이 흔들린다. 이제 남은 문제는 무엇을 사람으로 남길 것인가다.",
         "style": "narration",
         "dialog_id": null,
         "speaker_id": null,
@@ -1670,7 +1611,7 @@ Object.assign(window.GAME_DATA.scenes, {
       },
       {
         "order": 3,
-        "text": "질문을 끝까지 붙들어 온 사람만이 보이는 결도 있다. 이판규를 부른 손, 송금을 밀어 넣은 순서, 의식을 떠받친 구조가 한꺼번에 겹치며, 이제는 망설임조차 변명으로 쓰기 어려워진다.",
+        "text": "이판규를 부른 손과 송금을 밀어 넣은 순서, 의식의 구조가 한 문장으로 겹친다. 이제 망설임도 변명이 되기 어렵다.",
         "style": "narration",
         "condition_group_id": "CG_Outcome_SolvedMid",
         "dialog_id": null,
@@ -1689,7 +1630,7 @@ Object.assign(window.GAME_DATA.scenes, {
       },
       {
         "order": 4,
-        "text": "그중 몇몇은 아예 거짓말의 모양으로 남아 있었다. 미친 넋두리, 자발적 도피, 우발적 광신. 여기까지 오며 그 편한 설명들을 하나씩 부순 사람에겐 이제 무엇을 택하든 변명할 자리가 더 좁다.",
+        "text": "미친 넋두리, 자발적 도피, 우발적 광신. 편한 거짓말을 부순 뒤에는 무엇을 택하든 책임만 남는다.",
         "style": "narration",
         "condition_group_id": "CG_RitualScene_SolvedHigh",
         "dialog_id": null,
@@ -1734,7 +1675,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "branch_id": "Br_ch6_path_a_Default",
         "order": 2,
         "condition_group_id": null,
-        "next_scene": "ch6_ending_c"
+        "next_scene": "ch6_ending_c_answer"
       }
     ],
     "dialogues": [
@@ -1883,25 +1824,6 @@ Object.assign(window.GAME_DATA.scenes, {
         "next_dialog_id": null
       },
       {
-        "order": 3,
-        "text": "문 앞에서부터 얽혀 든 콧노래의 결이 이 순간 송순의 목소리와 포개진다. 파멸에 더 가까이 다가섰기에, 되레 무엇을 붙들어야 하는지도 더 선명하게 보인다.",
-        "style": "narration",
-        "condition_group_id": "CG_Threshold_Resonance2",
-        "dialog_id": null,
-        "speaker_id": null,
-        "emotion_type": null,
-        "standing_slot": null,
-        "focus_type": null,
-        "enter_motion": null,
-        "exit_motion": null,
-        "idle_motion": null,
-        "fx_type": null,
-        "cg_image": null,
-        "sfx": null,
-        "choice_group_id": null,
-        "next_dialog_id": null
-      },
-      {
         "order": 4,
         "text": "붙들어 온 질문 셋 중 둘 이상이 이 순간에서 하나로 묶인다. 누구를 불렀는지, 누구를 밀어 넣었는지, 누가 판을 짰는지까지 알았기에 송순의 부름도 허공에 흩어지지 않는다.",
         "style": "narration",
@@ -1952,7 +1874,7 @@ Object.assign(window.GAME_DATA.scenes, {
   "ch6_path_b": {
     "id": "ch6_path_b",
     "chapter": 6,
-    "title": "기록자의 선택",
+    "title": "제단을 끊는 쪽",
     "background": "assets/bg/ritual_room.jpg",
     "music": "assets/sfx/ritual_climax.mp3",
     "effect": null,
@@ -1967,13 +1889,13 @@ Object.assign(window.GAME_DATA.scenes, {
         "branch_id": "Br_ch6_path_b_Default",
         "order": 2,
         "condition_group_id": null,
-        "next_scene": "ch6_ending_c"
+        "next_scene": "ch6_ending_c_block"
       }
     ],
     "dialogues": [
       {
         "order": 1,
-        "text": "이게 처음이 아니라는 걸 알고 물러서면, 나도 저 기사 밑줄 긋고 접어 둔 사람들과 다를 게 없지.",
+        "text": "이게 처음이 아니라는 걸 알았으니, 이번엔 기록보다 먼저 이 순서를 끊어야 한다.",
         "style": "normal",
         "speaker_id": "Yuu",
         "emotion_type": "Neutral",
@@ -1992,7 +1914,7 @@ Object.assign(window.GAME_DATA.scenes, {
       },
       {
         "order": 2,
-        "text": "유웅룡은 이해심을 향해 달려가며, 지난 기사들에서 지워진 문장들을 머릿속으로 되짚는다. 덮인 문장이 많을수록, 이번엔 몸으로라도 그 빈칸을 메워야 한다고 느낀다. 기록자의 결단이 처음으로 육탄이 된다.",
+        "text": "유웅룡은 이해심을 향해 달려간다. 제단의 순서가 한 사람을 더 삼키기 전에, 이번에는 몸으로 그 연결을 끊는다.",
         "style": "narration",
         "dialog_id": null,
         "speaker_id": null,
@@ -2011,7 +1933,7 @@ Object.assign(window.GAME_DATA.scenes, {
       },
       {
         "order": 3,
-        "text": "접힌 기록을 또 하나 만들 바엔, 차라리 여기서 같이 부서지는 편이 낫지.",
+        "text": "지금 막지 못하면, 다음 기록도 누군가의 사후 진술일 뿐이야.",
         "style": "thought",
         "condition_group_id": "CG_Branch_FoundOldArticles",
         "speaker_id": "Yuu",
@@ -2076,10 +1998,80 @@ Object.assign(window.GAME_DATA.scenes, {
     "evidence_prompt_title": null,
     "evidence_prompt_hint": null
   },
+  "ch6_path_record": {
+    "id": "ch6_path_record",
+    "chapter": 6,
+    "title": "증인의 문장",
+    "background": "assets/bg/ritual_room.jpg",
+    "music": "assets/sfx/ending.mp3",
+    "effect": null,
+    "branches": [
+      {
+        "branch_id": "Br_ch6_path_record_Complete",
+        "order": 1,
+        "condition_group_id": "CG_Branch_FinalRecordComplete",
+        "next_scene": "ch6_ending_b"
+      },
+      {
+        "branch_id": "Br_ch6_path_record_Default",
+        "order": 2,
+        "condition_group_id": null,
+        "next_scene": "ch6_ending_c_record"
+      }
+    ],
+    "dialogues": [
+      {
+        "order": 1,
+        "text": "제단이 흔들리는 동안에도 유웅룡의 수첩에는 이름과 순번이 남는다. 누구도 완전히 구하지 못한 밤이지만, 다음 사람이 같은 거짓말로 사라지지 않게 할 증언은 만들어졌다.",
+        "style": "narration",
+        "dialog_id": null,
+        "speaker_id": null,
+        "emotion_type": null,
+        "standing_slot": null,
+        "focus_type": null,
+        "enter_motion": null,
+        "exit_motion": null,
+        "idle_motion": null,
+        "fx_type": null,
+        "cg_image": null,
+        "sfx": null,
+        "condition_group_id": null,
+        "choice_group_id": null,
+        "next_dialog_id": null
+      },
+      {
+        "order": 2,
+        "text": "송순 씨, 언니 이름은 맨 위에 적었습니다. 나머지도 끝까지 적겠습니다.",
+        "style": "normal",
+        "speaker_id": "Yuu",
+        "emotion_type": "Tense",
+        "standing_slot": "Right",
+        "focus_type": "Speaker",
+        "dialog_id": null,
+        "enter_motion": null,
+        "exit_motion": null,
+        "idle_motion": null,
+        "fx_type": null,
+        "cg_image": null,
+        "sfx": null,
+        "condition_group_id": null,
+        "choice_group_id": null,
+        "next_dialog_id": null
+      }
+    ],
+    "choices": [],
+    "evidence": [],
+    "goal_kicker": null,
+    "goal_text": null,
+    "investigation_title": null,
+    "investigation_hint": null,
+    "evidence_prompt_title": null,
+    "evidence_prompt_hint": null
+  },
   "ch6_path_b2": {
     "id": "ch6_path_b2",
     "chapter": 6,
-    "title": "남겨진 기록",
+    "title": "끊긴 순서",
     "background": "assets/bg/ritual_room.jpg",
     "music": "assets/sfx/ending.mp3",
     "effect": null,
@@ -2152,25 +2144,6 @@ Object.assign(window.GAME_DATA.scenes, {
         "text": "유웅룡이 창고에서 끝까지 읽어 낸 악보와, 자료실에서 주워 온 낡은 기사 조각들이 여기서 하나의 문장으로 겹친다. 흩어져 있던 것들이 이제는 적어 남길 수 있는 증거가 된다.",
         "style": "narration",
         "condition_group_id": "CG_Room4_ReadRitual",
-        "dialog_id": null,
-        "speaker_id": null,
-        "emotion_type": null,
-        "standing_slot": null,
-        "focus_type": null,
-        "enter_motion": null,
-        "exit_motion": null,
-        "idle_motion": null,
-        "fx_type": null,
-        "cg_image": null,
-        "sfx": null,
-        "choice_group_id": null,
-        "next_dialog_id": null
-      },
-      {
-        "order": 3,
-        "text": "콧노래가 아직 귓가에서 가시지 않는다. 유웅룡은 자신 또한 저 문턱에서 아주 비켜 선 목격자만은 아니게 되었다는 사실을 안다. 그래서 더더욱, 본 자의 이름으로 적어 두어야 한다.",
-        "style": "narration",
-        "condition_group_id": "CG_Threshold_Resonance2",
         "dialog_id": null,
         "speaker_id": null,
         "emotion_type": null,
@@ -2449,7 +2422,7 @@ Object.assign(window.GAME_DATA.scenes, {
       },
       {
         "order": 10,
-        "text": "그걸 정화라 부르지 마십시오. 사람을 셈하고 갈아 넣는 짓에 이름만 고상하게 붙인 학살이잖습니까.",
+        "text": "도시는 곪은 자리를 도려낸다는 말로 사람을 버려 왔습니다. 당신도 같은 말을 되풀이하며 사람을 의식의 몫으로 셈하고 있잖습니까.",
         "style": "normal",
         "speaker_id": "Yuu",
         "emotion_type": "Neutral",

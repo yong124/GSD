@@ -131,7 +131,23 @@
     "condition_id": "Cond_Branch_FinalChoice_B",
     "condition_group_id": "CG_Branch_FinalChoice_B",
     "condition_type": "ChoiceSelected",
-    "condition_target_id": "Ch6FinalBlock|Ch6FinalRecord",
+    "condition_target_id": "Ch6FinalBlock",
+    "compare_type": "Equal",
+    "condition_value": true
+  },
+  {
+    "condition_id": "Cond_Branch_FinalChoice_Record",
+    "condition_group_id": "CG_Branch_FinalChoice_Record",
+    "condition_type": "ChoiceSelected",
+    "condition_target_id": "Ch6FinalRecord",
+    "compare_type": "Equal",
+    "condition_value": true
+  },
+  {
+    "condition_id": "Cond_Branch_FinalRecordComplete",
+    "condition_group_id": "CG_Branch_FinalRecordComplete",
+    "condition_type": "QuestionSolved",
+    "condition_target_id": "QuestionSolved_QArchivePattern",
     "compare_type": "Equal",
     "condition_value": true
   },
@@ -148,14 +164,6 @@
     "condition_group_id": "CG_FinalChoice_BlockOnly",
     "condition_type": "ChoiceSelected",
     "condition_target_id": "Ch6FinalBlock",
-    "compare_type": "Equal",
-    "condition_value": true
-  },
-  {
-    "condition_id": "Cond_FinalChoice_RecordOnly",
-    "condition_group_id": "CG_FinalChoice_RecordOnly",
-    "condition_type": "ChoiceSelected",
-    "condition_target_id": "Ch6FinalRecord",
     "compare_type": "Equal",
     "condition_value": true
   },
