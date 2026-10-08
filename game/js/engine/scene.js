@@ -32,6 +32,9 @@ const Scene = (() => {
 
     el.style.background = SCENE_THEMES[themeKey];
     el.style.backgroundImage = '';
+    el.style.backgroundSize = 'cover';
+    el.style.backgroundPosition = 'center';
+    el.style.backgroundRepeat = 'no-repeat';
 
     if (url) {
       const img = new Image();
