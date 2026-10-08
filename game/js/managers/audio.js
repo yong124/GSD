@@ -6,6 +6,7 @@ const AudioManager = (() => {
   const DEFAULTS = { bgmVolume: 0.35, sfxVolume: 0.5, muted: false };
 
   let _bgm = null;
+  let _sfx = null;
   let _currentSrc = '';
   let _enabled = false;
   let _settings = loadSettings();
@@ -42,6 +43,12 @@ const AudioManager = (() => {
     _bgm.preload = 'auto';
     _bgm.volume = _settings.muted ? 0 : _settings.bgmVolume;
     return _bgm;
+  }
+
+  function stopSfx() {
+    if (!_sfx) return;
+    _sfx.pause();
+    _sfx = null;
   }
 
   return {
@@ -83,12 +90,17 @@ const AudioManager = (() => {
 
     playSfx(src) {
       if (!src || !_enabled || _settings.muted) return;
+      stopSfx();
       const sfx = new Audio(src);
+      _sfx = sfx;
       sfx.volume = _settings.sfxVolume;
       sfx.play().catch(err => {
+        if (err.name === 'AbortError') return;
         console.warn('SFX 재생 실패:', src, err);
       });
     },
+
+    stopSfx,
 
     getSettings() {
       return { ..._settings };
@@ -102,12 +114,14 @@ const AudioManager = (() => {
 
     setSfxVolume(value) {
       _settings.sfxVolume = clamp01(value, _settings.sfxVolume);
+      if (_sfx && !_settings.muted) _sfx.volume = _settings.sfxVolume;
       saveSettings();
     },
 
     setMuted(muted) {
       _settings.muted = !!muted;
       if (_bgm) _bgm.volume = _settings.muted ? 0 : _settings.bgmVolume;
+      if (_sfx) _sfx.volume = _settings.muted ? 0 : _settings.sfxVolume;
       saveSettings();
     }
   };

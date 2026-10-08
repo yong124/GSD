@@ -29,7 +29,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "idle_motion": null,
         "fx_type": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/footsteps_stone.wav",
         "condition_group_id": null,
         "choice_group_id": null,
         "next_dialog_id": null
@@ -67,7 +67,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "exit_motion": null,
         "idle_motion": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/hum_dissonant.wav",
         "condition_group_id": null,
         "choice_group_id": null,
         "next_dialog_id": null
@@ -181,7 +181,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "idle_motion": null,
         "fx_type": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/lock_turn.wav",
         "condition_group_id": null,
         "choice_group_id": null,
         "next_dialog_id": null
@@ -294,7 +294,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "idle_motion": null,
         "fx_type": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/door_creak.wav",
         "condition_group_id": null,
         "choice_group_id": null,
         "next_dialog_id": null
@@ -522,7 +522,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "exit_motion": null,
         "idle_motion": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/hum_dissonant.wav",
         "condition_group_id": null,
         "choice_group_id": null,
         "next_dialog_id": null
@@ -650,7 +650,8 @@ Object.assign(window.GAME_DATA.scenes, {
           "speaker": "",
           "speaker_id": null,
           "emotion_type": null,
-          "portrait": null
+          "portrait": null,
+          "sfx": "assets/sfx/whisper_dissonant.wav"
         },
         {
           "order": 2,
@@ -686,7 +687,8 @@ Object.assign(window.GAME_DATA.scenes, {
           "speaker": "",
           "speaker_id": null,
           "emotion_type": null,
-          "portrait": null
+          "portrait": null,
+          "sfx": "assets/sfx/evidence_reveal.wav"
         }
       ],
       "room4_record": [
@@ -783,7 +785,8 @@ Object.assign(window.GAME_DATA.scenes, {
           "speaker": "",
           "speaker_id": null,
           "emotion_type": null,
-          "portrait": null
+          "portrait": null,
+          "sfx": "assets/sfx/paper_rustle.wav"
         },
         {
           "order": 2,
@@ -873,7 +876,8 @@ Object.assign(window.GAME_DATA.scenes, {
         {
           "order": 1,
           "text": "노래와 기록이 같은 방향을 가리킨다. 누군가는 사람을 의례의 순서에 넣고, 그 흔적을 도피와 광신으로 덮었다.",
-          "style": "narration"
+          "style": "narration",
+          "sfx": "assets/sfx/evidence_reveal.wav"
         }
       ],
       "room4_conclusion_wrong": [
@@ -1000,7 +1004,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "idle_motion": null,
         "fx_type": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/hum_dissonant.wav",
         "condition_group_id": null,
         "choice_group_id": null,
         "next_dialog_id": null
@@ -1166,7 +1170,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "idle_motion": null,
         "fx_type": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/door_creak.wav",
         "condition_group_id": null,
         "choice_group_id": null,
         "next_dialog_id": null
@@ -1242,7 +1246,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "enter_motion": null,
         "exit_motion": null,
         "idle_motion": null,
-        "sfx": null,
+        "sfx": "assets/sfx/paper_rustle.wav",
         "condition_group_id": null,
         "choice_group_id": null,
         "next_dialog_id": null
@@ -1258,7 +1262,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "fx_type": "BlueTrace",
         "idle_motion": "ShakeLight",
         "cg_image": "assets/ev/score.jpeg",
-        "sfx": "assets/sfx/whisper_dissonant.mp3",
+        "sfx": "assets/sfx/whisper_dissonant.wav",
         "dialog_id": null,
         "enter_motion": null,
         "exit_motion": null,

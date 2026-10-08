@@ -124,7 +124,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "idle_motion": null,
         "fx_type": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/telephone_pickup.wav",
         "condition_group_id": null,
         "choice_group_id": null,
         "next_dialog_id": null
@@ -211,7 +211,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "idle_motion": null,
         "fx_type": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/footsteps_stone.wav",
         "condition_group_id": null,
         "choice_group_id": null,
         "next_dialog_id": null
@@ -382,7 +382,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "idle_motion": null,
         "fx_type": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/footsteps_stone.wav",
         "condition_group_id": null,
         "choice_group_id": null,
         "next_dialog_id": null
@@ -533,7 +533,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "exit_motion": null,
         "idle_motion": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/ritual_chant.wav",
         "condition_group_id": null,
         "choice_group_id": null,
         "next_dialog_id": null
@@ -714,7 +714,8 @@ Object.assign(window.GAME_DATA.scenes, {
           "speaker": "",
           "speaker_id": null,
           "emotion_type": null,
-          "portrait": null
+          "portrait": null,
+          "sfx": "assets/sfx/hum_dissonant.wav"
         }
       ],
       "door_observe": [
@@ -900,7 +901,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "idle_motion": null,
         "fx_type": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/paper_rustle.wav",
         "condition_group_id": null,
         "choice_group_id": null,
         "next_dialog_id": null
@@ -983,7 +984,8 @@ Object.assign(window.GAME_DATA.scenes, {
         {
           "order": 1,
           "text": "명부의 송금 칸에는 '자원'이 아니라 '편입'이라 적혀 있다. 옆의 순번은 오늘 밤 마지막 노래 바로 전이다.",
-          "style": "narration"
+          "style": "narration",
+          "sfx": "assets/sfx/paper_rustle.wav"
         },
         {
           "order": 2,
@@ -1003,7 +1005,8 @@ Object.assign(window.GAME_DATA.scenes, {
           "speaker_id": "Yuu",
           "emotion_type": "Shaken",
           "standing_slot": "Right",
-          "focus_type": "Speaker"
+          "focus_type": "Speaker",
+          "sfx": "assets/sfx/hum_dissonant.wav"
         }
       ]
     },
@@ -1232,7 +1235,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "idle_motion": null,
         "fx_type": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/door_creak.wav",
         "condition_group_id": null,
         "choice_group_id": null,
         "next_dialog_id": null
@@ -1435,7 +1438,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "style": "narration",
         "fx_type": "BloodSmear",
         "cg_image": "assets/ev/bluecloth.jpeg",
-        "sfx": "assets/sfx/sting_horror.mp3",
+        "sfx": "assets/sfx/sting_horror.wav",
         "dialog_id": null,
         "speaker_id": null,
         "emotion_type": null,
@@ -1472,7 +1475,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "text": "그때, 더 깊은 곳에서 여성의 노랫소리가 흘러나온다. 표정 없는, 감정 없는 노래. 기도를 흉내 내지만 기원은 없고, 위로를 흉내 내지만 사람 숨을 더 얇게 만드는 소리다.",
         "style": "narration",
         "fx_type": "RitualGlow",
-        "sfx": "assets/sfx/ritual_chant.mp3",
+        "sfx": "assets/sfx/ritual_chant.wav",
         "dialog_id": null,
         "speaker_id": null,
         "emotion_type": null,
@@ -1742,7 +1745,8 @@ Object.assign(window.GAME_DATA.scenes, {
           "text": "악보 위 주문과 제단의 흔적이 하나로 포개진다. 들리는 노래가 의식의 배경음이 아니라, 사람을 문턱 쪽으로 몰아넣는 실제 기구였다는 사실이 또렷해진다.",
           "style": "narration",
           "portrait": null,
-          "condition": null
+          "condition": null,
+          "sfx": "assets/sfx/evidence_reveal.wav"
         }
       ],
       "present_mask": [

@@ -191,7 +191,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "text": "판결봉이 차갑게 울리고, 방청석의 조선인들은 억눌린 숨만 삼킨다. 항의보다 먼저 체념이 퍼진다. 이 법정에선 억울함조차 순서를 기다려야 한다.",
         "style": "narration",
         "fx_type": "ScreenShake",
-        "sfx": "assets/sfx/gavel_strike.mp3",
+        "sfx": "assets/sfx/gavel_strike.wav",
         "dialog_id": null,
         "speaker_id": null,
         "emotion_type": null,
@@ -271,7 +271,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "standing_slot": "Right",
         "focus_type": "Speaker",
         "fx_type": "FlashDark",
-        "sfx": "assets/sfx/whisper_dissonant.mp3",
+        "sfx": "assets/sfx/whisper_dissonant.wav",
         "dialog_id": null,
         "enter_motion": null,
         "exit_motion": null,
@@ -434,7 +434,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "idle_motion": null,
         "fx_type": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/paper_rustle.wav",
         "condition_group_id": null,
         "choice_group_id": null,
         "next_dialog_id": null
@@ -510,7 +510,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "idle_motion": null,
         "fx_type": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/paper_rustle.wav",
         "condition_group_id": null,
         "choice_group_id": null,
         "next_dialog_id": null
@@ -689,7 +689,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "idle_motion": null,
         "fx_type": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/paper_rustle.wav",
         "condition_group_id": null,
         "choice_group_id": null,
         "next_dialog_id": null
@@ -751,7 +751,8 @@ Object.assign(window.GAME_DATA.scenes, {
           "speaker": "",
           "speaker_id": null,
           "emotion_type": null,
-          "portrait": null
+          "portrait": null,
+          "sfx": "assets/sfx/evidence_reveal.wav"
         }
       ],
       "newsroom_name": [

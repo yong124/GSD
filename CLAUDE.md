@@ -129,7 +129,8 @@ scenes: {
       //        focus_type, enter_motion, exit_motion, idle_motion, fx_type,
       //        cg_image(대사 라인 단위 CG 삽화. 명시한 줄에서만 유지되므로
       //          유지하려면 각 줄마다 반복 입력, 빈 문자열이면 그 줄부터 해제),
-      //        sfx(그 줄이 표시될 때 1회 재생되는 효과음 경로. BGM과 별개, 반복 없음),
+      //        sfx(그 줄이 표시될 때 1회 재생되는 효과음 경로. BGM과 별개, 반복 없음.
+      //          일반/조사/증거 대사 모두 지원. 스킵 중에는 생략하고 씬 전환 시 중단),
       //        condition_group_id, effect_group_id
     ],
     choices: [
@@ -256,6 +257,7 @@ UTF-8로 다시 읽어도 깨져 있으면 그때는 실제 손상이다. 그 �
 
 - `main.css`의 `@import`는 첫 줄에 와야 한다.
 - generated xlsx는 복붙/검수용이지 장기 원본이 아니다.
+- 짧은 효과음은 `game/assets/sfx/*.wav`. `content/tools/generate_sfx.py`로 원본 합성음을 재생성할 수 있다. 기존 BGM MP3와 구분하며, 대사의 `sfx` 경로로 저작한다. 데이터 검수는 효과음 파일의 존재도 확인한다.
 - 새 문서를 만들 때는 `core / scenario / writing / characters / editor / portfolio` 중 어디에 속하는지 먼저 결정한다.
 - 커밋은 작업 슬라이스가 한 줄로 설명되게 나눈다. 관련 없는 변경을 섞지 않는다.
 - 커밋 메시지는 반드시 한국어로 작성한다.

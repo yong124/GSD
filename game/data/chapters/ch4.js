@@ -48,7 +48,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "idle_motion": null,
         "fx_type": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/pencil_write.wav",
         "condition_group_id": null,
         "choice_group_id": null,
         "next_dialog_id": null
@@ -112,7 +112,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "idle_motion": null,
         "fx_type": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/pencil_write.wav",
         "condition_group_id": null,
         "choice_group_id": null,
         "next_dialog_id": null
@@ -195,7 +195,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "idle_motion": null,
         "fx_type": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/paper_rustle.wav",
         "condition_group_id": null,
         "choice_group_id": null,
         "next_dialog_id": null
@@ -259,7 +259,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "idle_motion": null,
         "fx_type": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/door_creak.wav",
         "condition_group_id": null,
         "choice_group_id": null,
         "next_dialog_id": null
@@ -630,7 +630,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "idle_motion": null,
         "fx_type": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/paper_rustle.wav",
         "condition_group_id": null,
         "choice_group_id": null,
         "next_dialog_id": null
@@ -884,7 +884,8 @@ Object.assign(window.GAME_DATA.scenes, {
           "text": "유웅룡은 기사 밑줄과 일기 문장을 번갈아 짚는다. 피해자의 목소리와 편집된 기록이 같은 날숨 안에서 겹치는 순간, 사건은 괴담이 아니라 조작된 삭제로 형태를 갖춘다.",
           "style": "narration",
           "portrait": null,
-          "condition": null
+          "condition": null,
+          "sfx": "assets/sfx/evidence_reveal.wav"
         }
       ],
       "present_hanbok": [
@@ -1048,7 +1049,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "idle_motion": null,
         "fx_type": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/footsteps_stone.wav",
         "condition_group_id": null,
         "choice_group_id": null,
         "next_dialog_id": null
@@ -1491,7 +1492,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "exit_motion": null,
         "idle_motion": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/hum_dissonant.wav",
         "condition_group_id": null,
         "choice_group_id": null,
         "next_dialog_id": null
@@ -1553,7 +1554,8 @@ Object.assign(window.GAME_DATA.scenes, {
           "standing_slot": "Left",
           "focus_type": "Speaker",
           "speaker": "",
-          "portrait": null
+          "portrait": null,
+          "sfx": "assets/sfx/paper_rustle.wav"
         }
       ],
       "backroom_route": [
@@ -1564,7 +1566,8 @@ Object.assign(window.GAME_DATA.scenes, {
           "speaker": "",
           "speaker_id": null,
           "emotion_type": null,
-          "portrait": null
+          "portrait": null,
+          "sfx": "assets/sfx/evidence_reveal.wav"
         }
       ]
     },

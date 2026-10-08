@@ -577,6 +577,20 @@ def validate_state_descriptors(data, issues):
         if not descriptor.get("label"):
             issues.append(f"[StateDescriptor.label] {descriptor_id} missing Label")
 
+def validate_sfx_files(data, issues):
+    game_dir = os.path.join(game_data_io.ROOT_DIR, "game")
+    for scene_id, scene in data.get("scenes", {}).items():
+        groups = [("dialogues", scene.get("dialogues") or [])]
+        for field in ("investigation_dialogues", "evidence_dialogues"):
+            groups.extend((f"{field}.{key}", lines)
+                          for key, lines in (scene.get(field) or {}).items())
+        for group, lines in groups:
+            for line in lines:
+                src = line.get("sfx")
+                if src and not os.path.isfile(os.path.join(game_dir, src)):
+                    issues.append(f"[Dialogue.sfx] {scene_id} {group} order={line.get('order')} missing file: {src}")
+
+
 def main():
     args = parse_args()
 
@@ -618,6 +632,7 @@ def main():
     validate_forced_questions(data, scenes, issues)
     validate_forced_question_evidence_timing(data, scenes, issues)
     validate_state_descriptors(data, issues)
+    validate_sfx_files(data, issues)
 
     print(f"검수 대상: {input_path}")
     print(f"씬 수: {len(scenes)}")

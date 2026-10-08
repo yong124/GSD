@@ -119,7 +119,7 @@ const Dialogue = (() => {
     if (typeof Effects?.pulse === 'function') {
       Effects.pulse(line.fx_type || '', 950);
     }
-    if (line.sfx && typeof AudioManager?.playSfx === 'function') {
+    if (!_skipMode && line.sfx && typeof AudioManager?.playSfx === 'function') {
       AudioManager.playSfx(line.sfx);
     }
     if (line?.effect_group_id && typeof Choice?.applyEffectGroup === 'function') {
@@ -173,6 +173,7 @@ const Dialogue = (() => {
 
   function setSkipMode(value) {
     _skipMode = !!value;
+    if (_skipMode) AudioManager.stopSfx();
     if (_skipMode) _autoMode = false;
     clearTimeout(_autoTimer);
     updateModeButtons();

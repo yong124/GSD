@@ -33,7 +33,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "idle_motion": null,
         "fx_type": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/paper_rustle.wav",
         "condition_group_id": null,
         "choice_group_id": null,
         "next_dialog_id": null
@@ -71,7 +71,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "idle_motion": null,
         "fx_type": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/pencil_write.wav",
         "condition_group_id": null,
         "choice_group_id": null,
         "next_dialog_id": null
@@ -393,7 +393,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "idle_motion": null,
         "fx_type": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/footsteps_stone.wav",
         "condition_group_id": null,
         "choice_group_id": null,
         "next_dialog_id": null
@@ -438,7 +438,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "idle_motion": null,
         "fx_type": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/pencil_write.wav",
         "condition_group_id": null,
         "choice_group_id": null,
         "next_dialog_id": null
@@ -636,7 +636,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "exit_motion": null,
         "idle_motion": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/door_slam.wav",
         "condition_group_id": null,
         "choice_group_id": null,
         "next_dialog_id": null
@@ -864,7 +864,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "exit_motion": null,
         "idle_motion": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/door_slam.wav",
         "condition_group_id": null,
         "choice_group_id": null,
         "next_dialog_id": null
@@ -1017,7 +1017,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "idle_motion": null,
         "fx_type": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/paper_rustle.wav",
         "choice_group_id": null,
         "next_dialog_id": null
       }
@@ -1172,7 +1172,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "exit_motion": null,
         "idle_motion": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/hum_dissonant.wav",
         "condition_group_id": null,
         "choice_group_id": null,
         "next_dialog_id": null
@@ -1388,7 +1388,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "idle_motion": null,
         "fx_type": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/pencil_write.wav",
         "choice_group_id": null,
         "next_dialog_id": null
       },
@@ -1426,7 +1426,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "idle_motion": null,
         "fx_type": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/hum_dissonant.wav",
         "choice_group_id": null,
         "next_dialog_id": null
       },
@@ -1926,7 +1926,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "idle_motion": null,
         "fx_type": null,
         "cg_image": null,
-        "sfx": null,
+        "sfx": "assets/sfx/footsteps_stone.wav",
         "condition_group_id": null,
         "choice_group_id": null,
         "next_dialog_id": null
@@ -2353,7 +2353,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "standing_slot": "Center",
         "focus_type": "Speaker",
         "fx_type": "RitualGlow",
-        "sfx": "assets/sfx/ritual_chant.mp3",
+        "sfx": "assets/sfx/ritual_chant.wav",
         "dialog_id": null,
         "enter_motion": null,
         "exit_motion": null,
@@ -2387,7 +2387,7 @@ Object.assign(window.GAME_DATA.scenes, {
         "text": "이해심의 안대 아래로 피가 번지기 시작한다. 하나는 불빛, 하나는 서릿발. 문이 열리고 있다. 방 안 촛불이 바깥바람 없이도 같은 방향으로 눕고, 벽면의 푸른 흔적이 젖은 살처럼 미세하게 꿈틀거린다.",
         "style": "narration",
         "fx_type": "FlashDark",
-        "sfx": "assets/sfx/heartbeat_low.mp3",
+        "sfx": "assets/sfx/heartbeat_low.wav",
         "dialog_id": null,
         "speaker_id": null,
         "emotion_type": null,
@@ -2596,7 +2596,8 @@ Object.assign(window.GAME_DATA.scenes, {
           "text": "쌓아 온 질문들이 한꺼번에 제단 위로 던져진다. 방 안 공기가 순간 비틀린다. 이해심 쪽 의식의 흐름이 아주 잠깐 끊기고, 유웅룡은 그 틈을 몸으로 파고든다.",
           "style": "narration",
           "portrait": null,
-          "condition": null
+          "condition": null,
+          "sfx": "assets/sfx/sting_horror.wav"
         }
       ]
     },

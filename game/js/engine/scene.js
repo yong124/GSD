@@ -539,6 +539,8 @@ const Scene = (() => {
         return;
       }
 
+      AudioManager.stopSfx();
+
       if (State.questionCheckpoint && State.questionCheckpoint.scene_id !== sceneId) {
         State.clearQuestionCheckpoint();
       }
