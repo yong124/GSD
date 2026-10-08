@@ -7,6 +7,7 @@ const AudioManager = (() => {
 
   let _bgm = null;
   let _sfx = null;
+  const _uiSounds = new Map();
   let _currentSrc = '';
   let _enabled = false;
   let _settings = loadSettings();
@@ -51,9 +52,23 @@ const AudioManager = (() => {
     _sfx = null;
   }
 
+  function updateUiVolumes() {
+    _uiSounds.forEach(({ audio, cue }) => {
+      audio.volume = _settings.muted ? 0 : _settings.sfxVolume * cue.volume;
+    });
+  }
+
   return {
     init() {
       ensureBgm();
+      Object.entries(window.UI_AUDIO_DATA || {}).forEach(([key, cue]) => {
+        const audio = new Audio(cue.src);
+        audio.preload = 'auto';
+        _uiSounds.set(key, { audio, cue, lastPlayed: -Infinity });
+      });
+      updateUiVolumes();
+      document.addEventListener('pointerdown', () => { _enabled = true; }, { once: true });
+      document.addEventListener('keydown', () => { _enabled = true; }, { once: true });
     },
 
     enable() {
@@ -102,6 +117,23 @@ const AudioManager = (() => {
 
     stopSfx,
 
+    playUiCue(key) {
+      if (!_enabled || _settings.muted || _settings.sfxVolume === 0) return;
+      const sound = _uiSounds.get(key);
+      if (!sound) return;
+      const now = performance.now();
+      if (now - sound.lastPlayed < sound.cue.min_interval_ms || !sound.audio.paused) return;
+      sound.lastPlayed = now;
+      sound.audio.currentTime = 0;
+      sound.audio.play().catch(err => {
+        if (err.name !== 'AbortError') console.warn('UI audio playback failed:', key, err);
+      });
+    },
+
+    stopUiCue(key) {
+      _uiSounds.get(key)?.audio.pause();
+    },
+
     getSettings() {
       return { ..._settings };
     },
@@ -115,6 +147,7 @@ const AudioManager = (() => {
     setSfxVolume(value) {
       _settings.sfxVolume = clamp01(value, _settings.sfxVolume);
       if (_sfx && !_settings.muted) _sfx.volume = _settings.sfxVolume;
+      updateUiVolumes();
       saveSettings();
     },
 
@@ -122,6 +155,7 @@ const AudioManager = (() => {
       _settings.muted = !!muted;
       if (_bgm) _bgm.volume = _settings.muted ? 0 : _settings.bgmVolume;
       if (_sfx) _sfx.volume = _settings.muted ? 0 : _settings.sfxVolume;
+      updateUiVolumes();
       saveSettings();
     }
   };

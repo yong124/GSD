@@ -9,6 +9,11 @@ const Dialogue = (() => {
   let _autoMode = false;
   let _autoTimer = null;
 
+  function stopLineAudio() {
+    AudioManager.stopSfx();
+    AudioManager.stopUiCue('Typing');
+  }
+
   function passesCondition(line) {
     if (!line?.condition_group_id || typeof Scene?.passesConditionGroup !== 'function') return true;
     return Scene.passesConditionGroup(line.condition_group_id, {
@@ -83,6 +88,7 @@ const Dialogue = (() => {
   function typeText(speaker, text, portrait, onComplete) {
     clearInterval(_timer);
     clearTimeout(_autoTimer);
+    AudioManager.stopUiCue('Typing');
 
     const wasSeen = State.hasSeenLine(State.currentSceneId, _index);
     if (_skipMode) {
@@ -101,17 +107,21 @@ const Dialogue = (() => {
     _timer = setInterval(() => {
       if (i >= text.length) {
         clearInterval(_timer);
+        stopLineAudio();
         _typing = false;
         UIManager.setClickHintVisible(true);
         if (onComplete) onComplete(wasSeen);
         return;
       }
-      currentText += text[i++];
+      const character = text[i++];
+      currentText += character;
+      if (!_skipMode && /[\p{L}\p{N}]/u.test(character)) AudioManager.playUiCue('Typing');
       UIManager.setDialogue(speaker, currentText, portrait);
     }, Config.TYPING?.DEFAULT_SPEED || 32);
   }
 
   function showLine(line) {
+    stopLineAudio();
     renderStage(line);
 
     UIManager.setCgImage(line.cg_image || null);
@@ -137,6 +147,7 @@ const Dialogue = (() => {
 
   function advance() {
     clearTimeout(_autoTimer);
+    stopLineAudio();
 
     if (_typing) {
       _typing = false;
@@ -174,6 +185,7 @@ const Dialogue = (() => {
   function setSkipMode(value) {
     _skipMode = !!value;
     if (_skipMode) AudioManager.stopSfx();
+    if (_skipMode) AudioManager.stopUiCue('Typing');
     if (_skipMode) _autoMode = false;
     clearTimeout(_autoTimer);
     updateModeButtons();
@@ -210,7 +222,10 @@ const Dialogue = (() => {
       if (autoBtn) autoBtn.addEventListener('click', () => setAutoMode(!_autoMode));
 
       State.on('reset', () => {
+        clearInterval(_timer);
         clearTimeout(_autoTimer);
+        _typing = false;
+        stopLineAudio();
         _skipMode = false;
         _autoMode = false;
         updateModeButtons();
@@ -218,6 +233,10 @@ const Dialogue = (() => {
     },
 
     start(lines, onDone, fromDialogId, restoreProgress = false) {
+      clearInterval(_timer);
+      clearTimeout(_autoTimer);
+      _typing = false;
+      stopLineAudio();
       _lines = (lines || []).filter(passesCondition);
 
       if (fromDialogId) {

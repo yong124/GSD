@@ -150,7 +150,10 @@ def main():
     mix(reveal, impact(1.1, [(523, 0.45), (1046, 0.12)], 5, 0), 0.05)
     mix(reveal, impact(0.9, [(784, 0.35), (1568, 0.08)], 6, 0), 0.28)
     write_sound("evidence_reveal", reveal, 0.23, 0.15)
-    print("Generated 19 original WAV effects in", OUTPUT)
+    write_sound("ui_hover", impact(0.075, [(660, 0.5), (990, 0.15)], 65, 0.05), 0.22)
+    write_sound("ui_click", impact(0.09, [(240, 0.6), (720, 0.2)], 55, 0.3), 0.34)
+    write_sound("text_tick", impact(0.04, [(320, 0.4), (1350, 0.2)], 100, 0.8), 0.28)
+    print("Generated 22 original WAV effects in", OUTPUT)
 
 
 if __name__ == "__main__":

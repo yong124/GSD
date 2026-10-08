@@ -48,6 +48,18 @@ const UIManager = (() => {
   }
 
   function init() {
+    const interactiveSelector = 'button, [role="button"], .inventory-list-item';
+    document.addEventListener('pointerover', event => {
+      const target = event.target.closest(interactiveSelector);
+      if (!target || target.matches(':disabled, [aria-disabled="true"]')) return;
+      if (event.relatedTarget instanceof Node && target.contains(event.relatedTarget)) return;
+      AudioManager.playUiCue('Hover');
+    });
+    document.addEventListener('click', event => {
+      const target = event.target.closest(interactiveSelector);
+      if (!target || target.matches(':disabled, [aria-disabled="true"]')) return;
+      AudioManager.playUiCue('Click');
+    }, true);
     bindGaugeListeners();
     State.on('change', () => {
       applyStateMood();
